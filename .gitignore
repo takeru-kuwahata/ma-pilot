@@ -1,0 +1,70 @@
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Build outputs
+build/
+dist/
+.next/
+.nuxt/
+*.egg-info/
+*.egg
+.vite/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Test coverage
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Supabase
+.supabase/
+
+# AppGenius temporary files
+.appgenius_temp/
+
+# Git setup progress
+.git_setup_progress.md
