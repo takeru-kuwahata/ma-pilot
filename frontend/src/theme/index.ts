@@ -1,19 +1,19 @@
 import { createTheme } from '@mui/material/styles';
 
 // MA-Lstep カスタムテーマ
-// 歯科医院経営分析システムらしい、清潔感のあるブルー系テーマ
+// 歯科医院経営分析システム - コーポレートカラー（オレンジ系）
 export const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2', // 信頼感のあるブルー
-      light: '#42a5f5',
-      dark: '#1565c0',
+      main: '#FF6B35', // コーポレートオレンジ（ロゴカラー）
+      light: '#FF8A5C',
+      dark: '#E65100',
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#00bcd4', // アクセントカラー（シアン）
-      light: '#4dd0e1',
-      dark: '#0097a7',
+      main: '#FF9800', // アクセントオレンジ
+      light: '#FFB74D',
+      dark: '#F57C00',
       contrastText: '#ffffff',
     },
     success: {
