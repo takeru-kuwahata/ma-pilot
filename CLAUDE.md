@@ -3,7 +3,7 @@
 ## 基本設定
 
 ```yaml
-プロジェクト名: MA-Lstep（歯科医院経営分析システム）
+プロジェクト名: MA-Pilot（歯科医院経営分析システム）
 開始日: 2025-11-13
 技術スタック:
   frontend:
@@ -54,7 +54,7 @@
 ```yaml
 開発用アカウント:
   システム管理者:
-    email: admin@ma-lstep.local
+    email: admin@ma-pilot.local
     password: DevAdmin2025!
 
   テスト医院オーナー:

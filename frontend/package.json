@@ -1,8 +1,8 @@
 {
-  "name": "ma-lstep-frontend",
+  "name": "ma-pilot-frontend",
   "version": "1.0.0",
   "type": "module",
-  "description": "歯科医院経営分析システム - フロントエンド",
+  "description": "MA-Pilot: 歯科医院経営分析システム - フロントエンド",
   "scripts": {
     "dev": "vite --port 3247",
     "build": "tsc && vite build",
