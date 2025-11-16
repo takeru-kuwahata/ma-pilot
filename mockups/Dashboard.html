@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>経営ダッシュボード - MA-Pilot</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      background-color: #f5f5f5;
+      color: #424242;
+      overflow-x: hidden;
+    }
+
+    /* ========== ヘッダー ========== */
+    .app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #424242;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #FF6B35;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 600;
+      color: #424242;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .clinic-name {
+      font-size: 14px;
+      color: #616161;
+      padding-right: 16px;
+      border-right: 1px solid #e0e0e0;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #FF6B35;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .user-name {
+      font-size: 14px;
+      color: #424242;
+    }
+
+    /* ========== サイドバー ========== */
+    .app-sidebar {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      width: 240px;
+      height: calc(100vh - 64px);
+      background-color: #ffffff;
+      border-right: 1px solid #e0e0e0;
+      overflow-y: auto;
+      z-index: 999;
+    }
+
+    .sidebar-nav {
+      padding: 16px 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      color: #616161;
+      text-decoration: none;
+      transition: all 0.15s ease-in-out;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background-color: #f5f5f5;
+      color: #424242;
+    }
+
+    .nav-item.active {
+      background-color: rgba(255, 107, 53, 0.08);
+      color: #FF6B35;
+      border-left: 3px solid #FF6B35;
+      padding-left: 21px;
+    }
+
+    .nav-item .material-icons {
+      font-size: 24px;
+    }
+
+    .nav-item span {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .nav-divider {
+      height: 1px;
+      background-color: #e0e0e0;
+      margin: 16px 24px;
+    }
+
+    .nav-section-title {
+      padding: 12px 24px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #9e9e9e;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ========== メインコンテンツ ========== */
+    .app-content {
+      margin-left: 240px;
+      margin-top: 64px;
+      padding: 24px;
+      min-height: calc(100vh - 64px);
+    }
+
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 500;
+      color: #424242;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #616161;
+      font-size: 14px;
+    }
+
+    /* ========== KPIカードグリッド ========== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      padding: 20px;
+      transition: box-shadow 0.15s ease-in-out;
+    }
+
+    .kpi-card:hover {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .kpi-card h3 {
+      font-size: 12px;
+      font-weight: 600;
+      color: #9e9e9e;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: #424242;
+      margin-bottom: 8px;
+    }
+
+    .kpi-comparison {
+      font-size: 14px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .comparison-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .comparison-item .material-icons {
+      font-size: 16px;
+    }
+
+    .comparison-item.positive {
+      color: #388E3C;
+    }
+
+    .comparison-item.negative {
+      color: #D32F2F;
+    }
+
+    .comparison-item.neutral {
+      color: #757575;
+    }
+
+    /* ========== アラートセクション ========== */
+    .alert-section {
+      margin-bottom: 24px;
+    }
+
+    .alert-card {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      padding: 24px;
+    }
+
+    .alert-card h2 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #424242;
+    }
+
+    .alert-item {
+      padding: 12px;
+      border-left: 4px solid;
+      margin-bottom: 12px;
+      border-radius: 4px;
+    }
+
+    .alert-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .alert-item.warning {
+      background: #fff3e0;
+      border-color: #F57C00;
+    }
+
+    .alert-item.error {
+      background: #ffebee;
+      border-color: #D32F2F;
+    }
+
+    .alert-item p {
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: #424242;
+    }
+
+    .alert-item small {
+      font-size: 12px;
+      color: #616161;
+    }
+
+    /* ========== グラフセクション ========== */
+    .charts-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .chart-card {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      padding: 24px;
+    }
+
+    .chart-card h3 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: #424242;
+    }
+
+    .chart-placeholder {
+      background: #f5f5f5;
+      height: 300px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9e9e9e;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* ========== クイックアクション ========== */
+    .quick-actions {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      padding: 24px;
+    }
+
+    .quick-actions h2 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: #424242;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .action-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      background: #FF6B35;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s ease-in-out;
+    }
+
+    .action-button:hover {
+      background: #E55A28;
+    }
+
+    .action-button.secondary {
+      background: transparent;
+      color: #FF6B35;
+      border: 1px solid #e0e0e0;
+    }
+
+    .action-button.secondary:hover {
+      background: rgba(255, 107, 53, 0.08);
+    }
+
+    .material-icons {
+      font-size: 20px;
+    }
+
+    /* ========== レスポンシブ ========== */
+    @media (max-width: 959px) {
+      .app-sidebar {
+        transform: translateX(-240px);
+      }
+
+      .app-content {
+        margin-left: 0;
+      }
+
+      .clinic-name {
+        display: none;
+      }
+    }
+
+    @media (max-width: 599px) {
+      .app-header {
+        padding: 0 16px;
+      }
+
+      .app-content {
+        padding: 16px;
+      }
+
+      .logo-text {
+        display: none;
+      }
+
+      .user-name {
+        display: none;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .charts-section {
+        grid-template-columns: 1fr;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .action-button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ========== ヘッダー ========== -->
+  <header class="app-header">
+    <div class="header-left">
+      <a href="/" class="header-logo">
+        <div class="logo-icon">MA</div>
+        <span class="logo-text">MA-Pilot</span>
+      </a>
+    </div>
+    <div class="header-right">
+      <div class="clinic-name">さくら歯科クリニック</div>
+      <div class="user-info">
+        <div class="user-avatar">田</div>
+        <span class="user-name">田中太郎</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== サイドバー ========== -->
+  <aside class="app-sidebar">
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item active">
+        <span class="material-icons">dashboard</span>
+        <span>ダッシュボード</span>
+      </a>
+      <a href="/data-management" class="nav-item">
+        <span class="material-icons">edit_note</span>
+        <span>基礎データ管理</span>
+      </a>
+      <a href="/market-analysis" class="nav-item">
+        <span class="material-icons">location_on</span>
+        <span>診療圏分析</span>
+      </a>
+      <a href="/simulation" class="nav-item">
+        <span class="material-icons">trending_up</span>
+        <span>経営シミュレーション</span>
+      </a>
+      <a href="/reports" class="nav-item">
+        <span class="material-icons">description</span>
+        <span>レポート管理</span>
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <div class="nav-section-title">設定</div>
+      <a href="/clinic-settings" class="nav-item">
+        <span class="material-icons">business</span>
+        <span>医院設定</span>
+      </a>
+      <a href="/staff-management" class="nav-item">
+        <span class="material-icons">people</span>
+        <span>スタッフ管理</span>
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <a href="/logout" class="nav-item">
+        <span class="material-icons">logout</span>
+        <span>ログアウト</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ========== メインコンテンツ ========== -->
+  <main class="app-content">
+    <!-- ページヘッダー -->
+    <div class="page-header">
+      <h1>経営ダッシュボード</h1>
+      <p>最終更新: 2025年10月 | データソース: 手動入力</p>
+    </div>
+
+    <!-- KPIカードグリッド -->
+    <div class="kpi-grid">
+      <!-- 売上 -->
+      <div class="kpi-card">
+        <h3>総売上</h3>
+        <div class="kpi-value">¥8,500,000</div>
+        <div class="kpi-comparison">
+          <div class="comparison-item positive">
+            <span class="material-icons">arrow_upward</span>
+            <span>前月比 +5.2%</span>
+          </div>
+          <div class="comparison-item positive">
+            <span class="material-icons">arrow_upward</span>
+            <span>前年比 +12.3%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 営業利益 -->
+      <div class="kpi-card">
+        <h3>営業利益</h3>
+        <div class="kpi-value">¥2,100,000</div>
+        <div class="kpi-comparison">
+          <div class="comparison-item positive">
+            <span class="material-icons">arrow_upward</span>
+            <span>前月比 +3.8%</span>
+          </div>
+          <div class="comparison-item negative">
+            <span class="material-icons">arrow_downward</span>
+            <span>前年比 -2.1%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 粗利率 -->
+      <div class="kpi-card">
+        <h3>粗利率</h3>
+        <div class="kpi-value">24.7%</div>
+        <div class="kpi-comparison">
+          <div class="comparison-item neutral">
+            <span class="material-icons">remove</span>
+            <span>前月比 -0.5%</span>
+          </div>
+          <div class="comparison-item negative">
+            <span class="material-icons">arrow_downward</span>
+            <span>前年比 -3.2%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 総患者数 -->
+      <div class="kpi-card">
+        <h3>総患者数</h3>
+        <div class="kpi-value">420人</div>
+        <div class="kpi-comparison">
+          <div class="comparison-item positive">
+            <span class="material-icons">arrow_upward</span>
+            <span>前月比 +8人</span>
+          </div>
+          <div class="comparison-item positive">
+            <span class="material-icons">arrow_upward</span>
+            <span>前年比 +35人</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ユニット稼働率 -->
+      <div class="kpi-card">
+        <h3>ユニット稼働率</h3>
+        <div class="kpi-value">78.5%</div>
+        <div class="kpi-comparison">
+          <div class="comparison-item positive">
+            <span class="material-icons">arrow_upward</span>
+            <span>前月比 +2.3%</span>
+          </div>
+          <div class="comparison-item positive">
+            <span class="material-icons">arrow_upward</span>
+            <span>前年比 +5.7%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 自費率 -->
+      <div class="kpi-card">
+        <h3>自費率</h3>
+        <div class="kpi-value">18.2%</div>
+        <div class="kpi-comparison">
+          <div class="comparison-item negative">
+            <span class="material-icons">arrow_downward</span>
+            <span>前月比 -1.2%</span>
+          </div>
+          <div class="comparison-item neutral">
+            <span class="material-icons">remove</span>
+            <span>前年比 -0.3%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 新患数 -->
+      <div class="kpi-card">
+        <h3>新患数</h3>
+        <div class="kpi-value">35人</div>
+        <div class="kpi-comparison">
+          <div class="comparison-item positive">
+            <span class="material-icons">arrow_upward</span>
+            <span>前月比 +5人</span>
+          </div>
+          <div class="comparison-item positive">
+            <span class="material-icons">arrow_upward</span>
+            <span>前年比 +8人</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- リコール率 -->
+      <div class="kpi-card">
+        <h3>リコール率</h3>
+        <div class="kpi-value">62.3%</div>
+        <div class="kpi-comparison">
+          <div class="comparison-item neutral">
+            <span class="material-icons">remove</span>
+            <span>前月比 -0.2%</span>
+          </div>
+          <div class="comparison-item positive">
+            <span class="material-icons">arrow_upward</span>
+            <span>前年比 +3.5%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- アラート通知 -->
+    <div class="alert-section">
+      <div class="alert-card">
+        <h2>
+          <span class="material-icons">notifications</span>
+          アラート通知
+        </h2>
+        <div class="alert-item warning">
+          <p><strong>自費率が低下しています</strong></p>
+          <small>前月比 -1.2%の減少。自費診療の提案を強化することを推奨します。</small>
+        </div>
+        <div class="alert-item error">
+          <p><strong>粗利率が目標を下回っています</strong></p>
+          <small>目標25%に対して24.7%。変動費の見直しを検討してください。</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- グラフセクション -->
+    <div class="charts-section">
+      <!-- 売上・利益推移 -->
+      <div class="chart-card">
+        <h3>売上・利益推移（直近6ヶ月）</h3>
+        <div class="chart-placeholder">
+          売上・営業利益の月次推移グラフ<br>
+          （Rechartsで実装予定）
+        </div>
+      </div>
+
+      <!-- 患者数推移 -->
+      <div class="chart-card">
+        <h3>患者数推移（直近6ヶ月）</h3>
+        <div class="chart-placeholder">
+          新患数・再診患者数の月次推移グラフ<br>
+          （Rechartsで実装予定）
+        </div>
+      </div>
+
+      <!-- ユニット稼働率推移 -->
+      <div class="chart-card">
+        <h3>ユニット稼働率推移（直近6ヶ月）</h3>
+        <div class="chart-placeholder">
+          ユニット稼働率の月次推移グラフ<br>
+          （Rechartsで実装予定）
+        </div>
+      </div>
+
+      <!-- 自費率推移 -->
+      <div class="chart-card">
+        <h3>自費率推移（直近6ヶ月）</h3>
+        <div class="chart-placeholder">
+          自費率の月次推移グラフ<br>
+          （Rechartsで実装予定）
+        </div>
+      </div>
+    </div>
+
+    <!-- クイックアクション -->
+    <div class="quick-actions">
+      <h2>クイックアクション</h2>
+      <div class="action-buttons">
+        <a href="/data-management" class="action-button">
+          <span class="material-icons">add_circle</span>
+          月次データ入力
+        </a>
+        <a href="/simulation" class="action-button secondary">
+          <span class="material-icons">trending_up</span>
+          シミュレーション実行
+        </a>
+        <a href="/reports" class="action-button secondary">
+          <span class="material-icons">description</span>
+          レポート生成
+        </a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

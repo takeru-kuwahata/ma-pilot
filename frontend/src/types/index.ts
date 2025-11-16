@@ -158,25 +158,27 @@ export interface LoginFormData {
   password: string;
 }
 
-export interface RegisterFormData {
-  email: string;
+export interface SignupFormData {
+  inviteToken: string;
   password: string;
   passwordConfirm: string;
-  inviteCode?: string;
+}
+
+export interface PasswordResetFormData {
+  email: string;
 }
 
 export interface MonthlyDataFormData {
   yearMonth: string;
-  totalRevenue: number;
+  totalRevenue: number;           // 自動計算
   insuranceRevenue: number;
   selfPayRevenue: number;
-  personnelCost: number;
-  materialCost: number;
+  retailRevenue: number;
+  variableCost: number;
   fixedCost: number;
-  otherCost: number;
   newPatients: number;
   returningPatients: number;
-  treatmentCount: number;
+  totalPatients: number;          // 自動計算
 }
 
 export interface ClinicFormData {
@@ -212,4 +214,52 @@ export interface CsvImportResult {
     row: number;
     error: string;
   }>;
+}
+
+// ============================================
+// ダッシュボード関連型定義
+// ============================================
+
+export type ComparisonTrend = 'positive' | 'negative' | 'neutral';
+
+export interface KpiComparison {
+  trend: ComparisonTrend;
+  monthOverMonth: number;  // 前月比（%）
+  yearOverYear: number;    // 前年比（%）
+}
+
+export interface DashboardKpi {
+  id: string;
+  label: string;           // KPI名（例: 総売上、営業利益）
+  value: number;           // 現在の値
+  unit: string;            // 単位（¥, %, 人）
+  comparison: KpiComparison;
+}
+
+export type AlertSeverity = 'warning' | 'error' | 'info';
+
+export interface DashboardAlert {
+  id: string;
+  severity: AlertSeverity;
+  title: string;
+  message: string;
+  timestamp: string;
+}
+
+export interface MonthlyTrendData {
+  yearMonth: string;       // YYYY-MM形式
+  totalRevenue: number;
+  operatingProfit: number;
+  newPatients: number;
+  returningPatients: number;
+  unitUtilization: number; // ユニット稼働率（%）
+  selfPayRate: number;     // 自費率（%）
+}
+
+export interface DashboardData {
+  kpis: DashboardKpi[];
+  alerts: DashboardAlert[];
+  trends: MonthlyTrendData[];
+  lastUpdated: string;
+  dataSource: string;      // データソース（例: 手動入力、CSV取込）
 }

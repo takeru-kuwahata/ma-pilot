@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>経営シミュレーション - MA-Pilot</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background-color: #f5f5f5;
+      color: #424242;
+    }
+
+    .app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .app-sidebar {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      width: 240px;
+      height: calc(100vh - 64px);
+      background-color: #ffffff;
+      border-right: 1px solid #e0e0e0;
+      padding: 16px 0;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      color: #424242;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .menu-item.active {
+      background-color: rgba(255, 107, 53, 0.08);
+      border-left: 3px solid #FF6B35;
+      color: #FF6B35;
+      padding-left: 21px;
+    }
+
+    .menu-item .material-icons {
+      margin-right: 16px;
+      font-size: 20px;
+    }
+
+    .menu-item.active .material-icons {
+      color: #FF6B35;
+    }
+
+    .app-content {
+      margin-left: 240px;
+      margin-top: 64px;
+      padding: 24px;
+      min-height: calc(100vh - 64px);
+    }
+
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #616161;
+      font-size: 14px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      margin-bottom: 24px;
+    }
+
+    .card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #424242;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #FF6B35;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background-color: #FF6B35;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: #E55A2B;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .result-card {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .result-card .label {
+      font-size: 14px;
+      color: #616161;
+      margin-bottom: 8px;
+    }
+
+    .result-card .value {
+      font-size: 28px;
+      font-weight: 600;
+      color: #424242;
+    }
+
+    .result-card .value.positive {
+      color: #4CAF50;
+    }
+
+    .result-card .value.negative {
+      color: #F44336;
+    }
+
+    .result-card .unit {
+      font-size: 14px;
+      color: #616161;
+      margin-left: 4px;
+    }
+
+    .chart-placeholder {
+      width: 100%;
+      height: 300px;
+      background-color: #e0e0e0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #616161;
+      font-size: 16px;
+      gap: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- ヘッダー -->
+  <div class="app-header">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 36px; height: 36px; background-color: #FF6B35; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 700; font-size: 18px;">MA</div>
+      <span style="font-size: 20px; font-weight: 600;">MA-Pilot</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <span style="font-size: 14px; color: #616161;">さくら歯科クリニック</span>
+      <div style="width: 32px; height: 32px; background-color: #FF6B35; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 14px; font-weight: 600;">田</div>
+    </div>
+  </div>
+
+  <!-- サイドバー -->
+  <div class="app-sidebar">
+    <div class="menu-item">
+      <span class="material-icons">dashboard</span>
+      <span>ダッシュボード</span>
+    </div>
+    <div class="menu-item">
+      <span class="material-icons">edit_note</span>
+      <span>基礎データ管理</span>
+    </div>
+    <div class="menu-item">
+      <span class="material-icons">location_on</span>
+      <span>診療圏分析</span>
+    </div>
+    <div class="menu-item active">
+      <span class="material-icons">trending_up</span>
+      <span>経営シミュレーション</span>
+    </div>
+    <div class="menu-item">
+      <span class="material-icons">description</span>
+      <span>レポート管理</span>
+    </div>
+  </div>
+
+  <!-- メインコンテンツ -->
+  <div class="app-content">
+    <!-- ページヘッダー -->
+    <div class="page-header">
+      <h1>経営シミュレーション</h1>
+      <p>売上・コスト・患者数の変動をシミュレーション</p>
+    </div>
+
+    <!-- シミュレーション入力フォーム -->
+    <div class="card">
+      <h3>シミュレーション条件設定</h3>
+
+      <div class="form-grid">
+        <!-- 左列 -->
+        <div>
+          <div class="form-group">
+            <label>シミュレーション期間</label>
+            <select>
+              <option>3ヶ月後</option>
+              <option selected>6ヶ月後</option>
+              <option>12ヶ月後</option>
+              <option>24ヶ月後</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>保険診療収入の変動 (%)</label>
+            <input type="number" value="0" placeholder="例: +10 または -5" />
+          </div>
+
+          <div class="form-group">
+            <label>自費診療収入の変動 (%)</label>
+            <input type="number" value="15" placeholder="例: +20 または -10" />
+          </div>
+
+          <div class="form-group">
+            <label>物販収入の変動 (%)</label>
+            <input type="number" value="0" placeholder="例: +5 または -3" />
+          </div>
+        </div>
+
+        <!-- 右列 -->
+        <div>
+          <div class="form-group">
+            <label>変動費の変動 (%)</label>
+            <input type="number" value="0" placeholder="例: +8 または -2" />
+          </div>
+
+          <div class="form-group">
+            <label>固定費の変動 (%)</label>
+            <input type="number" value="0" placeholder="例: +5 または -5" />
+          </div>
+
+          <div class="form-group">
+            <label>新患数の変動 (%)</label>
+            <input type="number" value="20" placeholder="例: +15 または -10" />
+          </div>
+
+          <div class="form-group">
+            <label>再診患者数の変動 (%)</label>
+            <input type="number" value="0" placeholder="例: +10 または -5" />
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary">
+        <span class="material-icons" style="font-size: 20px;">play_arrow</span>
+        シミュレーション実行
+      </button>
+    </div>
+
+    <!-- シミュレーション結果 -->
+    <div class="card">
+      <h3>シミュレーション結果</h3>
+
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="label">予測総売上</div>
+          <div class="value">¥9,775,000</div>
+        </div>
+        <div class="result-card">
+          <div class="label">予測営業利益</div>
+          <div class="value positive">¥2,415,000</div>
+        </div>
+        <div class="result-card">
+          <div class="label">予測利益率</div>
+          <div class="value positive">24.7<span class="unit">%</span></div>
+        </div>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="label">売上変動額</div>
+          <div class="value positive">+¥1,275,000</div>
+        </div>
+        <div class="result-card">
+          <div class="label">利益変動額</div>
+          <div class="value positive">+¥315,000</div>
+        </div>
+        <div class="result-card">
+          <div class="label">利益率変動</div>
+          <div class="value positive">+2.6<span class="unit">pt</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- グラフエリア -->
+    <div class="card">
+      <h3>推移予測グラフ</h3>
+      <div class="chart-placeholder">
+        <span class="material-icons" style="font-size: 48px; color: #9e9e9e;">show_chart</span>
+        <span>Rechartsでグラフ表示（Phase 4で実装）</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

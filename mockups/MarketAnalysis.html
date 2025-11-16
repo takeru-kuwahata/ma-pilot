@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>診療圏分析 - MA-Pilot</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background-color: #f5f5f5;
+      color: #424242;
+    }
+
+    .app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .app-sidebar {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      width: 240px;
+      height: calc(100vh - 64px);
+      background-color: #ffffff;
+      border-right: 1px solid #e0e0e0;
+      padding: 16px 0;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      color: #424242;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .menu-item.active {
+      background-color: rgba(255, 107, 53, 0.08);
+      border-left: 3px solid #FF6B35;
+      color: #FF6B35;
+      padding-left: 21px;
+    }
+
+    .menu-item .material-icons {
+      margin-right: 16px;
+      font-size: 20px;
+    }
+
+    .menu-item.active .material-icons {
+      color: #FF6B35;
+    }
+
+    .app-content {
+      margin-left: 240px;
+      margin-top: 64px;
+      padding: 24px;
+      min-height: calc(100vh - 64px);
+    }
+
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #616161;
+      font-size: 14px;
+    }
+
+    .analysis-card {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      margin-bottom: 24px;
+    }
+
+    .analysis-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .map-placeholder {
+      width: 100%;
+      height: 400px;
+      background-color: #e0e0e0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #616161;
+      font-size: 16px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    .stat-card .label {
+      font-size: 14px;
+      color: #616161;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .value {
+      font-size: 28px;
+      font-weight: 600;
+      color: #424242;
+    }
+
+    .stat-card .unit {
+      font-size: 14px;
+      color: #616161;
+      margin-left: 4px;
+    }
+
+    .competitor-list {
+      margin-top: 16px;
+    }
+
+    .competitor-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .competitor-item:last-child {
+      border-bottom: none;
+    }
+
+    .competitor-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .competitor-distance {
+      font-size: 14px;
+      color: #616161;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background-color: #FF6B35;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <!-- ヘッダー -->
+  <div class="app-header">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 36px; height: 36px; background-color: #FF6B35; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 700; font-size: 18px;">MA</div>
+      <span style="font-size: 20px; font-weight: 600;">MA-Pilot</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <span style="font-size: 14px; color: #616161;">さくら歯科クリニック</span>
+      <div style="width: 32px; height: 32px; background-color: #FF6B35; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 14px; font-weight: 600;">田</div>
+    </div>
+  </div>
+
+  <!-- サイドバー -->
+  <div class="app-sidebar">
+    <div class="menu-item">
+      <span class="material-icons">dashboard</span>
+      <span>ダッシュボード</span>
+    </div>
+    <div class="menu-item">
+      <span class="material-icons">edit_note</span>
+      <span>基礎データ管理</span>
+    </div>
+    <div class="menu-item active">
+      <span class="material-icons">location_on</span>
+      <span>診療圏分析</span>
+    </div>
+    <div class="menu-item">
+      <span class="material-icons">trending_up</span>
+      <span>経営シミュレーション</span>
+    </div>
+    <div class="menu-item">
+      <span class="material-icons">description</span>
+      <span>レポート管理</span>
+    </div>
+  </div>
+
+  <!-- メインコンテンツ -->
+  <div class="app-content">
+    <!-- ページヘッダー -->
+    <div class="page-header">
+      <h1>診療圏分析</h1>
+      <p>人口統計、競合分析、市場ポテンシャル</p>
+    </div>
+
+    <!-- 統計サマリー -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">診療圏人口 (半径2km)</div>
+        <div class="value">45,230<span class="unit">人</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">高齢化率</div>
+        <div class="value">28.5<span class="unit">%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">競合歯科数 (半径2km)</div>
+        <div class="value">12<span class="unit">院</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">市場ポテンシャル</div>
+        <div class="value">87<span class="unit">点</span></div>
+      </div>
+    </div>
+
+    <!-- 地図エリア -->
+    <div class="analysis-card">
+      <h3>診療圏マップ</h3>
+      <div class="map-placeholder">
+        <span class="material-icons" style="font-size: 48px; color: #9e9e9e;">map</span>
+        <span style="margin-left: 16px;">Google Maps統合（Phase 5以降）</span>
+      </div>
+    </div>
+
+    <!-- 競合分析と人口統計を2列レイアウト -->
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+      <!-- 競合分析 -->
+      <div class="analysis-card">
+        <h3>周辺競合歯科医院</h3>
+        <div class="competitor-list">
+          <div class="competitor-item">
+            <div class="competitor-name">やまだ歯科クリニック</div>
+            <div class="competitor-distance">徒歩5分 (400m)</div>
+          </div>
+          <div class="competitor-item">
+            <div class="competitor-name">すずき歯科医院</div>
+            <div class="competitor-distance">徒歩8分 (650m)</div>
+          </div>
+          <div class="competitor-item">
+            <div class="competitor-name">ひまわり歯科</div>
+            <div class="competitor-distance">徒歩12分 (950m)</div>
+          </div>
+          <div class="competitor-item">
+            <div class="competitor-name">たなか歯科クリニック</div>
+            <div class="competitor-distance">徒歩15分 (1.2km)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 人口統計 -->
+      <div class="analysis-card">
+        <h3>診療圏内人口統計</h3>
+        <p style="color: #616161; font-size: 14px; margin-top: 8px;">
+          e-Stat APIを活用した詳細な人口統計データ（Phase 6以降で実装）
+        </p>
+        <div style="margin-top: 16px; padding: 16px; background-color: #f5f5f5; border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e0e0e0;">
+            <span style="font-size: 14px;">0-14歳</span>
+            <span style="font-size: 14px; font-weight: 600;">5,420人 (12.0%)</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e0e0e0;">
+            <span style="font-size: 14px;">15-64歳</span>
+            <span style="font-size: 14px; font-weight: 600;">27,100人 (59.9%)</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+            <span style="font-size: 14px;">65歳以上</span>
+            <span style="font-size: 14px; font-weight: 600;">12,710人 (28.1%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

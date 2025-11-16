@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ログイン - MA-Pilot</title>
+
+  <!-- Material UI CDN -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
+    /* コンテンツ部分のみ（PublicLayoutがヘッダーを提供） */
+    .login-container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 12px 24px 24px;
+    }
+
+    .login-card {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 32px;
+    }
+
+    .login-title {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #424242;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #616161;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 1rem;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: #FF6B35;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #ffffff;
+      background-color: #FF6B35;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover {
+      background-color: #E55A28;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 24px 0;
+      position: relative;
+      color: #9e9e9e;
+      font-size: 0.875rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background-color: #e0e0e0;
+    }
+
+    .divider::before {
+      left: 0;
+    }
+
+    .divider::after {
+      right: 0;
+    }
+
+    .link-section {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .link-text {
+      font-size: 0.875rem;
+      color: #FF6B35;
+      text-decoration: none;
+      font-weight: 400;
+    }
+
+    .link-text:hover {
+      text-decoration: underline;
+    }
+
+    .tab-container {
+      display: flex;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #757575;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-button.active {
+      color: #FF6B35;
+      border-bottom-color: #FF6B35;
+    }
+
+    .tab-button:hover {
+      color: #FF6B35;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .info-text {
+      font-size: 0.875rem;
+      color: #666;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <!-- コンテンツ部分のみ（PublicLayoutが背景とヘッダーを提供） -->
+  <div class="login-container">
+    <div class="login-card">
+      <h2 class="login-title">MA-Pilot</h2>
+
+      <!-- タブ切り替え -->
+      <div class="tab-container">
+        <button class="tab-button active" onclick="switchTab('login')">ログイン</button>
+        <button class="tab-button" onclick="switchTab('signup')">アカウント作成</button>
+      </div>
+
+      <!-- ログインタブ -->
+      <div id="login-tab" class="tab-content active">
+        <form id="login-form">
+          <div class="form-group">
+            <label class="form-label" for="login-email">メールアドレス</label>
+            <input
+              type="email"
+              id="login-email"
+              class="form-input"
+              placeholder="your@email.com"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="login-password">パスワード</label>
+            <input
+              type="password"
+              id="login-password"
+              class="form-input"
+              placeholder="パスワードを入力"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn-primary">ログイン</button>
+
+          <div class="link-section">
+            <a href="#" class="link-text" onclick="switchTab('reset')">パスワードを忘れた場合</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- アカウント作成タブ（招待経由） -->
+      <div id="signup-tab" class="tab-content">
+        <p class="info-text">
+          招待メールに記載されているリンクからアカウント作成を行ってください。
+        </p>
+
+        <form id="signup-form">
+          <div class="form-group">
+            <label class="form-label" for="signup-token">招待トークン</label>
+            <input
+              type="text"
+              id="signup-token"
+              class="form-input"
+              placeholder="招待メールのトークンを入力"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signup-password">パスワード</label>
+            <input
+              type="password"
+              id="signup-password"
+              class="form-input"
+              placeholder="8文字以上のパスワード"
+              required
+              minlength="8"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signup-password-confirm">パスワード（確認）</label>
+            <input
+              type="password"
+              id="signup-password-confirm"
+              class="form-input"
+              placeholder="パスワードを再入力"
+              required
+              minlength="8"
+            />
+          </div>
+
+          <button type="submit" class="btn-primary">アカウント作成</button>
+        </form>
+      </div>
+
+      <!-- パスワードリセットタブ -->
+      <div id="reset-tab" class="tab-content">
+        <p class="info-text">
+          ご登録のメールアドレスにパスワードリセット用のリンクを送信します。
+        </p>
+
+        <form id="reset-form">
+          <div class="form-group">
+            <label class="form-label" for="reset-email">メールアドレス</label>
+            <input
+              type="email"
+              id="reset-email"
+              class="form-input"
+              placeholder="your@email.com"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn-primary">リセットメールを送信</button>
+
+          <div class="link-section">
+            <a href="#" class="link-text" onclick="switchTab('login')">ログインに戻る</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // タブ切り替え処理
+    function switchTab(tabName) {
+      // すべてのタブとコンテンツを非アクティブ化
+      const tabButtons = document.querySelectorAll('.tab-button');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+
+      // 選択されたタブをアクティブ化
+      const activeTab = document.getElementById(tabName + '-tab');
+      if (activeTab) {
+        activeTab.classList.add('active');
+      }
+
+      // タブボタンのアクティブ状態を更新（リセットタブはボタンがないので例外処理）
+      if (tabName === 'reset') {
+        // パスワードリセットは別フローなのでタブボタンは更新しない
+      } else {
+        const buttons = document.querySelectorAll('.tab-button');
+        buttons.forEach(btn => {
+          if ((tabName === 'login' && btn.textContent === 'ログイン') ||
+              (tabName === 'signup' && btn.textContent === 'アカウント作成')) {
+            btn.classList.add('active');
+          }
+        });
+      }
+    }
+
+    // フォーム送信のデモ処理（実際はバックエンドAPIと連携）
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('ログイン処理を実行します（実装時はSupabase Authと連携）');
+    });
+
+    document.getElementById('signup-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const password = document.getElementById('signup-password').value;
+      const confirm = document.getElementById('signup-password-confirm').value;
+
+      if (password !== confirm) {
+        alert('パスワードが一致しません');
+        return;
+      }
+
+      alert('アカウント作成処理を実行します（実装時はSupabase Authと連携）');
+    });
+
+    document.getElementById('reset-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('パスワードリセットメールを送信します（実装時はSupabase Authと連携）');
+    });
+  </script>
+</body>
+</html>

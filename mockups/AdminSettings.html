@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>システム設定 - MA-Pilot</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background-color: #f5f5f5;
+      color: #424242;
+    }
+
+    .app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .app-sidebar {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      width: 240px;
+      height: calc(100vh - 64px);
+      background-color: #ffffff;
+      border-right: 1px solid #e0e0e0;
+      padding: 16px 0;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      color: #424242;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .menu-item.active {
+      background-color: rgba(255, 107, 53, 0.08);
+      border-left: 3px solid #FF6B35;
+      color: #FF6B35;
+      padding-left: 21px;
+    }
+
+    .menu-item .material-icons {
+      margin-right: 16px;
+      font-size: 20px;
+    }
+
+    .menu-item.active .material-icons {
+      color: #FF6B35;
+    }
+
+    .app-content {
+      margin-left: 240px;
+      margin-top: 64px;
+      padding: 24px;
+      min-height: calc(100vh - 64px);
+    }
+
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #616161;
+      font-size: 14px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      margin-bottom: 24px;
+    }
+
+    .card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .form-field {
+      margin-bottom: 16px;
+    }
+
+    .form-field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #424242;
+    }
+
+    .form-field input,
+    .form-field textarea,
+    .form-field select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-field textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-field .helper-text {
+      font-size: 12px;
+      color: #9e9e9e;
+      margin-top: 4px;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background-color: #FF6B35;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: #E55A2B;
+    }
+
+    .btn-secondary {
+      background-color: #f5f5f5;
+      color: #424242;
+      border: 1px solid #e0e0e0;
+    }
+
+    .btn-secondary:hover {
+      background-color: #e0e0e0;
+    }
+
+    .btn-danger {
+      background-color: #F44336;
+      color: #ffffff;
+    }
+
+    .btn-danger:hover {
+      background-color: #D32F2F;
+    }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+
+    .setting-item .info {
+      flex: 1;
+    }
+
+    .setting-item .info h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .setting-item .info p {
+      font-size: 14px;
+      color: #616161;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    .divider {
+      margin: 24px 0;
+      border: none;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .section-label {
+      display: block;
+      padding: 12px 24px;
+      color: #9e9e9e;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 12px;
+    }
+
+    .alert-box {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: start;
+      gap: 12px;
+    }
+
+    .alert-box.warning {
+      background-color: #FFF3E0;
+      border-left: 4px solid #FF9800;
+    }
+
+    .alert-box.danger {
+      background-color: #FFEBEE;
+      border-left: 4px solid #F44336;
+    }
+
+    .alert-box .material-icons {
+      font-size: 24px;
+    }
+
+    .alert-box.warning .material-icons {
+      color: #FF9800;
+    }
+
+    .alert-box.danger .material-icons {
+      color: #F44336;
+    }
+
+    .alert-box .content h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .alert-box .content p {
+      font-size: 14px;
+      color: #616161;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <!-- ヘッダー -->
+  <div class="app-header">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 36px; height: 36px; background-color: #FF6B35; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 700; font-size: 18px;">MA</div>
+      <span style="font-size: 20px; font-weight: 600;">MA-Pilot</span>
+      <span style="margin-left: 8px; padding: 4px 12px; background-color: #F44336; color: #ffffff; border-radius: 12px; font-size: 12px; font-weight: 600;">管理者</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <span style="font-size: 14px; color: #616161;">システム管理者</span>
+      <div style="width: 32px; height: 32px; background-color: #F44336; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 14px; font-weight: 600;">管</div>
+    </div>
+  </div>
+
+  <!-- サイドバー -->
+  <div class="app-sidebar">
+    <span class="section-label">管理機能</span>
+
+    <div class="menu-item">
+      <span class="material-icons">dashboard</span>
+      <span>管理ダッシュボード</span>
+    </div>
+    <div class="menu-item">
+      <span class="material-icons">business</span>
+      <span>医院アカウント管理</span>
+    </div>
+    <div class="menu-item active">
+      <span class="material-icons">settings</span>
+      <span>システム設定</span>
+    </div>
+
+    <hr class="divider" style="margin: 16px 24px;">
+
+    <div class="menu-item">
+      <span class="material-icons">logout</span>
+      <span>ログアウト</span>
+    </div>
+  </div>
+
+  <!-- メインコンテンツ -->
+  <div class="app-content">
+    <!-- ページヘッダー -->
+    <div class="page-header">
+      <h1>システム設定</h1>
+      <p>外部API設定、メール設定、システム全般の設定</p>
+    </div>
+
+    <!-- 外部API設定 -->
+    <div class="card">
+      <h3>外部API設定</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>e-Stat APIキー</label>
+          <input type="text" value="********************************" placeholder="APIキーを入力">
+          <div class="helper-text">人口統計データ取得に使用</div>
+        </div>
+
+        <div class="form-field">
+          <label>RESAS APIキー</label>
+          <input type="text" value="********************************" placeholder="APIキーを入力">
+          <div class="helper-text">地域経済データ取得に使用</div>
+        </div>
+
+        <div class="form-field">
+          <label>Google Maps APIキー</label>
+          <input type="text" value="********************************" placeholder="APIキーを入力">
+          <div class="helper-text">地図表示・位置情報検索に使用</div>
+        </div>
+
+        <div class="form-field">
+          <label>Supabase URL</label>
+          <input type="text" value="https://your-project.supabase.co" placeholder="Supabase URLを入力">
+          <div class="helper-text">データベース接続に使用</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; display: flex; gap: 16px;">
+        <button class="btn btn-primary">
+          <span class="material-icons" style="font-size: 20px;">save</span>
+          保存する
+        </button>
+        <button class="btn btn-secondary">
+          <span class="material-icons" style="font-size: 20px;">refresh</span>
+          接続テスト
+        </button>
+      </div>
+    </div>
+
+    <!-- メール設定 -->
+    <div class="card">
+      <h3>メール設定</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>SMTPサーバー</label>
+          <input type="text" value="smtp.example.com" placeholder="SMTPサーバーを入力">
+        </div>
+
+        <div class="form-field">
+          <label>SMTPポート</label>
+          <input type="number" value="587" placeholder="587">
+        </div>
+
+        <div class="form-field">
+          <label>送信元メールアドレス</label>
+          <input type="email" value="noreply@ma-pilot.com" placeholder="example@example.com">
+        </div>
+
+        <div class="form-field">
+          <label>送信元名</label>
+          <input type="text" value="MA-Pilot System" placeholder="送信元名を入力">
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; display: flex; gap: 16px;">
+        <button class="btn btn-primary">
+          <span class="material-icons" style="font-size: 20px;">save</span>
+          保存する
+        </button>
+        <button class="btn btn-secondary">
+          <span class="material-icons" style="font-size: 20px;">send</span>
+          テストメール送信
+        </button>
+      </div>
+    </div>
+
+    <!-- システム全般設定 -->
+    <div class="card">
+      <h3>システム全般設定</h3>
+
+      <div class="setting-item">
+        <div class="info">
+          <h4>新規医院登録の承認</h4>
+          <p>新規医院登録時に管理者承認を必須にする</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-item">
+        <div class="info">
+          <h4>トライアル期間</h4>
+          <p>新規登録時のトライアル期間を設定（日数）</p>
+        </div>
+        <input type="number" value="30" style="width: 100px; padding: 8px; border: 1px solid #e0e0e0; border-radius: 8px;">
+      </div>
+
+      <div class="setting-item">
+        <div class="info">
+          <h4>データ保持期間</h4>
+          <p>月次データの保持期間を設定（月数）</p>
+        </div>
+        <input type="number" value="36" style="width: 100px; padding: 8px; border: 1px solid #e0e0e0; border-radius: 8px;">
+      </div>
+
+      <div class="setting-item">
+        <div class="info">
+          <h4>自動バックアップ</h4>
+          <p>毎日午前2時にデータベースの自動バックアップを実行</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-item">
+        <div class="info">
+          <h4>メンテナンスモード</h4>
+          <p>システムメンテナンス中は一般ユーザーのアクセスを制限</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <button class="btn btn-primary">
+          <span class="material-icons" style="font-size: 20px;">save</span>
+          設定を保存
+        </button>
+      </div>
+    </div>
+
+    <!-- データ管理 -->
+    <div class="card">
+      <h3>データ管理</h3>
+
+      <div class="alert-box warning">
+        <span class="material-icons">warning</span>
+        <div class="content">
+          <h4>データエクスポート</h4>
+          <p>全医院のデータをCSV形式でエクスポートできます。機密情報を含むため、取り扱いには十分注意してください。</p>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+        <button class="btn btn-secondary">
+          <span class="material-icons" style="font-size: 20px;">download</span>
+          全医院データをエクスポート
+        </button>
+        <button class="btn btn-secondary">
+          <span class="material-icons" style="font-size: 20px;">download</span>
+          月次データをエクスポート
+        </button>
+        <button class="btn btn-secondary">
+          <span class="material-icons" style="font-size: 20px;">download</span>
+          ユーザーデータをエクスポート
+        </button>
+      </div>
+
+      <hr class="divider">
+
+      <div class="alert-box danger">
+        <span class="material-icons">error</span>
+        <div class="content">
+          <h4>危険な操作</h4>
+          <p>以下の操作は取り消しができません。実行前に必ずバックアップを取得してください。</p>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 16px;">
+        <button class="btn btn-danger">
+          <span class="material-icons" style="font-size: 20px;">delete_forever</span>
+          停止中医院のデータを削除
+        </button>
+        <button class="btn btn-danger">
+          <span class="material-icons" style="font-size: 20px;">cleaning_services</span>
+          古いログを削除（90日以上前）
+        </button>
+      </div>
+    </div>
+
+    <!-- システム情報 -->
+    <div class="card">
+      <h3>システム情報</h3>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+        <div>
+          <div style="font-size: 14px; color: #616161; margin-bottom: 4px;">システムバージョン</div>
+          <div style="font-size: 16px; font-weight: 600;">v1.0.0</div>
+        </div>
+        <div>
+          <div style="font-size: 14px; color: #616161; margin-bottom: 4px;">最終アップデート</div>
+          <div style="font-size: 16px; font-weight: 600;">2025-11-15 10:00</div>
+        </div>
+        <div>
+          <div style="font-size: 14px; color: #616161; margin-bottom: 4px;">データベース容量</div>
+          <div style="font-size: 16px; font-weight: 600;">234 MB / 500 MB</div>
+        </div>
+        <div>
+          <div style="font-size: 14px; color: #616161; margin-bottom: 4px;">アクティブ接続数</div>
+          <div style="font-size: 16px; font-weight: 600;">12 / 100</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
