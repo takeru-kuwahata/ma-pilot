@@ -8,7 +8,8 @@ import { DataManagement } from './pages/DataManagement';
 import { MarketAnalysis } from './pages/MarketAnalysis';
 import { Simulation } from './pages/Simulation';
 import { Reports } from './pages/Reports';
-import { Settings } from './pages/Settings';
+import { ClinicSettings } from './pages/ClinicSettings';
+import { StaffManagement } from './pages/StaffManagement';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminClinics } from './pages/admin/AdminClinics';
 import { AdminSettings } from './pages/admin/AdminSettings';
@@ -25,7 +26,8 @@ function App() {
           <Route path="/market-analysis" element={<MarketAnalysis />} />
           <Route path="/simulation" element={<Simulation />} />
           <Route path="/reports" element={<Reports />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/clinic-settings" element={<ClinicSettings />} />
+          <Route path="/staff-management" element={<StaffManagement />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/clinics" element={<AdminClinics />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
