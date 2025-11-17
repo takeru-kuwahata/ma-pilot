@@ -34,13 +34,7 @@ export class AuthService {
     },
   ];
 
-  private mockPasswords: Record<string, string> = {
-    'admin@ma-lstep.local': 'DevAdmin2025!',
-    'owner@test-clinic.local': 'TestOwner2025!',
-    'editor@test-clinic.local': 'TestEditor2025!',
-  };
-
-  async login(data: LoginFormData): Promise<ApiResponse<User>> {
+  async login(_data: LoginFormData): Promise<ApiResponse<User>> {
     // @MOCK_TO_API: POST {API_PATHS.AUTH.LOGIN}
     // Request: LoginFormData
     // Response: ApiResponse<User>
