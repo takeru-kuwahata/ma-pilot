@@ -315,7 +315,7 @@ Community Geocoder:
   - 1ファイル最大10,000行まで推奨
   - フォーマット: UTF-8 BOM付き推奨（Excel互換）
 
-Lステップデータ取込:
+PILOTデータ取込:
   - MVP版: 手動CSVエクスポート運用
   - 将来版: Webhook転送機能導入（月額5,500円）
 
