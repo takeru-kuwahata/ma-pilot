@@ -45,15 +45,11 @@ export class AuthService {
     // Request: LoginFormData
     // Response: ApiResponse<User>
 
-    // モックログイン処理
+    // モックログイン処理（デモ用：どんな入力でもログイン可能）
     await this.delay(500); // ネットワーク遅延をシミュレート
 
-    const user = this.mockUsers.find((u) => u.email === data.email);
-    const password = this.mockPasswords[data.email];
-
-    if (!user || password !== data.password) {
-      throw new Error('メールアドレスまたはパスワードが正しくありません');
-    }
+    // デモ用：常にテスト医院オーナーとしてログイン
+    const user = this.mockUsers.find((u) => u.email === 'owner@test-clinic.local') || this.mockUsers[1];
 
     // セッションストレージにユーザー情報を保存（実装時はSupabase Authが管理）
     sessionStorage.setItem('currentUser', JSON.stringify(user));

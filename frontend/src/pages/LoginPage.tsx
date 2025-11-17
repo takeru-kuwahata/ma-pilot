@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Paper,
@@ -21,7 +21,7 @@ import {
 
 type TabType = 'login' | 'signup' | 'reset';
 
-export const LoginPage: React.FC = () => {
+export const LoginPage = () => {
   const { login, signup, resetPassword, loading, error, successMessage, clearMessages } = useAuth();
 
   const [activeTab, setActiveTab] = useState<TabType>('login');
@@ -44,7 +44,7 @@ export const LoginPage: React.FC = () => {
     email: '',
   });
 
-  const handleTabChange = (_: React.SyntheticEvent, newValue: TabType) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: TabType) => {
     setActiveTab(newValue);
     clearMessages();
   };
