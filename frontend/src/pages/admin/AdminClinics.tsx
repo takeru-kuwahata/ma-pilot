@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Typography,
@@ -144,7 +144,7 @@ export const AdminClinics = () => {
     setFilterStatus(status);
   };
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
