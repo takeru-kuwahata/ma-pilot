@@ -68,7 +68,7 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
 
 export const Dashboard = () => {
   // TODO: 認証コンテキストから取得（Phase 5以降）
-  const clinicId = 'clinic-001';
+  const clinicId = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
 
   const { data, loading, error } = useDashboardData(clinicId);
 
