@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>印刷物見積書</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 2cm;
+    }
+
+    body {
+      font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+      font-size: 11pt;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 24pt;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #1976d2;
+    }
+
+    .header {
+      text-align: right;
+      margin-bottom: 30px;
+    }
+
+    .company-info {
+      margin-bottom: 30px;
+    }
+
+    .company-info h2 {
+      font-size: 14pt;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #1976d2;
+      padding-bottom: 5px;
+    }
+
+    .info-row {
+      display: flex;
+      margin-bottom: 8px;
+    }
+
+    .info-label {
+      width: 150px;
+      font-weight: bold;
+    }
+
+    .info-value {
+      flex: 1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+    }
+
+    table th,
+    table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    table th {
+      background-color: #1976d2;
+      color: white;
+      font-weight: bold;
+    }
+
+    table td.number {
+      text-align: right;
+    }
+
+    .total-row {
+      background-color: #f5f5f5;
+      font-weight: bold;
+      font-size: 14pt;
+    }
+
+    .notes {
+      margin-top: 30px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-left: 4px solid #1976d2;
+    }
+
+    .notes h3 {
+      font-size: 12pt;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+      text-align: center;
+      font-size: 9pt;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <p>発行日: {{ issue_date }}</p>
+    <p>見積No: {{ order_id }}</p>
+  </div>
+
+  <h1>御見積書</h1>
+
+  <div class="company-info">
+    <h2>お客様情報</h2>
+    <div class="info-row">
+      <div class="info-label">クリニック名:</div>
+      <div class="info-value">{{ clinic_name }} 様</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">メールアドレス:</div>
+      <div class="info-value">{{ email }}</div>
+    </div>
+    {% if delivery_date %}
+    <div class="info-row">
+      <div class="info-label">納期希望日:</div>
+      <div class="info-value">{{ delivery_date }}</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 50%;">商品名</th>
+        <th style="width: 15%;">数量</th>
+        <th style="width: 20%;">単価</th>
+        <th style="width: 15%;">金額</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ product_type }}</td>
+        <td class="number">{{ quantity }}部</td>
+        <td class="number">¥{{ unit_price }}</td>
+        <td class="number">¥{{ subtotal }}</td>
+      </tr>
+      {% if design_required %}
+      <tr>
+        <td>デザイン作成費</td>
+        <td class="number">-</td>
+        <td class="number">¥{{ design_fee }}</td>
+        <td class="number">¥{{ design_fee }}</td>
+      </tr>
+      {% endif %}
+      <tr class="total-row">
+        <td colspan="3">合計金額（税込）</td>
+        <td class="number">¥{{ total_price }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {% if notes %}
+  <div class="notes">
+    <h3>ご要望・備考</h3>
+    <p>{{ notes }}</p>
+  </div>
+  {% endif %}
+
+  <div class="notes">
+    <h3>お支払いについて</h3>
+    <p>
+      ※ 本見積書は概算となります。正式なお見積りは別途ご連絡させていただきます。<br>
+      ※ お支払いは納品後、請求書発行より30日以内にお振込みください。<br>
+      ※ 納期は発注確定後、約2週間を予定しております（商品により異なります）。
+    </p>
+  </div>
+
+  <div class="footer">
+    <p><strong>株式会社京葉広告</strong></p>
+    <p>〒260-0013 千葉県千葉市中央区中央4-8-5</p>
+    <p>TEL: 043-123-4567 / Email: info@keiyo-ad.co.jp</p>
+  </div>
+</body>
+</html>

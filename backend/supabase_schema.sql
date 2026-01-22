@@ -1,0 +1,293 @@
+-- MA-Pilot Database Schema
+-- 6 core tables for clinic management system
+
+-- ============================================
+-- 1. Clinics Table
+-- ============================================
+CREATE TABLE IF NOT EXISTS clinics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  postal_code TEXT NOT NULL,
+  address TEXT NOT NULL,
+  phone_number TEXT NOT NULL,
+  latitude NUMERIC(10, 7) NOT NULL,
+  longitude NUMERIC(10, 7) NOT NULL,
+  owner_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Index for performance
+CREATE INDEX IF NOT EXISTS idx_clinics_owner_id ON clinics(owner_id);
+CREATE INDEX IF NOT EXISTS idx_clinics_is_active ON clinics(is_active);
+
+-- ============================================
+-- 2. Monthly Data Table
+-- ============================================
+CREATE TABLE IF NOT EXISTS monthly_data (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  clinic_id UUID NOT NULL REFERENCES clinics(id) ON DELETE CASCADE,
+  year_month TEXT NOT NULL, -- YYYY-MM format
+
+  -- Revenue
+  total_revenue NUMERIC(12, 2) NOT NULL DEFAULT 0,
+  insurance_revenue NUMERIC(12, 2) NOT NULL DEFAULT 0,
+  self_pay_revenue NUMERIC(12, 2) NOT NULL DEFAULT 0,
+
+  -- Costs
+  personnel_cost NUMERIC(12, 2) NOT NULL DEFAULT 0,
+  material_cost NUMERIC(12, 2) NOT NULL DEFAULT 0,
+  fixed_cost NUMERIC(12, 2) NOT NULL DEFAULT 0,
+  other_cost NUMERIC(12, 2) NOT NULL DEFAULT 0,
+
+  -- Patients
+  new_patients INTEGER NOT NULL DEFAULT 0,
+  returning_patients INTEGER NOT NULL DEFAULT 0,
+  total_patients INTEGER NOT NULL DEFAULT 0,
+
+  -- Treatments
+  treatment_count INTEGER NOT NULL DEFAULT 0,
+  average_revenue_per_patient NUMERIC(10, 2) NOT NULL DEFAULT 0,
+
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+
+  UNIQUE(clinic_id, year_month)
+);
+
+-- Indexes for performance
+CREATE INDEX IF NOT EXISTS idx_monthly_data_clinic_id ON monthly_data(clinic_id);
+CREATE INDEX IF NOT EXISTS idx_monthly_data_year_month ON monthly_data(year_month);
+
+-- ============================================
+-- 3. Simulations Table
+-- ============================================
+CREATE TABLE IF NOT EXISTS simulations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  clinic_id UUID NOT NULL REFERENCES clinics(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+
+  -- Input parameters (stored as JSONB)
+  input JSONB NOT NULL,
+
+  -- Result data (stored as JSONB)
+  result JSONB NOT NULL,
+
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Index for performance
+CREATE INDEX IF NOT EXISTS idx_simulations_clinic_id ON simulations(clinic_id);
+
+-- ============================================
+-- 4. Reports Table
+-- ============================================
+CREATE TABLE IF NOT EXISTS reports (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  clinic_id UUID NOT NULL REFERENCES clinics(id) ON DELETE CASCADE,
+  type TEXT NOT NULL CHECK (type IN ('monthly', 'quarterly', 'annual', 'simulation', 'market_analysis')),
+  format TEXT NOT NULL CHECK (format IN ('pdf', 'csv')),
+  title TEXT NOT NULL,
+  generated_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  file_url TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Index for performance
+CREATE INDEX IF NOT EXISTS idx_reports_clinic_id ON reports(clinic_id);
+CREATE INDEX IF NOT EXISTS idx_reports_type ON reports(type);
+
+-- ============================================
+-- 5. Market Analyses Table
+-- ============================================
+CREATE TABLE IF NOT EXISTS market_analyses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  clinic_id UUID NOT NULL REFERENCES clinics(id) ON DELETE CASCADE,
+  radius_km NUMERIC(5, 2) NOT NULL,
+
+  -- Population data (stored as JSONB)
+  population_data JSONB NOT NULL,
+
+  -- Competitors (stored as JSONB array)
+  competitors JSONB NOT NULL DEFAULT '[]',
+
+  estimated_potential_patients INTEGER NOT NULL DEFAULT 0,
+  market_share NUMERIC(5, 2) NOT NULL DEFAULT 0,
+  analysis_date TIMESTAMP WITH TIME ZONE NOT NULL,
+
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Index for performance
+CREATE INDEX IF NOT EXISTS idx_market_analyses_clinic_id ON market_analyses(clinic_id);
+
+-- ============================================
+-- 6. User Metadata Table (extends Supabase auth.users)
+-- ============================================
+CREATE TABLE IF NOT EXISTS user_metadata (
+  user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  role TEXT NOT NULL CHECK (role IN ('system_admin', 'clinic_owner', 'clinic_editor', 'clinic_viewer')),
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Index for performance
+CREATE INDEX IF NOT EXISTS idx_user_metadata_clinic_id ON user_metadata(clinic_id);
+CREATE INDEX IF NOT EXISTS idx_user_metadata_role ON user_metadata(role);
+
+-- ============================================
+-- Row Level Security (RLS) Policies
+-- ============================================
+
+-- Enable RLS on all tables
+ALTER TABLE clinics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE monthly_data ENABLE ROW LEVEL SECURITY;
+ALTER TABLE simulations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE reports ENABLE ROW LEVEL SECURITY;
+ALTER TABLE market_analyses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_metadata ENABLE ROW LEVEL SECURITY;
+
+-- Clinics RLS Policies
+CREATE POLICY "Users can view their own clinic"
+  ON clinics FOR SELECT
+  USING (
+    owner_id = auth.uid() OR
+    id IN (SELECT clinic_id FROM user_metadata WHERE user_id = auth.uid()) OR
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND role = 'system_admin')
+  );
+
+CREATE POLICY "Clinic owners can update their clinic"
+  ON clinics FOR UPDATE
+  USING (
+    owner_id = auth.uid() OR
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND clinic_id = id AND role IN ('clinic_owner'))
+  );
+
+CREATE POLICY "System admins can insert clinics"
+  ON clinics FOR INSERT
+  WITH CHECK (
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND role = 'system_admin')
+  );
+
+-- Monthly Data RLS Policies
+CREATE POLICY "Users can view monthly data for their clinic"
+  ON monthly_data FOR SELECT
+  USING (
+    clinic_id IN (SELECT id FROM clinics WHERE owner_id = auth.uid()) OR
+    clinic_id IN (SELECT clinic_id FROM user_metadata WHERE user_id = auth.uid()) OR
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND role = 'system_admin')
+  );
+
+CREATE POLICY "Editors can modify monthly data"
+  ON monthly_data FOR ALL
+  USING (
+    clinic_id IN (SELECT id FROM clinics WHERE owner_id = auth.uid()) OR
+    clinic_id IN (SELECT clinic_id FROM user_metadata WHERE user_id = auth.uid() AND role IN ('clinic_owner', 'clinic_editor')) OR
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND role = 'system_admin')
+  );
+
+-- Simulations RLS Policies
+CREATE POLICY "Users can view simulations for their clinic"
+  ON simulations FOR SELECT
+  USING (
+    clinic_id IN (SELECT id FROM clinics WHERE owner_id = auth.uid()) OR
+    clinic_id IN (SELECT clinic_id FROM user_metadata WHERE user_id = auth.uid()) OR
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND role = 'system_admin')
+  );
+
+CREATE POLICY "Editors can create simulations"
+  ON simulations FOR INSERT
+  WITH CHECK (
+    clinic_id IN (SELECT id FROM clinics WHERE owner_id = auth.uid()) OR
+    clinic_id IN (SELECT clinic_id FROM user_metadata WHERE user_id = auth.uid() AND role IN ('clinic_owner', 'clinic_editor'))
+  );
+
+-- Reports RLS Policies
+CREATE POLICY "Users can view reports for their clinic"
+  ON reports FOR SELECT
+  USING (
+    clinic_id IN (SELECT id FROM clinics WHERE owner_id = auth.uid()) OR
+    clinic_id IN (SELECT clinic_id FROM user_metadata WHERE user_id = auth.uid()) OR
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND role = 'system_admin')
+  );
+
+CREATE POLICY "Users can create reports for their clinic"
+  ON reports FOR INSERT
+  WITH CHECK (
+    clinic_id IN (SELECT id FROM clinics WHERE owner_id = auth.uid()) OR
+    clinic_id IN (SELECT clinic_id FROM user_metadata WHERE user_id = auth.uid())
+  );
+
+-- Market Analyses RLS Policies
+CREATE POLICY "Users can view market analyses for their clinic"
+  ON market_analyses FOR SELECT
+  USING (
+    clinic_id IN (SELECT id FROM clinics WHERE owner_id = auth.uid()) OR
+    clinic_id IN (SELECT clinic_id FROM user_metadata WHERE user_id = auth.uid()) OR
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND role = 'system_admin')
+  );
+
+CREATE POLICY "Editors can create market analyses"
+  ON market_analyses FOR INSERT
+  WITH CHECK (
+    clinic_id IN (SELECT id FROM clinics WHERE owner_id = auth.uid()) OR
+    clinic_id IN (SELECT clinic_id FROM user_metadata WHERE user_id = auth.uid() AND role IN ('clinic_owner', 'clinic_editor'))
+  );
+
+-- User Metadata RLS Policies
+CREATE POLICY "Users can view their own metadata"
+  ON user_metadata FOR SELECT
+  USING (
+    user_id = auth.uid() OR
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND role = 'system_admin')
+  );
+
+CREATE POLICY "System admins and clinic owners can manage user metadata"
+  ON user_metadata FOR ALL
+  USING (
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND (
+      role = 'system_admin' OR
+      (role = 'clinic_owner' AND clinic_id = user_metadata.clinic_id)
+    ))
+  );
+
+-- ============================================
+-- Functions and Triggers
+-- ============================================
+
+-- Function to update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Triggers for updated_at
+CREATE TRIGGER update_clinics_updated_at BEFORE UPDATE ON clinics
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_monthly_data_updated_at BEFORE UPDATE ON monthly_data
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_simulations_updated_at BEFORE UPDATE ON simulations
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_market_analyses_updated_at BEFORE UPDATE ON market_analyses
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_user_metadata_updated_at BEFORE UPDATE ON user_metadata
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================
+-- Sample Data (Development Only)
+-- ============================================
+
+-- Insert system admin (requires manual user creation in Supabase Auth first)
+-- INSERT INTO user_metadata (user_id, role) VALUES
+--   ('your-admin-user-id', 'system_admin');

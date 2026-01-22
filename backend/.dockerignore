@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+tests/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation
+*.md
+README.md
+docs/
+IMPLEMENTATION_SUMMARY.md
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+logs/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Deployment
+.renderignore
+render.yaml
+Dockerfile
+.dockerignore
+
+# Scripts
+run_tests.sh
+pytest.ini
+
+# Database
+*.db
+*.sqlite
+supabase_schema.sql

@@ -1,0 +1,46 @@
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test files
+.pytest_cache/
+.coverage
+htmlcov/
+coverage/
+
+# Development only
+*.md.backup
+*.tmp
+.cache
+
+# Build outputs
+build/
+dist/
+*.egg-info/
