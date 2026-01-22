@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -9,8 +9,9 @@ import {
 } from '@mui/material';
 import { PlayArrow as PlayArrowIcon, ShowChart as ShowChartIcon } from '@mui/icons-material';
 import { MainLayout } from '../layouts/MainLayout';
+import { simulationService, authService } from '../services/api';
+import type { Simulation as SimulationType } from '../types';
 
-// @MOCK_TO_API: シミュレーション設定の型定義
 interface SimulationParams {
   period: string;
   insuranceRevenueChange: number;
@@ -22,8 +23,7 @@ interface SimulationParams {
   returningPatientChange: number;
 }
 
-// @MOCK_TO_API: シミュレーション結果の型定義
-interface SimulationResult {
+interface SimulationResultDisplay {
   projectedRevenue: number;
   projectedProfit: number;
   projectedProfitRate: number;
@@ -51,15 +51,25 @@ export const Simulation = () => {
     returningPatientChange: 0,
   });
 
-  // @MOCK_TO_API: モックシミュレーション結果
-  const [result] = useState<SimulationResult>({
-    projectedRevenue: 9775000,
-    projectedProfit: 2415000,
-    projectedProfitRate: 24.7,
-    revenueChange: 1275000,
-    profitChange: 315000,
-    profitRateChange: 2.6,
-  });
+  const [result, setResult] = useState<SimulationResultDisplay | null>(null);
+  const [, setSimulations] = useState<SimulationType[]>([]);
+  const [, setLoading] = useState(false);
+
+  useEffect(() => {
+    loadSimulations();
+  }, []);
+
+  const loadSimulations = async () => {
+    try {
+      const user = authService.getCurrentUser();
+      if (!user?.clinicId) return;
+
+      const data = await simulationService.getSimulations(user.clinicId);
+      setSimulations(data);
+    } catch (error) {
+      console.error('Failed to load simulations:', error);
+    }
+  };
 
   const handleParamChange = (field: keyof SimulationParams, value: string | number) => {
     setParams((prev) => ({
@@ -68,9 +78,40 @@ export const Simulation = () => {
     }));
   };
 
-  const handleSimulate = () => {
-    // TODO: Phase 4でAPI呼び出し実装
-    console.log('シミュレーション実行:', params);
+  const handleSimulate = async () => {
+    try {
+      setLoading(true);
+      const user = authService.getCurrentUser();
+      if (!user?.clinicId) return;
+
+      const simulation = await simulationService.createSimulation(
+        user.clinicId,
+        `${params.period}ヶ月後のシミュレーション`,
+        {
+          targetRevenue: 0,
+          targetProfit: 0,
+          assumedAverageRevenuePerPatient: 0,
+          assumedPersonnelCostRate: 0,
+          assumedMaterialCostRate: 0,
+          assumedFixedCost: 0
+        }
+      );
+
+      setResult({
+        projectedRevenue: simulation.result.estimatedRevenue,
+        projectedProfit: simulation.result.estimatedProfit,
+        projectedProfitRate: simulation.result.profitMargin,
+        revenueChange: 0,
+        profitChange: 0,
+        profitRateChange: 0
+      });
+
+      await loadSimulations();
+    } catch (error) {
+      console.error('Failed to create simulation:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const formatCurrency = (value: number): string => {
@@ -402,60 +443,61 @@ export const Simulation = () => {
       </Paper>
 
       {/* シミュレーション結果 */}
-      <Paper
-        sx={{
-          backgroundColor: '#ffffff',
-          borderRadius: '8px',
-          padding: '24px',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
-          marginBottom: '24px',
-        }}
-      >
-        <Typography
-          variant="h6"
+      {result && (
+        <Paper
           sx={{
-            fontSize: '18px',
-            fontWeight: 600,
-            marginBottom: '16px',
-          }}
-        >
-          シミュレーション結果
-        </Typography>
-
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '16px',
+            backgroundColor: '#ffffff',
+            borderRadius: '8px',
+            padding: '24px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
             marginBottom: '24px',
           }}
         >
-          <Paper
+          <Typography
+            variant="h6"
             sx={{
-              backgroundColor: '#f5f5f5',
-              borderRadius: '8px',
-              padding: '20px',
-              textAlign: 'center',
-              boxShadow: 'none',
+              fontSize: '18px',
+              fontWeight: 600,
+              marginBottom: '16px',
             }}
           >
-            <Typography
+            シミュレーション結果
+          </Typography>
+
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '16px',
+              marginBottom: '24px',
+            }}
+          >
+            <Paper
               sx={{
-                fontSize: '14px',
-                color: '#616161',
-                marginBottom: '8px',
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px',
+                padding: '20px',
+                textAlign: 'center',
+                boxShadow: 'none',
               }}
             >
-              予測総売上
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '28px',
-                fontWeight: 600,
-                color: '#424242',
-              }}
-            >
-              {formatCurrency(result.projectedRevenue)}
+              <Typography
+                sx={{
+                  fontSize: '14px',
+                  color: '#616161',
+                  marginBottom: '8px',
+                }}
+              >
+                予測総売上
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: '28px',
+                  fontWeight: 600,
+                  color: '#424242',
+                }}
+              >
+                {formatCurrency(result.projectedRevenue)}
             </Typography>
           </Paper>
 
@@ -634,6 +676,7 @@ export const Simulation = () => {
           </Paper>
         </Box>
       </Paper>
+      )}
 
       {/* グラフエリア */}
       <Paper

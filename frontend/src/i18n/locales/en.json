@@ -1,0 +1,99 @@
+{
+  "common": {
+    "login": "Login",
+    "logout": "Logout",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "confirm": "Confirm",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "download": "Download",
+    "upload": "Upload",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "login_title": "Login",
+    "login_button": "Login",
+    "logout_button": "Logout",
+    "forgot_password": "Forgot password?",
+    "reset_password": "Reset password",
+    "email_required": "Please enter your email address",
+    "password_required": "Please enter your password",
+    "invalid_credentials": "Invalid email or password",
+    "login_success": "Logged in successfully",
+    "logout_success": "Logged out successfully"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "monthly_data": "Monthly Data",
+    "chart": "Chart",
+    "statistics": "Statistics"
+  },
+  "clinic": {
+    "settings": "Clinic Settings",
+    "name": "Clinic Name",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "update_success": "Clinic information updated successfully",
+    "update_error": "Failed to update clinic information"
+  },
+  "staff": {
+    "management": "Staff Management",
+    "add_staff": "Add Staff",
+    "edit_staff": "Edit Staff",
+    "name": "Name",
+    "role": "Role",
+    "email": "Email"
+  },
+  "simulation": {
+    "title": "Business Simulation",
+    "create": "Create Simulation",
+    "run": "Run",
+    "results": "Results"
+  },
+  "report": {
+    "title": "Reports",
+    "generate": "Generate Report",
+    "download": "Download",
+    "view": "View"
+  },
+  "market": {
+    "analysis": "Market Analysis",
+    "title": "Market Analysis",
+    "competition": "Competition Analysis",
+    "demographics": "Demographics"
+  },
+  "validation": {
+    "required": "{{field}} is required",
+    "email_invalid": "Please enter a valid email address",
+    "min_length": "{{field}} must be at least {{min}} characters",
+    "max_length": "{{field}} must be at most {{max}} characters",
+    "number_min": "{{field}} must be at least {{min}}",
+    "number_max": "{{field}} must be at most {{max}}"
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to main content",
+    "menu_toggle": "Toggle menu",
+    "close_dialog": "Close dialog",
+    "loading_content": "Loading content",
+    "error_occurred": "Error occurred: {{message}}",
+    "success_message": "Success: {{message}}"
+  }
+}

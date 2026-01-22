@@ -1,18 +1,16 @@
-import { useState, useEffect } from 'react';
-import { DashboardService } from '../services/mock/dashboardService';
+import { useState, useEffect, useCallback } from 'react';
+import { dashboardService } from '../services/api';
 import { DashboardData } from '../types';
-
-const service = new DashboardService();
 
 export const useDashboardData = (clinicId: string) => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const result = await service.getDashboardData(clinicId);
+      const result = await dashboardService.getDashboard(clinicId);
       setData(result);
       setError(null);
     } catch (err) {
@@ -20,11 +18,11 @@ export const useDashboardData = (clinicId: string) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [clinicId]);
 
   useEffect(() => {
     fetchData();
-  }, [clinicId]);
+  }, [fetchData]);
 
   return {
     data,

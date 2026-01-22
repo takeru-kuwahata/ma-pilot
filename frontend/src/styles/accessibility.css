@@ -1,0 +1,99 @@
+/**
+ * アクセシビリティ専用スタイル
+ *
+ * このファイルには、アクセシビリティを向上させるための
+ * グローバルスタイルが含まれています。
+ */
+
+/* スキップリンク */
+.skip-link {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  background-color: #1976d2;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+  font-weight: 600;
+  z-index: 9999;
+}
+
+.skip-link:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* スクリーンリーダー専用テキスト */
+.sr-only {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* フォーカス可能だがスクリーンリーダー専用 */
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* フォーカス時の視覚的インジケーター強化 */
+*:focus-visible {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+/* 高コントラストモード対応 */
+@media (prefers-contrast: high) {
+  * {
+    border-width: 2px !important;
+  }
+
+  *:focus-visible {
+    outline-width: 3px !important;
+  }
+}
+
+/* アニメーション削減設定 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ダークモード対応（将来の拡張用） */
+@media (prefers-color-scheme: dark) {
+  /* 必要に応じてダークモード用のスタイルを追加 */
+}
+
+/* タッチターゲットサイズの最小値確保 */
+@media (pointer: coarse) {
+  button,
+  a,
+  input[type="submit"],
+  input[type="button"],
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

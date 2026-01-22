@@ -23,7 +23,8 @@ export const theme = createTheme({
       main: '#ff9800',
     },
     error: {
-      main: '#f44336',
+      main: '#d32f2f', // WCAG AA準拠: コントラスト比 4.5:1以上
+      contrastText: '#ffffff',
     },
     background: {
       default: '#f5f5f5',
@@ -75,6 +76,11 @@ export const theme = createTheme({
           borderRadius: 8,
           textTransform: 'none',
           fontWeight: 600,
+          // フォーカス時の視認性向上（アクセシビリティ）
+          '&:focus-visible': {
+            outline: '2px solid currentColor',
+            outlineOffset: '2px',
+          },
         },
       },
     },
@@ -89,6 +95,28 @@ export const theme = createTheme({
     MuiTextField: {
       defaultProps: {
         variant: 'outlined',
+      },
+      styleOverrides: {
+        root: {
+          // フォーカス時の視認性向上（アクセシビリティ）
+          '& .MuiOutlinedInput-root.Mui-focused': {
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderWidth: '2px',
+            },
+          },
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          // フォーカス時の視認性向上（アクセシビリティ）
+          '&:focus-visible': {
+            outline: '2px solid currentColor',
+            outlineOffset: '2px',
+            borderRadius: '2px',
+          },
+        },
       },
     },
   },

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -12,6 +13,7 @@ import {
   IconButton,
   Chip,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -20,77 +22,108 @@ import {
   Info as InfoIcon,
 } from '@mui/icons-material';
 import { MainLayout } from '../layouts/MainLayout';
-
-interface Staff {
-  id: string;
-  name: string;
-  email: string;
-  role: 'owner' | 'editor' | 'viewer';
-  registeredAt: string;
-}
+import { staffService, authService } from '../services/api';
+import type { User, UserRole } from '../types';
 
 export const StaffManagement = () => {
-  const staffList: Staff[] = [
-    {
-      id: '1',
-      name: '田中太郎',
-      email: 'tanaka@sakura-dental.jp',
-      role: 'owner',
-      registeredAt: '2025-01-15',
-    },
-    {
-      id: '2',
-      name: '佐藤花子',
-      email: 'sato@sakura-dental.jp',
-      role: 'editor',
-      registeredAt: '2025-02-01',
-    },
-    {
-      id: '3',
-      name: '鈴木一郎',
-      email: 'suzuki@sakura-dental.jp',
-      role: 'viewer',
-      registeredAt: '2025-03-10',
-    },
-  ];
+  const [staffList, setStaffList] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadStaffList();
+  }, []);
+
+  const loadStaffList = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const user = authService.getCurrentUser();
+      if (!user?.clinicId) {
+        setError('クリニック情報が見つかりません');
+        setLoading(false);
+        return;
+      }
+      const staff = await staffService.getStaff(user.clinicId);
+      setStaffList(staff);
+    } catch (err) {
+      console.error('Failed to load staff:', err);
+      setError('スタッフ一覧の取得に失敗しました');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInviteStaff = () => {
-    console.log('Invite staff');
+    // TODO: 招待ダイアログ実装
+    alert('招待機能は現在開発中です');
   };
 
-  const handleEditStaff = (staffId: string) => {
-    console.log('Edit staff:', staffId);
+  const handleEditStaff = async (userId: string) => {
+    // TODO: 編集ダイアログ実装
+    alert(`スタッフ編集機能は現在開発中です（ユーザーID: ${userId}）`);
   };
 
-  const handleDeleteStaff = (staffId: string) => {
-    console.log('Delete staff:', staffId);
+  const handleDeleteStaff = async (userId: string) => {
+    if (!window.confirm('このスタッフを削除してもよろしいですか?')) {
+      return;
+    }
+    try {
+      await staffService.deleteStaff(userId);
+      await loadStaffList();
+    } catch (err) {
+      console.error('Failed to delete staff:', err);
+      alert('スタッフの削除に失敗しました');
+    }
   };
 
-  const getRoleLabel = (role: string): string => {
+  const getRoleLabel = (role: UserRole): string => {
     switch (role) {
-      case 'owner':
+      case 'system_admin':
+        return 'システム管理者';
+      case 'clinic_owner':
         return 'オーナー';
-      case 'editor':
+      case 'clinic_editor':
         return '編集者';
-      case 'viewer':
+      case 'clinic_viewer':
         return '閲覧者';
       default:
         return role;
     }
   };
 
-  const getRoleColor = (role: string) => {
+  const getRoleColor = (role: UserRole) => {
     switch (role) {
-      case 'owner':
+      case 'system_admin':
+        return { backgroundColor: '#FFEBEE', color: '#C62828' };
+      case 'clinic_owner':
         return { backgroundColor: '#FFF3E0', color: '#EF6C00' };
-      case 'editor':
+      case 'clinic_editor':
         return { backgroundColor: '#E3F2FD', color: '#1976D2' };
-      case 'viewer':
+      case 'clinic_viewer':
         return { backgroundColor: '#F5F5F5', color: '#616161' };
       default:
         return { backgroundColor: '#F5F5F5', color: '#616161' };
     }
   };
+
+  if (loading) {
+    return (
+      <MainLayout>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <CircularProgress />
+        </Box>
+      </MainLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <MainLayout>
+        <Alert severity="error">{error}</Alert>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -197,7 +230,7 @@ export const StaffManagement = () => {
               {staffList.map((staff) => (
                 <TableRow key={staff.id}>
                   <TableCell sx={{ fontSize: '14px' }}>
-                    {staff.name}
+                    {staff.email.split('@')[0]}
                   </TableCell>
                   <TableCell sx={{ fontSize: '14px' }}>
                     {staff.email}
@@ -214,7 +247,7 @@ export const StaffManagement = () => {
                     />
                   </TableCell>
                   <TableCell sx={{ fontSize: '14px' }}>
-                    {staff.registeredAt}
+                    {new Date(staff.createdAt).toLocaleDateString('ja-JP')}
                   </TableCell>
                   <TableCell sx={{ fontSize: '14px' }}>
                     <IconButton
@@ -229,7 +262,7 @@ export const StaffManagement = () => {
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
-                    {staff.role !== 'owner' && (
+                    {staff.role !== 'clinic_owner' && (
                       <IconButton
                         size="small"
                         onClick={() => handleDeleteStaff(staff.id)}

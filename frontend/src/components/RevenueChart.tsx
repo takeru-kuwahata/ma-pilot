@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import {
   LineChart,
@@ -15,13 +16,16 @@ interface RevenueChartProps {
   data: MonthlyData[];
 }
 
-export const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
-  // グラフ用にデータを整形
-  const chartData = data.map((item) => ({
-    month: item.yearMonth.substring(5), // "2024-10" → "10"
-    売上: item.totalRevenue / 10000, // 万円単位に変換
-    利益: (item.totalRevenue - item.personnelCost - item.materialCost - item.fixedCost - item.otherCost) / 10000,
-  }));
+export const RevenueChart = memo<RevenueChartProps>(({ data }) => {
+  // メモ化: グラフ用データの整形をキャッシュ（重い計算）
+  const chartData = useMemo(() =>
+    data.map((item) => ({
+      month: item.yearMonth.substring(5), // "2024-10" → "10"
+      売上: item.totalRevenue / 10000, // 万円単位に変換
+      利益: (item.totalRevenue - item.personnelCost - item.materialCost - item.fixedCost - item.otherCost) / 10000,
+    })),
+    [data]
+  );
 
   return (
     <Card>
@@ -65,4 +69,6 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
       </CardContent>
     </Card>
   );
-};
+});
+
+RevenueChart.displayName = 'RevenueChart';

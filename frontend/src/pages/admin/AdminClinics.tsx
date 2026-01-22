@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -25,116 +25,30 @@ import {
   PlayArrow as PlayArrowIcon,
 } from '@mui/icons-material';
 import { AdminLayout } from '../../layouts/AdminLayout';
-
-// @MOCK_TO_API: 医院データの型定義
-interface Clinic {
-  id: string;
-  name: string;
-  address: string;
-  registeredAt: string;
-  plan: string;
-  status: 'active' | 'trial' | 'inactive';
-  owner: string;
-}
+import { adminService } from '../../services/api';
+import type { Clinic } from '../../types';
 
 export const AdminClinics = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [page, setPage] = useState(1);
+  const [clinics, setClinics] = useState<Clinic[]>([]);
+  const [, setLoading] = useState(true);
 
-  // @MOCK_TO_API: モックデータ
-  const clinics: Clinic[] = [
-    {
-      id: '1',
-      name: 'さくら歯科クリニック',
-      address: '東京都渋谷区神宮前1-2-3',
-      registeredAt: '2025-11-10',
-      plan: 'スタンダード',
-      status: 'active',
-      owner: '田中太郎',
-    },
-    {
-      id: '2',
-      name: 'ひまわり歯科医院',
-      address: '神奈川県横浜市中区本町3-4-5',
-      registeredAt: '2025-11-08',
-      plan: 'スタンダード',
-      status: 'trial',
-      owner: '佐藤花子',
-    },
-    {
-      id: '3',
-      name: '青空デンタルクリニック',
-      address: '大阪府大阪市北区梅田2-1-1',
-      registeredAt: '2025-11-05',
-      plan: 'スタンダード',
-      status: 'active',
-      owner: '鈴木一郎',
-    },
-    {
-      id: '4',
-      name: 'みどり歯科',
-      address: '愛知県名古屋市中村区名駅1-1-1',
-      registeredAt: '2025-11-03',
-      plan: 'スタンダード',
-      status: 'inactive',
-      owner: '高橋美咲',
-    },
-    {
-      id: '5',
-      name: 'オレンジ歯科クリニック',
-      address: '福岡県福岡市博多区博多駅前2-3-4',
-      registeredAt: '2025-11-01',
-      plan: 'スタンダード',
-      status: 'trial',
-      owner: '伊藤健太',
-    },
-    {
-      id: '6',
-      name: 'スマイル歯科',
-      address: '北海道札幌市中央区大通西3-6',
-      registeredAt: '2025-10-28',
-      plan: 'スタンダード',
-      status: 'active',
-      owner: '山田次郎',
-    },
-    {
-      id: '7',
-      name: 'たんぽぽ歯科医院',
-      address: '宮城県仙台市青葉区中央1-2-3',
-      registeredAt: '2025-10-25',
-      plan: 'スタンダード',
-      status: 'active',
-      owner: '渡辺さくら',
-    },
-    {
-      id: '8',
-      name: 'もみじ歯科クリニック',
-      address: '広島県広島市中区紙屋町2-2-2',
-      registeredAt: '2025-10-22',
-      plan: 'スタンダード',
-      status: 'active',
-      owner: '中村修',
-    },
-    {
-      id: '9',
-      name: 'すみれ歯科',
-      address: '京都府京都市下京区四条通河原町',
-      registeredAt: '2025-10-20',
-      plan: 'スタンダード',
-      status: 'trial',
-      owner: '小林真理子',
-    },
-    {
-      id: '10',
-      name: 'つばき歯科医院',
-      address: '静岡県静岡市葵区呉服町1-1-1',
-      registeredAt: '2025-10-18',
-      plan: 'スタンダード',
-      status: 'active',
-      owner: '加藤大輔',
-    },
-  ];
+  useEffect(() => {
+    loadClinics();
+  }, []);
+
+  const loadClinics = async () => {
+    try {
+      const data = await adminService.getClinics();
+      setClinics(data);
+    } catch (error) {
+      console.error('Failed to load clinics:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -148,50 +62,39 @@ export const AdminClinics = () => {
     setPage(value);
   };
 
-  const handleView = (clinicId: string) => {
+  const handleView = () => {
     // TODO: Phase 4で詳細表示ダイアログ実装
-    console.log('View clinic:', clinicId);
   };
 
-  const handleEdit = (clinicId: string) => {
+  const handleEdit = () => {
     // TODO: Phase 4で編集ダイアログ実装
-    console.log('Edit clinic:', clinicId);
   };
 
-  const handleToggleStatus = (clinicId: string, currentStatus: string) => {
-    // TODO: Phase 4でAPI呼び出し実装
-    console.log('Toggle status:', clinicId, currentStatus);
+  const handleToggleStatus = async (clinicId: string, isActive: boolean) => {
+    try {
+      if (isActive) {
+        await adminService.deactivateClinic(clinicId);
+      } else {
+        await adminService.activateClinic(clinicId);
+      }
+      await loadClinics();
+    } catch (error) {
+      console.error('Failed to toggle clinic status:', error);
+    }
   };
 
   const handleAddClinic = () => {
     // TODO: Phase 4で新規登録ダイアログ実装
-    console.log('Add new clinic');
   };
 
-  const getStatusLabel = (status: string): string => {
-    switch (status) {
-      case 'active':
-        return 'アクティブ';
-      case 'trial':
-        return 'トライアル中';
-      case 'inactive':
-        return '停止中';
-      default:
-        return status;
-    }
+  const getStatusLabel = (isActive: boolean): string => {
+    return isActive ? 'アクティブ' : '停止中';
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return { backgroundColor: '#E8F5E9', color: '#2E7D32' };
-      case 'trial':
-        return { backgroundColor: '#FFF3E0', color: '#EF6C00' };
-      case 'inactive':
-        return { backgroundColor: '#FFEBEE', color: '#C62828' };
-      default:
-        return { backgroundColor: '#F5F5F5', color: '#616161' };
-    }
+  const getStatusColor = (isActive: boolean) => {
+    return isActive
+      ? { backgroundColor: '#E8F5E9', color: '#2E7D32' }
+      : { backgroundColor: '#FFEBEE', color: '#C62828' };
   };
 
   return (
@@ -394,10 +297,10 @@ export const AdminClinics = () => {
                 <TableRow key={clinic.id}>
                   <TableCell sx={{ fontSize: '14px' }}>{clinic.name}</TableCell>
                   <TableCell sx={{ fontSize: '14px' }}>{clinic.address}</TableCell>
-                  <TableCell sx={{ fontSize: '14px' }}>{clinic.registeredAt}</TableCell>
+                  <TableCell sx={{ fontSize: '14px' }}>{new Date(clinic.createdAt).toLocaleDateString('ja-JP')}</TableCell>
                   <TableCell>
                     <Chip
-                      label={clinic.plan}
+                      label="無料プラン"
                       sx={{
                         backgroundColor: '#E3F2FD',
                         color: '#1976D2',
@@ -409,20 +312,20 @@ export const AdminClinics = () => {
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={getStatusLabel(clinic.status)}
+                      label={getStatusLabel(clinic.isActive)}
                       sx={{
-                        ...getStatusColor(clinic.status),
+                        ...getStatusColor(clinic.isActive),
                         fontSize: '12px',
                         fontWeight: 600,
                         height: '24px',
                       }}
                     />
                   </TableCell>
-                  <TableCell sx={{ fontSize: '14px' }}>{clinic.owner}</TableCell>
+                  <TableCell sx={{ fontSize: '14px' }}>{clinic.ownerId}</TableCell>
                   <TableCell>
                     <IconButton
                       size="small"
-                      onClick={() => handleView(clinic.id)}
+                      onClick={() => handleView()}
                       title="詳細表示"
                       sx={{
                         color: '#616161',
@@ -435,7 +338,7 @@ export const AdminClinics = () => {
                     </IconButton>
                     <IconButton
                       size="small"
-                      onClick={() => handleEdit(clinic.id)}
+                      onClick={() => handleEdit()}
                       title="編集"
                       sx={{
                         color: '#616161',
@@ -446,10 +349,10 @@ export const AdminClinics = () => {
                     >
                       <EditIcon />
                     </IconButton>
-                    {clinic.status === 'inactive' ? (
+                    {!clinic.isActive ? (
                       <IconButton
                         size="small"
-                        onClick={() => handleToggleStatus(clinic.id, clinic.status)}
+                        onClick={() => handleToggleStatus(clinic.id, clinic.isActive)}
                         title="再開"
                         sx={{
                           color: '#4CAF50',
@@ -463,7 +366,7 @@ export const AdminClinics = () => {
                     ) : (
                       <IconButton
                         size="small"
-                        onClick={() => handleToggleStatus(clinic.id, clinic.status)}
+                        onClick={() => handleToggleStatus(clinic.id, clinic.isActive)}
                         title="停止"
                         sx={{
                           color: '#616161',

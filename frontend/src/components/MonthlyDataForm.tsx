@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import {
   Box,
   TextField,
@@ -36,7 +36,7 @@ const formatNumber = (num: number): string => {
   return num.toLocaleString('ja-JP');
 };
 
-export const MonthlyDataForm = ({ onSubmit, onCancel, initialData }: MonthlyDataFormProps) => {
+export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: MonthlyDataFormProps) => {
   const [formData, setFormData] = useState<MonthlyDataFormData>(
     initialData || {
       yearMonth: '',
@@ -63,53 +63,50 @@ export const MonthlyDataForm = ({ onSubmit, onCancel, initialData }: MonthlyData
     returningPatients: '',
   });
 
-  // 自動計算: 総売上
-  useEffect(() => {
-    const total = formData.insuranceRevenue + formData.selfPayRevenue + formData.retailRevenue;
-    setFormData((prev) => ({ ...prev, totalRevenue: total }));
-  }, [formData.insuranceRevenue, formData.selfPayRevenue, formData.retailRevenue]);
+  // メモ化: 総売上と総患者数を計算（派生値として扱う）
+  const totalRevenue = useMemo(
+    () => formData.insuranceRevenue + formData.selfPayRevenue + formData.retailRevenue,
+    [formData.insuranceRevenue, formData.selfPayRevenue, formData.retailRevenue]
+  );
 
-  // 自動計算: 総患者数
-  useEffect(() => {
-    const total = formData.newPatients + formData.returningPatients;
-    setFormData((prev) => ({ ...prev, totalPatients: total }));
-  }, [formData.newPatients, formData.returningPatients]);
+  const totalPatients = useMemo(
+    () => formData.newPatients + formData.returningPatients,
+    [formData.newPatients, formData.returningPatients]
+  );
 
-  const handleYearMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, yearMonth: e.target.value });
-  };
+  const handleYearMonthChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, yearMonth: e.target.value }));
+  }, []);
 
-  const handleNumberChange = (field: keyof typeof displayValues) => (
+  const handleNumberChange = useCallback((field: keyof typeof displayValues) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.value;
-    setDisplayValues({ ...displayValues, [field]: value });
+    setDisplayValues((prev) => ({ ...prev, [field]: value }));
     const numValue = parseNumber(value);
-    setFormData({ ...formData, [field]: numValue });
-  };
+    setFormData((prev) => ({ ...prev, [field]: numValue }));
+  }, []);
 
-  const handleFocus = (field: keyof typeof displayValues) => () => {
+  const handleFocus = useCallback((field: keyof typeof displayValues) => () => {
     // フォーカス時：カンマを除去した数値を表示
-    const currentValue = formData[field];
-    setDisplayValues({
-      ...displayValues,
-      [field]: currentValue > 0 ? currentValue.toString() : ''
-    });
-  };
+    setDisplayValues((prev) => ({
+      ...prev,
+      [field]: formData[field] > 0 ? formData[field].toString() : ''
+    }));
+  }, [formData]);
 
-  const handleBlur = (field: keyof typeof displayValues) => () => {
+  const handleBlur = useCallback((field: keyof typeof displayValues) => () => {
     // ブラー時：カンマ区切りでフォーマット
-    const currentValue = formData[field];
-    setDisplayValues({
-      ...displayValues,
-      [field]: currentValue > 0 ? formatNumber(currentValue) : ''
-    });
-  };
+    setDisplayValues((prev) => ({
+      ...prev,
+      [field]: formData[field] > 0 ? formatNumber(formData[field]) : ''
+    }));
+  }, [formData]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
-  };
+    onSubmit({ ...formData, totalRevenue, totalPatients });
+  }, [formData, totalRevenue, totalPatients, onSubmit]);
 
   return (
     <Paper sx={{ p: 3 }}>
@@ -194,7 +191,7 @@ export const MonthlyDataForm = ({ onSubmit, onCancel, initialData }: MonthlyData
               fullWidth
               label="総売上"
               type="text"
-              value={formatNumber(formData.totalRevenue)}
+              value={formatNumber(totalRevenue)}
               disabled
               helperText="自動計算"
               InputProps={{
@@ -290,7 +287,7 @@ export const MonthlyDataForm = ({ onSubmit, onCancel, initialData }: MonthlyData
               fullWidth
               label="総患者数"
               type="text"
-              value={formatNumber(formData.totalPatients)}
+              value={formatNumber(totalPatients)}
               disabled
               helperText="自動計算"
               InputProps={{
@@ -322,4 +319,6 @@ export const MonthlyDataForm = ({ onSubmit, onCancel, initialData }: MonthlyData
       </Box>
     </Paper>
   );
-};
+});
+
+MonthlyDataForm.displayName = 'MonthlyDataForm';

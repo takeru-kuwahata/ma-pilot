@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -5,19 +6,14 @@ import {
 } from '@mui/material';
 import { Map as MapIcon } from '@mui/icons-material';
 import { MainLayout } from '../layouts/MainLayout';
+import { marketAnalysisService, authService } from '../services/api';
+import type { MarketAnalysis as MarketAnalysisType } from '../types';
 
-// @MOCK_TO_API: 診療圏分析データのモック
 interface MarketStats {
   population: number;
   agingRate: number;
   competitorCount: number;
   marketPotential: number;
-}
-
-interface Competitor {
-  id: string;
-  name: string;
-  distance: string;
 }
 
 interface DemographicData {
@@ -26,27 +22,60 @@ interface DemographicData {
   percentage: number;
 }
 
-const mockStats: MarketStats = {
-  population: 45230,
-  agingRate: 28.5,
-  competitorCount: 12,
-  marketPotential: 87,
-};
-
-const mockCompetitors: Competitor[] = [
-  { id: '1', name: 'やまだ歯科クリニック', distance: '徒歩5分 (400m)' },
-  { id: '2', name: 'すずき歯科医院', distance: '徒歩8分 (650m)' },
-  { id: '3', name: 'ひまわり歯科', distance: '徒歩12分 (950m)' },
-  { id: '4', name: 'たなか歯科クリニック', distance: '徒歩15分 (1.2km)' },
-];
-
-const mockDemographics: DemographicData[] = [
-  { ageGroup: '0-14歳', count: 5420, percentage: 12.0 },
-  { ageGroup: '15-64歳', count: 27100, percentage: 59.9 },
-  { ageGroup: '65歳以上', count: 12710, percentage: 28.1 },
-];
-
 export const MarketAnalysis = () => {
+  const [analysis, setAnalysis] = useState<MarketAnalysisType | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadMarketAnalysis();
+  }, []);
+
+  const loadMarketAnalysis = async () => {
+    try {
+      const user = authService.getCurrentUser();
+      if (!user?.clinicId) {
+        setLoading(false);
+        return;
+      }
+
+      const data = await marketAnalysisService.getMarketAnalysis(user.clinicId);
+      setAnalysis(data);
+    } catch (error) {
+      console.error('Failed to load market analysis:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const stats: MarketStats = analysis ? {
+    population: analysis.populationData.totalPopulation,
+    agingRate: (analysis.populationData.ageGroups.age65Plus / analysis.populationData.totalPopulation) * 100,
+    competitorCount: analysis.competitors.length,
+    marketPotential: Math.round(analysis.marketShare * 100)
+  } : {
+    population: 0,
+    agingRate: 0,
+    competitorCount: 0,
+    marketPotential: 0
+  };
+
+  const demographics: DemographicData[] = analysis ? [
+    {
+      ageGroup: '0-14歳',
+      count: analysis.populationData.ageGroups.age0_14,
+      percentage: (analysis.populationData.ageGroups.age0_14 / analysis.populationData.totalPopulation) * 100
+    },
+    {
+      ageGroup: '15-64歳',
+      count: analysis.populationData.ageGroups.age15_64,
+      percentage: (analysis.populationData.ageGroups.age15_64 / analysis.populationData.totalPopulation) * 100
+    },
+    {
+      ageGroup: '65歳以上',
+      count: analysis.populationData.ageGroups.age65Plus,
+      percentage: (analysis.populationData.ageGroups.age65Plus / analysis.populationData.totalPopulation) * 100
+    }
+  ] : [];
   return (
     <MainLayout>
       {/* ページヘッダー */}
@@ -106,7 +135,7 @@ export const MarketAnalysis = () => {
               color: '#424242',
             }}
           >
-            {mockStats.population.toLocaleString()}
+            {loading ? '...' : stats.population.toLocaleString()}
             <Typography
               component="span"
               sx={{
@@ -145,7 +174,7 @@ export const MarketAnalysis = () => {
               color: '#424242',
             }}
           >
-            {mockStats.agingRate}
+            {loading ? '...' : stats.agingRate.toFixed(1)}
             <Typography
               component="span"
               sx={{
@@ -184,7 +213,7 @@ export const MarketAnalysis = () => {
               color: '#424242',
             }}
           >
-            {mockStats.competitorCount}
+            {loading ? '...' : stats.competitorCount}
             <Typography
               component="span"
               sx={{
@@ -223,7 +252,7 @@ export const MarketAnalysis = () => {
               color: '#424242',
             }}
           >
-            {mockStats.marketPotential}
+            {loading ? '...' : stats.marketPotential}
             <Typography
               component="span"
               sx={{
@@ -307,36 +336,44 @@ export const MarketAnalysis = () => {
             周辺競合歯科医院
           </Typography>
           <Box>
-            {mockCompetitors.map((competitor, index) => (
-              <Box
-                key={competitor.id}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '12px',
-                  borderBottom:
-                    index < mockCompetitors.length - 1 ? '1px solid #e0e0e0' : 'none',
-                }}
-              >
-                <Typography
+            {loading ? (
+              <Box sx={{ textAlign: 'center', padding: '24px' }}>読み込み中...</Box>
+            ) : analysis && analysis.competitors.length > 0 ? (
+              analysis.competitors.map((competitor, index) => (
+                <Box
+                  key={index}
                   sx={{
-                    fontSize: '14px',
-                    fontWeight: 500,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '12px',
+                    borderBottom:
+                      index < analysis.competitors.length - 1 ? '1px solid #e0e0e0' : 'none',
                   }}
                 >
-                  {competitor.name}
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: '14px',
-                    color: '#616161',
-                  }}
-                >
-                  {competitor.distance}
-                </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: '14px',
+                      fontWeight: 500,
+                    }}
+                  >
+                    {competitor.name}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: '14px',
+                      color: '#616161',
+                    }}
+                  >
+                    {competitor.distance.toFixed(1)}km
+                  </Typography>
+                </Box>
+              ))
+            ) : (
+              <Box sx={{ textAlign: 'center', padding: '24px', color: '#757575' }}>
+                データがありません
               </Box>
-            ))}
+            )}
           </Box>
         </Paper>
 
@@ -376,7 +413,7 @@ export const MarketAnalysis = () => {
               borderRadius: '8px',
             }}
           >
-            {mockDemographics.map((demo, index) => (
+            {demographics.map((demo, index) => (
               <Box
                 key={demo.ageGroup}
                 sx={{
@@ -384,7 +421,7 @@ export const MarketAnalysis = () => {
                   justifyContent: 'space-between',
                   padding: '8px 0',
                   borderBottom:
-                    index < mockDemographics.length - 1 ? '1px solid #e0e0e0' : 'none',
+                    index < demographics.length - 1 ? '1px solid #e0e0e0' : 'none',
                 }}
               >
                 <Typography sx={{ fontSize: '14px' }}>{demo.ageGroup}</Typography>

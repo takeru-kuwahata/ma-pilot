@@ -8,7 +8,6 @@ import {
   Alert,
   Tabs,
   Tab,
-  Link,
   CircularProgress,
 } from '@mui/material';
 import { PublicLayout } from '../layouts/PublicLayout';
@@ -56,7 +55,7 @@ export const LoginPage = () => {
 
   const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signup(signupData);
+    await signup();
   };
 
   const handleResetSubmit = async (e: React.FormEvent) => {
@@ -195,23 +194,24 @@ export const LoginPage = () => {
               </Button>
 
               <Box sx={{ textAlign: 'center', mt: 2 }}>
-                <Link
-                  component="button"
+                <button
                   type="button"
-                  variant="body2"
                   onClick={() => setActiveTab('reset')}
-                  sx={{
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
                     fontSize: '0.875rem',
                     color: '#FF6B35',
                     textDecoration: 'none',
                     fontWeight: 400,
-                    '&:hover': {
-                      textDecoration: 'underline',
-                    },
+                    cursor: 'pointer',
                   }}
+                  onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
+                  onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
                 >
                   パスワードを忘れた場合
-                </Link>
+                </button>
               </Box>
             </Box>
           )}
@@ -391,23 +391,24 @@ export const LoginPage = () => {
                 </Button>
 
                 <Box sx={{ textAlign: 'center', mt: 2 }}>
-                  <Link
-                    component="button"
+                  <button
                     type="button"
-                    variant="body2"
                     onClick={() => setActiveTab('login')}
-                    sx={{
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
                       fontSize: '0.875rem',
                       color: '#FF6B35',
                       textDecoration: 'none',
                       fontWeight: 400,
-                      '&:hover': {
-                        textDecoration: 'underline',
-                      },
+                      cursor: 'pointer',
                     }}
+                    onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
+                    onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
                   >
                     ログインに戻る
-                  </Link>
+                  </button>
                 </Box>
               </Box>
             </Box>

@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
@@ -11,7 +12,7 @@ interface KPICardProps {
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
 }
 
-export const KPICard: React.FC<KPICardProps> = ({
+export const KPICard = memo<KPICardProps>(({
   title,
   value,
   unit = '',
@@ -19,8 +20,11 @@ export const KPICard: React.FC<KPICardProps> = ({
   icon,
   color = 'primary',
 }) => {
-  const isPositiveGrowth = growthRate !== undefined && growthRate >= 0;
-  const hasGrowth = growthRate !== undefined && growthRate !== 0;
+  // メモ化: 成長率の計算結果をキャッシュ
+  const { isPositiveGrowth, hasGrowth } = useMemo(() => ({
+    isPositiveGrowth: growthRate !== undefined && growthRate >= 0,
+    hasGrowth: growthRate !== undefined && growthRate !== 0,
+  }), [growthRate]);
 
   return (
     <Card sx={{ height: '100%' }}>
@@ -59,7 +63,7 @@ export const KPICard: React.FC<KPICardProps> = ({
                 fontWeight: 600,
               }}
             >
-              {isPositiveGrowth ? '+' : ''}{growthRate.toFixed(1)}%
+              {isPositiveGrowth ? '+' : ''}{growthRate?.toFixed(1)}%
             </Typography>
             <Typography variant="body2" color="text.secondary">
               前月比
@@ -69,4 +73,6 @@ export const KPICard: React.FC<KPICardProps> = ({
       </CardContent>
     </Card>
   );
-};
+});
+
+KPICard.displayName = 'KPICard';

@@ -21,7 +21,6 @@ import {
 } from '@mui/icons-material';
 import { AdminLayout } from '../../layouts/AdminLayout';
 
-// @MOCK_TO_API: API設定の型定義
 interface ApiSettings {
   eStatKey: string;
   resasKey: string;
@@ -29,7 +28,6 @@ interface ApiSettings {
   supabaseUrl: string;
 }
 
-// @MOCK_TO_API: メール設定の型定義
 interface EmailSettings {
   smtpServer: string;
   smtpPort: number;
@@ -37,7 +35,6 @@ interface EmailSettings {
   fromName: string;
 }
 
-// @MOCK_TO_API: システム設定の型定義
 interface SystemSettings {
   requireApproval: boolean;
   trialPeriod: number;
@@ -47,7 +44,6 @@ interface SystemSettings {
 }
 
 export const AdminSettings = () => {
-  // @MOCK_TO_API: モックデータ
   const [apiSettings, setApiSettings] = useState<ApiSettings>({
     eStatKey: '********************************',
     resasKey: '********************************',
@@ -72,42 +68,34 @@ export const AdminSettings = () => {
 
   const handleSaveApiSettings = () => {
     // TODO: Phase 4でAPI呼び出し実装
-    console.log('Save API settings:', apiSettings);
   };
 
   const handleTestConnection = () => {
     // TODO: Phase 4でAPI接続テスト実装
-    console.log('Test API connection');
   };
 
   const handleSaveEmailSettings = () => {
     // TODO: Phase 4でAPI呼び出し実装
-    console.log('Save email settings:', emailSettings);
   };
 
   const handleSendTestEmail = () => {
     // TODO: Phase 4でテストメール送信実装
-    console.log('Send test email');
   };
 
   const handleSaveSystemSettings = () => {
     // TODO: Phase 4でAPI呼び出し実装
-    console.log('Save system settings:', systemSettings);
   };
 
-  const handleExportData = (dataType: string) => {
+  const handleExportData = () => {
     // TODO: Phase 4でデータエクスポート実装
-    console.log('Export data:', dataType);
   };
 
   const handleDeleteInactiveClinics = () => {
     // TODO: Phase 4で削除処理実装（確認ダイアログ付き）
-    console.log('Delete inactive clinics');
   };
 
   const handleDeleteOldLogs = () => {
     // TODO: Phase 4で削除処理実装（確認ダイアログ付き）
-    console.log('Delete old logs');
   };
 
   return (
@@ -574,7 +562,7 @@ export const AdminSettings = () => {
         <Box sx={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
           <Button
             variant="outlined"
-            onClick={() => handleExportData('clinics')}
+            onClick={handleExportData}
             sx={{
               padding: '10px 24px',
               borderRadius: '8px',
@@ -587,7 +575,7 @@ export const AdminSettings = () => {
           </Button>
           <Button
             variant="outlined"
-            onClick={() => handleExportData('monthly')}
+            onClick={handleExportData}
             sx={{
               padding: '10px 24px',
               borderRadius: '8px',
@@ -600,7 +588,7 @@ export const AdminSettings = () => {
           </Button>
           <Button
             variant="outlined"
-            onClick={() => handleExportData('users')}
+            onClick={handleExportData}
             sx={{
               padding: '10px 24px',
               borderRadius: '8px',

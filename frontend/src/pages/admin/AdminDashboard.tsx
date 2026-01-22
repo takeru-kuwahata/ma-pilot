@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -23,8 +24,9 @@ import {
   ArrowUpward as ArrowUpwardIcon,
 } from '@mui/icons-material';
 import { AdminLayout } from '../../layouts/AdminLayout';
+import { adminService } from '../../services/api';
+import type { Clinic } from '../../types';
 
-// @MOCK_TO_API: 統計情報の型定義
 interface SystemStats {
   totalClinics: number;
   activeClinics: number;
@@ -36,65 +38,57 @@ interface SystemStats {
   reportsChange: number;
 }
 
-// @MOCK_TO_API: 登録医院の型定義
-interface RecentClinic {
-  id: string;
-  name: string;
-  registeredAt: string;
-  plan: string;
-  status: 'active' | 'trial' | 'inactive';
-}
-
 export const AdminDashboard = () => {
-  // @MOCK_TO_API: モックデータ
-  const stats: SystemStats = {
-    totalClinics: 127,
-    activeClinics: 98,
-    monthlyActiveUsers: 342,
-    monthlyReports: 1248,
-    clinicsChange: 12,
-    activeClinicsChange: 8,
-    usersChange: 27,
-    reportsChange: 156,
+  const [stats, setStats] = useState<SystemStats>({
+    totalClinics: 0,
+    activeClinics: 0,
+    monthlyActiveUsers: 0,
+    monthlyReports: 0,
+    clinicsChange: 0,
+    activeClinicsChange: 0,
+    usersChange: 0,
+    reportsChange: 0,
+  });
+  const [clinics, setClinics] = useState<Clinic[]>([]);
+  const [, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      const [dashboardData, clinicsData] = await Promise.all([
+        adminService.getDashboard(),
+        adminService.getClinics()
+      ]);
+
+      setStats({
+        totalClinics: dashboardData.total_clinics,
+        activeClinics: dashboardData.active_clinics,
+        monthlyActiveUsers: dashboardData.total_users,
+        monthlyReports: dashboardData.recent_data_entries,
+        clinicsChange: 0,
+        activeClinicsChange: 0,
+        usersChange: 0,
+        reportsChange: 0,
+      });
+
+      setClinics(clinicsData.slice(0, 5));
+    } catch (error) {
+      console.error('Failed to load admin dashboard:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const recentClinics: RecentClinic[] = [
-    {
-      id: '1',
-      name: 'さくら歯科クリニック',
-      registeredAt: '2025-11-10',
-      plan: 'スタンダード',
-      status: 'active',
-    },
-    {
-      id: '2',
-      name: 'ひまわり歯科医院',
-      registeredAt: '2025-11-08',
-      plan: 'トライアル',
-      status: 'trial',
-    },
-    {
-      id: '3',
-      name: '青空デンタルクリニック',
-      registeredAt: '2025-11-05',
-      plan: 'スタンダード',
-      status: 'active',
-    },
-    {
-      id: '4',
-      name: 'みどり歯科',
-      registeredAt: '2025-11-03',
-      plan: 'スタンダード',
-      status: 'inactive',
-    },
-    {
-      id: '5',
-      name: 'オレンジ歯科クリニック',
-      registeredAt: '2025-11-01',
-      plan: 'トライアル',
-      status: 'trial',
-    },
-  ];
+  const recentClinics = clinics.slice(0, 5).map(clinic => ({
+    id: clinic.id,
+    name: clinic.name,
+    registeredAt: new Date(clinic.createdAt).toLocaleDateString('ja-JP'),
+    plan: clinic.isActive ? 'アクティブ' : '非アクティブ',
+    status: clinic.isActive ? ('active' as const) : ('inactive' as const)
+  }));
 
   const getStatusLabel = (status: string): string => {
     switch (status) {

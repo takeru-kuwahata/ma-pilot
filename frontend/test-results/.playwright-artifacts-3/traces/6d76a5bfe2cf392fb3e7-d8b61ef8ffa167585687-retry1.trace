@@ -1,0 +1,26 @@
+{"version":8,"type":"context-options","origin":"library","browserName":"","playwrightVersion":"1.57.0","options":{},"platform":"darwin","wallTime":1769053898602,"monotonicTime":66344.164,"sdkLanguage":"javascript","contextId":"request-context@7b903ff815517d32fb3aa6598ef7da92","title":"deployment-check.spec.ts:15 › MA-Pilot デプロイ後検証 › 2. バックエンドAPIヘルスチェック"}
+{"type":"before","callId":"call@5","startTime":66346.646,"class":"APIRequestContext","method":"fetch","params":{"url":"https://ma-pilot.onrender.com/health","method":"GET","timeout":0},"stepId":"pw:api@27","beforeSnapshot":"before@call@5"}
+{"type":"log","callId":"call@5","time":66353.186,"message":"→ GET https://ma-pilot.onrender.com/health"}
+{"type":"log","callId":"call@5","time":66353.215,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36"}
+{"type":"log","callId":"call@5","time":66353.221,"message":"  accept: */*"}
+{"type":"log","callId":"call@5","time":66353.23,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"call@5","time":68594.059,"message":"← 200 OK"}
+{"type":"log","callId":"call@5","time":68594.193,"message":"  date: Thu, 22 Jan 2026 03:51:40 GMT"}
+{"type":"log","callId":"call@5","time":68594.202,"message":"  content-type: application/json"}
+{"type":"log","callId":"call@5","time":68594.215,"message":"  transfer-encoding: chunked"}
+{"type":"log","callId":"call@5","time":68594.231,"message":"  connection: keep-alive"}
+{"type":"log","callId":"call@5","time":68594.241,"message":"  cf-ray: 9c1c18131aea2c1c-NRT"}
+{"type":"log","callId":"call@5","time":68594.248,"message":"  content-encoding: gzip"}
+{"type":"log","callId":"call@5","time":68594.254,"message":"  content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co;"}
+{"type":"log","callId":"call@5","time":68594.258,"message":"  referrer-policy: strict-origin-when-cross-origin"}
+{"type":"log","callId":"call@5","time":68594.261,"message":"  rndr-id: 330708ca-cfec-4564"}
+{"type":"log","callId":"call@5","time":68594.264,"message":"  vary: Accept-Encoding"}
+{"type":"log","callId":"call@5","time":68594.267,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"call@5","time":68594.27,"message":"  x-frame-options: DENY"}
+{"type":"log","callId":"call@5","time":68594.274,"message":"  x-process-time: 0.001"}
+{"type":"log","callId":"call@5","time":68594.277,"message":"  x-render-origin-server: uvicorn"}
+{"type":"log","callId":"call@5","time":68594.28,"message":"  x-xss-protection: 1; mode=block"}
+{"type":"log","callId":"call@5","time":68594.284,"message":"  cf-cache-status: DYNAMIC"}
+{"type":"log","callId":"call@5","time":68594.287,"message":"  server: cloudflare"}
+{"type":"log","callId":"call@5","time":68594.29,"message":"  alt-svc: h3=\":443\"; ma=86400"}
+{"type":"after","callId":"call@5","endTime":68598.833,"result":{"response":{"url":"https://ma-pilot.onrender.com/health","status":200,"statusText":"OK","headers":[{"name":"Date","value":"Thu, 22 Jan 2026 03:51:40 GMT"},{"name":"Content-Type","value":"application/json"},{"name":"Transfer-Encoding","value":"chunked"},{"name":"Connection","value":"keep-alive"},{"name":"CF-RAY","value":"9c1c18131aea2c1c-NRT"},{"name":"Content-Encoding","value":"gzip"},{"name":"content-security-policy","value":"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co;"},{"name":"referrer-policy","value":"strict-origin-when-cross-origin"},{"name":"rndr-id","value":"330708ca-cfec-4564"},{"name":"vary","value":"Accept-Encoding"},{"name":"x-content-type-options","value":"nosniff"},{"name":"x-frame-options","value":"DENY"},{"name":"x-process-time","value":"0.001"},{"name":"x-render-origin-server","value":"uvicorn"},{"name":"x-xss-protection","value":"1; mode=block"},{"name":"cf-cache-status","value":"DYNAMIC"},{"name":"Server","value":"cloudflare"},{"name":"alt-svc","value":"h3=\":443\"; ma=86400"}],"fetchUid":"a006f2b51c289f10ac224186c62ce911"}},"afterSnapshot":"after@call@5"}

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -22,8 +22,9 @@ import {
   Timeline as TimelineIcon,
 } from '@mui/icons-material';
 import { MainLayout } from '../layouts/MainLayout';
+import { reportService, authService } from '../services/api';
+import type { Report } from '../types';
 
-// @MOCK_TO_API: レポートテンプレートの型定義
 interface ReportTemplate {
   id: string;
   name: string;
@@ -32,17 +33,10 @@ interface ReportTemplate {
   format: string;
 }
 
-// @MOCK_TO_API: レポート履歴の型定義
-interface ReportHistory {
-  id: string;
-  name: string;
-  generatedAt: string;
-  period: string;
-  status: 'completed' | 'pending';
-}
-
 export const Reports = () => {
-  // @MOCK_TO_API: モックデータ
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const reportTemplates: ReportTemplate[] = [
     {
       id: '1',
@@ -67,50 +61,42 @@ export const Reports = () => {
     },
   ];
 
-  const reportHistory: ReportHistory[] = [
-    {
-      id: '1',
-      name: '月次経営レポート',
-      generatedAt: '2025-11-10 14:30',
-      period: '2025年10月',
-      status: 'completed',
-    },
-    {
-      id: '2',
-      name: '診療圏分析レポート',
-      generatedAt: '2025-11-08 10:15',
-      period: '2025年11月時点',
-      status: 'completed',
-    },
-    {
-      id: '3',
-      name: 'シミュレーション結果レポート',
-      generatedAt: '2025-11-05 16:45',
-      period: '6ヶ月後予測',
-      status: 'completed',
-    },
-    {
-      id: '4',
-      name: 'カスタムレポート',
-      generatedAt: '2025-11-01 09:20',
-      period: '2025年Q3',
-      status: 'pending',
-    },
-  ];
+  useEffect(() => {
+    loadReports();
+  }, []);
 
-  const handleDownload = (reportId: string) => {
-    // TODO: Phase 4でAPI呼び出し実装
-    console.log('Download report:', reportId);
+  const loadReports = async () => {
+    try {
+      const user = authService.getCurrentUser();
+      if (!user?.clinicId) {
+        setLoading(false);
+        return;
+      }
+
+      const data = await reportService.getReports(user.clinicId);
+      setReports(data);
+    } catch (error) {
+      console.error('Failed to load reports:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = (reportId: string) => {
+  const handleDownload = async (reportId: string) => {
+    try {
+      const fileUrl = await reportService.downloadReport(reportId);
+      window.open(fileUrl, '_blank');
+    } catch (error) {
+      console.error('Failed to download report:', error);
+    }
+  };
+
+  const handleDelete = () => {
     // TODO: Phase 4でAPI呼び出し実装
-    console.log('Delete report:', reportId);
   };
 
   const handleCreateCustomReport = () => {
     // TODO: Phase 4でカスタムレポート作成ダイアログ実装
-    console.log('Create custom report');
   };
 
   return (
@@ -327,56 +313,73 @@ export const Reports = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {reportHistory.map((report) => (
-                <TableRow key={report.id}>
-                  <TableCell sx={{ fontSize: '14px' }}>{report.name}</TableCell>
-                  <TableCell sx={{ fontSize: '14px' }}>{report.generatedAt}</TableCell>
-                  <TableCell sx={{ fontSize: '14px' }}>{report.period}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={report.status === 'completed' ? '完了' : '生成中'}
-                      sx={{
-                        backgroundColor:
-                          report.status === 'completed' ? '#E8F5E9' : '#FFF3E0',
-                        color: report.status === 'completed' ? '#2E7D32' : '#EF6C00',
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        height: '24px',
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleDownload(report.id)}
-                      disabled={report.status === 'pending'}
-                      sx={{
-                        color: '#616161',
-                        '&:hover': {
-                          color: '#FF6B35',
-                        },
-                        '&.Mui-disabled': {
-                          opacity: 0.3,
-                        },
-                      }}
-                    >
-                      <DownloadIcon />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleDelete(report.id)}
-                      sx={{
-                        color: '#616161',
-                        '&:hover': {
-                          color: '#FF6B35',
-                        },
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={5} sx={{ textAlign: 'center', padding: '24px' }}>
+                    読み込み中...
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : reports.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} sx={{ textAlign: 'center', padding: '24px' }}>
+                    レポートがありません
+                  </TableCell>
+                </TableRow>
+              ) : (
+                reports.map((report) => (
+                  <TableRow key={report.id}>
+                    <TableCell sx={{ fontSize: '14px' }}>{report.title}</TableCell>
+                    <TableCell sx={{ fontSize: '14px' }}>
+                      {new Date(report.generatedAt).toLocaleString('ja-JP')}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: '14px' }}>
+                      {report.type === 'monthly' ? '月次' :
+                       report.type === 'quarterly' ? '四半期' :
+                       report.type === 'annual' ? '年次' :
+                       report.type === 'simulation' ? 'シミュレーション' :
+                       '診療圏分析'}
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label="完了"
+                        sx={{
+                          backgroundColor: '#E8F5E9',
+                          color: '#2E7D32',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          height: '24px',
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDownload(report.id)}
+                        sx={{
+                          color: '#616161',
+                          '&:hover': {
+                            color: '#FF6B35',
+                          },
+                        }}
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={handleDelete}
+                        sx={{
+                          color: '#616161',
+                          '&:hover': {
+                            color: '#FF6B35',
+                          },
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

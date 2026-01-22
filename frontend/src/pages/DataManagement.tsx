@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -16,8 +17,9 @@ import {
   UploadFile as UploadFileIcon,
 } from '@mui/icons-material';
 import { MainLayout } from '../layouts/MainLayout';
+import { monthlyDataService, authService } from '../services/api';
+import type { MonthlyData } from '../types';
 
-// @MOCK_TO_API: 月次データのモック
 interface MonthlyDataRow {
   id: string;
   yearMonth: string;
@@ -27,51 +29,53 @@ interface MonthlyDataRow {
   dataSource: '手動入力' | 'CSV取込';
 }
 
-const mockMonthlyData: MonthlyDataRow[] = [
-  {
-    id: '1',
-    yearMonth: '2025-10',
-    totalRevenue: 8500000,
-    operatingProfit: 2100000,
-    totalPatients: 420,
-    dataSource: '手動入力',
-  },
-  {
-    id: '2',
-    yearMonth: '2025-09',
-    totalRevenue: 8900000,
-    operatingProfit: 1980000,
-    totalPatients: 389,
-    dataSource: '手動入力',
-  },
-  {
-    id: '3',
-    yearMonth: '2025-08',
-    totalRevenue: 7500000,
-    operatingProfit: 1560000,
-    totalPatients: 320,
-    dataSource: 'CSV取込',
-  },
-];
-
 const formatCurrency = (value: number): string => {
   return `¥${value.toLocaleString()}`;
 };
 
 export const DataManagement = () => {
+  const [monthlyData, setMonthlyData] = useState<MonthlyDataRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadMonthlyData();
+  }, []);
+
+  const loadMonthlyData = async () => {
+    try {
+      const user = authService.getCurrentUser();
+      if (!user?.clinicId) {
+        setLoading(false);
+        return;
+      }
+
+      const data = await monthlyDataService.getMonthlyData(user.clinicId);
+      const rows: MonthlyDataRow[] = data.map((item: MonthlyData) => ({
+        id: item.id,
+        yearMonth: item.yearMonth,
+        totalRevenue: item.totalRevenue,
+        operatingProfit: item.totalRevenue - (item.personnelCost + item.materialCost + item.fixedCost + item.otherCost),
+        totalPatients: item.totalPatients,
+        dataSource: '手動入力'
+      }));
+      setMonthlyData(rows);
+    } catch (error) {
+      console.error('Failed to load monthly data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleNewDataEntry = () => {
     // TODO: Phase 4で実装
-    console.log('新規データ入力');
   };
 
   const handleCsvUpload = () => {
     // TODO: Phase 4で実装
-    console.log('CSVファイル選択');
   };
 
-  const handleEdit = (id: string) => {
+  const handleEdit = () => {
     // TODO: Phase 4で実装
-    console.log('編集:', id);
   };
 
   return (
@@ -323,80 +327,94 @@ export const DataManagement = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {mockMonthlyData.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell
-                    sx={{
-                      padding: '12px',
-                      fontSize: '14px',
-                      borderBottom: '1px solid #e0e0e0',
-                    }}
-                  >
-                    {row.yearMonth}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      padding: '12px',
-                      fontSize: '14px',
-                      borderBottom: '1px solid #e0e0e0',
-                    }}
-                  >
-                    {formatCurrency(row.totalRevenue)}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      padding: '12px',
-                      fontSize: '14px',
-                      borderBottom: '1px solid #e0e0e0',
-                    }}
-                  >
-                    {formatCurrency(row.operatingProfit)}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      padding: '12px',
-                      fontSize: '14px',
-                      borderBottom: '1px solid #e0e0e0',
-                    }}
-                  >
-                    {row.totalPatients}人
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      padding: '12px',
-                      fontSize: '14px',
-                      borderBottom: '1px solid #e0e0e0',
-                    }}
-                  >
-                    {row.dataSource}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      padding: '12px',
-                      fontSize: '14px',
-                      borderBottom: '1px solid #e0e0e0',
-                    }}
-                  >
-                    <Button
-                      variant="outlined"
-                      onClick={() => handleEdit(row.id)}
-                      sx={{
-                        padding: '6px 16px',
-                        fontSize: '14px',
-                        backgroundColor: 'transparent',
-                        border: '1px solid #e0e0e0',
-                        color: '#424242',
-                        '&:hover': {
-                          backgroundColor: '#f5f5f5',
-                          border: '1px solid #e0e0e0',
-                        },
-                      }}
-                    >
-                      編集
-                    </Button>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={6} sx={{ textAlign: 'center', padding: '24px' }}>
+                    読み込み中...
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : monthlyData.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} sx={{ textAlign: 'center', padding: '24px' }}>
+                    データがありません
+                  </TableCell>
+                </TableRow>
+              ) : (
+                monthlyData.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell
+                      sx={{
+                        padding: '12px',
+                        fontSize: '14px',
+                        borderBottom: '1px solid #e0e0e0',
+                      }}
+                    >
+                      {row.yearMonth}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        padding: '12px',
+                        fontSize: '14px',
+                        borderBottom: '1px solid #e0e0e0',
+                      }}
+                    >
+                      {formatCurrency(row.totalRevenue)}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        padding: '12px',
+                        fontSize: '14px',
+                        borderBottom: '1px solid #e0e0e0',
+                      }}
+                    >
+                      {formatCurrency(row.operatingProfit)}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        padding: '12px',
+                        fontSize: '14px',
+                        borderBottom: '1px solid #e0e0e0',
+                      }}
+                    >
+                      {row.totalPatients}人
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        padding: '12px',
+                        fontSize: '14px',
+                        borderBottom: '1px solid #e0e0e0',
+                      }}
+                    >
+                      {row.dataSource}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        padding: '12px',
+                        fontSize: '14px',
+                        borderBottom: '1px solid #e0e0e0',
+                      }}
+                    >
+                      <Button
+                        variant="outlined"
+                        onClick={handleEdit}
+                        sx={{
+                          padding: '6px 16px',
+                          fontSize: '14px',
+                          backgroundColor: 'transparent',
+                          border: '1px solid #e0e0e0',
+                          color: '#424242',
+                          '&:hover': {
+                            backgroundColor: '#f5f5f5',
+                            border: '1px solid #e0e0e0',
+                          },
+                        }}
+                      >
+                        編集
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

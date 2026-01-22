@@ -94,14 +94,14 @@ export const Dashboard = () => {
 
   // KPIアイコンマッピング
   const kpiIcons = [
-    <AttachMoneyIcon />,
-    <AttachMoneyIcon />,
-    <PercentIcon />,
-    <PeopleIcon />,
-    <MedicalServicesIcon />,
-    <PercentIcon />,
-    <PersonAddIcon />,
-    <EventRepeatIcon />,
+    <AttachMoneyIcon key="icon-0" />,
+    <AttachMoneyIcon key="icon-1" />,
+    <PercentIcon key="icon-2" />,
+    <PeopleIcon key="icon-3" />,
+    <MedicalServicesIcon key="icon-4" />,
+    <PercentIcon key="icon-5" />,
+    <PersonAddIcon key="icon-6" />,
+    <EventRepeatIcon key="icon-7" />,
   ];
 
   // グラフデータのフォーマット（月次推移）

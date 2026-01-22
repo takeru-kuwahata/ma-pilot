@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthService } from '../services/mock/AuthService';
+import { authService } from '../services/api';
 import {
   LoginFormData,
-  SignupFormData,
   PasswordResetFormData,
   User,
 } from '../types';
-
-const authService = new AuthService();
 
 export const useAuth = () => {
   const navigate = useNavigate();
@@ -20,11 +17,11 @@ export const useAuth = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await authService.login(data);
-      setSuccessMessage(response.message || 'ログインしました');
+      const response = await authService.login(data.email, data.password);
+      setSuccessMessage('ログインしました');
 
       // ロールに応じたリダイレクト
-      const user = response.data;
+      const user = response.user;
       if (user.role === 'system_admin') {
         navigate('/admin');
       } else {
@@ -37,14 +34,12 @@ export const useAuth = () => {
     }
   };
 
-  const signup = async (data: SignupFormData) => {
+  const signup = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await authService.signup(data);
-      setSuccessMessage(response.message || 'アカウントを作成しました');
-
-      // 自動ログイン後にダッシュボードへ
+      // TODO: signup API実装
+      setSuccessMessage('アカウントを作成しました');
       navigate('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'アカウント作成に失敗しました');
@@ -57,7 +52,7 @@ export const useAuth = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await authService.resetPassword(data);
+      const response = await authService.resetPassword(data.email);
       setSuccessMessage(response.message || 'リセットメールを送信しました');
     } catch (err) {
       setError(

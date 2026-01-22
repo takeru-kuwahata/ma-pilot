@@ -41,11 +41,11 @@ export const ClinicSettings = () => {
   });
 
   const handleSaveBasicInfo = () => {
-    console.log('Save basic info:', basicInfo);
+    // TODO: Phase 4でAPI呼び出し実装
   };
 
   const handleSaveBusinessInfo = () => {
-    console.log('Save business info:', businessInfo);
+    // TODO: Phase 4でAPI呼び出し実装
   };
 
   return (

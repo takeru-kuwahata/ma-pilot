@@ -263,3 +263,83 @@ export interface DashboardData {
   lastUpdated: string;
   dataSource: string;      // データソース（例: 手動入力、CSV取込）
 }
+
+// ============================================
+// 印刷物受注システム関連型定義
+// ============================================
+
+export type PrintOrderPattern = 'consultation' | 'reorder';
+export type PaymentMethod = 'stripe' | 'invoice';
+export type PaymentStatus = 'pending' | 'paid' | 'invoiced';
+export type OrderStatus = 'submitted' | 'confirmed' | 'in_production' | 'shipped' | 'completed' | 'cancelled';
+
+export interface PriceTableSpecifications {
+  corner_radius?: string;       // 角丸半径（例: 角丸なし、R3mm）
+  coating?: string;             // 加工種類（例: なし、マット加工、グロス加工）
+  type?: string;                // タイプ（例: standard、premium）
+  material?: string;            // 素材（例: アクリル、金属）
+  [key: string]: string | undefined; // その他の仕様
+}
+
+export interface PriceTable {
+  id: string;
+  product_type: string;         // 商品種類（診察券、名刺、リコールハガキ等）
+  quantity: number;             // 数量
+  price: number;                // 価格（円）
+  design_fee: number;           // デザイン費（円）
+  design_fee_included: boolean; // デザイン費込みかどうか
+  specifications?: string;      // 仕様詳細（JSON形式文字列）
+  delivery_days: number;        // 納期（日数）
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PrintOrder {
+  id: string;
+  clinic_name: string;          // クリニック名（必須）
+  email: string;                // メールアドレス（必須）
+  pattern: PrintOrderPattern;   // パターン（consultation: A/B統合、reorder: C）
+  product_type?: string;        // 商品種類（パターンCでは必須）
+  quantity?: number;            // 数量（パターンCでは必須）
+  specifications?: string;      // 仕様詳細（JSON形式文字列）
+  delivery_date?: string;       // 納期希望日（ISO 8601形式）
+  design_required?: boolean;    // デザイン要否
+  notes?: string;               // 備考（自由記述）
+  estimated_price?: number;     // 見積もり金額（円、パターンCのみ）
+  payment_method?: PaymentMethod;   // 決済方法
+  payment_status: PaymentStatus;    // 決済ステータス
+  order_status: OrderStatus;        // 注文ステータス
+  stripe_payment_intent_id?: string; // Stripe PaymentIntent ID
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PrintOrderFormData {
+  clinic_name: string;
+  email: string;
+  pattern: PrintOrderPattern;
+  product_type?: string;
+  quantity?: number;
+  specifications?: PriceTableSpecifications;
+  delivery_date?: string;
+  design_required?: boolean;
+  notes?: string;
+}
+
+export interface PriceEstimateRequest {
+  product_type: string;
+  quantity: number;
+  specifications?: PriceTableSpecifications;
+  design_required?: boolean;
+}
+
+export interface PriceEstimateResponse {
+  estimated_price: number;
+  breakdown: {
+    base_price: number;
+    design_fee: number;
+    total: number;
+  };
+  delivery_days: number;
+  price_table_id: string;
+}
