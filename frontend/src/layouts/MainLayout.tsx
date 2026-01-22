@@ -18,6 +18,7 @@ import {
   LocationOn as LocationOnIcon,
   TrendingUp as TrendingUpIcon,
   Description as DescriptionIcon,
+  Print as PrintIcon,
   Business as BusinessIcon,
   People as PeopleIcon,
   Logout as LogoutIcon,
@@ -45,6 +46,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     { path: '/market-analysis', label: '診療圏分析', icon: <LocationOnIcon /> },
     { path: '/simulation', label: '経営シミュレーション', icon: <TrendingUpIcon /> },
     { path: '/reports', label: 'レポート管理', icon: <DescriptionIcon /> },
+    { path: '/print-order', label: '印刷物発注', icon: <PrintIcon /> },
   ];
 
   const settingsItems = [

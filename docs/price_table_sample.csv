@@ -1,0 +1,18 @@
+product_type,quantity,price,design_fee,design_fee_included,specifications,delivery_days
+診察券,500,19500,0,true,"{""corner_radius"": ""角丸なし"", ""coating"": ""なし""}",14
+診察券,1000,25500,0,true,"{""corner_radius"": ""角丸なし"", ""coating"": ""なし""}",14
+診察券,2000,34500,0,true,"{""corner_radius"": ""角丸なし"", ""coating"": ""なし""}",14
+診察券,3000,43500,0,true,"{""corner_radius"": ""角丸なし"", ""coating"": ""なし""}",14
+診察券,5000,56500,0,true,"{""corner_radius"": ""角丸なし"", ""coating"": ""なし""}",14
+名刺,100,2500,4500,false,"{""coating"": ""なし""}",10
+名刺,200,4000,4500,false,"{""coating"": ""なし""}",10
+名刺,300,6000,4500,false,"{""coating"": ""なし""}",10
+リコールハガキ,100,7500,5000,false,"{""type"": ""standard""}",10
+リコールハガキ,200,12000,5000,false,"{""type"": ""standard""}",10
+リコールハガキ,300,16500,5000,false,"{""type"": ""standard""}",10
+A4三つ折りリーフレット,300,27000,0,true,"{""coating"": ""マット加工""}",14
+A4三つ折りリーフレット,500,35000,0,true,"{""coating"": ""マット加工""}",14
+A4三つ折りリーフレット,1000,50000,0,true,"{""coating"": ""マット加工""}",14
+ネームプレート,1,3550,850,false,"{""type"": ""1名"", ""material"": ""アクリル""}",7
+ネームプレート,5,7750,4250,false,"{""type"": ""5名"", ""material"": ""アクリル""}",7
+ネームプレート,10,14000,8500,false,"{""type"": ""10名"", ""material"": ""アクリル""}",7

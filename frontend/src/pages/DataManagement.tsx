@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -10,12 +10,15 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Alert,
+  Snackbar,
 } from '@mui/material';
 import {
   AddCircle as AddCircleIcon,
   Add as AddIcon,
   UploadFile as UploadFileIcon,
 } from '@mui/icons-material';
+import Papa from 'papaparse';
 import { MainLayout } from '../layouts/MainLayout';
 import { monthlyDataService, authService } from '../services/api';
 import type { MonthlyData } from '../types';
@@ -36,6 +39,10 @@ const formatCurrency = (value: number): string => {
 export const DataManagement = () => {
   const [monthlyData, setMonthlyData] = useState<MonthlyDataRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadMonthlyData();
@@ -67,15 +74,88 @@ export const DataManagement = () => {
   };
 
   const handleNewDataEntry = () => {
-    // TODO: Phase 4で実装
+    // TODO: モーダルダイアログで月次データ入力フォームを表示
+    setSnackbarMessage('月次データ入力機能は開発中です');
+    setSnackbarSeverity('error');
+    setSnackbarOpen(true);
   };
 
   const handleCsvUpload = () => {
-    // TODO: Phase 4で実装
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // CSVファイルかチェック
+    if (!file.name.endsWith('.csv')) {
+      setSnackbarMessage('CSVファイルを選択してください');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
+
+    try {
+      const user = authService.getCurrentUser();
+      if (!user?.clinicId) {
+        setSnackbarMessage('ログインしていません');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+        return;
+      }
+
+      const clinicId = user.clinicId;
+
+      // PapaParseでCSVをパース
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: async (results) => {
+          try {
+            // CSVデータをバックエンドに送信
+            const response = await monthlyDataService.importCsv(clinicId, results.data);
+
+            setSnackbarMessage(`${response.success}件のデータを取り込みました（失敗: ${response.failed}件）`);
+            setSnackbarSeverity(response.failed > 0 ? 'error' : 'success');
+            setSnackbarOpen(true);
+
+            // データを再読み込み
+            await loadMonthlyData();
+          } catch (error) {
+            console.error('CSV import failed:', error);
+            setSnackbarMessage('CSV取込に失敗しました');
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
+          }
+        },
+        error: (error) => {
+          console.error('CSV parse error:', error);
+          setSnackbarMessage('CSVファイルの読み込みに失敗しました');
+          setSnackbarSeverity('error');
+          setSnackbarOpen(true);
+        }
+      });
+    } catch (error) {
+      console.error('File handling error:', error);
+      setSnackbarMessage('ファイル処理中にエラーが発生しました');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+
+    // ファイル入力をリセット（同じファイルを再選択可能にする）
+    event.target.value = '';
   };
 
   const handleEdit = () => {
-    // TODO: Phase 4で実装
+    // TODO: モーダルダイアログで編集フォームを表示
+    setSnackbarMessage('データ編集機能は開発中です');
+    setSnackbarSeverity('error');
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -419,6 +499,27 @@ export const DataManagement = () => {
           </Table>
         </TableContainer>
       </Paper>
+
+      {/* 非表示のファイル入力 */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept=".csv"
+        style={{ display: 'none' }}
+      />
+
+      {/* スナックバー通知 */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </MainLayout>
   );
 };

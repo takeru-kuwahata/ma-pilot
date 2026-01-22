@@ -79,7 +79,19 @@ export const monthlyDataService = {
     await handleResponse<{ message: string }>(response);
   },
 
-  async importCsv(clinicId: string, file: File): Promise<CsvImportResult> {
+  async importCsv(clinicId: string, csvData: unknown[]): Promise<CsvImportResult> {
+    const response = await fetch(
+      `${API_BASE_URL}/api/monthly-data/import-csv?clinic_id=${clinicId}`,
+      {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ data: csvData })
+      }
+    );
+    return handleResponse<CsvImportResult>(response);
+  },
+
+  async importCsvFile(clinicId: string, file: File): Promise<CsvImportResult> {
     const formData = new FormData();
     formData.append('file', file);
 

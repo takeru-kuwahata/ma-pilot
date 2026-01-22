@@ -1,0 +1,233 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]: MA
+          - heading "MA-Pilot" [level=6] [ref=e8]
+        - paragraph [ref=e9]: さくら歯科クリニック
+        - generic [ref=e10]:
+          - generic [ref=e11]: 田
+          - paragraph [ref=e12]: 田中太郎
+    - generic [ref=e13]:
+      - list [ref=e14]:
+        - listitem [ref=e15]:
+          - button "ダッシュボード" [ref=e16] [cursor=pointer]:
+            - img [ref=e18]
+            - generic [ref=e21]: ダッシュボード
+        - listitem [ref=e22]:
+          - button "基礎データ管理" [ref=e23] [cursor=pointer]:
+            - img [ref=e25]
+            - generic [ref=e28]: 基礎データ管理
+        - listitem [ref=e29]:
+          - button "診療圏分析" [ref=e30] [cursor=pointer]:
+            - img [ref=e32]
+            - generic [ref=e35]: 診療圏分析
+        - listitem [ref=e36]:
+          - button "経営シミュレーション" [ref=e37] [cursor=pointer]:
+            - img [ref=e39]
+            - generic [ref=e42]: 経営シミュレーション
+        - listitem [ref=e43]:
+          - button "レポート管理" [ref=e44] [cursor=pointer]:
+            - img [ref=e46]
+            - generic [ref=e49]: レポート管理
+      - separator [ref=e50]
+      - generic [ref=e51]: 設定
+      - list [ref=e52]:
+        - listitem [ref=e53]:
+          - button "医院設定" [ref=e54] [cursor=pointer]:
+            - img [ref=e56]
+            - generic [ref=e59]: 医院設定
+        - listitem [ref=e60]:
+          - button "スタッフ管理" [ref=e61] [cursor=pointer]:
+            - img [ref=e63]
+            - generic [ref=e66]: スタッフ管理
+      - separator [ref=e67]
+      - list [ref=e68]:
+        - listitem [ref=e69]:
+          - button "ログアウト" [ref=e70] [cursor=pointer]:
+            - img [ref=e72]
+            - generic [ref=e75]: ログアウト
+    - main [ref=e76]:
+      - generic [ref=e77]:
+        - heading "経営ダッシュボード" [level=4] [ref=e78]
+        - paragraph [ref=e79]: "2025-10 のデータ（データソース: 手動入力）"
+      - generic [ref=e80]:
+        - alert [ref=e81]:
+          - img [ref=e83]
+          - generic [ref=e85]:
+            - paragraph [ref=e86]: 自費率が低下しています
+            - text: 前月比 -1.2%の減少。自費診療の提案を強化することを推奨します。
+        - alert [ref=e87]:
+          - img [ref=e89]
+          - generic [ref=e91]:
+            - paragraph [ref=e92]: 粗利率が目標を下回っています
+            - text: 目標25%に対して24.7%。変動費の見直しを検討してください。
+      - generic [ref=e93]:
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - paragraph [ref=e97]: 総売上
+            - img [ref=e99]
+          - heading "¥8,500,000" [level=4] [ref=e101]
+          - generic [ref=e102]:
+            - img [ref=e103]
+            - generic [ref=e105]: +5.2%
+            - generic [ref=e106]: 前月比
+        - generic [ref=e108]:
+          - generic [ref=e109]:
+            - paragraph [ref=e110]: 営業利益
+            - img [ref=e112]
+          - heading "¥2,100,000" [level=4] [ref=e114]
+          - generic [ref=e115]:
+            - img [ref=e116]
+            - generic [ref=e118]: 3.8%
+            - generic [ref=e119]: 前月比
+        - generic [ref=e121]:
+          - generic [ref=e122]:
+            - paragraph [ref=e123]: 粗利率
+            - img [ref=e125]
+          - heading "24.7%" [level=4] [ref=e127]
+          - generic [ref=e128]:
+            - img [ref=e129]
+            - generic [ref=e131]: "-0.5%"
+            - generic [ref=e132]: 前月比
+        - generic [ref=e134]:
+          - generic [ref=e135]:
+            - paragraph [ref=e136]: 総患者数
+            - img [ref=e138]
+          - heading "420人" [level=4] [ref=e140]
+          - generic [ref=e141]:
+            - img [ref=e142]
+            - generic [ref=e144]: +8%
+            - generic [ref=e145]: 前月比
+        - generic [ref=e147]:
+          - generic [ref=e148]:
+            - paragraph [ref=e149]: ユニット稼働率
+            - img [ref=e151]
+          - heading "78.5%" [level=4] [ref=e153]
+          - generic [ref=e154]:
+            - img [ref=e155]
+            - generic [ref=e157]: +2.3%
+            - generic [ref=e158]: 前月比
+        - generic [ref=e160]:
+          - generic [ref=e161]:
+            - paragraph [ref=e162]: 自費率
+            - img [ref=e164]
+          - heading "18.2%" [level=4] [ref=e166]
+          - generic [ref=e167]:
+            - img [ref=e168]
+            - generic [ref=e170]: "-1.2%"
+            - generic [ref=e171]: 前月比
+        - generic [ref=e173]:
+          - generic [ref=e174]:
+            - paragraph [ref=e175]: 新患数
+            - img [ref=e177]
+          - heading "35人" [level=4] [ref=e179]
+          - generic [ref=e180]:
+            - img [ref=e181]
+            - generic [ref=e183]: +5%
+            - generic [ref=e184]: 前月比
+        - generic [ref=e186]:
+          - generic [ref=e187]:
+            - paragraph [ref=e188]: リコール率
+            - img [ref=e190]
+          - heading "62.3%" [level=4] [ref=e192]
+          - generic [ref=e193]:
+            - img [ref=e194]
+            - generic [ref=e196]: +-0.2%
+            - generic [ref=e197]: 前月比
+      - generic [ref=e198]:
+        - generic [ref=e200]:
+          - heading "売上・利益推移（直近6ヶ月）" [level=6] [ref=e201]
+          - generic [ref=e203]:
+            - img [ref=e204]:
+              - generic [ref=e209]:
+                - generic [ref=e211]: 05月
+                - generic [ref=e213]: 06月
+                - generic [ref=e215]: 07月
+                - generic [ref=e217]: 08月
+                - generic [ref=e219]: 09月
+                - generic [ref=e221]: 10月
+              - generic [ref=e223]:
+                - generic [ref=e225]: "0"
+                - generic [ref=e227]: "250"
+                - generic [ref=e229]: "500"
+                - generic [ref=e231]: "750"
+                - generic [ref=e233]: "1000"
+            - list [ref=e239]:
+              - listitem [ref=e240]:
+                - img [ref=e241]
+                - text: 総売上（万円）
+              - listitem [ref=e243]:
+                - img [ref=e244]
+                - text: 営業利益（万円）
+        - generic [ref=e247]:
+          - heading "患者数推移（直近6ヶ月）" [level=6] [ref=e248]
+          - generic [ref=e250]:
+            - img [ref=e251]:
+              - generic [ref=e256]:
+                - generic [ref=e258]: 05月
+                - generic [ref=e260]: 06月
+                - generic [ref=e262]: 07月
+                - generic [ref=e264]: 08月
+                - generic [ref=e266]: 09月
+                - generic [ref=e268]: 10月
+              - generic [ref=e270]:
+                - generic [ref=e272]: "0"
+                - generic [ref=e274]: "95"
+                - generic [ref=e276]: "190"
+                - generic [ref=e278]: "285"
+                - generic [ref=e280]: "380"
+            - list [ref=e312]:
+              - listitem [ref=e313]:
+                - img [ref=e314]
+                - text: 新患（人）
+              - listitem [ref=e316]:
+                - img [ref=e317]
+                - text: 既存患者（人）
+      - generic [ref=e319]:
+        - generic [ref=e321]:
+          - heading "ユニット稼働率推移（直近6ヶ月）" [level=6] [ref=e322]
+          - generic [ref=e324]:
+            - img [ref=e325]:
+              - generic [ref=e330]:
+                - generic [ref=e332]: 05月
+                - generic [ref=e334]: 06月
+                - generic [ref=e336]: 07月
+                - generic [ref=e338]: 08月
+                - generic [ref=e340]: 09月
+                - generic [ref=e342]: 10月
+              - generic [ref=e344]:
+                - generic [ref=e346]: "60"
+                - generic [ref=e348]: "67"
+                - generic [ref=e350]: "74"
+                - generic [ref=e352]: "85"
+            - list [ref=e356]:
+              - listitem [ref=e357]:
+                - img [ref=e358]
+                - text: 稼働率（%）
+        - generic [ref=e361]:
+          - heading "自費率推移（直近6ヶ月）" [level=6] [ref=e362]
+          - generic [ref=e364]:
+            - img [ref=e365]:
+              - generic [ref=e370]:
+                - generic [ref=e372]: 05月
+                - generic [ref=e374]: 06月
+                - generic [ref=e376]: 07月
+                - generic [ref=e378]: 08月
+                - generic [ref=e380]: 09月
+                - generic [ref=e382]: 10月
+              - generic [ref=e384]:
+                - generic [ref=e386]: "15"
+                - generic [ref=e388]: "17"
+                - generic [ref=e390]: "19"
+                - generic [ref=e392]: "22"
+            - list [ref=e396]:
+              - listitem [ref=e397]:
+                - img [ref=e398]
+                - text: 自費率（%）
+  - generic [ref=e400]: "15"
+```
