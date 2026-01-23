@@ -68,3 +68,6 @@ logs/
 
 # Git setup progress
 .git_setup_progress.md
+
+# Archive documents (実装完了済み・未実装詳細設計のアーカイブ)
+docs_archive/

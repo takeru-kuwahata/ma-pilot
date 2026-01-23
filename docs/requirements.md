@@ -116,11 +116,7 @@
 
 **✅ 全ページ実装完了（2025-12-26）**
 
-- 医院ユーザー向けページ: 全10ページ実装完了（フロントエンド + バックエンドAPI統合済み）
-- 管理者向けページ: 全3ページ実装完了
-- 印刷物受注システム: 全3ページ実装完了
-
-**詳細仕様**: 各ページのコード（`frontend/src/pages/`、`backend/src/api/`）を参照
+**詳細**: コードを参照（`frontend/src/pages/`、`backend/src/api/`）
 
 ---
 
@@ -128,10 +124,9 @@
 
 **✅ 実装完了（2025-12-26）**
 
-詳細は以下を参照:
-- **型定義**: `frontend/src/types/index.ts`（346行、全エンティティ定義済み）
-- **データベーススキーマ**: `backend/supabase_schema.sql`（8テーブル、RLS設定済み）
-- **バリデーション**: React Hook Form + Pydantic（二重チェック実装済み）
+**詳細**: コードを参照
+- 型定義: `frontend/src/types/index.ts`
+- スキーマ: `backend/supabase_schema.sql`
 
 ---
 
@@ -157,11 +152,7 @@
 
 **✅ 実装完了（2025-12-26）**
 
-詳細は以下のサービス実装を参照:
-- `backend/src/services/market_analysis_service.py`
-- `backend/src/services/simulation_service.py`
-- `backend/src/services/report_service.py`
-- `backend/src/services/monthly_data_service.py`
+**詳細**: `backend/src/services/` 内の各サービス実装を参照
 
 ---
 
@@ -365,210 +356,26 @@ CI/CD:
 #### 画面設計
 
 **新規ページ**:
-- **P-008**: ヒアリングフォーム
-  - URL: `/hearing`
-  - 権限: clinic_owner、clinic_editor
-  - 内容: PDFベースの質問フォーム（チェックボックス、数値入力、自由記述）
-  - Lstep連携: URLパラメータ `?lstep_id={ID}` でアクセス
-
-- **P-009**: ヒアリング結果
-  - URL: `/hearing/result`
-  - 権限: clinic_owner、clinic_editor、clinic_viewer
-  - 内容: AI分析結果（強み・課題）、企業レコメンド、履歴表示
-
-- **A-004**: 企業管理（管理者専用）
-  - URL: `/admin/companies`
-  - 権限: system_admin
-  - 内容: 企業CRUD、CSV一括読込
+- P-008: ヒアリングフォーム（`/hearing`）
+- P-009: ヒアリング結果（`/hearing/result`）
+- A-004: 企業管理（`/admin/companies`、管理者専用）
 
 **既存ページ改修**:
-- **P-002 経営ダッシュボード**:
-  - タブUI追加（「数値分析」「ヒアリング分析」）
-  - ヒアリング分析タブ: 最新分析結果、企業レコメンド、履歴一覧表示
+- P-002: 経営ダッシュボードにタブUI追加（数値分析・ヒアリング分析）
 
 #### API設計
 
-**新規エンドポイント**:
+**新規エンドポイント**: 12エンドポイント（ヒアリング関連6、企業管理5、運営側分析1）
 
-```yaml
-ヒアリング関連:
-  POST /api/hearings:
-    説明: ヒアリング回答を保存
-    権限: clinic_owner, clinic_editor
-
-  GET /api/hearings?clinic_id={id}:
-    説明: ヒアリング履歴取得
-    権限: clinic_owner, clinic_editor, clinic_viewer
-
-  GET /api/hearings/latest?clinic_id={id}:
-    説明: 最新ヒアリング取得
-    権限: clinic_owner, clinic_editor, clinic_viewer
-
-  POST /api/hearings/{hearing_id}/analyze:
-    説明: AI分析実行（非同期）
-    権限: system（自動実行）
-
-  GET /api/hearings/{hearing_id}/analysis:
-    説明: AI分析結果取得
-    権限: clinic_owner, clinic_editor, clinic_viewer
-
-  GET /api/hearings/{hearing_id}/recommendations:
-    説明: 企業レコメンド取得
-    権限: clinic_owner, clinic_editor, clinic_viewer
-
-企業管理関連:
-  GET /api/companies:
-    説明: 企業一覧取得
-    権限: system_admin
-
-  POST /api/companies:
-    説明: 企業作成
-    権限: system_admin
-
-  PUT /api/companies/{id}:
-    説明: 企業更新
-    権限: system_admin
-
-  DELETE /api/companies/{id}:
-    説明: 企業削除
-    権限: system_admin
-
-  POST /api/companies/import-csv:
-    説明: CSV一括読込
-    権限: system_admin
-
-運営側分析:
-  GET /api/admin/hearings:
-    説明: 全クリニックヒアリング一覧・集計
-    権限: system_admin
-```
+詳細はPhase 6実装時に`backend/src/api/hearings.py`、`backend/src/api/companies.py`にて実装予定
 
 #### データモデル
 
-**追加する型定義（types/index.tsに追加）**:
+**追加予定**:
+- 型定義: `frontend/src/types/index.ts`に追加（Hearing、HearingAnalysis、Company、Recommendation等）
+- データベース: 4テーブル追加（hearings、hearing_analyses、companies、recommendations）
 
-```typescript
-// ============================================
-// ヒアリング関連型定義（Phase 2追加）
-// ============================================
-
-export interface HearingResponseData {
-  // 質問フォームの回答データ（詳細は実装時に確定）
-  section1: {
-    monthlyRevenue: number;
-    staffCount: number;
-    patientCount: number;
-    // ... その他質問項目
-  };
-  section2: {
-    challenges: string[];
-    priorities: string[];
-    // ...
-  };
-  section3: {
-    goals: string[];
-    timeline: string;
-    // ...
-  };
-}
-
-export interface Hearing {
-  id: string;
-  clinicId: string;
-  lstepId?: string;
-  responseData: HearingResponseData;
-  isLatest: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Challenge {
-  category: string;      // 課題カテゴリ（採用、マーケティング等）
-  description: string;   // 課題詳細
-  priority: 'high' | 'medium' | 'low';
-}
-
-export interface HearingAnalysis {
-  id: string;
-  hearingId: string;
-  strongPoints: string[];
-  challenges: Challenge[];
-  analysisStatus: 'pending' | 'processing' | 'completed' | 'failed';
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Company {
-  id: string;
-  name: string;
-  category: string;
-  serviceDescription: string;
-  contactEmail: string;
-  websiteUrl: string;
-  tags: string[];
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Recommendation {
-  id: string;
-  hearingAnalysisId: string;
-  company: Company;
-  challengeCategory: string;
-  matchScore: number;  // 0-100
-}
-```
-
-**データベーステーブル（Supabase）**:
-
-```sql
--- ヒアリング回答テーブル
-CREATE TABLE hearings (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  clinic_id UUID REFERENCES clinics(id) ON DELETE CASCADE,
-  lstep_id VARCHAR(100),
-  response_data JSONB NOT NULL,
-  is_latest BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- AI分析結果テーブル
-CREATE TABLE hearing_analyses (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  hearing_id UUID REFERENCES hearings(id) ON DELETE CASCADE,
-  strong_points TEXT[],
-  challenges JSONB,
-  analysis_status VARCHAR(20) DEFAULT 'pending',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- 企業マスタテーブル
-CREATE TABLE companies (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(255) NOT NULL,
-  category VARCHAR(100) NOT NULL,
-  service_description TEXT,
-  contact_email VARCHAR(255),
-  website_url VARCHAR(500),
-  tags TEXT[],
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- レコメンドテーブル
-CREATE TABLE recommendations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  hearing_analysis_id UUID REFERENCES hearing_analyses(id) ON DELETE CASCADE,
-  company_id UUID REFERENCES companies(id) ON DELETE CASCADE,
-  challenge_category VARCHAR(100),
-  match_score NUMERIC(5,2),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-```
+詳細はPhase 6実装時に確定
 
 ---
 
@@ -576,136 +383,21 @@ CREATE TABLE recommendations (
 
 #### Phase 1: 既存機能バックエンド実装（✅ 完了 2025-12-26）
 
-**目的**: フロントエンド10ページのバックエンドAPI実装、MVP完成
+**実装成果**: 30エンドポイント実装完了、フロントエンド・バックエンド統合完了
 
-**実装成果**:
-- ✅ バックエンド環境構築完了（FastAPI、Supabase接続）
-- ✅ 30エンドポイント実装完了
-- ✅ 10サービス実装完了
-- ✅ フロントエンド・バックエンド統合完了
-- ✅ TypeScriptビルドエラー0件
-- ⏳ デプロイ準備完了（Vercel + Render.com）
+#### Phase 2: ヒアリングシート機能実装（未着手）
 
-#### Phase 2: ヒアリングシート機能実装（オプション、2-3週間）
-
-**目的**: Phase 1完了後、ヒアリング機能を追加
-
-**主要タスク**:
-1. データベーススキーマ拡張（4テーブル）
-2. 企業マスタ管理（CSV一括読込、CRUD）
-3. ヒアリングフォーム（PDFベースのWebフォーム）
-4. AI分析機能（Claude API統合）
-5. 企業レコメンド（ルールベースマッチング）
-6. ダッシュボード統合（タブUI）
-7. 運営側分析機能（全クリニック集計）
-
-**完了条件**:
-- [ ] ヒアリングフォームが動作
-- [ ] AI分析が実行可能
-- [ ] 企業レコメンドが表示
-- [ ] ダッシュボードに統合済み
+**主要タスク**: データベーススキーマ拡張、ヒアリングフォーム、AI分析機能、企業レコメンド、ダッシュボード統合
 
 ---
 
-### AI分析の仕様
+### AI分析・企業レコメンド・Lstep連携の仕様
 
-**使用AI/LLM**: Claude API（Sonnet 4.5）
-
-**分析ロジック**:
-1. ヒアリング回答データ（JSON）を入力
-2. Claude APIにプロンプト送信
-3. 強み（配列）、課題（カテゴリ別、優先度付き）を抽出
-4. 分析結果をhearing_analysesテーブルに保存
-
-**プロンプト設計**:
-- 桑畑様 + Claude Code協業で設計
-- Phase 1実装中に並行準備
-- Phase 2 Step 4実装前に確定
-
-**実行タイミング**: リアルタイム分析（ヒアリング保存直後に非同期実行）
-
----
-
-### 企業レコメンドの仕様
-
-**マッチングロジック**: ルールベースマッチング（MVP版）
-
-**スコア計算**:
-- カテゴリ完全一致: +50点
-- タグマッチング: +10点/1タグ（最大30点）
-- 優先度加点: high +20、medium +10、low +5
-- **最大100点**
-
-**表示方法**:
-- 上位5社を表示
-- マッチングスコアを星（★★★★☆）で可視化
-- 企業詳細（名称、カテゴリ、説明、連絡先）をカード表示
-
----
-
-### Lstep連携の仕様
-
-**連携方式**: Lstep ID連携方式
-
-**アクセスURL**: `https://ma-pilot.com/hearing?lstep_id={ID}`
-
-**前提条件**:
-- Lstep側で各クリニックに一意のIDを発行
-- MA-Pilot側でlstep_idとclinic_idのマッピングテーブルを管理
-
-**認証フロー**:
-1. Lstepから`?lstep_id={ID}`付きでアクセス
-2. MA-Pilot側でlstep_idからclinic_idを取得
-3. 初回アクセス時のみ簡易認証、2回目以降はシームレス
-
-**詳細仕様**: Phase 1実装中に確定
-
----
-
-### 回答データの履歴管理
-
-**方針**: 複数回可能、履歴保存（経年変化追跡）
-
-**理由**:
-- 開業1年以内の医院が対象のため、経営状況の変化を追跡する価値が高い
-- 定期ヒアリング（3ヶ月ごと）を推奨する運用
-- 「課題が改善したか」をデータで検証可能
-
-**実装**:
-- hearingsテーブルで全履歴を保存
-- is_latestフラグで最新回答をマーク
-- ダッシュボードで「最新のみ表示」「履歴比較表示」の切替UI
-
----
-
-### 制約事項・リスク
-
-**技術的制約**:
-- Claude API使用料: 1回分析あたり数円〜数十円（クリニック数×月4回で試算が必要）
-- 企業データの精査・編集が必要（クライアント待ち）
-- Lstep側の技術仕様確認が必要（Phase 1実装中に確定）
-
-**ビジネス制約**:
-- Phase 1完了が前提（バックエンド基盤が必須）
-- 企業マスタの初期データ取得がPhase 2開始の前提
-
-**リスクと対策**:
-- AI分析精度の不確実性 → プロンプト改善、人間レビュー併用
-- Claude APIレート制限 → リトライロジック、エラーハンドリング
-- Lstep連携の技術的障壁 → 外部リンク方式へのフォールバック
-
----
-
-### 未確定事項（Phase 1実装中に詰める）
-
-- [ ] ヒアリングフォームの質問項目詳細（PDFのどこまでをWebフォーム化するか）
-- [ ] Lstep ID連携の技術仕様（Lstep側の対応可否）
-- [ ] AI分析プロンプトの詳細設計（入力・出力フォーマット）
-- [ ] 企業マスタの初期データ（CSV提供時期）
-
----
-
-注: 実装完了後は該当部分を削除し、コードを真実源とする
+Phase 2実装時に詳細設計を実施。主要方針:
+- AI分析: Claude API（Sonnet 4.5）使用、リアルタイム非同期実行
+- 企業レコメンド: ルールベースマッチング（MVP版）
+- Lstep連携: URLパラメータ `?lstep_id={ID}` で外部連携
+- 履歴管理: 複数回ヒアリング可能、経年変化追跡
 
 ---
 
@@ -714,26 +406,13 @@ CREATE TABLE recommendations (
 **✅ 実装完了（2025-12-26）**
 
 **概要**:
-- 目的: 歯科医院向けに診察券、名刺、リコールハガキ等の印刷物を簡単に注文できるシステムを提供
-- 対象ユーザー: シカレッジ連携によるキントーン登録医院
-- 印刷会社: 京葉広告
+- 目的: 診察券、名刺、リコールハガキ等の印刷物注文システム
+- 対象ユーザー: シカレッジ連携医院
 - パターン: A/B（相談フォーム）、C（再注文・自動見積もり）
 
-**実装状況**:
-- ✅ 7エンドポイント実装済み
-- ✅ フロントエンド3ページ実装済み
-- ✅ 見積もりPDF生成実装済み
-- ✅ メール送信実装済み（MVP版: ログ出力）
-- ⏳ Stripe決済連携（将来拡張）
-
-**詳細仕様**: コード（`backend/src/api/print_orders.py`、`frontend/src/pages/PrintOrder*.tsx`）を参照
-
-**MVP対象商品**: 診察券、名刺、リコールハガキ、A4三つ折りリーフレット、ネームプレート、その他
-
-**注文パターン**:
-- パターンA/B（相談フォーム）: メール + クリニック名のみ必須、気軽な相談向け
-- パターンC（再注文）: 全項目必須、自動見積もり、PDF生成、承認フロー
-
-**技術実装**: `frontend/src/types/index.ts`（PrintOrder、PriceTable型定義）、`backend/src/services/print_order_service.py`（見積もりロジック）、`backend/src/services/pdf_service.py`（PDF生成）参照
+**詳細**: コード参照
+- バックエンド: `backend/src/api/print_orders.py`、`backend/src/services/print_order_service.py`
+- フロントエンド: `frontend/src/pages/PrintOrder*.tsx`
+- 型定義: `frontend/src/types/index.ts`（PrintOrder関連）
 
 ---

@@ -360,6 +360,46 @@ CI/CD（GitHub Actions）:
   - mainマージ時: 自動デプロイ（Vercel + Render）
 ```
 
+## ドキュメント管理ルール
+
+```yaml
+ドキュメント配置:
+  現役ドキュメント（docs/）:
+    - requirements.md: 現在の要件定義（未実装機能含む）
+    - SCOPE_PROGRESS.md: 進捗管理
+    - デプロイ手順書・トラブルシューティング等の運用ドキュメント
+    - 開発中・参照中のドキュメント
+
+  アーカイブ（docs_archive/）:
+    - 実装完了済みの詳細設計（コードが真実源となったもの）
+    - Phase 6未実装機能の詳細設計（実装時に最新化して再作成）
+    - 調査資料・事例研究（企画段階で使用、実装フェーズでは不要）
+
+管理方針:
+  - 実装完了後は詳細設計をdocs_archiveへ移動
+  - コードを真実源として、ドキュメントは参照用のみ
+  - アーカイブは削除せず、ローカル保管（必要時に参照可能）
+  - docs_archiveはGit管理外（.gitignore）、Claude Code読み込み対象外（.claudeignore）
+
+アーカイブ済みファイル（2026-01-23時点）:
+  実装完了済み詳細設計:
+    - API_REFERENCE.md (1,161行) - 全30エンドポイント実装済み
+    - DATABASE_SCHEMA.md (568行) - Supabaseスキーマ実装済み
+    - BACKEND_IMPLEMENTATION.md (451行) - バックエンド実装完了
+
+  Phase 6 未実装機能の詳細設計:
+    - PHASE6_API_DESIGN.md (682行)
+    - PHASE6_DATABASE_DESIGN.md (686行)
+    - PHASE6_COMPONENT_DESIGN.md (708行)
+    - PHASE6_AI_INTEGRATION.md (604行)
+    - PHASE6_HEARING_REQUIREMENTS.md
+    - PHASE6_IMPLEMENTATION_PLAN.md
+    - PHASE6_COMPANY_CSV_FORMAT.md
+
+  調査資料:
+    - SHIKA_COLLEGE_GLOBAL_CASE_STUDIES.md (883行)
+```
+
 ## プロジェクト原則
 
 ```yaml
@@ -372,4 +412,9 @@ CI/CD（GitHub Actions）:
 拡張は後から:
   - Phase 11: 機能拡張オーケストレーターで追加実装
   - MVP完成後に追加機能を検討
+
+ドキュメント管理:
+  - 実装完了後は詳細設計をdocs_archiveへ移動
+  - コードを真実源とし、重複ドキュメントは作成しない
+  - Claude Codeフリーズ防止のため、不要なドキュメントはアーカイブ
 ```
