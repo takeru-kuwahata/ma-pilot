@@ -244,27 +244,42 @@ pytest tests/api/        # APIテストのみ
 
 ## デプロイ方法
 
-### Vercel（フロントエンド）
+### 🚀 クイックスタート（15分でデプロイ）
 
-1. Vercelダッシュボードで新規プロジェクト作成
-2. GitHubリポジトリ連携
-3. ビルド設定:
-   - Build Command: `cd frontend && npm run build`
-   - Output Directory: `frontend/dist`
-4. 環境変数設定（VITE_SUPABASE_URL等）
-5. デプロイ
+**初回セットアップスクリプトを実行**:
+```bash
+./deploy-setup.sh
+```
 
-### Render.com（バックエンド）
+**詳細手順**: [DEPLOY_QUICK_START.md](DEPLOY_QUICK_START.md) を参照
 
-1. Render.comダッシュボードで新規Web Service作成
-2. GitHubリポジトリ連携
-3. ビルド設定:
-   - Build Command: `cd backend && pip install -r requirements.txt`
-   - Start Command: `cd backend && uvicorn main:app --host 0.0.0.0 --port 8432`
-4. 環境変数設定（.env.production参照）
-5. デプロイ
+### 3ステップデプロイ
 
-詳細は [運用ガイド](docs/OPERATIONS_GUIDE.md) を参照してください。
+1. **Supabase**: プロジェクト作成 → SQL実行（5分）
+2. **Vercel**: GitHubリポジトリ連携 → 環境変数設定（3分）
+3. **Render.com**: Web Service作成 → 環境変数設定（3分）
+
+### 自動デプロイ（2回目以降）
+
+初回セットアップ後は、Git Pushだけで自動デプロイ:
+
+```bash
+git add .
+git commit -m "update: 新機能追加"
+git push origin main
+```
+
+GitHub Actionsが自動的に:
+- ✅ テスト実行
+- ✅ Vercelにフロントエンドデプロイ
+- ✅ Render.comにバックエンドデプロイ
+
+### 詳細ドキュメント
+
+- [デプロイクイックスタート](DEPLOY_QUICK_START.md) - 15分でデプロイ
+- [デプロイガイド](docs/DEPLOYMENT_GUIDE.md) - 完全版手順
+- [デプロイチェックリスト](docs/DEPLOYMENT_CHECKLIST.md) - 確認項目
+- [環境変数ガイド](docs/ENVIRONMENT_VARIABLES.md) - 設定方法
 
 ## ドキュメント
 
@@ -370,4 +385,4 @@ pytest tests/api/        # APIテストのみ
 
 ---
 
-**最終更新**: 2025年12月26日
+**最終更新**: 2026年01月26日

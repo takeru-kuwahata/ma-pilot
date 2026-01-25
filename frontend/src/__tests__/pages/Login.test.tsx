@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { Login } from '../../pages/Login';
+import LoginPage from '../../pages/LoginPage';
 
 describe('Login Page', () => {
   it('renders login page', () => {
     render(
       <BrowserRouter>
-        <Login />
+        <LoginPage />
       </BrowserRouter>
     );
     expect(screen.getByText(/ログイン|Login/i)).toBeDefined();
