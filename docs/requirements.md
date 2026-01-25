@@ -116,6 +116,21 @@
 
 **✅ 全ページ実装完了（2025-12-26）**
 
+**コアシステム**: 11ページ
+- P-001〜P-007: 医院ユーザー向けページ（7ページ）
+- A-001〜A-003: 管理者向けページ（3ページ）
+- スタッフ管理: 医院設定から分離（1ページ）
+
+**印刷物受注システム**: 3ページ
+- 価格表管理（PriceTableManagement）
+- 注文フォーム（PrintOrderForm）
+- 注文履歴（PrintOrderHistory）
+
+**Phase 6（ヒアリングシート機能）**: ⏸️ 未実装
+- P-008: ヒアリングフォーム
+- P-009: ヒアリング結果
+- A-004: 企業管理
+
 **詳細**: コードを参照（`frontend/src/pages/`、`backend/src/api/`）
 
 ---
@@ -123,6 +138,14 @@
 ## 4. データ設計概要
 
 **✅ 実装完了（2025-12-26）**
+
+**コアシステム**:
+- データベーステーブル: 6テーブル（clinics, monthly_data, simulations, reports, market_analyses, user_metadata）
+- 型定義: 20+型（User, Clinic, MonthlyData, Simulation, Report, MarketAnalysis等）
+
+**印刷物受注システム**:
+- データベーステーブル: 2テーブル（price_tables, print_orders）
+- 型定義: 4型（PriceTable, PrintOrder, PrintOrderFormData, PriceEstimate関連）
 
 **詳細**: コードを参照
 - 型定義: `frontend/src/types/index.ts`
@@ -410,9 +433,16 @@ Phase 2実装時に詳細設計を実施。主要方針:
 - 対象ユーザー: シカレッジ連携医院
 - パターン: A/B（相談フォーム）、C（再注文・自動見積もり）
 
+**実装規模**:
+- フロントエンド: 3ページ実装済み（価格表管理、注文フォーム、注文履歴）
+- バックエンド: 8エンドポイント実装済み（price-tables: 2、print-orders: 6）
+- データモデル: 4型定義追加（PriceTable, PrintOrder, PrintOrderFormData, PriceEstimate関連）
+- データベース: 2テーブル追加（price_tables, print_orders）
+
 **詳細**: コード参照
 - バックエンド: `backend/src/api/print_orders.py`、`backend/src/services/print_order_service.py`
-- フロントエンド: `frontend/src/pages/PrintOrder*.tsx`
+- フロントエンド: `frontend/src/pages/PrintOrder*.tsx`、`frontend/src/pages/PriceTableManagement.tsx`
 - 型定義: `frontend/src/types/index.ts`（PrintOrder関連）
+- スキーマ: `backend/supabase_schema.sql`（セクション7-8）
 
 ---

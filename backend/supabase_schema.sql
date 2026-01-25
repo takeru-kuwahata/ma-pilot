@@ -1,5 +1,5 @@
 -- MA-Pilot Database Schema
--- 6 core tables for clinic management system
+-- 8 tables for clinic management system (6 core + 2 print order system)
 
 -- ============================================
 -- 1. Clinics Table
@@ -282,6 +282,88 @@ CREATE TRIGGER update_market_analyses_updated_at BEFORE UPDATE ON market_analyse
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_user_metadata_updated_at BEFORE UPDATE ON user_metadata
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================
+-- 7. Price Tables (Print Order System)
+-- ============================================
+CREATE TABLE IF NOT EXISTS price_tables (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  category TEXT NOT NULL,
+  item_name TEXT NOT NULL,
+  unit_price NUMERIC(10, 2) NOT NULL,
+  min_quantity INTEGER DEFAULT 1,
+  description TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Index for performance
+CREATE INDEX IF NOT EXISTS idx_price_tables_category ON price_tables(category);
+
+-- ============================================
+-- 8. Print Orders (Print Order System)
+-- ============================================
+CREATE TABLE IF NOT EXISTS print_orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  clinic_id UUID NOT NULL REFERENCES clinics(id) ON DELETE CASCADE,
+  order_type TEXT NOT NULL CHECK (order_type IN ('consultation', 'reorder')),
+  items JSONB NOT NULL,
+  total_amount NUMERIC(12, 2),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'processing', 'completed', 'cancelled')),
+  contact_info JSONB,
+  memo TEXT,
+  approved_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Index for performance
+CREATE INDEX IF NOT EXISTS idx_print_orders_clinic_id ON print_orders(clinic_id);
+CREATE INDEX IF NOT EXISTS idx_print_orders_status ON print_orders(status);
+
+-- Enable RLS on print order tables
+ALTER TABLE price_tables ENABLE ROW LEVEL SECURITY;
+ALTER TABLE print_orders ENABLE ROW LEVEL SECURITY;
+
+-- Price Tables RLS Policies (全員が閲覧可能)
+CREATE POLICY "Anyone can view price tables"
+  ON price_tables FOR SELECT
+  USING (true);
+
+CREATE POLICY "System admins can manage price tables"
+  ON price_tables FOR ALL
+  USING (
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND role = 'system_admin')
+  );
+
+-- Print Orders RLS Policies
+CREATE POLICY "Users can view their clinic's print orders"
+  ON print_orders FOR SELECT
+  USING (
+    clinic_id IN (SELECT id FROM clinics WHERE owner_id = auth.uid()) OR
+    clinic_id IN (SELECT clinic_id FROM user_metadata WHERE user_id = auth.uid()) OR
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND role = 'system_admin')
+  );
+
+CREATE POLICY "Users can create print orders for their clinic"
+  ON print_orders FOR INSERT
+  WITH CHECK (
+    clinic_id IN (SELECT id FROM clinics WHERE owner_id = auth.uid()) OR
+    clinic_id IN (SELECT clinic_id FROM user_metadata WHERE user_id = auth.uid())
+  );
+
+CREATE POLICY "System admins can manage all print orders"
+  ON print_orders FOR UPDATE
+  USING (
+    EXISTS (SELECT 1 FROM user_metadata WHERE user_id = auth.uid() AND role = 'system_admin')
+  );
+
+-- Triggers for updated_at
+CREATE TRIGGER update_price_tables_updated_at BEFORE UPDATE ON price_tables
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_print_orders_updated_at BEFORE UPDATE ON print_orders
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================
