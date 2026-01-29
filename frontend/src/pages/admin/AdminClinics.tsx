@@ -84,7 +84,7 @@ export const AdminClinics = () => {
   };
 
   const handleAddClinic = () => {
-    // TODO: Phase 4で新規登録ダイアログ実装
+    alert('医院の新規登録機能は現在開発中です。\n\n暫定対応として、Supabase管理画面から直接データを追加してください。');
   };
 
   const getStatusLabel = (isActive: boolean): string => {

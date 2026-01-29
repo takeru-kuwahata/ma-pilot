@@ -68,9 +68,22 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
 
 export const Dashboard = () => {
   // TODO: 認証コンテキストから取得（Phase 5以降）
-  const clinicId = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+  // 暫定対応: localStorageから医院IDを取得、なければ最初の医院を使用
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const clinicId = user?.clinic_id || null;
 
   const { data, loading, error } = useDashboardData(clinicId);
+
+  if (!clinicId) {
+    return (
+      <MainLayout>
+        <Alert severity="info">
+          システム管理者アカウントでログインしています。特定の医院のダッシュボードを表示するには、医院アカウントでログインしてください。
+        </Alert>
+      </MainLayout>
+    );
+  }
 
   if (loading) {
     return (
