@@ -82,18 +82,23 @@ export const Dashboard = () => {
   const userClinicId = user?.clinic_id || null;
   const clinicId = userClinicId || firstClinicId;
 
-  // システム管理者の場合、最初の医院を取得（1回のみ実行）
+  // システム管理者の場合、最初の医院を取得
   useEffect(() => {
     if (isSystemAdmin && !userClinicId && !firstClinicId) {
+      console.log('[Dashboard] Fetching first clinic for system admin...');
       adminService.getClinics()
         .then(clinics => {
+          console.log('[Dashboard] Fetched clinics:', clinics);
           if (clinics.length > 0) {
             setFirstClinicId(clinics[0].id);
+            console.log('[Dashboard] Set first clinic ID:', clinics[0].id);
+          } else {
+            console.warn('[Dashboard] No clinics found');
           }
         })
-        .catch(err => console.error('Failed to fetch first clinic:', err));
+        .catch(err => console.error('[Dashboard] Failed to fetch first clinic:', err));
     }
-  }, []); // 空の依存配列で1回のみ実行
+  }, [isSystemAdmin, userClinicId, firstClinicId]);
 
   const { data, loading, error } = useDashboardData(clinicId);
 
