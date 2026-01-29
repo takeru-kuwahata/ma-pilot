@@ -71,6 +71,7 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
 
 export const Dashboard = () => {
   const [firstClinicId, setFirstClinicId] = useState<string | null>(null);
+  const [hasAttemptedFetch, setHasAttemptedFetch] = useState(false);
 
   // TODO: 認証コンテキストから取得（Phase 5以降）
   const user = useMemo(() => {
@@ -82,9 +83,10 @@ export const Dashboard = () => {
   const userClinicId = user?.clinic_id || null;
   const clinicId = userClinicId || firstClinicId;
 
-  // システム管理者の場合、最初の医院を取得
+  // システム管理者の場合、最初の医院を取得（1回のみ）
   useEffect(() => {
-    if (isSystemAdmin && !userClinicId && !firstClinicId) {
+    if (isSystemAdmin && !userClinicId && !hasAttemptedFetch) {
+      setHasAttemptedFetch(true);
       console.log('[Dashboard] Fetching first clinic for system admin...');
       adminService.getClinics()
         .then(clinics => {
@@ -98,7 +100,7 @@ export const Dashboard = () => {
         })
         .catch(err => console.error('[Dashboard] Failed to fetch first clinic:', err));
     }
-  }, [isSystemAdmin, userClinicId, firstClinicId]);
+  }, [isSystemAdmin, userClinicId, hasAttemptedFetch]);
 
   const { data, loading, error } = useDashboardData(clinicId);
 
