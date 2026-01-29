@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Box, Typography, Grid, Paper, Alert, CircularProgress } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -13,7 +13,6 @@ import {
 import { MainLayout } from '../layouts/MainLayout';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { useDashboardData } from '../hooks/useDashboardData';
-import { adminService } from '../services/api';
 import { DashboardKpi } from '../types';
 import {
   LineChart,
