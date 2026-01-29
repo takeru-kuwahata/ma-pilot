@@ -18,6 +18,12 @@ import {
   Business as BusinessIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
+  EditNote as EditNoteIcon,
+  LocationOn as LocationOnIcon,
+  TrendingUp as TrendingUpIcon,
+  Description as DescriptionIcon,
+  Print as PrintIcon,
+  People as PeopleIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -35,10 +41,24 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const userName = 'システム管理者';
   const userInitial = '管';
 
-  const menuItems = [
+  const adminMenuItems = [
     { path: '/admin/dashboard', label: '管理ダッシュボード', icon: <DashboardIcon /> },
     { path: '/admin/clinics', label: '医院アカウント管理', icon: <BusinessIcon /> },
     { path: '/admin/settings', label: 'システム設定', icon: <SettingsIcon /> },
+  ];
+
+  const clinicMenuItems = [
+    { path: '/dashboard', label: 'ダッシュボード', icon: <DashboardIcon /> },
+    { path: '/data-management', label: '基礎データ管理', icon: <EditNoteIcon /> },
+    { path: '/market-analysis', label: '診療圏分析', icon: <LocationOnIcon /> },
+    { path: '/simulation', label: '経営シミュレーション', icon: <TrendingUpIcon /> },
+    { path: '/reports', label: 'レポート管理', icon: <DescriptionIcon /> },
+    { path: '/print-order', label: '印刷物発注', icon: <PrintIcon /> },
+  ];
+
+  const settingsItems = [
+    { path: '/clinic-settings', label: '医院設定', icon: <BusinessIcon /> },
+    { path: '/staff-management', label: 'スタッフ管理', icon: <PeopleIcon /> },
   ];
 
   const handleNavigation = (path: string) => {
@@ -162,7 +182,103 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         </Typography>
 
         <List sx={{ pt: 0, pb: 0 }}>
-          {menuItems.map((item) => (
+          {adminMenuItems.map((item) => (
+            <ListItem key={item.path} disablePadding>
+              <ListItemButton
+                selected={location.pathname === item.path}
+                onClick={() => handleNavigation(item.path)}
+                sx={{
+                  py: 1.5,
+                  px: 3,
+                  '&.Mui-selected': {
+                    backgroundColor: 'rgba(255, 107, 53, 0.08)',
+                    borderLeft: '3px solid #FF6B35',
+                    color: '#FF6B35',
+                    pl: 'calc(24px - 3px)',
+                    '& .MuiListItemIcon-root': {
+                      color: '#FF6B35',
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+
+        <Divider sx={{ my: 2, mx: 3 }} />
+
+        <Typography
+          variant="caption"
+          sx={{
+            px: 3,
+            py: 1.5,
+            display: 'block',
+            color: '#9e9e9e',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            fontSize: 12,
+          }}
+        >
+          医院機能
+        </Typography>
+
+        <List sx={{ pt: 0, pb: 0 }}>
+          {clinicMenuItems.map((item) => (
+            <ListItem key={item.path} disablePadding>
+              <ListItemButton
+                selected={location.pathname === item.path}
+                onClick={() => handleNavigation(item.path)}
+                sx={{
+                  py: 1.5,
+                  px: 3,
+                  '&.Mui-selected': {
+                    backgroundColor: 'rgba(255, 107, 53, 0.08)',
+                    borderLeft: '3px solid #FF6B35',
+                    color: '#FF6B35',
+                    pl: 'calc(24px - 3px)',
+                    '& .MuiListItemIcon-root': {
+                      color: '#FF6B35',
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+
+        <Divider sx={{ my: 2, mx: 3 }} />
+
+        <Typography
+          variant="caption"
+          sx={{
+            px: 3,
+            py: 1.5,
+            display: 'block',
+            color: '#9e9e9e',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            fontSize: 12,
+          }}
+        >
+          設定
+        </Typography>
+
+        <List sx={{ pt: 0, pb: 0 }}>
+          {settingsItems.map((item) => (
             <ListItem key={item.path} disablePadding>
               <ListItemButton
                 selected={location.pathname === item.path}
