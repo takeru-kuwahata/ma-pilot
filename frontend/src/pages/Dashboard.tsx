@@ -279,10 +279,13 @@ export const Dashboard = () => {
               </Typography>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart
-                  data={data.trends.map((t) => ({
-                    month: t.yearMonth.substring(5, 7) + '月',
-                    稼働率: t.unitUtilization,
-                  }))}
+                  data={(data.trends || []).map((t) => {
+                    const ym = t?.yearMonth || (t as any)?.year_month || '0000-00';
+                    return {
+                      month: ym.substring(5, 7) + '月',
+                      稼働率: t?.unitUtilization ?? (t as any)?.unit_utilization ?? 0,
+                    };
+                  })}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
@@ -309,10 +312,13 @@ export const Dashboard = () => {
               </Typography>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart
-                  data={data.trends.map((t) => ({
-                    month: t.yearMonth.substring(5, 7) + '月',
-                    自費率: t.selfPayRate,
-                  }))}
+                  data={(data.trends || []).map((t) => {
+                    const ym = t?.yearMonth || (t as any)?.year_month || '0000-00';
+                    return {
+                      month: ym.substring(5, 7) + '月',
+                      自費率: t?.selfPayRate ?? (t as any)?.self_pay_rate ?? 0,
+                    };
+                  })}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
