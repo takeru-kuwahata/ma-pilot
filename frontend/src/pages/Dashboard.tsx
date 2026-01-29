@@ -132,10 +132,13 @@ export const Dashboard = () => {
   ];
 
   // グラフデータのフォーマット（月次推移）
-  const chartData = data.trends
-    .filter((trend) => trend && (trend.yearMonth || (trend as any).year_month))
+  const chartData = (data.trends || [])
+    .filter((trend) => {
+      const ym = trend?.yearMonth || (trend as any)?.year_month;
+      return ym && typeof ym === 'string' && ym.length >= 7;
+    })
     .map((trend) => {
-      const yearMonth = trend.yearMonth || (trend as any).year_month;
+      const yearMonth = trend.yearMonth || (trend as any).year_month || '';
       const totalRevenue = trend.totalRevenue ?? (trend as any).total_revenue ?? 0;
       const operatingProfit = trend.operatingProfit ?? (trend as any).operating_profit ?? 0;
       return {
@@ -146,10 +149,13 @@ export const Dashboard = () => {
     });
 
   // 患者数推移データ
-  const patientChartData = data.trends
-    .filter((trend) => trend && (trend.yearMonth || (trend as any).year_month))
+  const patientChartData = (data.trends || [])
+    .filter((trend) => {
+      const ym = trend?.yearMonth || (trend as any)?.year_month;
+      return ym && typeof ym === 'string' && ym.length >= 7;
+    })
     .map((trend) => {
-      const yearMonth = trend.yearMonth || (trend as any).year_month;
+      const yearMonth = trend.yearMonth || (trend as any).year_month || '';
       const newPatients = trend.newPatients ?? (trend as any).new_patients ?? 0;
       const returningPatients = trend.returningPatients ?? (trend as any).returning_patients ?? 0;
       return {
