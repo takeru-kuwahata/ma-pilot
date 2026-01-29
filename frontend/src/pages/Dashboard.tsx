@@ -131,38 +131,45 @@ export const Dashboard = () => {
   ];
 
   // グラフデータのフォーマット（月次推移）
-  const chartData = (data.trends || [])
-    .filter((trend) => {
-      const ym = trend?.yearMonth || (trend as any)?.year_month;
-      return ym && typeof ym === 'string' && ym.length >= 7;
-    })
-    .map((trend) => {
-      const yearMonth = trend.yearMonth || (trend as any).year_month || '';
-      const totalRevenue = trend.totalRevenue ?? (trend as any).total_revenue ?? 0;
-      const operatingProfit = trend.operatingProfit ?? (trend as any).operating_profit ?? 0;
-      return {
-        month: yearMonth.substring(5, 7) + '月',
-        総売上: Math.round(totalRevenue / 10000),
-        営業利益: Math.round(operatingProfit / 10000),
-      };
-    });
+  let chartData: Array<{ month: string; 総売上: number; 営業利益: number }> = [];
+  let patientChartData: Array<{ month: string; 新患: number; 既存患者: number }> = [];
 
-  // 患者数推移データ
-  const patientChartData = (data.trends || [])
-    .filter((trend) => {
-      const ym = trend?.yearMonth || (trend as any)?.year_month;
-      return ym && typeof ym === 'string' && ym.length >= 7;
-    })
-    .map((trend) => {
-      const yearMonth = trend.yearMonth || (trend as any).year_month || '';
-      const newPatients = trend.newPatients ?? (trend as any).new_patients ?? 0;
-      const returningPatients = trend.returningPatients ?? (trend as any).returning_patients ?? 0;
-      return {
-        month: yearMonth.substring(5, 7) + '月',
-        新患: newPatients,
-        既存患者: returningPatients,
-      };
-    });
+  try {
+    chartData = (data.trends || [])
+      .map((trend) => {
+        const yearMonth = trend?.yearMonth || (trend as any)?.year_month;
+        if (!yearMonth || typeof yearMonth !== 'string' || yearMonth.length < 7) {
+          return null;
+        }
+        const totalRevenue = trend?.totalRevenue ?? (trend as any)?.total_revenue ?? 0;
+        const operatingProfit = trend?.operatingProfit ?? (trend as any)?.operating_profit ?? 0;
+        return {
+          month: yearMonth.substring(5, 7) + '月',
+          総売上: Math.round(totalRevenue / 10000),
+          営業利益: Math.round(operatingProfit / 10000),
+        };
+      })
+      .filter((item): item is { month: string; 総売上: number; 営業利益: number } => item !== null);
+
+    // 患者数推移データ
+    patientChartData = (data.trends || [])
+      .map((trend) => {
+        const yearMonth = trend?.yearMonth || (trend as any)?.year_month;
+        if (!yearMonth || typeof yearMonth !== 'string' || yearMonth.length < 7) {
+          return null;
+        }
+        const newPatients = trend?.newPatients ?? (trend as any)?.new_patients ?? 0;
+        const returningPatients = trend?.returningPatients ?? (trend as any)?.returning_patients ?? 0;
+        return {
+          month: yearMonth.substring(5, 7) + '月',
+          新患: newPatients,
+          既存患者: returningPatients,
+        };
+      })
+      .filter((item): item is { month: string; 新患: number; 既存患者: number } => item !== null);
+  } catch (error) {
+    console.error('[Dashboard] Error formatting chart data:', error);
+  }
 
   return (
     <Layout>
