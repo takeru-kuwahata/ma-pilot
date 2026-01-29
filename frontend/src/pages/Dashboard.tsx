@@ -70,9 +70,6 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
 };
 
 export const Dashboard = () => {
-  const [firstClinicId, setFirstClinicId] = useState<string | null>(null);
-  const [hasAttemptedFetch, setHasAttemptedFetch] = useState(false);
-
   // TODO: 認証コンテキストから取得（Phase 5以降）
   const user = useMemo(() => {
     const userStr = localStorage.getItem('user');
@@ -81,26 +78,11 @@ export const Dashboard = () => {
 
   const isSystemAdmin = user?.role === 'system_admin';
   const userClinicId = user?.clinic_id || null;
-  const clinicId = userClinicId || firstClinicId;
 
-  // システム管理者の場合、最初の医院を取得（1回のみ）
-  useEffect(() => {
-    if (isSystemAdmin && !userClinicId && !hasAttemptedFetch) {
-      setHasAttemptedFetch(true);
-      console.log('[Dashboard] Fetching first clinic for system admin...');
-      adminService.getClinics()
-        .then(clinics => {
-          console.log('[Dashboard] Fetched clinics:', clinics);
-          if (clinics.length > 0) {
-            setFirstClinicId(clinics[0].id);
-            console.log('[Dashboard] Set first clinic ID:', clinics[0].id);
-          } else {
-            console.warn('[Dashboard] No clinics found');
-          }
-        })
-        .catch(err => console.error('[Dashboard] Failed to fetch first clinic:', err));
-    }
-  }, [isSystemAdmin, userClinicId, hasAttemptedFetch]);
+  // システム管理者の場合、デフォルトで最初の医院（さくら歯科クリニック）を表示
+  // TODO: Phase 2で医院選択機能を実装
+  const DEMO_CLINIC_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+  const clinicId = userClinicId || (isSystemAdmin ? DEMO_CLINIC_ID : null);
 
   const { data, loading, error } = useDashboardData(clinicId);
 
