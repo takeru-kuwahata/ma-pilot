@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Typography, Paper, Button, TextField } from '@mui/material';
 import { Save as SaveIcon } from '@mui/icons-material';
-import { MainLayout } from '../layouts/MainLayout';
+import { useLayout } from '../hooks/useLayout';
 
 interface ClinicBasicInfo {
   name: string;
@@ -22,6 +22,7 @@ interface ClinicBusinessInfo {
 }
 
 export const ClinicSettings = () => {
+  const { Layout } = useLayout();
   const [basicInfo, setBasicInfo] = useState<ClinicBasicInfo>({
     name: 'さくら歯科クリニック',
     postalCode: '150-0001',
@@ -49,7 +50,7 @@ export const ClinicSettings = () => {
   };
 
   return (
-    <MainLayout>
+    <Layout>
       <Box sx={{ marginBottom: '24px' }}>
         <Typography variant="h4" sx={{ fontSize: '32px', fontWeight: 500, marginBottom: '8px' }}>
           医院設定
@@ -175,6 +176,6 @@ export const ClinicSettings = () => {
           </Button>
         </Box>
       </Paper>
-    </MainLayout>
+    </Layout>
   );
 };

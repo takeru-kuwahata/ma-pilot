@@ -67,17 +67,10 @@
 
 ```yaml
 開発用アカウント:
-  システム管理者:
-    email: admin@ma-pilot.local
-    password: DevAdmin2025!
-
-  テスト医院オーナー:
-    email: owner@test-clinic.local
-    password: TestOwner2025!
-
-  テスト医院編集者:
-    email: editor@test-clinic.local
-    password: TestEditor2025!
+  システム管理者（親アカウント）:
+    email: kuwahata@idw-japan.net
+    password: advance2026
+    権限: 全機能アクセス、ユーザー招待・管理機能
 
 外部サービス:
   Supabase: 無料枠（DB 500MB、5万MAU）

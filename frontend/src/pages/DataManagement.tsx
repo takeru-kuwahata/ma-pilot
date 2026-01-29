@@ -19,7 +19,7 @@ import {
   UploadFile as UploadFileIcon,
 } from '@mui/icons-material';
 import Papa from 'papaparse';
-import { MainLayout } from '../layouts/MainLayout';
+import { useLayout } from '../hooks/useLayout';
 import { monthlyDataService, authService } from '../services/api';
 import type { MonthlyData } from '../types';
 
@@ -37,6 +37,7 @@ const formatCurrency = (value: number): string => {
 };
 
 export const DataManagement = () => {
+  const { Layout } = useLayout();
   const [monthlyData, setMonthlyData] = useState<MonthlyDataRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -159,7 +160,7 @@ export const DataManagement = () => {
   };
 
   return (
-    <MainLayout>
+    <Layout>
       {/* ページヘッダー */}
       <Box sx={{ marginBottom: '24px' }}>
         <Typography
@@ -520,6 +521,6 @@ export const DataManagement = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </MainLayout>
+    </Layout>
   );
 };

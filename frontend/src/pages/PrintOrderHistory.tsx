@@ -27,6 +27,7 @@ import {
   Grid,
 } from '@mui/material';
 import { Visibility as VisibilityIcon } from '@mui/icons-material';
+import { useLayout } from '../hooks/useLayout';
 import type { PrintOrder } from '../types';
 import * as printOrderService from '../services/printOrderService';
 
@@ -49,6 +50,7 @@ const STATUS_COLORS: Record<string, 'default' | 'primary' | 'secondary' | 'succe
 };
 
 export default function PrintOrderHistory() {
+  const { Layout } = useLayout();
   const [orders, setOrders] = useState<PrintOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,8 +111,9 @@ export default function PrintOrderHistory() {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Paper sx={{ p: 4 }}>
+    <Layout>
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Paper sx={{ p: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           印刷物注文履歴
         </Typography>
@@ -236,7 +239,7 @@ export default function PrintOrderHistory() {
             </Table>
           </TableContainer>
         )}
-      </Paper>
+        </Paper>
 
       {/* 詳細モーダル */}
       <Dialog
@@ -371,6 +374,7 @@ export default function PrintOrderHistory() {
           <Button onClick={handleCloseDetailDialog}>閉じる</Button>
         </DialogActions>
       </Dialog>
-    </Container>
+      </Container>
+    </Layout>
   );
 }

@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from ..models.user import LoginRequest, LoginResponse, PasswordResetRequest, PasswordResetResponse
 from ..services.auth_service import AuthService
 from ..core.database import get_supabase_client
 from supabase import Client
+import logging
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix='/api/auth', tags=['Authentication'])
 
 
@@ -14,14 +16,20 @@ def get_auth_service(supabase: Client = Depends(get_supabase_client)) -> AuthSer
 
 @router.post('/login', response_model=LoginResponse)
 async def login(
-    request: LoginRequest,
+    login_request: LoginRequest,
+    raw_request: Request,
     auth_service: AuthService = Depends(get_auth_service)
 ):
     '''Login user'''
     try:
-        result = await auth_service.login(request.email, request.password)
+        # デバッグ用ログ出力
+        logger.info(f'Login attempt - email: {login_request.email}')
+        logger.info(f'Request content-type: {raw_request.headers.get("content-type")}')
+
+        result = await auth_service.login(login_request.email, login_request.password)
         return result
     except ValueError as e:
+        logger.error(f'Login failed: {str(e)}')
         raise HTTPException(status_code=401, detail=str(e))
 
 

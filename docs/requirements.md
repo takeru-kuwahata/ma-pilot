@@ -112,44 +112,24 @@
 
 ## 3. ページ詳細仕様
 
-### 3.1 実装状況
-
 **✅ 全ページ実装完了（2025-12-26）**
 
-**コアシステム**: 11ページ
-- P-001〜P-007: 医院ユーザー向けページ（7ページ）
-- A-001〜A-003: 管理者向けページ（3ページ）
-- スタッフ管理: 医院設定から分離（1ページ）
+**コアシステム**: 11ページ実装済み
+**印刷物受注システム**: 3ページ実装済み
+**Phase 6（ヒアリングシート機能）**: ⏸️ 未実装（3ページ）
 
-**印刷物受注システム**: 3ページ
-- 価格表管理（PriceTableManagement）
-- 注文フォーム（PrintOrderForm）
-- 注文履歴（PrintOrderHistory）
-
-**Phase 6（ヒアリングシート機能）**: ⏸️ 未実装
-- P-008: ヒアリングフォーム
-- P-009: ヒアリング結果
-- A-004: 企業管理
-
-**詳細**: コードを参照（`frontend/src/pages/`、`backend/src/api/`）
+**詳細**: `frontend/src/pages/`、`backend/src/api/` のコードを参照
 
 ---
 
-## 4. データ設計概要
+## 4. データ設計
 
 **✅ 実装完了（2025-12-26）**
 
-**コアシステム**:
-- データベーステーブル: 6テーブル（clinics, monthly_data, simulations, reports, market_analyses, user_metadata）
-- 型定義: 20+型（User, Clinic, MonthlyData, Simulation, Report, MarketAnalysis等）
+**データベース**: 8テーブル（コアシステム6 + 印刷物受注2）
+**型定義**: 40+型（User, Clinic, MonthlyData, Simulation, Report等）
 
-**印刷物受注システム**:
-- データベーステーブル: 2テーブル（price_tables, print_orders）
-- 型定義: 4型（PriceTable, PrintOrder, PrintOrderFormData, PriceEstimate関連）
-
-**詳細**: コードを参照
-- 型定義: `frontend/src/types/index.ts`
-- スキーマ: `backend/supabase_schema.sql`
+**詳細**: `frontend/src/types/index.ts`、`backend/supabase_schema.sql` のコードを参照
 
 ---
 
@@ -171,11 +151,13 @@
 
 ---
 
-## 6. 複合API処理（バックエンド内部処理）
+## 6. 複合API処理
 
 **✅ 実装完了（2025-12-26）**
 
-**詳細**: `backend/src/services/` 内の各サービス実装を参照
+**バックエンドサービス**: 11サービス実装済み（auth, clinic, dashboard, email, market_analysis, monthly_data, pdf, print_order, report, simulation等）
+
+**詳細**: `backend/src/services/` のコードを参照
 
 ---
 
@@ -338,111 +320,32 @@ CI/CD:
 
 ---
 
-## 🆕 Phase 2: 機能拡張 - ヒアリングシート機能
+## 🆕 Phase 6: ヒアリングシート機能（未実装）
 
-### 拡張概要
-
-**追加日**: 2025-12-11
 **目的**: クリニックの経営状況を定性的にヒアリングし、AI分析で課題を抽出、適切な企業をレコメンド
-**実装方針**: 段階的リリース（Phase 1: 既存機能バックエンド → Phase 2: ヒアリングシート）
 
-### 解決する課題
+**実装時期**: Phase 1-5完了後（デプロイ後に検討）
 
-- 定量データ（月次データ）だけでは見えない課題の可視化
-- クリニックが抱える悩みに対する具体的な解決策の提示
-- 提携企業とクリニックのマッチング自動化
+**主要機能**:
+- ヒアリングフォーム（P-008）
+- ヒアリング結果表示（P-009）
+- 企業管理（A-004、管理者専用）
+- AI分析（Claude API）
+- 企業レコメンド
+- Lstep連携（URLパラメータ）
 
-### 期待効果
-
-- クリニックのエンゲージメント向上（定期ヒアリングによる接点増加）
-- AI分析による客観的な強み・課題の把握
-- 企業レコメンドによる新たな収益源（アフィリエイト等）
-
----
-
-### 既存システムとの関係
-
-**統合方針**: 既存システムへの追加機能（手動入力は残す、質問形式も追加）
-
-**影響を受ける既存機能**:
-- P-002 経営ダッシュボード: ヒアリング分析結果セクションを追加（タブUI）
-- 認証システム: Lstep ID連携による外部認証追加
-
-**共有するデータ**:
-- Clinicエンティティ: ヒアリング回答とClinic IDの紐付け
-- 認証システム: Supabase Authを共通利用
+**詳細**: Phase 6実装時に`docs_archive/PHASE6_*.md`を参照して詳細設計を実施
 
 ---
 
-### 新規追加要素
-
-#### 画面設計
-
-**新規ページ**:
-- P-008: ヒアリングフォーム（`/hearing`）
-- P-009: ヒアリング結果（`/hearing/result`）
-- A-004: 企業管理（`/admin/companies`、管理者専用）
-
-**既存ページ改修**:
-- P-002: 経営ダッシュボードにタブUI追加（数値分析・ヒアリング分析）
-
-#### API設計
-
-**新規エンドポイント**: 12エンドポイント（ヒアリング関連6、企業管理5、運営側分析1）
-
-詳細はPhase 6実装時に`backend/src/api/hearings.py`、`backend/src/api/companies.py`にて実装予定
-
-#### データモデル
-
-**追加予定**:
-- 型定義: `frontend/src/types/index.ts`に追加（Hearing、HearingAnalysis、Company、Recommendation等）
-- データベース: 4テーブル追加（hearings、hearing_analyses、companies、recommendations）
-
-詳細はPhase 6実装時に確定
-
----
-
-### 実装計画
-
-#### Phase 1: 既存機能バックエンド実装（✅ 完了 2025-12-26）
-
-**実装成果**: 30エンドポイント実装完了、フロントエンド・バックエンド統合完了
-
-#### Phase 2: ヒアリングシート機能実装（未着手）
-
-**主要タスク**: データベーススキーマ拡張、ヒアリングフォーム、AI分析機能、企業レコメンド、ダッシュボード統合
-
----
-
-### AI分析・企業レコメンド・Lstep連携の仕様
-
-Phase 2実装時に詳細設計を実施。主要方針:
-- AI分析: Claude API（Sonnet 4.5）使用、リアルタイム非同期実行
-- 企業レコメンド: ルールベースマッチング（MVP版）
-- Lstep連携: URLパラメータ `?lstep_id={ID}` で外部連携
-- 履歴管理: 複数回ヒアリング可能、経年変化追跡
-
----
-
-## 9. 印刷物受注システム（新規）
+## 9. 印刷物受注システム
 
 **✅ 実装完了（2025-12-26）**
 
-**概要**:
-- 目的: 診察券、名刺、リコールハガキ等の印刷物注文システム
-- 対象ユーザー: シカレッジ連携医院
-- パターン: A/B（相談フォーム）、C（再注文・自動見積もり）
+**概要**: 診察券、名刺、リコールハガキ等の印刷物注文システム（シカレッジ連携医院向け）
 
-**実装規模**:
-- フロントエンド: 3ページ実装済み（価格表管理、注文フォーム、注文履歴）
-- バックエンド: 8エンドポイント実装済み（price-tables: 2、print-orders: 6）
-- データモデル: 4型定義追加（PriceTable, PrintOrder, PrintOrderFormData, PriceEstimate関連）
-- データベース: 2テーブル追加（price_tables, print_orders）
+**実装規模**: 3ページ、8エンドポイント、2テーブル
 
-**詳細**: コード参照
-- バックエンド: `backend/src/api/print_orders.py`、`backend/src/services/print_order_service.py`
-- フロントエンド: `frontend/src/pages/PrintOrder*.tsx`、`frontend/src/pages/PriceTableManagement.tsx`
-- 型定義: `frontend/src/types/index.ts`（PrintOrder関連）
-- スキーマ: `backend/supabase_schema.sql`（セクション7-8）
+**詳細**: `backend/src/api/print_orders.py`、`frontend/src/pages/PrintOrder*.tsx`、`backend/supabase_schema.sql` のコードを参照
 
 ---

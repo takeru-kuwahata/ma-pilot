@@ -344,7 +344,8 @@ GitHub Actionsが自動的に:
 ```yaml
 システム管理者:
   email: admin@ma-pilot.local
-  password: DevAdmin2025!
+  email: kuwahata@idw-japan.net
+  password: advance2026
 
 テスト医院オーナー:
   email: owner@test-clinic.local

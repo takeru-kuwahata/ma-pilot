@@ -77,7 +77,7 @@ vercel --prod --cwd frontend
 
 #### 統合確認
 
-- [ ] ログイン機能が動作する（admin@ma-pilot.local / DevAdmin2025!）
+- [ ] ログイン機能が動作する（kuwahata@idw-japan.net / advance2026）
 - [ ] ダッシュボードにデータが表示される
 - [ ] 各ページ（基礎データ管理、診療圏分析等）にアクセスできる
 

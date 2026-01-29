@@ -5,7 +5,7 @@ import {
   Paper,
 } from '@mui/material';
 import { Map as MapIcon } from '@mui/icons-material';
-import { MainLayout } from '../layouts/MainLayout';
+import { useLayout } from '../hooks/useLayout';
 import { marketAnalysisService, authService } from '../services/api';
 import type { MarketAnalysis as MarketAnalysisType } from '../types';
 
@@ -23,6 +23,7 @@ interface DemographicData {
 }
 
 export const MarketAnalysis = () => {
+  const { Layout } = useLayout();
   const [analysis, setAnalysis] = useState<MarketAnalysisType | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -77,7 +78,7 @@ export const MarketAnalysis = () => {
     }
   ] : [];
   return (
-    <MainLayout>
+    <Layout>
       {/* ページヘッダー */}
       <Box sx={{ marginBottom: '24px' }}>
         <Typography
@@ -433,6 +434,6 @@ export const MarketAnalysis = () => {
           </Box>
         </Paper>
       </Box>
-    </MainLayout>
+    </Layout>
   );
 };

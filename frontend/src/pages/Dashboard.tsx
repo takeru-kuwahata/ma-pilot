@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Box, Typography, Grid, Paper, Alert, CircularProgress } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -10,7 +11,9 @@ import {
   EventRepeat as EventRepeatIcon,
 } from '@mui/icons-material';
 import { MainLayout } from '../layouts/MainLayout';
+import { AdminLayout } from '../layouts/AdminLayout';
 import { useDashboardData } from '../hooks/useDashboardData';
+import { adminService } from '../services/api';
 import { DashboardKpi } from '../types';
 import {
   LineChart,
@@ -67,41 +70,74 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
 };
 
 export const Dashboard = () => {
+  const [firstClinicId, setFirstClinicId] = useState<string | null>(null);
+  const [fetchingClinic, setFetchingClinic] = useState(false);
+
   // TODO: 認証コンテキストから取得（Phase 5以降）
-  // 暫定対応: localStorageから医院IDを取得、なければ最初の医院を使用
   const userStr = localStorage.getItem('user');
   const user = userStr ? JSON.parse(userStr) : null;
-  const clinicId = user?.clinic_id || null;
+  const isSystemAdmin = user?.role === 'system_admin';
+  const clinicId = user?.clinic_id || firstClinicId;
+
+  // システム管理者の場合、最初の医院を取得
+  useEffect(() => {
+    if (isSystemAdmin && !user?.clinic_id && !firstClinicId && !fetchingClinic) {
+      setFetchingClinic(true);
+      adminService.getClinics()
+        .then(clinics => {
+          if (clinics.length > 0) {
+            setFirstClinicId(clinics[0].id);
+          }
+        })
+        .catch(err => console.error('Failed to fetch first clinic:', err))
+        .finally(() => setFetchingClinic(false));
+    }
+  }, [isSystemAdmin, user?.clinic_id, firstClinicId, fetchingClinic]);
 
   const { data, loading, error } = useDashboardData(clinicId);
 
-  if (!clinicId) {
+  // システム管理者で医院を取得中
+  if (isSystemAdmin && fetchingClinic) {
     return (
-      <MainLayout>
-        <Alert severity="info">
-          システム管理者アカウントでログインしています。特定の医院のダッシュボードを表示するには、医院アカウントでログインしてください。
-        </Alert>
-      </MainLayout>
-    );
-  }
-
-  if (loading) {
-    return (
-      <MainLayout>
+      <AdminLayout>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
           <CircularProgress />
         </Box>
-      </MainLayout>
+      </AdminLayout>
+    );
+  }
+
+  // clinic_idが取得できない場合
+  if (!clinicId) {
+    const Layout = isSystemAdmin ? AdminLayout : MainLayout;
+    return (
+      <Layout>
+        <Alert severity="warning">
+          表示する医院データがありません。医院アカウント管理から医院を登録してください。
+        </Alert>
+      </Layout>
+    );
+  }
+
+  const Layout = isSystemAdmin ? AdminLayout : MainLayout;
+
+  if (loading) {
+    return (
+      <Layout>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <CircularProgress />
+        </Box>
+      </Layout>
     );
   }
 
   if (error || !data) {
     return (
-      <MainLayout>
+      <Layout>
         <Alert severity="error">
           データの取得に失敗しました。しばらくしてから再度お試しください。
         </Alert>
-      </MainLayout>
+      </Layout>
     );
   }
 
@@ -132,7 +168,7 @@ export const Dashboard = () => {
   }));
 
   return (
-    <MainLayout>
+    <Layout>
       <>
         {/* ページヘッダー */}
         <Box sx={{ mb: 3 }}>
@@ -293,6 +329,6 @@ export const Dashboard = () => {
           </Grid>
         </Grid>
       </>
-    </MainLayout>
+    </Layout>
   );
 };
