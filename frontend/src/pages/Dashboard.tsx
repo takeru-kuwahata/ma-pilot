@@ -143,18 +143,22 @@ export const Dashboard = () => {
   ];
 
   // グラフデータのフォーマット（月次推移）
-  const chartData = data.trends.map((trend) => ({
-    month: trend.yearMonth.substring(5, 7) + '月',
-    総売上: Math.round(trend.totalRevenue / 10000),
-    営業利益: Math.round(trend.operatingProfit / 10000),
-  }));
+  const chartData = data.trends
+    .filter((trend) => trend && trend.yearMonth)
+    .map((trend) => ({
+      month: trend.yearMonth.substring(5, 7) + '月',
+      総売上: Math.round(trend.totalRevenue / 10000),
+      営業利益: Math.round(trend.operatingProfit / 10000),
+    }));
 
   // 患者数推移データ
-  const patientChartData = data.trends.map((trend) => ({
-    month: trend.yearMonth.substring(5, 7) + '月',
-    新患: trend.newPatients,
-    既存患者: trend.returningPatients,
-  }));
+  const patientChartData = data.trends
+    .filter((trend) => trend && trend.yearMonth)
+    .map((trend) => ({
+      month: trend.yearMonth.substring(5, 7) + '月',
+      新患: trend.newPatients,
+      既存患者: trend.returningPatients,
+    }));
 
   return (
     <Layout>
