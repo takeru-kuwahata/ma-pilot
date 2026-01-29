@@ -78,10 +78,10 @@ export const Dashboard = () => {
   const isSystemAdmin = user?.role === 'system_admin';
   const userClinicId = user?.clinic_id || null;
 
-  // システム管理者の場合、デフォルトで最初の医院（さくら歯科クリニック）を表示
+  // clinic_idがない場合、デフォルトで最初の医院（さくら歯科クリニック）を表示
   // TODO: Phase 2で医院選択機能を実装
   const DEMO_CLINIC_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
-  const clinicId = userClinicId || (isSystemAdmin ? DEMO_CLINIC_ID : null);
+  const clinicId = userClinicId || DEMO_CLINIC_ID;
 
   const { data, loading, error } = useDashboardData(clinicId);
 
