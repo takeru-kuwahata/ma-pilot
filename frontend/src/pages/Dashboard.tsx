@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Box, Typography, Grid, Paper, Alert, CircularProgress } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -71,45 +71,36 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
 
 export const Dashboard = () => {
   const [firstClinicId, setFirstClinicId] = useState<string | null>(null);
-  const [fetchingClinic, setFetchingClinic] = useState(false);
 
   // TODO: 認証コンテキストから取得（Phase 5以降）
-  const userStr = localStorage.getItem('user');
-  const user = userStr ? JSON.parse(userStr) : null;
-  const isSystemAdmin = user?.role === 'system_admin';
-  const clinicId = user?.clinic_id || firstClinicId;
+  const user = useMemo(() => {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  }, []);
 
-  // システム管理者の場合、最初の医院を取得
+  const isSystemAdmin = user?.role === 'system_admin';
+  const userClinicId = user?.clinic_id || null;
+  const clinicId = userClinicId || firstClinicId;
+
+  // システム管理者の場合、最初の医院を取得（1回のみ実行）
   useEffect(() => {
-    if (isSystemAdmin && !user?.clinic_id && !firstClinicId && !fetchingClinic) {
-      setFetchingClinic(true);
+    if (isSystemAdmin && !userClinicId && !firstClinicId) {
       adminService.getClinics()
         .then(clinics => {
           if (clinics.length > 0) {
             setFirstClinicId(clinics[0].id);
           }
         })
-        .catch(err => console.error('Failed to fetch first clinic:', err))
-        .finally(() => setFetchingClinic(false));
+        .catch(err => console.error('Failed to fetch first clinic:', err));
     }
-  }, [isSystemAdmin, user?.clinic_id, firstClinicId, fetchingClinic]);
+  }, []); // 空の依存配列で1回のみ実行
 
   const { data, loading, error } = useDashboardData(clinicId);
 
-  // システム管理者で医院を取得中
-  if (isSystemAdmin && fetchingClinic) {
-    return (
-      <AdminLayout>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-          <CircularProgress />
-        </Box>
-      </AdminLayout>
-    );
-  }
+  const Layout = isSystemAdmin ? AdminLayout : MainLayout;
 
-  // clinic_idが取得できない場合
-  if (!clinicId) {
-    const Layout = isSystemAdmin ? AdminLayout : MainLayout;
+  // clinic_idが取得できない場合（医院がまだ登録されていない）
+  if (!clinicId && !loading) {
     return (
       <Layout>
         <Alert severity="warning">
@@ -118,8 +109,6 @@ export const Dashboard = () => {
       </Layout>
     );
   }
-
-  const Layout = isSystemAdmin ? AdminLayout : MainLayout;
 
   if (loading) {
     return (

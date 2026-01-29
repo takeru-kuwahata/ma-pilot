@@ -2,12 +2,17 @@ import { useState, useEffect, useCallback } from 'react';
 import { dashboardService } from '../services/api';
 import { DashboardData } from '../types';
 
-export const useDashboardData = (clinicId: string) => {
+export const useDashboardData = (clinicId: string | null) => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchData = useCallback(async () => {
+    if (!clinicId) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const result = await dashboardService.getDashboard(clinicId);
