@@ -114,11 +114,11 @@
 
 **✅ 全ページ実装完了（2025-12-26）**
 
-**コアシステム**: 11ページ実装済み
-**印刷物受注システム**: 3ページ実装済み
-**Phase 6（ヒアリングシート機能）**: ⏸️ 未実装（3ページ）
+- **コアシステム**: 11ページ（ログイン、ダッシュボード、基礎データ管理、診療圏分析、シミュレーション、レポート、医院設定、スタッフ管理、管理者3ページ）
+- **印刷物受注システム**: 3ページ（価格表管理、発注フォーム、発注履歴）
+- **Phase 6（ヒアリングシート機能）**: ⏸️ 未実装
 
-**詳細**: `frontend/src/pages/`、`backend/src/api/` のコードを参照
+**実装詳細**: コードを参照（`frontend/src/pages/`, `backend/src/api/`）
 
 ---
 
@@ -126,10 +126,10 @@
 
 **✅ 実装完了（2025-12-26）**
 
-**データベース**: 8テーブル（コアシステム6 + 印刷物受注2）
-**型定義**: 40+型（User, Clinic, MonthlyData, Simulation, Report等）
+- **データベース**: 8テーブル（clinics, monthly_data, simulations, reports, market_analysis, staff_members, price_tables, print_orders）
+- **型定義**: 40+型（User, Clinic, MonthlyData, Simulation, Report, MarketAnalysis, PrintOrder等）
 
-**詳細**: `frontend/src/types/index.ts`、`backend/supabase_schema.sql` のコードを参照
+**実装詳細**: コードを参照（`frontend/src/types/index.ts`, `backend/supabase_schema.sql`）
 
 ---
 
@@ -151,13 +151,15 @@
 
 ---
 
-## 6. 複合API処理
+## 6. バックエンドAPI・サービス
 
 **✅ 実装完了（2025-12-26）**
 
-**バックエンドサービス**: 11サービス実装済み（auth, clinic, dashboard, email, market_analysis, monthly_data, pdf, print_order, report, simulation等）
+- **APIルーター**: 10個（auth, clinics, monthly_data, dashboard, simulations, reports, market_analysis, staff, admin, print_orders）
+- **エンドポイント**: 38個（コア30 + 印刷物受注8）
+- **サービス**: 10個（auth_service, clinic_service, dashboard_service, email_service, market_analysis_service, monthly_data_service, pdf_service, print_order_service, report_service, simulation_service）
 
-**詳細**: `backend/src/services/` のコードを参照
+**実装詳細**: コードを参照（`backend/src/api/`, `backend/src/services/`, `backend/main.py`）
 
 ---
 
@@ -326,19 +328,13 @@ CI/CD:
 
 **実装時期**: Phase 1-5完了後（デプロイ後に検討）
 
-**主要機能**:
-- ヒアリングフォーム（P-008）
-- ヒアリング結果表示（P-009）
-- 企業管理（A-004、管理者専用）
-- AI分析（Claude API）
-- 企業レコメンド
-- Lstep連携（URLパラメータ）
+**主要機能**: ヒアリングフォーム、AI分析、企業レコメンド、Lstep連携
 
-**詳細**: Phase 6実装時に`docs_archive/PHASE6_*.md`を参照して詳細設計を実施
+**実装時の詳細設計**: `docs_archive/PHASE6_*.md`を参照
 
 ---
 
-## 9. 印刷物受注システム
+## 10. 印刷物受注システム
 
 **✅ 実装完了（2025-12-26）**
 
@@ -346,6 +342,6 @@ CI/CD:
 
 **実装規模**: 3ページ、8エンドポイント、2テーブル
 
-**詳細**: `backend/src/api/print_orders.py`、`frontend/src/pages/PrintOrder*.tsx`、`backend/supabase_schema.sql` のコードを参照
+**実装詳細**: コードを参照（`backend/src/api/print_orders.py`, `frontend/src/pages/PrintOrder*.tsx`）
 
 ---

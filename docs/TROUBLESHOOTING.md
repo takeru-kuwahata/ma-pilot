@@ -7,6 +7,7 @@
 #### 症状
 - メールアドレス・パスワードを入力してもログインできない
 - 「認証情報が無効です」エラーが表示される
+- `401 Unauthorized` または `422 Unprocessable Entity` エラー
 
 #### 原因と解決方法
 
@@ -21,6 +22,102 @@
 **3. ブラウザキャッシュの問題**
 - ブラウザのキャッシュをクリア
 - シークレットモード / プライベートブラウジングで試行
+
+**4. バックエンドの環境変数問題（管理者向け）**
+
+**症状**: `401 Unauthorized`が継続的に発生
+
+**原因**: Supabase APIキーが誤っている（service_role keyを使用している）
+
+**解決方法**:
+```bash
+# ローカル環境の場合
+# backend/.env を編集
+SUPABASE_KEY=eyJhbG...（anon keyに変更）
+
+# Render.com本番環境の場合
+# Renderダッシュボード → Environment Variables
+# SUPABASE_KEY を anon key に変更
+# Save, rebuild, and deploy
+```
+
+**anon key vs service_role key**:
+- ✅ `anon key`: 認証APIで使用（フロントエンド・バックエンド認証）
+- ❌ `service_role key`: 管理操作のみ使用（RLS無視、認証では使用不可）
+
+**5. パスワードバリデーションエラー（開発者向け）**
+
+**症状**: `422 Unprocessable Entity`エラー
+
+**原因**: `backend/src/models/user.py`のLoginRequestモデルで厳格なパスワードバリデーションが実装されている
+
+**解決方法**: パスワードバリデーションを緩和
+```python
+# backend/src/models/user.py
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str = Field(..., min_length=6, max_length=128)
+    # @validatorは削除（既存パスワードとの互換性優先）
+```
+
+**6. ログイン後に真っ白な画面（404エラー）**
+
+**症状**: ログイン成功後、画面が真っ白で`No routes matched location "/admin"`エラー
+
+**原因**: 存在しないパス`/admin`にリダイレクトしている
+
+**解決方法**: `frontend/src/hooks/useAuth.ts`を修正
+```typescript
+// 修正前
+if (user.role === 'system_admin') {
+  navigate('/admin');  // ❌ このルートは存在しない
+}
+
+// 修正後
+if (user.role === 'system_admin') {
+  navigate('/admin/dashboard');  // ✅ 正しいパス
+}
+```
+
+#### トラブルシューティング手順（管理者向け）
+
+**Step 1: エラーコードを確認**
+- `422` → パスワード形式エラー（バリデーション問題）
+- `401` → 認証失敗（パスワード不一致またはAPIキー問題）
+- `400` → リクエスト形式エラー（コードの問題）
+
+**Step 2: ローカル環境でテスト**
+```bash
+# バックエンド起動
+cd backend
+source venv/bin/activate
+uvicorn main:app --host 0.0.0.0 --port 8432
+
+# 別ターミナルでログインテスト
+curl -X POST 'http://localhost:8432/api/auth/login' \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"kuwahata@idw-japan.net","password":"advance2026"}'
+```
+
+**Step 3: Supabaseに直接問い合わせ**
+```bash
+curl -X POST 'https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/token?grant_type=password' \
+  -H 'apikey: [ANON_KEY]' \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"kuwahata@idw-japan.net","password":"advance2026"}'
+```
+
+成功すれば`access_token`が返る → APIキーは正しい
+
+**Step 4: バックエンドログ確認**
+- ローカル: ターミナルのログを確認
+- Render: Logs タブを確認
+
+#### 2026-02-03 修正履歴
+- パスワードバリデーション削除（既存パスワード対応）
+- SUPABASE_KEYをanon keyに変更（ローカル・Render両方）
+- ログイン後リダイレクト先を修正（/admin → /admin/dashboard）
+- コミット: `e951d63`
 
 ---
 
