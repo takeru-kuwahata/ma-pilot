@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -65,11 +65,11 @@ export const AdminDashboard = () => {
 
   // グラフデータ生成（直近6ヶ月）
   // 実際のデータベースから取得することが望ましいが、現時点では現在値を基準に推移を生成
-  const generateChartData = () => {
+  const chartData = useMemo(() => {
     const months = [];
     const now = new Date();
-    const currentClinics = stats.totalClinics || 4;
-    const currentUsers = stats.monthlyActiveUsers || 2;
+    const currentClinics = stats.totalClinics;
+    const currentUsers = stats.monthlyActiveUsers;
 
     for (let i = 5; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -77,7 +77,7 @@ export const AdminDashboard = () => {
 
       // 現在値から逆算して自然な増加推移を生成
       // i=5（6ヶ月前）→ i=0（今月）まで徐々に増加
-      // 例: currentClinics=4の場合: 0→1→2→3→3→4
+      // 例: currentClinics=4の場合: 0→1→2→2→3→4
       const monthsAgo = i;
       const clinicGrowth = monthsAgo === 0
         ? currentClinics
@@ -94,9 +94,7 @@ export const AdminDashboard = () => {
       });
     }
     return months;
-  };
-
-  const chartData = generateChartData();
+  }, [stats.totalClinics, stats.monthlyActiveUsers]);
 
   useEffect(() => {
     loadDashboardData();
