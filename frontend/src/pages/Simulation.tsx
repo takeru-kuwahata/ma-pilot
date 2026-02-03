@@ -128,7 +128,6 @@ export const Simulation = () => {
       const currentPersonnelCost = latestData.personnelCost || 0;
       const currentMaterialCost = latestData.materialCost || 0;
       const currentFixedCost = latestData.fixedCost || 0;
-      const currentTotalPatients = latestData.totalPatients;
 
       // 変動率を適用して目標値を計算
       const targetInsuranceRevenue = currentInsuranceRevenue * (1 + params.insuranceRevenueChange / 100);

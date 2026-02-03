@@ -12,6 +12,8 @@ import {
   TableRow,
   IconButton,
   Chip,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -37,6 +39,10 @@ export const Reports = () => {
   const { Layout } = useLayout();
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
   const reportTemplates: ReportTemplate[] = [
     {
@@ -89,6 +95,64 @@ export const Reports = () => {
       window.open(fileUrl, '_blank');
     } catch (error) {
       console.error('Failed to download report:', error);
+    }
+  };
+
+  const handleGenerateReport = async (templateId: string) => {
+    try {
+      setGenerating(true);
+      const user = authService.getCurrentUser();
+      if (!user?.clinicId) {
+        setSnackbarMessage('ユーザー情報が取得できませんでした');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+        return;
+      }
+
+      // テンプレートIDに応じてレポートタイプを決定
+      let reportType: 'monthly' | 'market_analysis' | 'simulation';
+      let title: string;
+
+      if (templateId === '1') {
+        reportType = 'monthly';
+        title = '月次経営レポート';
+      } else if (templateId === '2') {
+        reportType = 'market_analysis';
+        title = '診療圏分析レポート';
+      } else if (templateId === '3') {
+        reportType = 'simulation';
+        title = 'シミュレーション結果レポート';
+      } else {
+        setSnackbarMessage('不明なテンプレートです');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+        return;
+      }
+
+      // レポート生成
+      const report = await reportService.generateReport({
+        clinic_id: user.clinicId,
+        type: reportType,
+        format: 'pdf',
+        title: title,
+      });
+
+      setSnackbarMessage('レポートを生成しました');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+
+      // レポート履歴を更新
+      await loadReports();
+
+      // 生成したレポートを自動ダウンロード
+      await handleDownload(report.id);
+    } catch (error) {
+      console.error('Failed to generate report:', error);
+      setSnackbarMessage('レポート生成に失敗しました。月次データが登録されているか確認してください。');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    } finally {
+      setGenerating(false);
     }
   };
 
@@ -229,10 +293,15 @@ export const Reports = () => {
               </Typography>
               <IconButton
                 size="small"
+                onClick={() => handleGenerateReport(template.id)}
+                disabled={generating}
                 sx={{
                   color: '#616161',
                   '&:hover': {
                     color: '#FF6B35',
+                  },
+                  '&:disabled': {
+                    color: '#e0e0e0',
                   },
                 }}
               >
@@ -385,6 +454,22 @@ export const Reports = () => {
           </Table>
         </TableContainer>
       </Paper>
+
+      {/* Snackbar - Toast通知 */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Layout>
   );
 };
