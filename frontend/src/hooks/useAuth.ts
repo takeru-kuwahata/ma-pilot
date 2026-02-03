@@ -23,7 +23,7 @@ export const useAuth = () => {
       // ロールに応じたリダイレクト
       const user = response.user;
       if (user.role === 'system_admin') {
-        navigate('/admin');
+        navigate('/admin/dashboard');
       } else {
         navigate('/dashboard');
       }

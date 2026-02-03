@@ -13,10 +13,11 @@ class AuthService:
         '''Login user'''
         try:
             # Supabase auth login
-            auth_response = self.supabase.auth.sign_in_with_password({
+            credentials = {
                 'email': email,
                 'password': password
-            })
+            }
+            auth_response = self.supabase.auth.sign_in_with_password(credentials)
 
             if not auth_response.user:
                 raise ValueError('Invalid credentials')
