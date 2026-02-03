@@ -140,6 +140,7 @@ export const LoginPage = () => {
                 margin="normal"
                 required
                 placeholder="your@email.com"
+                inputProps={{ autoComplete: 'email' }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '&.Mui-focused fieldset': {
@@ -162,6 +163,7 @@ export const LoginPage = () => {
                 margin="normal"
                 required
                 placeholder="パスワードを入力"
+                inputProps={{ autoComplete: 'current-password' }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '&.Mui-focused fieldset': {
@@ -242,6 +244,7 @@ export const LoginPage = () => {
                   margin="normal"
                   required
                   placeholder="招待メールのトークンを入力"
+                  inputProps={{ autoComplete: 'off' }}
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       '&.Mui-focused fieldset': {
@@ -263,7 +266,7 @@ export const LoginPage = () => {
                   }
                   margin="normal"
                   required
-                  inputProps={{ minLength: 8 }}
+                  inputProps={{ minLength: 8, autoComplete: 'new-password' }}
                   placeholder="8文字以上のパスワード"
                   sx={{
                     '& .MuiOutlinedInput-root': {
@@ -289,7 +292,7 @@ export const LoginPage = () => {
                   }
                   margin="normal"
                   required
-                  inputProps={{ minLength: 8 }}
+                  inputProps={{ minLength: 8, autoComplete: 'new-password' }}
                   placeholder="パスワードを再入力"
                   sx={{
                     '& .MuiOutlinedInput-root': {
@@ -355,6 +358,7 @@ export const LoginPage = () => {
                   margin="normal"
                   required
                   placeholder="your@email.com"
+                  inputProps={{ autoComplete: 'email' }}
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       '&.Mui-focused fieldset': {
