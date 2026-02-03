@@ -289,7 +289,7 @@ export const Dashboard = () => {
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} domain={[60, 85]} />
+                  <YAxis tick={{ fontSize: 12 }} />
                   <Tooltip />
                   <Legend />
                   <Line
@@ -322,7 +322,7 @@ export const Dashboard = () => {
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} domain={[15, 22]} />
+                  <YAxis tick={{ fontSize: 12 }} />
                   <Tooltip />
                   <Legend />
                   <Line
