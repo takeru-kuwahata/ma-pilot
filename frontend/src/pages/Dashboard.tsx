@@ -137,16 +137,16 @@ export const Dashboard = () => {
   try {
     chartData = (data.trends || [])
       .map((trend) => {
-        const yearMonth = trend?.yearMonth || (trend as any)?.year_month;
+        const yearMonth = trend?.yearMonth || (trend as unknown as Record<string, unknown>)?.year_month;
         if (!yearMonth || typeof yearMonth !== 'string' || yearMonth.length < 7) {
           return null;
         }
-        const totalRevenue = trend?.totalRevenue ?? (trend as any)?.total_revenue ?? 0;
-        const operatingProfit = trend?.operatingProfit ?? (trend as any)?.operating_profit ?? 0;
+        const totalRevenue = trend?.totalRevenue ?? (trend as unknown as Record<string, unknown>)?.total_revenue ?? 0;
+        const operatingProfit = trend?.operatingProfit ?? (trend as unknown as Record<string, unknown>)?.operating_profit ?? 0;
         return {
           month: yearMonth.substring(5, 7) + '月',
-          総売上: Math.round(totalRevenue / 10000),
-          営業利益: Math.round(operatingProfit / 10000),
+          総売上: Math.round(Number(totalRevenue) / 10000),
+          営業利益: Math.round(Number(operatingProfit) / 10000),
         };
       })
       .filter((item): item is { month: string; 総売上: number; 営業利益: number } => item !== null);
@@ -154,16 +154,16 @@ export const Dashboard = () => {
     // 患者数推移データ
     patientChartData = (data.trends || [])
       .map((trend) => {
-        const yearMonth = trend?.yearMonth || (trend as any)?.year_month;
+        const yearMonth = trend?.yearMonth || (trend as unknown as Record<string, unknown>)?.year_month;
         if (!yearMonth || typeof yearMonth !== 'string' || yearMonth.length < 7) {
           return null;
         }
-        const newPatients = trend?.newPatients ?? (trend as any)?.new_patients ?? 0;
-        const returningPatients = trend?.returningPatients ?? (trend as any)?.returning_patients ?? 0;
+        const newPatients = trend?.newPatients ?? (trend as unknown as Record<string, unknown>)?.new_patients ?? 0;
+        const returningPatients = trend?.returningPatients ?? (trend as unknown as Record<string, unknown>)?.returning_patients ?? 0;
         return {
           month: yearMonth.substring(5, 7) + '月',
-          新患: newPatients,
-          既存患者: returningPatients,
+          新患: Number(newPatients),
+          既存患者: Number(returningPatients),
         };
       })
       .filter((item): item is { month: string; 新患: number; 既存患者: number } => item !== null);
@@ -280,10 +280,10 @@ export const Dashboard = () => {
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart
                   data={(data.trends || []).map((t) => {
-                    const ym = t?.yearMonth || (t as any)?.year_month || '0000-00';
+                    const ym = t?.yearMonth || (t as unknown as Record<string, unknown>)?.year_month || '0000-00';
                     return {
-                      month: ym.substring(5, 7) + '月',
-                      稼働率: t?.unitUtilization ?? (t as any)?.unit_utilization ?? 0,
+                      month: String(ym).substring(5, 7) + '月',
+                      稼働率: Number(t?.unitUtilization ?? (t as unknown as Record<string, unknown>)?.unit_utilization ?? 0),
                     };
                   })}
                 >
@@ -313,10 +313,10 @@ export const Dashboard = () => {
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart
                   data={(data.trends || []).map((t) => {
-                    const ym = t?.yearMonth || (t as any)?.year_month || '0000-00';
+                    const ym = t?.yearMonth || (t as unknown as Record<string, unknown>)?.year_month || '0000-00';
                     return {
-                      month: ym.substring(5, 7) + '月',
-                      自費率: t?.selfPayRate ?? (t as any)?.self_pay_rate ?? 0,
+                      month: String(ym).substring(5, 7) + '月',
+                      自費率: Number(t?.selfPayRate ?? (t as unknown as Record<string, unknown>)?.self_pay_rate ?? 0),
                     };
                   })}
                 >
