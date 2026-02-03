@@ -15,6 +15,10 @@ import {
   IconButton,
   Chip,
   Pagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -34,6 +38,14 @@ export const AdminClinics = () => {
   const [page, setPage] = useState(1);
   const [clinics, setClinics] = useState<Clinic[]>([]);
   const [, setLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [newClinic, setNewClinic] = useState({
+    name: '',
+    postal_code: '',
+    address: '',
+    phone_number: '',
+    owner_id: '',
+  });
 
   useEffect(() => {
     loadClinics();
@@ -52,10 +64,19 @@ export const AdminClinics = () => {
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
+    setPage(1); // 検索時はページを1に戻す
+  };
+
+  const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      // Enterキー押下時は何もしない（リアルタイムフィルタリング済み）
+      event.preventDefault();
+    }
   };
 
   const handleFilterChange = (status: string) => {
     setFilterStatus(status);
+    setPage(1); // フィルタ変更時はページを1に戻す
   };
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
@@ -84,8 +105,56 @@ export const AdminClinics = () => {
   };
 
   const handleAddClinic = () => {
-    alert('医院の新規登録機能は現在開発中です。\n\n暫定対応として、Supabase管理画面から直接データを追加してください。');
+    setOpenDialog(true);
   };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setNewClinic({
+      name: '',
+      postal_code: '',
+      address: '',
+      phone_number: '',
+      owner_id: '',
+    });
+  };
+
+  const handleCreateClinic = async () => {
+    try {
+      await adminService.createClinic(newClinic);
+      await loadClinics();
+      handleCloseDialog();
+    } catch (error) {
+      console.error('Failed to create clinic:', error);
+      alert('医院の登録に失敗しました。入力内容を確認してください。');
+    }
+  };
+
+  // フィルタリングとページネーション
+  const filteredClinics = clinics.filter((clinic) => {
+    // ステータスフィルタ
+    const statusMatch =
+      filterStatus === 'all' ||
+      (filterStatus === 'active' && clinic.isActive) ||
+      (filterStatus === 'inactive' && !clinic.isActive) ||
+      (filterStatus === 'trial' && false); // トライアルフラグは未実装
+
+    // 検索クエリフィルタ
+    const searchMatch =
+      !searchQuery ||
+      clinic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      clinic.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (clinic.phoneNumber && clinic.phoneNumber.includes(searchQuery));
+
+    return statusMatch && searchMatch;
+  });
+
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(filteredClinics.length / itemsPerPage);
+  const paginatedClinics = filteredClinics.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
 
   const getStatusLabel = (isActive: boolean): string => {
     return isActive ? 'アクティブ' : '停止中';
@@ -136,6 +205,7 @@ export const AdminClinics = () => {
             placeholder="医院名、住所、電話番号で検索"
             value={searchQuery}
             onChange={handleSearch}
+            onKeyPress={handleSearchKeyPress}
             sx={{ width: '300px' }}
             InputProps={{
               startAdornment: (
@@ -293,11 +363,18 @@ export const AdminClinics = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {clinics.map((clinic) => (
+              {paginatedClinics.map((clinic) => {
+                // APIから返るデータはスネークケース（created_at）
+                const createdAt = (clinic as unknown as Record<string, unknown>).created_at as string;
+                const displayDate = createdAt
+                  ? new Date(createdAt).toLocaleDateString('ja-JP')
+                  : 'N/A';
+
+                return (
                 <TableRow key={clinic.id}>
                   <TableCell sx={{ fontSize: '14px' }}>{clinic.name}</TableCell>
                   <TableCell sx={{ fontSize: '14px' }}>{clinic.address}</TableCell>
-                  <TableCell sx={{ fontSize: '14px' }}>{new Date(clinic.createdAt).toLocaleDateString('ja-JP')}</TableCell>
+                  <TableCell sx={{ fontSize: '14px' }}>{displayDate}</TableCell>
                   <TableCell>
                     <Chip
                       label="無料プラン"
@@ -380,7 +457,8 @@ export const AdminClinics = () => {
                     )}
                   </TableCell>
                 </TableRow>
-              ))}
+              );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -394,7 +472,7 @@ export const AdminClinics = () => {
           }}
         >
           <Pagination
-            count={5}
+            count={totalPages}
             page={page}
             onChange={handlePageChange}
             sx={{
@@ -412,6 +490,69 @@ export const AdminClinics = () => {
           />
         </Box>
       </Paper>
+
+      {/* 新規医院登録ダイアログ */}
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>新規医院を登録</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+            <TextField
+              label="医院名"
+              value={newClinic.name}
+              onChange={(e) => setNewClinic({ ...newClinic, name: e.target.value })}
+              fullWidth
+              required
+            />
+            <TextField
+              label="郵便番号"
+              value={newClinic.postal_code}
+              onChange={(e) => setNewClinic({ ...newClinic, postal_code: e.target.value })}
+              placeholder="150-0001"
+              fullWidth
+              required
+            />
+            <TextField
+              label="住所"
+              value={newClinic.address}
+              onChange={(e) => setNewClinic({ ...newClinic, address: e.target.value })}
+              fullWidth
+              required
+            />
+            <TextField
+              label="電話番号"
+              value={newClinic.phone_number}
+              onChange={(e) => setNewClinic({ ...newClinic, phone_number: e.target.value })}
+              placeholder="03-1234-5678"
+              fullWidth
+              required
+            />
+            <TextField
+              label="オーナーID（UUID）"
+              value={newClinic.owner_id}
+              onChange={(e) => setNewClinic({ ...newClinic, owner_id: e.target.value })}
+              placeholder="ユーザーのUUID"
+              fullWidth
+              required
+              helperText="user_metadataテーブルに存在するユーザーのIDを入力してください"
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} sx={{ color: '#616161' }}>
+            キャンセル
+          </Button>
+          <Button
+            onClick={handleCreateClinic}
+            variant="contained"
+            sx={{
+              backgroundColor: '#FF6B35',
+              '&:hover': { backgroundColor: '#E55A2B' },
+            }}
+          >
+            登録
+          </Button>
+        </DialogActions>
+      </Dialog>
     </AdminLayout>
   );
 };
