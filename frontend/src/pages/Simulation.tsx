@@ -6,11 +6,14 @@ import {
   Button,
   TextField,
   MenuItem,
+  Snackbar,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import { PlayArrow as PlayArrowIcon, ShowChart as ShowChartIcon } from '@mui/icons-material';
 import { useLayout } from '../hooks/useLayout';
-import { simulationService, authService } from '../services/api';
-import type { Simulation as SimulationType } from '../types';
+import { simulationService, authService, monthlyDataService } from '../services/api';
+import type { Simulation as SimulationType, MonthlyData } from '../types';
 
 interface SimulationParams {
   period: string;
@@ -54,10 +57,15 @@ export const Simulation = () => {
 
   const [result, setResult] = useState<SimulationResultDisplay | null>(null);
   const [, setSimulations] = useState<SimulationType[]>([]);
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [latestData, setLatestData] = useState<MonthlyData | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
   useEffect(() => {
     loadSimulations();
+    loadLatestMonthlyData();
   }, []);
 
   const loadSimulations = async () => {
@@ -72,6 +80,22 @@ export const Simulation = () => {
     }
   };
 
+  const loadLatestMonthlyData = async () => {
+    try {
+      const user = authService.getCurrentUser();
+      if (!user?.clinicId) return;
+
+      const data = await monthlyDataService.getMonthlyData(user.clinicId);
+      if (data.length > 0) {
+        // 最新のデータを取得（year_monthでソート）
+        const sorted = [...data].sort((a, b) => b.yearMonth.localeCompare(a.yearMonth));
+        setLatestData(sorted[0]);
+      }
+    } catch (error) {
+      console.error('Failed to load monthly data:', error);
+    }
+  };
+
   const handleParamChange = (field: keyof SimulationParams, value: string | number) => {
     setParams((prev) => ({
       ...prev,
@@ -83,33 +107,86 @@ export const Simulation = () => {
     try {
       setLoading(true);
       const user = authService.getCurrentUser();
-      if (!user?.clinicId) return;
+      if (!user?.clinicId) {
+        setSnackbarMessage('ユーザー情報が取得できませんでした');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+        return;
+      }
+
+      if (!latestData) {
+        setSnackbarMessage('月次データが登録されていません。基礎データ管理から月次データを登録してください。');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+        return;
+      }
+
+      // 現在の値を基に変動率を適用
+      const currentRevenue = latestData.totalRevenue;
+      const currentInsuranceRevenue = latestData.insuranceRevenue;
+      const currentSelfPayRevenue = latestData.selfPayRevenue;
+      const currentPersonnelCost = latestData.personnelCost || 0;
+      const currentMaterialCost = latestData.materialCost || 0;
+      const currentFixedCost = latestData.fixedCost || 0;
+      const currentTotalPatients = latestData.totalPatients;
+
+      // 変動率を適用して目標値を計算
+      const targetInsuranceRevenue = currentInsuranceRevenue * (1 + params.insuranceRevenueChange / 100);
+      const targetSelfPayRevenue = currentSelfPayRevenue * (1 + params.selfPayRevenueChange / 100);
+      const targetRetailRevenue = 0; // 物販収入は現在未対応
+      const targetRevenue = targetInsuranceRevenue + targetSelfPayRevenue + targetRetailRevenue;
+
+      const targetVariableCost = (currentPersonnelCost + currentMaterialCost) * (1 + params.variableCostChange / 100);
+      const targetFixedCost = currentFixedCost * (1 + params.fixedCostChange / 100);
+      const targetProfit = targetRevenue - targetVariableCost - targetFixedCost;
+
+      const targetNewPatients = (latestData.newPatients || 0) * (1 + params.newPatientChange / 100);
+      const targetReturningPatients = (latestData.returningPatients || 0) * (1 + params.returningPatientChange / 100);
+      const targetTotalPatients = targetNewPatients + targetReturningPatients;
+
+      const targetAverageRevenuePerPatient = targetTotalPatients > 0 ? targetRevenue / targetTotalPatients : 0;
+      const targetPersonnelCostRate = targetRevenue > 0 ? (currentPersonnelCost * (1 + params.variableCostChange / 100)) / targetRevenue * 100 : 0;
+      const targetMaterialCostRate = targetRevenue > 0 ? (currentMaterialCost * (1 + params.variableCostChange / 100)) / targetRevenue * 100 : 0;
 
       const simulation = await simulationService.createSimulation(
         user.clinicId,
         `${params.period}ヶ月後のシミュレーション`,
         {
-          targetRevenue: 0,
-          targetProfit: 0,
-          assumedAverageRevenuePerPatient: 0,
-          assumedPersonnelCostRate: 0,
-          assumedMaterialCostRate: 0,
-          assumedFixedCost: 0
+          targetRevenue: Math.round(targetRevenue),
+          targetProfit: Math.round(targetProfit),
+          assumedAverageRevenuePerPatient: Math.round(targetAverageRevenuePerPatient),
+          assumedPersonnelCostRate: Math.round(targetPersonnelCostRate * 10) / 10,
+          assumedMaterialCostRate: Math.round(targetMaterialCostRate * 10) / 10,
+          assumedFixedCost: Math.round(targetFixedCost)
         }
       );
+
+      // 現在値との変動額を計算
+      const revenueChange = simulation.result.estimatedRevenue - currentRevenue;
+      const currentProfit = currentRevenue - (currentPersonnelCost + currentMaterialCost + currentFixedCost);
+      const profitChange = simulation.result.estimatedProfit - currentProfit;
+      const currentProfitRate = currentRevenue > 0 ? (currentProfit / currentRevenue * 100) : 0;
+      const profitRateChange = simulation.result.profitMargin - currentProfitRate;
 
       setResult({
         projectedRevenue: simulation.result.estimatedRevenue,
         projectedProfit: simulation.result.estimatedProfit,
         projectedProfitRate: simulation.result.profitMargin,
-        revenueChange: 0,
-        profitChange: 0,
-        profitRateChange: 0
+        revenueChange: Math.round(revenueChange),
+        profitChange: Math.round(profitChange),
+        profitRateChange: Math.round(profitRateChange * 10) / 10
       });
+
+      setSnackbarMessage('シミュレーションが完了しました');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
 
       await loadSimulations();
     } catch (error) {
       console.error('Failed to create simulation:', error);
+      setSnackbarMessage('シミュレーションの実行に失敗しました。もう一度お試しください。');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     } finally {
       setLoading(false);
     }
@@ -233,6 +310,7 @@ export const Simulation = () => {
                   handleParamChange('insuranceRevenueChange', Number(e.target.value))
                 }
                 placeholder="例: +10 または -5"
+                inputProps={{ step: 5, min: -50, max: 50 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -262,6 +340,7 @@ export const Simulation = () => {
                   handleParamChange('selfPayRevenueChange', Number(e.target.value))
                 }
                 placeholder="例: +20 または -10"
+                inputProps={{ step: 5, min: -50, max: 100 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -291,6 +370,7 @@ export const Simulation = () => {
                   handleParamChange('retailRevenueChange', Number(e.target.value))
                 }
                 placeholder="例: +5 または -3"
+                inputProps={{ step: 5, min: -50, max: 50 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -323,6 +403,7 @@ export const Simulation = () => {
                   handleParamChange('variableCostChange', Number(e.target.value))
                 }
                 placeholder="例: +8 または -2"
+                inputProps={{ step: 5, min: -50, max: 50 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -352,6 +433,7 @@ export const Simulation = () => {
                   handleParamChange('fixedCostChange', Number(e.target.value))
                 }
                 placeholder="例: +5 または -5"
+                inputProps={{ step: 5, min: -50, max: 50 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -381,6 +463,7 @@ export const Simulation = () => {
                   handleParamChange('newPatientChange', Number(e.target.value))
                 }
                 placeholder="例: +15 または -10"
+                inputProps={{ step: 5, min: -50, max: 100 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -410,6 +493,7 @@ export const Simulation = () => {
                   handleParamChange('returningPatientChange', Number(e.target.value))
                 }
                 placeholder="例: +10 または -5"
+                inputProps={{ step: 5, min: -50, max: 50 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -423,6 +507,7 @@ export const Simulation = () => {
         <Button
           variant="contained"
           onClick={handleSimulate}
+          disabled={loading || !latestData}
           sx={{
             padding: '10px 24px',
             borderRadius: '8px',
@@ -438,9 +523,21 @@ export const Simulation = () => {
             gap: '8px',
           }}
         >
-          <PlayArrowIcon sx={{ fontSize: '20px' }} />
-          シミュレーション実行
+          {loading ? (
+            <CircularProgress size={20} sx={{ color: '#ffffff' }} />
+          ) : (
+            <PlayArrowIcon sx={{ fontSize: '20px' }} />
+          )}
+          {loading ? '実行中...' : 'シミュレーション実行'}
         </Button>
+        {!latestData && (
+          <Typography
+            variant="caption"
+            sx={{ display: 'block', mt: 1, color: '#f57c00' }}
+          >
+            ※ 月次データが登録されていません。基礎データ管理から登録してください。
+          </Typography>
+        )}
       </Paper>
 
       {/* シミュレーション結果 */}
@@ -718,6 +815,22 @@ export const Simulation = () => {
           </Typography>
         </Box>
       </Paper>
+
+      {/* トースト通知 */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Layout>
   );
 };
