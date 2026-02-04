@@ -52,12 +52,12 @@ export const DataManagement = () => {
   const loadMonthlyData = async () => {
     try {
       const user = authService.getCurrentUser();
-      if (!user?.clinicId) {
+      if (!user?.clinic_id) {
         setLoading(false);
         return;
       }
 
-      const data = await monthlyDataService.getMonthlyData(user.clinicId);
+      const data = await monthlyDataService.getMonthlyData(user.clinic_id);
       const rows: MonthlyDataRow[] = data.map((item: MonthlyData) => ({
         id: item.id,
         yearMonth: item.yearMonth,
@@ -99,14 +99,14 @@ export const DataManagement = () => {
 
     try {
       const user = authService.getCurrentUser();
-      if (!user?.clinicId) {
+      if (!user?.clinic_id) {
         setSnackbarMessage('ログインしていません');
         setSnackbarSeverity('error');
         setSnackbarOpen(true);
         return;
       }
 
-      const clinicId = user.clinicId;
+      const clinicId = user.clinic_id;
 
       // PapaParseでCSVをパース
       Papa.parse(file, {

@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Box, Typography, Paper, Button, TextField } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Box, Typography, Paper, Button, TextField, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { Save as SaveIcon } from '@mui/icons-material';
 import { useLayout } from '../hooks/useLayout';
+import { clinicService, authService } from '../services/api';
 
 interface ClinicBasicInfo {
   name: string;
@@ -21,33 +22,159 @@ interface ClinicBusinessInfo {
   partTimeStaff: number;
 }
 
+interface SnackbarState {
+  open: boolean;
+  message: string;
+  severity: 'success' | 'error';
+}
+
 export const ClinicSettings = () => {
   const { Layout } = useLayout();
+  const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
+
   const [basicInfo, setBasicInfo] = useState<ClinicBasicInfo>({
-    name: 'さくら歯科クリニック',
-    postalCode: '150-0001',
-    address: '東京都渋谷区神宮前1-2-3',
-    phone: '03-1234-5678',
-    ownerName: '田中太郎',
-    foundedDate: '2020-04',
-    departments: '一般歯科、小児歯科、矯正歯科、インプラント',
-    businessHours: '月〜金: 9:00-13:00, 14:30-19:00\n土: 9:00-13:00\n休診日: 日曜・祝日',
+    name: '',
+    postalCode: '',
+    address: '',
+    phone: '',
+    ownerName: '',
+    foundedDate: '',
+    departments: '',
+    businessHours: '',
   });
 
   const [businessInfo, setBusinessInfo] = useState<ClinicBusinessInfo>({
-    chairs: 4,
-    dentists: 2,
-    hygienists: 3,
-    partTimeStaff: 2,
+    chairs: 0,
+    dentists: 0,
+    hygienists: 0,
+    partTimeStaff: 0,
   });
 
-  const handleSaveBasicInfo = () => {
-    // TODO: Phase 4でAPI呼び出し実装
+  useEffect(() => {
+    const loadClinicData = async () => {
+      try {
+        const user = authService.getCurrentUser();
+        if (!user?.clinic_id) {
+          setSnackbar({
+            open: true,
+            message: 'ユーザー情報が取得できませんでした',
+            severity: 'error'
+          });
+          setLoadingData(false);
+          return;
+        }
+
+        const clinic = await clinicService.getClinic(user.clinic_id);
+
+        setBasicInfo({
+          name: clinic.name || '',
+          postalCode: clinic.postalCode || '',
+          address: clinic.address || '',
+          phone: clinic.phoneNumber || '',
+          ownerName: '',
+          foundedDate: '',
+          departments: '',
+          businessHours: '',
+        });
+
+        setBusinessInfo({
+          chairs: 0,
+          dentists: 0,
+          hygienists: 0,
+          partTimeStaff: 0,
+        });
+
+        setLoadingData(false);
+      } catch (error) {
+        console.error('Failed to load clinic data:', error);
+        setSnackbar({
+          open: true,
+          message: 'データの読み込みに失敗しました',
+          severity: 'error'
+        });
+        setLoadingData(false);
+      }
+    };
+
+    loadClinicData();
+  }, []);
+
+  const handleSaveBasicInfo = async () => {
+    try {
+      setLoading(true);
+      const user = authService.getCurrentUser();
+      if (!user?.clinic_id) {
+        setSnackbar({
+          open: true,
+          message: 'ユーザー情報が取得できませんでした',
+          severity: 'error'
+        });
+        return;
+      }
+
+      await clinicService.updateClinic(user.clinic_id, {
+        name: basicInfo.name,
+        postalCode: basicInfo.postalCode,
+        address: basicInfo.address,
+        phoneNumber: basicInfo.phone,
+      });
+
+      setSnackbar({
+        open: true,
+        message: '基本情報を保存しました',
+        severity: 'success'
+      });
+    } catch (error) {
+      console.error('Failed to save basic info:', error);
+      setSnackbar({
+        open: true,
+        message: '保存に失敗しました。もう一度お試しください。',
+        severity: 'error'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSaveBusinessInfo = () => {
-    // TODO: Phase 4でAPI呼び出し実装
+  const handleSaveBusinessInfo = async () => {
+    try {
+      setLoading(true);
+      setSnackbar({
+        open: true,
+        message: '経営情報の保存機能は開発中です',
+        severity: 'error'
+      });
+    } catch (error) {
+      console.error('Failed to save business info:', error);
+      setSnackbar({
+        open: true,
+        message: '保存に失敗しました。もう一度お試しください。',
+        severity: 'error'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  if (loadingData) {
+    return (
+      <Layout>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
+          <CircularProgress />
+        </Box>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -123,10 +250,11 @@ export const ClinicSettings = () => {
           <Button
             variant="contained"
             onClick={handleSaveBasicInfo}
+            disabled={loading}
             sx={{ backgroundColor: '#FF6B35', color: '#ffffff', '&:hover': { backgroundColor: '#E55A2B' } }}
-            startIcon={<SaveIcon />}
+            startIcon={loading ? <CircularProgress size={20} sx={{ color: '#ffffff' }} /> : <SaveIcon />}
           >
-            保存する
+            {loading ? '保存中...' : '保存する'}
           </Button>
         </Box>
       </Paper>
@@ -169,13 +297,29 @@ export const ClinicSettings = () => {
           <Button
             variant="contained"
             onClick={handleSaveBusinessInfo}
+            disabled={loading}
             sx={{ backgroundColor: '#FF6B35', color: '#ffffff', '&:hover': { backgroundColor: '#E55A2B' } }}
-            startIcon={<SaveIcon />}
+            startIcon={loading ? <CircularProgress size={20} sx={{ color: '#ffffff' }} /> : <SaveIcon />}
           >
-            保存する
+            {loading ? '保存中...' : '保存する'}
           </Button>
         </Box>
       </Paper>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Layout>
   );
 };

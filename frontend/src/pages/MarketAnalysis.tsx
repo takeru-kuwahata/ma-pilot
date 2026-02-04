@@ -34,12 +34,12 @@ export const MarketAnalysis = () => {
   const loadMarketAnalysis = async () => {
     try {
       const user = authService.getCurrentUser();
-      if (!user?.clinicId) {
+      if (!user?.clinic_id) {
         setLoading(false);
         return;
       }
 
-      const data = await marketAnalysisService.getMarketAnalysis(user.clinicId);
+      const data = await marketAnalysisService.getMarketAnalysis(user.clinic_id);
       setAnalysis(data);
     } catch (error) {
       console.error('Failed to load market analysis:', error);

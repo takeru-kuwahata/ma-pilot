@@ -71,9 +71,9 @@ export const Simulation = () => {
   const loadSimulations = async () => {
     try {
       const user = authService.getCurrentUser();
-      if (!user?.clinicId) return;
+      if (!user?.clinic_id) return;
 
-      const data = await simulationService.getSimulations(user.clinicId);
+      const data = await simulationService.getSimulations(user.clinic_id);
       setSimulations(data);
     } catch (error) {
       console.error('Failed to load simulations:', error);
@@ -83,9 +83,9 @@ export const Simulation = () => {
   const loadLatestMonthlyData = async () => {
     try {
       const user = authService.getCurrentUser();
-      if (!user?.clinicId) return;
+      if (!user?.clinic_id) return;
 
-      const data = await monthlyDataService.getMonthlyData(user.clinicId);
+      const data = await monthlyDataService.getMonthlyData(user.clinic_id);
       if (data.length > 0) {
         // 最新のデータを取得（year_monthでソート）
         const sorted = [...data].sort((a, b) => b.yearMonth.localeCompare(a.yearMonth));
@@ -107,7 +107,7 @@ export const Simulation = () => {
     try {
       setLoading(true);
       const user = authService.getCurrentUser();
-      if (!user?.clinicId) {
+      if (!user?.clinic_id) {
         setSnackbarMessage('ユーザー情報が取得できませんでした');
         setSnackbarSeverity('error');
         setSnackbarOpen(true);
@@ -148,7 +148,7 @@ export const Simulation = () => {
       const targetMaterialCostRate = targetRevenue > 0 ? (currentMaterialCost * (1 + params.variableCostChange / 100)) / targetRevenue * 100 : 0;
 
       const simulation = await simulationService.createSimulation(
-        user.clinicId,
+        user.clinic_id,
         `${params.period}ヶ月後のシミュレーション`,
         {
           targetRevenue: Math.round(targetRevenue),

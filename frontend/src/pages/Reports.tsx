@@ -75,12 +75,12 @@ export const Reports = () => {
   const loadReports = async () => {
     try {
       const user = authService.getCurrentUser();
-      if (!user?.clinicId) {
+      if (!user?.clinic_id) {
         setLoading(false);
         return;
       }
 
-      const data = await reportService.getReports(user.clinicId);
+      const data = await reportService.getReports(user.clinic_id);
       setReports(data);
     } catch (error) {
       console.error('Failed to load reports:', error);
@@ -102,7 +102,7 @@ export const Reports = () => {
     try {
       setGenerating(true);
       const user = authService.getCurrentUser();
-      if (!user?.clinicId) {
+      if (!user?.clinic_id) {
         setSnackbarMessage('ユーザー情報が取得できませんでした');
         setSnackbarSeverity('error');
         setSnackbarOpen(true);
@@ -131,7 +131,7 @@ export const Reports = () => {
 
       // レポート生成
       const report = await reportService.generateReport({
-        clinic_id: user.clinicId,
+        clinic_id: user.clinic_id,
         type: reportType,
         format: 'pdf',
         title: title,

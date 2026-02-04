@@ -8,7 +8,7 @@ export interface User {
   id: string;
   email: string;
   role: UserRole;
-  clinicId?: string;
+  clinic_id?: string;
   createdAt: string;
   updatedAt: string;
 }
