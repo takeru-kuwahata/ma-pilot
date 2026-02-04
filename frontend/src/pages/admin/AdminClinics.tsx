@@ -45,6 +45,8 @@ export const AdminClinics = () => {
     address: '',
     phone_number: '',
     owner_id: '',
+    latitude: 35.6762,
+    longitude: 139.6503,
   });
 
   useEffect(() => {
@@ -116,6 +118,8 @@ export const AdminClinics = () => {
       address: '',
       phone_number: '',
       owner_id: '',
+      latitude: 35.6762,
+      longitude: 139.6503,
     });
   };
 
@@ -534,6 +538,26 @@ export const AdminClinics = () => {
               fullWidth
               required
               helperText="user_metadataテーブルに存在するユーザーのIDを入力してください"
+            />
+            <TextField
+              label="緯度"
+              type="number"
+              value={newClinic.latitude}
+              onChange={(e) => setNewClinic((prev) => ({ ...prev, latitude: Number(e.target.value) }))}
+              fullWidth
+              required
+              inputProps={{ step: 0.0001 }}
+              helperText="デフォルト: 35.6762（東京）"
+            />
+            <TextField
+              label="経度"
+              type="number"
+              value={newClinic.longitude}
+              onChange={(e) => setNewClinic((prev) => ({ ...prev, longitude: Number(e.target.value) }))}
+              fullWidth
+              required
+              inputProps={{ step: 0.0001 }}
+              helperText="デフォルト: 139.6503（東京）"
             />
           </Box>
         </DialogContent>
