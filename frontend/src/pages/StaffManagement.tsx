@@ -404,7 +404,7 @@ export const StaffManagement = () => {
               required
               fullWidth
               value={inviteForm.email}
-              onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
+              onChange={(e) => setInviteForm((prev) => ({ ...prev, email: e.target.value }))}
               disabled={inviteLoading}
               placeholder="example@clinic.jp"
               sx={{
@@ -443,7 +443,7 @@ export const StaffManagement = () => {
               <Select
                 value={inviteForm.role}
                 label="権限"
-                onChange={(e) => setInviteForm({ ...inviteForm, role: e.target.value as 'clinic_owner' | 'clinic_editor' | 'clinic_viewer' })}
+                onChange={(e) => setInviteForm((prev) => ({ ...prev, role: e.target.value as 'clinic_owner' | 'clinic_editor' | 'clinic_viewer' }))}
               >
                 <MenuItem value="clinic_owner">医院オーナー</MenuItem>
                 <MenuItem value="clinic_editor">医院編集者</MenuItem>

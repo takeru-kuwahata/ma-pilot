@@ -195,51 +195,51 @@ export const ClinicSettings = () => {
           <TextField
             label="医院名"
             value={basicInfo.name}
-            onChange={(e) => setBasicInfo({ ...basicInfo, name: e.target.value })}
+            onChange={(e) => setBasicInfo((prev) => ({ ...prev, name: e.target.value }))}
             fullWidth
           />
           <TextField
             label="郵便番号"
             value={basicInfo.postalCode}
-            onChange={(e) => setBasicInfo({ ...basicInfo, postalCode: e.target.value })}
+            onChange={(e) => setBasicInfo((prev) => ({ ...prev, postalCode: e.target.value }))}
             fullWidth
           />
           <TextField
             label="住所"
             value={basicInfo.address}
-            onChange={(e) => setBasicInfo({ ...basicInfo, address: e.target.value })}
+            onChange={(e) => setBasicInfo((prev) => ({ ...prev, address: e.target.value }))}
             fullWidth
             sx={{ gridColumn: '1 / -1' }}
           />
           <TextField
             label="電話番号"
             value={basicInfo.phone}
-            onChange={(e) => setBasicInfo({ ...basicInfo, phone: e.target.value })}
+            onChange={(e) => setBasicInfo((prev) => ({ ...prev, phone: e.target.value }))}
             fullWidth
           />
           <TextField
             label="オーナー名"
             value={basicInfo.ownerName}
-            onChange={(e) => setBasicInfo({ ...basicInfo, ownerName: e.target.value })}
+            onChange={(e) => setBasicInfo((prev) => ({ ...prev, ownerName: e.target.value }))}
             fullWidth
           />
           <TextField
             label="開業年月"
             value={basicInfo.foundedDate}
-            onChange={(e) => setBasicInfo({ ...basicInfo, foundedDate: e.target.value })}
+            onChange={(e) => setBasicInfo((prev) => ({ ...prev, foundedDate: e.target.value }))}
             fullWidth
             placeholder="YYYY-MM"
           />
           <TextField
             label="診療科目"
             value={basicInfo.departments}
-            onChange={(e) => setBasicInfo({ ...basicInfo, departments: e.target.value })}
+            onChange={(e) => setBasicInfo((prev) => ({ ...prev, departments: e.target.value }))}
             fullWidth
           />
           <TextField
             label="営業時間"
             value={basicInfo.businessHours}
-            onChange={(e) => setBasicInfo({ ...basicInfo, businessHours: e.target.value })}
+            onChange={(e) => setBasicInfo((prev) => ({ ...prev, businessHours: e.target.value }))}
             fullWidth
             multiline
             rows={3}
@@ -268,28 +268,28 @@ export const ClinicSettings = () => {
             label="ユニット数"
             type="number"
             value={businessInfo.chairs}
-            onChange={(e) => setBusinessInfo({ ...businessInfo, chairs: parseInt(e.target.value) || 0 })}
+            onChange={(e) => setBusinessInfo((prev) => ({ ...prev, chairs: parseInt(e.target.value) || 0 }))}
             fullWidth
           />
           <TextField
             label="常勤歯科医師数"
             type="number"
             value={businessInfo.dentists}
-            onChange={(e) => setBusinessInfo({ ...businessInfo, dentists: parseInt(e.target.value) || 0 })}
+            onChange={(e) => setBusinessInfo((prev) => ({ ...prev, dentists: parseInt(e.target.value) || 0 }))}
             fullWidth
           />
           <TextField
             label="常勤歯科衛生士数"
             type="number"
             value={businessInfo.hygienists}
-            onChange={(e) => setBusinessInfo({ ...businessInfo, hygienists: parseInt(e.target.value) || 0 })}
+            onChange={(e) => setBusinessInfo((prev) => ({ ...prev, hygienists: parseInt(e.target.value) || 0 }))}
             fullWidth
           />
           <TextField
             label="非常勤スタッフ数"
             type="number"
             value={businessInfo.partTimeStaff}
-            onChange={(e) => setBusinessInfo({ ...businessInfo, partTimeStaff: parseInt(e.target.value) || 0 })}
+            onChange={(e) => setBusinessInfo((prev) => ({ ...prev, partTimeStaff: parseInt(e.target.value) || 0 }))}
             fullWidth
           />
         </Box>

@@ -499,14 +499,14 @@ export const AdminClinics = () => {
             <TextField
               label="医院名"
               value={newClinic.name}
-              onChange={(e) => setNewClinic({ ...newClinic, name: e.target.value })}
+              onChange={(e) => setNewClinic((prev) => ({ ...prev, name: e.target.value }))}
               fullWidth
               required
             />
             <TextField
               label="郵便番号"
               value={newClinic.postal_code}
-              onChange={(e) => setNewClinic({ ...newClinic, postal_code: e.target.value })}
+              onChange={(e) => setNewClinic((prev) => ({ ...prev, postal_code: e.target.value }))}
               placeholder="150-0001"
               fullWidth
               required
@@ -514,14 +514,14 @@ export const AdminClinics = () => {
             <TextField
               label="住所"
               value={newClinic.address}
-              onChange={(e) => setNewClinic({ ...newClinic, address: e.target.value })}
+              onChange={(e) => setNewClinic((prev) => ({ ...prev, address: e.target.value }))}
               fullWidth
               required
             />
             <TextField
               label="電話番号"
               value={newClinic.phone_number}
-              onChange={(e) => setNewClinic({ ...newClinic, phone_number: e.target.value })}
+              onChange={(e) => setNewClinic((prev) => ({ ...prev, phone_number: e.target.value }))}
               placeholder="03-1234-5678"
               fullWidth
               required
@@ -529,7 +529,7 @@ export const AdminClinics = () => {
             <TextField
               label="オーナーID（UUID）"
               value={newClinic.owner_id}
-              onChange={(e) => setNewClinic({ ...newClinic, owner_id: e.target.value })}
+              onChange={(e) => setNewClinic((prev) => ({ ...prev, owner_id: e.target.value }))}
               placeholder="ユーザーのUUID"
               fullWidth
               required

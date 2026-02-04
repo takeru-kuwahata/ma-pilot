@@ -154,14 +154,14 @@ export const AdminSettings = () => {
             label="e-Stat APIキー"
             fullWidth
             value={apiSettings.eStatKey}
-            onChange={(e) => setApiSettings({ ...apiSettings, eStatKey: e.target.value })}
+            onChange={(e) => setApiSettings((prev) => ({ ...prev, eStatKey: e.target.value }))}
             helperText="人口統計データ取得に使用"
           />
           <TextField
             label="RESAS APIキー"
             fullWidth
             value={apiSettings.resasKey}
-            onChange={(e) => setApiSettings({ ...apiSettings, resasKey: e.target.value })}
+            onChange={(e) => setApiSettings((prev) => ({ ...prev, resasKey: e.target.value }))}
             helperText="地域経済データ取得に使用"
           />
           <TextField
@@ -169,7 +169,7 @@ export const AdminSettings = () => {
             fullWidth
             value={apiSettings.googleMapsKey}
             onChange={(e) =>
-              setApiSettings({ ...apiSettings, googleMapsKey: e.target.value })
+              setApiSettings((prev) => ({ ...prev, googleMapsKey: e.target.value }))
             }
             helperText="地図表示・位置情報検索に使用"
           />
@@ -178,7 +178,7 @@ export const AdminSettings = () => {
             fullWidth
             value={apiSettings.supabaseUrl}
             onChange={(e) =>
-              setApiSettings({ ...apiSettings, supabaseUrl: e.target.value })
+              setApiSettings((prev) => ({ ...prev, supabaseUrl: e.target.value }))
             }
             helperText="データベース接続に使用"
           />
@@ -250,7 +250,7 @@ export const AdminSettings = () => {
             fullWidth
             value={emailSettings.smtpServer}
             onChange={(e) =>
-              setEmailSettings({ ...emailSettings, smtpServer: e.target.value })
+              setEmailSettings((prev) => ({ ...prev, smtpServer: e.target.value }))
             }
           />
           <TextField
@@ -259,7 +259,7 @@ export const AdminSettings = () => {
             fullWidth
             value={emailSettings.smtpPort}
             onChange={(e) =>
-              setEmailSettings({ ...emailSettings, smtpPort: Number(e.target.value) })
+              setEmailSettings((prev) => ({ ...prev, smtpPort: Number(e.target.value) }))
             }
             placeholder="587"
           />
@@ -269,7 +269,7 @@ export const AdminSettings = () => {
             fullWidth
             value={emailSettings.fromEmail}
             onChange={(e) =>
-              setEmailSettings({ ...emailSettings, fromEmail: e.target.value })
+              setEmailSettings((prev) => ({ ...prev, fromEmail: e.target.value }))
             }
             placeholder="example@example.com"
           />
@@ -278,7 +278,7 @@ export const AdminSettings = () => {
             fullWidth
             value={emailSettings.fromName}
             onChange={(e) =>
-              setEmailSettings({ ...emailSettings, fromName: e.target.value })
+              setEmailSettings((prev) => ({ ...prev, fromName: e.target.value }))
             }
           />
         </Box>
@@ -357,7 +357,7 @@ export const AdminSettings = () => {
             <Switch
               checked={systemSettings.requireApproval}
               onChange={(e) =>
-                setSystemSettings({ ...systemSettings, requireApproval: e.target.checked })
+                setSystemSettings((prev) => ({ ...prev, requireApproval: e.target.checked }))
               }
               sx={{
                 '& .MuiSwitch-switchBase.Mui-checked': {
@@ -391,7 +391,7 @@ export const AdminSettings = () => {
               type="number"
               value={systemSettings.trialPeriod}
               onChange={(e) =>
-                setSystemSettings({ ...systemSettings, trialPeriod: Number(e.target.value) })
+                setSystemSettings((prev) => ({ ...prev, trialPeriod: Number(e.target.value) }))
               }
               sx={{ width: '100px' }}
             />
@@ -418,10 +418,10 @@ export const AdminSettings = () => {
               type="number"
               value={systemSettings.dataRetention}
               onChange={(e) =>
-                setSystemSettings({
-                  ...systemSettings,
+                setSystemSettings((prev) => ({
+                  ...prev,
                   dataRetention: Number(e.target.value),
-                })
+                }))
               }
               sx={{ width: '100px' }}
             />
@@ -447,7 +447,7 @@ export const AdminSettings = () => {
             <Switch
               checked={systemSettings.autoBackup}
               onChange={(e) =>
-                setSystemSettings({ ...systemSettings, autoBackup: e.target.checked })
+                setSystemSettings((prev) => ({ ...prev, autoBackup: e.target.checked }))
               }
               sx={{
                 '& .MuiSwitch-switchBase.Mui-checked': {
@@ -480,10 +480,10 @@ export const AdminSettings = () => {
             <Switch
               checked={systemSettings.maintenanceMode}
               onChange={(e) =>
-                setSystemSettings({
-                  ...systemSettings,
+                setSystemSettings((prev) => ({
+                  ...prev,
                   maintenanceMode: e.target.checked,
-                })
+                }))
               }
               sx={{
                 '& .MuiSwitch-switchBase.Mui-checked': {
