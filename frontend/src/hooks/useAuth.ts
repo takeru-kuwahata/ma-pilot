@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api';
+import { useAuthStore } from '../stores/authStore';
 import {
   LoginFormData,
   PasswordResetFormData,
@@ -9,6 +10,7 @@ import {
 
 export const useAuth = () => {
   const navigate = useNavigate();
+  const { setUser } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -18,6 +20,10 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
       const response = await authService.login(data.email, data.password);
+
+      // authStoreを更新
+      setUser(response.user);
+
       setSuccessMessage('ログインしました');
 
       // ロールに応じたリダイレクト
@@ -25,7 +31,7 @@ export const useAuth = () => {
       if (user.role === 'system_admin') {
         navigate('/admin/dashboard');
       } else {
-        navigate('/dashboard');
+        navigate('/clinic/dashboard');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'ログインに失敗しました');
