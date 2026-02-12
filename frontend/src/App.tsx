@@ -12,7 +12,6 @@ import { RoleRoute } from './components/routing/RoleRoute';
 
 // レイアウトコンポーネント
 import { PublicLayout } from './layouts/PublicLayout';
-import { MainLayout } from './layouts/MainLayout';
 import { AdminLayout } from './layouts/AdminLayout';
 
 // 公開ページ
