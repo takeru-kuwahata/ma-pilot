@@ -10,7 +10,6 @@ import {
   Tab,
   CircularProgress,
 } from '@mui/material';
-import { PublicLayout } from '../layouts/PublicLayout';
 import { useAuth } from '../hooks/useAuth';
 import {
   LoginFormData,
@@ -64,8 +63,7 @@ export const LoginPage = () => {
   };
 
   return (
-    <PublicLayout>
-      <Box sx={{ maxWidth: 400, width: '100%', px: 3 }}>
+    <Box sx={{ maxWidth: 400, width: '100%', px: 3 }}>
         <Paper
           sx={{
             p: 4,
@@ -418,8 +416,7 @@ export const LoginPage = () => {
             </Box>
           )}
         </Paper>
-      </Box>
-    </PublicLayout>
+    </Box>
   );
 };
 

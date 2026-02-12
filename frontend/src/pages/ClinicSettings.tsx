@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Button, TextField, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { Save as SaveIcon } from '@mui/icons-material';
-import { useLayout } from '../hooks/useLayout';
 import { clinicService, authService } from '../services/api';
 
 interface ClinicBasicInfo {
@@ -29,7 +28,6 @@ interface SnackbarState {
 }
 
 export const ClinicSettings = () => {
-  const { Layout } = useLayout();
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [snackbar, setSnackbar] = useState<SnackbarState>({
@@ -168,16 +166,14 @@ export const ClinicSettings = () => {
 
   if (loadingData) {
     return (
-      <Layout>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
-          <CircularProgress />
-        </Box>
-      </Layout>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
+        <CircularProgress />
+      </Box>
     );
   }
 
   return (
-    <Layout>
+    <>
       <Box sx={{ marginBottom: '24px' }}>
         <Typography variant="h4" sx={{ fontSize: '32px', fontWeight: 500, marginBottom: '8px' }}>
           医院設定
@@ -320,6 +316,6 @@ export const ClinicSettings = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </Layout>
+    </>
   );
 };

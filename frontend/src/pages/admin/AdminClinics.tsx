@@ -28,7 +28,6 @@ import {
   Block as BlockIcon,
   PlayArrow as PlayArrowIcon,
 } from '@mui/icons-material';
-import { AdminLayout } from '../../layouts/AdminLayout';
 import { adminService } from '../../services/api';
 import type { Clinic } from '../../types';
 
@@ -171,7 +170,7 @@ export const AdminClinics = () => {
   };
 
   return (
-    <AdminLayout>
+    <>
       {/* ページヘッダー */}
       <Box sx={{ marginBottom: '24px' }}>
         <Typography
@@ -577,6 +576,6 @@ export const AdminClinics = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </AdminLayout>
+    </>
   );
 };

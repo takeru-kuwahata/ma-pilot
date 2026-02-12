@@ -1,4 +1,3 @@
-import React, { ReactNode } from 'react';
 import {
   AppBar,
   Box,
@@ -12,54 +11,29 @@ import {
   Avatar,
   Divider,
   Chip,
+  Button,
 } from '@mui/material';
 import {
-  Dashboard as DashboardIcon,
-  Business as BusinessIcon,
-  Settings as SettingsIcon,
   Logout as LogoutIcon,
-  EditNote as EditNoteIcon,
-  LocationOn as LocationOnIcon,
-  TrendingUp as TrendingUpIcon,
-  Description as DescriptionIcon,
-  Print as PrintIcon,
-  People as PeopleIcon,
+  SwapHoriz as SwapHorizIcon,
 } from '@mui/icons-material';
-import { useNavigate, useLocation } from 'react-router-dom';
-
-interface AdminLayoutProps {
-  children: ReactNode;
-}
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { useAuthStore } from '../stores/authStore';
+import { adminMenuItems } from '../constants/menuConfig';
 
 const drawerWidth = 240;
 
-export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
+export const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { clearSelectedClinic } = useAuthStore();
+
+  // 運営者エリア用のメニューを使用
+  const filteredMenuItems = adminMenuItems;
 
   // TODO: 認証コンテキストから取得（Phase 5以降）
   const userName = 'システム管理者';
   const userInitial = '管';
-
-  const adminMenuItems = [
-    { path: '/admin/dashboard', label: '管理ダッシュボード', icon: <DashboardIcon /> },
-    { path: '/admin/clinics', label: '医院アカウント管理', icon: <BusinessIcon /> },
-    { path: '/admin/settings', label: 'システム設定', icon: <SettingsIcon /> },
-  ];
-
-  const clinicMenuItems = [
-    { path: '/dashboard', label: 'ダッシュボード', icon: <DashboardIcon /> },
-    { path: '/data-management', label: '基礎データ管理', icon: <EditNoteIcon /> },
-    { path: '/market-analysis', label: '診療圏分析', icon: <LocationOnIcon /> },
-    { path: '/simulation', label: '経営シミュレーション', icon: <TrendingUpIcon /> },
-    { path: '/reports', label: 'レポート管理', icon: <DescriptionIcon /> },
-    { path: '/print-order', label: '印刷物発注', icon: <PrintIcon /> },
-  ];
-
-  const settingsItems = [
-    { path: '/clinic-settings', label: '医院設定', icon: <BusinessIcon /> },
-    { path: '/staff-management', label: 'スタッフ管理', icon: <PeopleIcon /> },
-  ];
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -125,6 +99,20 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             />
           </Box>
 
+          {/* モード切替ボタン */}
+          <Button
+            color="inherit"
+            startIcon={<SwapHorizIcon />}
+            onClick={() => {
+              // クリニック選択状態をクリア（医院モードに入る際に再選択）
+              clearSelectedClinic();
+              navigate('/clinic/dashboard');
+            }}
+            sx={{ mr: 2 }}
+          >
+            医院モードへ
+          </Button>
+
           {/* ユーザー情報 */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography
@@ -182,103 +170,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         </Typography>
 
         <List sx={{ pt: 0, pb: 0 }}>
-          {adminMenuItems.map((item) => (
-            <ListItem key={item.path} disablePadding>
-              <ListItemButton
-                selected={location.pathname === item.path}
-                onClick={() => handleNavigation(item.path)}
-                sx={{
-                  py: 1.5,
-                  px: 3,
-                  '&.Mui-selected': {
-                    backgroundColor: 'rgba(255, 107, 53, 0.08)',
-                    borderLeft: '3px solid #FF6B35',
-                    color: '#FF6B35',
-                    pl: 'calc(24px - 3px)',
-                    '& .MuiListItemIcon-root': {
-                      color: '#FF6B35',
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-
-        <Divider sx={{ my: 2, mx: 3 }} />
-
-        <Typography
-          variant="caption"
-          sx={{
-            px: 3,
-            py: 1.5,
-            display: 'block',
-            color: '#9e9e9e',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            fontSize: 12,
-          }}
-        >
-          医院機能
-        </Typography>
-
-        <List sx={{ pt: 0, pb: 0 }}>
-          {clinicMenuItems.map((item) => (
-            <ListItem key={item.path} disablePadding>
-              <ListItemButton
-                selected={location.pathname === item.path}
-                onClick={() => handleNavigation(item.path)}
-                sx={{
-                  py: 1.5,
-                  px: 3,
-                  '&.Mui-selected': {
-                    backgroundColor: 'rgba(255, 107, 53, 0.08)',
-                    borderLeft: '3px solid #FF6B35',
-                    color: '#FF6B35',
-                    pl: 'calc(24px - 3px)',
-                    '& .MuiListItemIcon-root': {
-                      color: '#FF6B35',
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-
-        <Divider sx={{ my: 2, mx: 3 }} />
-
-        <Typography
-          variant="caption"
-          sx={{
-            px: 3,
-            py: 1.5,
-            display: 'block',
-            color: '#9e9e9e',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            fontSize: 12,
-          }}
-        >
-          設定
-        </Typography>
-
-        <List sx={{ pt: 0, pb: 0 }}>
-          {settingsItems.map((item) => (
+          {filteredMenuItems.map((item) => (
             <ListItem key={item.path} disablePadding>
               <ListItemButton
                 selected={location.pathname === item.path}
@@ -343,7 +235,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           boxSizing: 'border-box',
         }}
       >
-        {children}
+        <Outlet />
       </Box>
     </Box>
   );

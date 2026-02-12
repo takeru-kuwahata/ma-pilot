@@ -34,7 +34,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { AdminLayout } from '../../layouts/AdminLayout';
 import { adminService } from '../../services/api';
 import type { Clinic } from '../../types';
 
@@ -161,7 +160,7 @@ export const AdminDashboard = () => {
   };
 
   return (
-    <AdminLayout>
+    <>
       {/* ページヘッダー */}
       <Box sx={{ marginBottom: '24px' }}>
         <Typography
@@ -637,6 +636,6 @@ export const AdminDashboard = () => {
           </Box>
         </Paper>
       </Box>
-    </AdminLayout>
+    </>
   );
 };

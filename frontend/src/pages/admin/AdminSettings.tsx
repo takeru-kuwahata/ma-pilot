@@ -19,7 +19,6 @@ import {
   Warning as WarningIcon,
   Error as ErrorIcon,
 } from '@mui/icons-material';
-import { AdminLayout } from '../../layouts/AdminLayout';
 
 interface ApiSettings {
   eStatKey: string;
@@ -99,7 +98,7 @@ export const AdminSettings = () => {
   };
 
   return (
-    <AdminLayout>
+    <>
       {/* ページヘッダー */}
       <Box sx={{ marginBottom: '24px' }}>
         <Typography
@@ -712,6 +711,6 @@ export const AdminSettings = () => {
           </Box>
         </Box>
       </Paper>
-    </AdminLayout>
+    </>
   );
 };

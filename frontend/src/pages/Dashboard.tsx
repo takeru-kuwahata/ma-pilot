@@ -10,8 +10,6 @@ import {
   PersonAdd as PersonAddIcon,
   EventRepeat as EventRepeatIcon,
 } from '@mui/icons-material';
-import { MainLayout } from '../layouts/MainLayout';
-import { AdminLayout } from '../layouts/AdminLayout';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { DashboardKpi } from '../types';
 import {
@@ -75,7 +73,6 @@ export const Dashboard = () => {
     return userStr ? JSON.parse(userStr) : null;
   }, []);
 
-  const isSystemAdmin = user?.role === 'system_admin';
   const userClinicId = user?.clinic_id || null;
 
   // clinic_idがない場合、デフォルトで最初の医院（さくら歯科クリニック）を表示
@@ -85,36 +82,28 @@ export const Dashboard = () => {
 
   const { data, loading, error } = useDashboardData(clinicId);
 
-  const Layout = isSystemAdmin ? AdminLayout : MainLayout;
-
   // clinic_idが取得できない場合（医院がまだ登録されていない）
   if (!clinicId && !loading) {
     return (
-      <Layout>
-        <Alert severity="warning">
-          表示する医院データがありません。医院アカウント管理から医院を登録してください。
-        </Alert>
-      </Layout>
+      <Alert severity="warning">
+        表示する医院データがありません。医院アカウント管理から医院を登録してください。
+      </Alert>
     );
   }
 
   if (loading) {
     return (
-      <Layout>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-          <CircularProgress />
-        </Box>
-      </Layout>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <CircularProgress />
+      </Box>
     );
   }
 
   if (error || !data) {
     return (
-      <Layout>
-        <Alert severity="error">
-          データの取得に失敗しました。しばらくしてから再度お試しください。
-        </Alert>
-      </Layout>
+      <Alert severity="error">
+        データの取得に失敗しました。しばらくしてから再度お試しください。
+      </Alert>
     );
   }
 
@@ -172,17 +161,16 @@ export const Dashboard = () => {
   }
 
   return (
-    <Layout>
-      <>
-        {/* ページヘッダー */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h4" sx={{ fontWeight: 500, mb: 1 }}>
-            経営ダッシュボード
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {data.lastUpdated} のデータ（データソース: {data.dataSource}）
-          </Typography>
-        </Box>
+    <>
+      {/* ページヘッダー */}
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4" sx={{ fontWeight: 500, mb: 1 }}>
+          経営ダッシュボード
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {data.lastUpdated} のデータ（データソース: {data.dataSource}）
+        </Typography>
+      </Box>
 
         {/* アラート */}
         {data.alerts.length > 0 && (
@@ -338,7 +326,6 @@ export const Dashboard = () => {
             </Paper>
           </Grid>
         </Grid>
-      </>
-    </Layout>
+    </>
   );
 };

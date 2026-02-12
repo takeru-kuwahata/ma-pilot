@@ -343,3 +343,18 @@ export interface PriceEstimateResponse {
   delivery_days: number;
   price_table_id: string;
 }
+
+// ============================================
+// UI構造リファクタリング関連型定義
+// ============================================
+
+// メニュー項目設定
+export interface MenuItemConfig {
+  path: string;
+  label: string;
+  icon: React.ReactNode;
+  roles?: UserRole[]; // 未指定 = 全ロール
+}
+
+// レイアウトモード
+export type LayoutMode = 'admin' | 'clinic' | 'public';

@@ -94,6 +94,93 @@ Phase 1（要件定義）は完了しました。次のステップを選択し�
 
 ---
 
+## 🆕 機能拡張: UI構造リファクタリング
+
+### 進捗状況
+| Stage | 内容 | 状態 |
+|:-----:|------|:----:|
+| 0 | 要件確認・実装計画策定 | ✅ |
+| 1 | Phase 1: 基盤整備（型定義・状態管理） | ✅ |
+| 2 | Phase 2: ルーティング保護機能 | ✅ |
+| 3 | Phase 3: ルーティング構造変更 | ✅ |
+| 4 | Phase 4: レイアウト改修 | ✅ |
+| 5 | Phase 5: ページ修正（9ページ） | ✅ |
+| 6 | Phase 6: 不要ファイル削除 | ✅ |
+
+### ファイル変更計画
+
+#### 修正ファイル（10件）
+| ファイル | 変更内容 | Phase |
+|---------|---------|-------|
+| types/index.ts | MenuItemConfig、LayoutMode型追加 | 1 |
+| authStore.ts | selectedClinicId、setSelectedClinic追加 | 1 |
+| App.tsx | ネストルート実装、権限チェック追加 | 3 |
+| MainLayout.tsx | 動的メニュー生成、クリニック選択ドロップダウン | 4 |
+| AdminLayout.tsx | モード切替UI追加 | 4 |
+| Dashboard.tsx | useLayout削除 | 5 |
+| DataManagement.tsx | useLayout削除 | 5 |
+| MarketAnalysis.tsx | useLayout削除 | 5 |
+| Simulation.tsx | useLayout削除 | 5 |
+| Reports.tsx | useLayout削除 | 5 |
+
+#### 新規作成ファイル（7件）
+| ファイル | 内容 | Phase |
+|---------|------|-------|
+| components/routing/PrivateRoute.tsx | 認証チェック | 2 |
+| components/routing/RoleRoute.tsx | 権限チェック | 2 |
+| components/routing/AdminModeWrapper.tsx | クリニック選択UI | 3 |
+| constants/menuConfig.ts | 権限別メニュー定義 | 1 |
+| utils/menuFilter.ts | メニューフィルタリング | 1 |
+| hooks/useCurrentClinic.ts | 現在の医院情報取得 | 4 |
+| pages/Forbidden.tsx | 403エラーページ | 2 |
+
+#### 削除ファイル（2件）
+| ファイル | 理由 | Phase |
+|---------|------|-------|
+| components/Layout.tsx | 未使用 | 6 |
+| hooks/useLayout.tsx | 新構造で不要 | 6 |
+
+### 実装チェックリスト
+
+#### Phase 1: 基盤整備
+- [x] types/index.ts に MenuItemConfig、LayoutMode 型追加
+- [x] authStore.ts に selectedClinicId、setSelectedClinic 追加
+- [x] constants/menuConfig.tsx 新規作成（権限別メニュー定義）
+- [x] utils/menuFilter.ts 新規作成（メニューフィルタリング）
+
+#### Phase 2: ルーティング保護機能
+- [x] components/routing/PrivateRoute.tsx 新規作成
+- [x] components/routing/RoleRoute.tsx 新規作成
+- [x] pages/Forbidden.tsx 新規作成
+
+#### Phase 3: ルーティング構造変更
+- [x] App.tsx 改修（ネストルート実装）
+- [x] components/routing/AdminModeWrapper.tsx 新規作成
+
+#### Phase 4: レイアウト改修
+- [x] hooks/useCurrentClinic.ts 新規作成
+- [x] MainLayout.tsx 改修（動的メニュー、クリニック選択）
+- [x] AdminLayout.tsx 改修（モード切替UI）
+
+#### Phase 5: ページ修正
+| ページ | useLayout削除 |
+|--------|:------------:|
+| Dashboard.tsx | [x] |
+| DataManagement.tsx | [x] |
+| MarketAnalysis.tsx | [x] |
+| Simulation.tsx | [x] |
+| Reports.tsx | [x] |
+| ClinicSettings.tsx | [x] |
+| StaffManagement.tsx | [x] |
+| PrintOrderForm.tsx | [x] |
+| PrintOrderHistory.tsx | [x] |
+
+#### Phase 6: 不要ファイル削除
+- [x] components/Layout.tsx 削除
+- [x] hooks/useLayout.tsx 削除
+
+---
+
 ## 📊 全体進捗サマリー
 
 | フェーズ | 進捗率 | 状態 |

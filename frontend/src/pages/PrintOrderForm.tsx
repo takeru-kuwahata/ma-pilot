@@ -23,7 +23,6 @@ import {
   CardContent,
   Grid,
 } from '@mui/material';
-import { useLayout } from '../hooks/useLayout';
 import type {
   PrintOrderFormData,
   PriceTable,
@@ -40,7 +39,6 @@ const PRODUCT_TYPES = [
 ];
 
 export default function PrintOrderForm() {
-  const { Layout } = useLayout();
   const [pattern, setPattern] = useState<PrintOrderPattern>('consultation');
   const [priceTables, setPriceTables] = useState<PriceTable[]>([]);
   const [selectedProductType, setSelectedProductType] = useState<string>('');
@@ -172,8 +170,7 @@ export default function PrintOrderForm() {
   };
 
   return (
-    <Layout>
-      <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
         <Paper sx={{ p: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
             印刷物注文フォーム
@@ -452,6 +449,5 @@ export default function PrintOrderForm() {
           </form>
         </Paper>
       </Container>
-    </Layout>
   );
 }

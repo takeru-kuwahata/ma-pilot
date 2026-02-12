@@ -1,10 +1,7 @@
 import { Box } from '@mui/material';
+import { Outlet } from 'react-router-dom';
 
-interface PublicLayoutProps {
-  children: React.ReactNode;
-}
-
-export const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
+export const PublicLayout = () => {
   return (
     <Box
       sx={{
@@ -24,7 +21,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
           py: 3,
         }}
       >
-        {children}
+        <Outlet />
       </Box>
     </Box>
   );

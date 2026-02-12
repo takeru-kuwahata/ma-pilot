@@ -23,7 +23,6 @@ import {
   PieChart as PieChartIcon,
   Timeline as TimelineIcon,
 } from '@mui/icons-material';
-import { useLayout } from '../hooks/useLayout';
 import { reportService, authService } from '../services/api';
 import type { Report } from '../types';
 
@@ -36,7 +35,6 @@ interface ReportTemplate {
 }
 
 export const Reports = () => {
-  const { Layout } = useLayout();
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -165,7 +163,7 @@ export const Reports = () => {
   };
 
   return (
-    <Layout>
+    <>
       {/* ページヘッダー */}
       <Box sx={{ marginBottom: '24px' }}>
         <Typography
@@ -470,6 +468,6 @@ export const Reports = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </Layout>
+    </>
   );
 };

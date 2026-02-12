@@ -11,7 +11,6 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { PlayArrow as PlayArrowIcon, ShowChart as ShowChartIcon } from '@mui/icons-material';
-import { useLayout } from '../hooks/useLayout';
 import { simulationService, authService, monthlyDataService } from '../services/api';
 import type { Simulation as SimulationType, MonthlyData } from '../types';
 
@@ -43,7 +42,6 @@ const periodOptions = [
 ];
 
 export const Simulation = () => {
-  const { Layout } = useLayout();
   const [params, setParams] = useState<SimulationParams>({
     period: '6',
     insuranceRevenueChange: 0,
@@ -201,7 +199,7 @@ export const Simulation = () => {
   };
 
   return (
-    <Layout>
+    <>
       {/* ページヘッダー */}
       <Box sx={{ marginBottom: '24px' }}>
         <Typography
@@ -830,6 +828,6 @@ export const Simulation = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </Layout>
+    </>
   );
 };

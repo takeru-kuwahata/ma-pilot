@@ -345,3 +345,93 @@ CI/CD:
 **実装詳細**: コードを参照（`backend/src/api/print_orders.py`, `frontend/src/pages/PrintOrder*.tsx`）
 
 ---
+
+## 🆕 機能拡張要件 - UI構造リファクタリング
+
+### 概要
+- **目的**: 運営者・医院管理者・医院スタッフの3つのエリアを明確に分離し、権限による適切なアクセス制御を実装
+- **ビジネス価値**: ユーザーサポート向上、セキュリティ強化、保守性向上
+
+### 機能要件
+
+#### 1. 3つのエリア分離
+- **運営者エリア** (`/admin/*`): system_admin専用
+- **医院エリア** (`/clinic/*`): 全スタッフ + system_admin
+- **公開エリア** (`/login`): 未認証ユーザー
+
+#### 2. 権限による自動ルーティング
+- ログイン後、権限に応じて自動リダイレクト
+  - system_admin → `/admin/dashboard`
+  - clinic系 → `/clinic/dashboard`
+- 旧URL (`/dashboard`等) → `/clinic/*` へ自動リダイレクト
+
+#### 3. system_adminのモード切替
+- ヘッダー右上に「運営者モード ⇄ 医院モード」ボタン
+- 医院モード時:
+  - ヘッダーにクリニック選択ドロップダウン表示
+  - 全クリニックを切り替えて表示可能（ユーザーサポート用）
+  - 選択状態はページ移動しても保持
+  - 全ての医院機能にアクセス可能（clinic_owner相当）
+
+#### 4. 権限別メニュー表示
+- **clinic_viewer（閲覧者）**:
+  - 表示: ダッシュボード、診療圏分析、レポート管理、印刷物発注、発注履歴
+  - 非表示: 基礎データ管理、経営シミュレーション、医院設定、スタッフ管理
+
+- **clinic_editor（編集者）**:
+  - 上記 + 基礎データ管理、経営シミュレーション
+  - 非表示: 医院設定、スタッフ管理
+
+- **clinic_owner（オーナー）**:
+  - 全ての医院機能
+
+- **system_admin（医院モード）**:
+  - 全ての医院機能（clinic_owner相当）
+
+#### 5. 印刷物発注機能の配置
+- **医院側**: `/clinic/print-order`（発注フォーム）、`/clinic/print-order-history`（発注履歴）
+- **運営側**: `/admin/print-orders`（全医院の発注一覧 + ステータス管理）
+
+### 非機能要件
+- **セキュリティ**: ルートレベルでの認証・権限チェック
+- **保守性**: メニュー定義の単一化、ルーティング構造の階層化
+- **UX**: 権限に応じた適切なメニュー表示、クリニック名の明示
+
+### 型定義（TDL）
+```typescript
+// MenuItemConfig型
+interface MenuItemConfig {
+  path: string;
+  label: string;
+  icon: React.ReactNode;
+  roles?: UserRole[]; // 未指定 = 全ロール
+}
+
+// LayoutMode型
+type LayoutMode = 'admin' | 'clinic' | 'public';
+
+// authStore拡張
+interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  selectedClinicId: string | null; // system_admin用
+  setSelectedClinic: (clinicId: string) => void;
+}
+```
+
+### 設計判断
+
+#### なぜページごとのuseLayoutを廃止するのか
+- **理由**: ルーティング構造とレイアウト選択が分離しており、保守性が低い
+- **解決**: ルーターレベルで `/clinic/*` → MainLayout、`/admin/*` → AdminLayout に固定
+
+#### なぜメニュー定義を集約するのか
+- **理由**: 現在はMainLayout、AdminLayoutにメニューがハードコード、権限別フィルタリング不可
+- **解決**: menuConfig.tsに全メニュー定義 → 権限でフィルタリング
+
+#### なぜAdminModeWrapperが必要か
+- **理由**: system_adminが医院モードで操作する際、全クリニックを切り替えて表示する必要がある（ユーザーサポート用）
+- **解決**: AdminModeWrapperでクリニック選択UI実装 → 以降のページで選択されたクリニックIDを使用
+
+---

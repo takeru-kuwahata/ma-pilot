@@ -31,12 +31,10 @@ import {
   Add as AddIcon,
   Info as InfoIcon,
 } from '@mui/icons-material';
-import { useLayout } from '../hooks/useLayout';
 import { staffService, authService } from '../services/api';
 import type { User, UserRole } from '../types';
 
 export const StaffManagement = () => {
-  const { Layout } = useLayout();
   const [staffList, setStaffList] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -209,24 +207,20 @@ export const StaffManagement = () => {
 
   if (loading) {
     return (
-      <Layout>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-          <CircularProgress />
-        </Box>
-      </Layout>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <CircularProgress />
+      </Box>
     );
   }
 
   if (error) {
     return (
-      <Layout>
-        <Alert severity="error">{error}</Alert>
-      </Layout>
+      <Alert severity="error">{error}</Alert>
     );
   }
 
   return (
-    <Layout>
+    <>
       <Box sx={{ marginBottom: '24px' }}>
         <Typography
           variant="h4"
@@ -615,6 +609,6 @@ export const StaffManagement = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </Layout>
+    </>
   );
 };

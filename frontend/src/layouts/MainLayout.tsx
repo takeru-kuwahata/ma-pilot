@@ -1,4 +1,3 @@
-import React, { ReactNode } from 'react';
 import {
   AppBar,
   Box,
@@ -11,48 +10,37 @@ import {
   Typography,
   Avatar,
   Divider,
+  Button,
 } from '@mui/material';
 import {
-  Dashboard as DashboardIcon,
-  EditNote as EditNoteIcon,
-  LocationOn as LocationOnIcon,
-  TrendingUp as TrendingUpIcon,
-  Description as DescriptionIcon,
-  Print as PrintIcon,
-  Business as BusinessIcon,
-  People as PeopleIcon,
   Logout as LogoutIcon,
+  SwapHoriz as SwapHorizIcon,
 } from '@mui/icons-material';
-import { useNavigate, useLocation } from 'react-router-dom';
-
-interface MainLayoutProps {
-  children: ReactNode;
-}
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { useAuthStore } from '../stores/authStore';
+import { useCurrentClinic } from '../hooks/useCurrentClinic';
+import { clinicMenuItems } from '../constants/menuConfig';
+import { filterMenuByRole } from '../utils/menuFilter';
 
 const drawerWidth = 240;
 
-export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+export const MainLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuthStore();
+  const { clinicName } = useCurrentClinic();
+
+  // 権限によるメニューフィルタリング
+  const filteredMenuItems = user
+    ? filterMenuByRole(clinicMenuItems, user.role)
+    : [];
+
+  // system_adminかどうか判定
+  const isSystemAdmin = user?.role === 'system_admin';
 
   // TODO: 認証コンテキストから取得（Phase 5以降）
-  const clinicName = 'さくら歯科クリニック';
   const userName = '田中太郎';
   const userInitial = '田';
-
-  const menuItems = [
-    { path: '/dashboard', label: 'ダッシュボード', icon: <DashboardIcon /> },
-    { path: '/data-management', label: '基礎データ管理', icon: <EditNoteIcon /> },
-    { path: '/market-analysis', label: '診療圏分析', icon: <LocationOnIcon /> },
-    { path: '/simulation', label: '経営シミュレーション', icon: <TrendingUpIcon /> },
-    { path: '/reports', label: 'レポート管理', icon: <DescriptionIcon /> },
-    { path: '/print-order', label: '印刷物発注', icon: <PrintIcon /> },
-  ];
-
-  const settingsItems = [
-    { path: '/clinic-settings', label: '医院設定', icon: <BusinessIcon /> },
-    { path: '/staff-management', label: 'スタッフ管理', icon: <PeopleIcon /> },
-  ];
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -121,6 +109,18 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             {clinicName}
           </Typography>
 
+          {/* system_admin用のモード切替ボタン */}
+          {isSystemAdmin && (
+            <Button
+              color="inherit"
+              startIcon={<SwapHorizIcon />}
+              onClick={() => navigate('/admin/dashboard')}
+              sx={{ mr: 2 }}
+            >
+              運営者モードへ
+            </Button>
+          )}
+
           {/* ユーザー情報 */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Avatar
@@ -158,55 +158,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         }}
       >
         <List sx={{ pt: 2, pb: 0 }}>
-          {menuItems.map((item) => (
-            <ListItem key={item.path} disablePadding>
-              <ListItemButton
-                selected={location.pathname === item.path}
-                onClick={() => handleNavigation(item.path)}
-                sx={{
-                  py: 1.5,
-                  px: 3,
-                  '&.Mui-selected': {
-                    backgroundColor: 'rgba(255, 107, 53, 0.08)',
-                    borderLeft: '3px solid #FF6B35',
-                    color: '#FF6B35',
-                    pl: 'calc(24px - 3px)',
-                    '& .MuiListItemIcon-root': {
-                      color: '#FF6B35',
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-
-        <Divider sx={{ my: 2, mx: 3 }} />
-
-        <Typography
-          variant="caption"
-          sx={{
-            px: 3,
-            py: 1.5,
-            display: 'block',
-            color: '#9e9e9e',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            fontSize: 12,
-          }}
-        >
-          設定
-        </Typography>
-
-        <List sx={{ pt: 0, pb: 0 }}>
-          {settingsItems.map((item) => (
+          {filteredMenuItems.map((item) => (
             <ListItem key={item.path} disablePadding>
               <ListItemButton
                 selected={location.pathname === item.path}
@@ -271,7 +223,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           boxSizing: 'border-box',
         }}
       >
-        {children}
+        <Outlet />
       </Box>
     </Box>
   );
