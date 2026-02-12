@@ -16,7 +16,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
-  isLoading: true,
+  isLoading: false, // 一時的にfalseに変更（認証初期化処理が未実装のため）
   selectedClinicId: null,
 
   setUser: (user) =>
