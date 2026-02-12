@@ -21,19 +21,26 @@ export const useAuth = () => {
       setError(null);
       const response = await authService.login(data.email, data.password);
 
+      console.log('[useAuth] Login response:', response.user);
+
       // authStoreを更新
       setUser(response.user);
+
+      console.log('[useAuth] setUser called with:', response.user);
 
       setSuccessMessage('ログインしました');
 
       // ロールに応じたリダイレクト
       const user = response.user;
+      console.log('[useAuth] Navigating to:', user.role === 'system_admin' ? '/admin/dashboard' : '/clinic/dashboard');
+
       if (user.role === 'system_admin') {
         navigate('/admin/dashboard');
       } else {
         navigate('/clinic/dashboard');
       }
     } catch (err) {
+      console.error('[useAuth] Login error:', err);
       setError(err instanceof Error ? err.message : 'ログインに失敗しました');
     } finally {
       setLoading(false);
