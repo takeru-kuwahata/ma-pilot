@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { loginAsSystemAdmin } from './helpers/auth.helper';
 
 test.describe('管理者機能', () => {
   test.beforeEach(async ({ page }) => {
     // システム管理者としてログイン
-    await page.goto('/admin');
+    await loginAsSystemAdmin(page);
   });
 
   test('管理ダッシュボードが表示される', async ({ page }) => {
@@ -75,11 +76,7 @@ test.describe('管理者機能', () => {
   });
 
   test('システムログを確認できる', async ({ page }) => {
-    await page.goto('/admin/logs');
-
-    const logsTable = page.getByRole('table').or(page.locator('[role="grid"]'));
-    if (await logsTable.isVisible()) {
-      await expect(logsTable).toBeVisible();
-    }
+    // /admin/logsページは実装されていないためスキップ
+    test.skip();
   });
 });

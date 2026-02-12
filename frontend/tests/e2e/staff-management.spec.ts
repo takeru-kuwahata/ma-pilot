@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { loginAsClinicOwner } from './helpers/auth.helper';
 
 test.describe('スタッフ管理', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/staff-management');
+    await loginAsClinicOwner(page);
+    await page.goto('/clinic/staff');
   });
 
   test('スタッフ管理ページが表示される', async ({ page }) => {

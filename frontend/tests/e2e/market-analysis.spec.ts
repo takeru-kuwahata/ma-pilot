@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { loginAsClinicOwner } from './helpers/auth.helper';
 
 test.describe('診療圏分析', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/market-analysis');
+    await loginAsClinicOwner(page);
+    await page.goto('/clinic/market-analysis');
   });
 
   test('診療圏分析ページが表示される', async ({ page }) => {
