@@ -44,12 +44,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <a href="#main-content" className="skip-link">
-          メインコンテンツへスキップ
-        </a>
         <BrowserRouter>
-          <main id="main-content">
-            <Routes>
+          <Routes>
               {/* ========== パブリックエリア（/login） ========== */}
               <Route element={<PublicLayout />}>
                 <Route path="/login" element={<LoginPage />} />
@@ -109,7 +105,6 @@ function App() {
               {/* ========== 404 Not Found ========== */}
               <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
-          </main>
         </BrowserRouter>
       </ThemeProvider>
       {/* React Query DevTools（開発環境のみ） */}
