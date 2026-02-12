@@ -1,14 +1,23 @@
 import './i18n/config';
 
-console.log('[App] All imports successful');
+// ルーティング保護コンポーネント
+import { PrivateRoute } from './components/routing/PrivateRoute';
+import { RoleRoute } from './components/routing/RoleRoute';
+
+// レイアウトコンポーネント
+import { PublicLayout } from './layouts/PublicLayout';
+import { MainLayout } from './layouts/MainLayout';
+import { AdminLayout } from './layouts/AdminLayout';
+
+console.log('[App] Routing components imported');
 
 function App() {
   console.log('[App] Component rendering');
 
   return (
     <div style={{ padding: '50px', textAlign: 'center' }}>
-      <h1>Imports successful!</h1>
-      <p>All dependencies loaded correctly.</p>
+      <h1>Routing components loaded!</h1>
+      <p>PrivateRoute, RoleRoute, and Layouts are working.</p>
     </div>
   );
 }
