@@ -43,9 +43,9 @@ export default defineConfig(({ mode }) => ({
     minify: 'terser',
     terserOptions: {
       compress: {
-        // console.logを本番環境では削除
-        drop_console: true,
-        drop_debugger: true,
+        // console.logを本番環境では削除（デバッグ中は無効化）
+        drop_console: false,
+        drop_debugger: false,
       },
     },
   },
