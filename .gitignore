@@ -1,9 +1,9 @@
 # Environment variables
 .env
 .env.local
-.env.production
 .env.staging
 .env.development
+# .env.production はコミット可能（本番環境のデフォルト値）
 
 # Dependencies
 node_modules/
