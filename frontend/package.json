@@ -5,7 +5,7 @@
   "description": "MA-Pilot: 歯科医院経営分析システム - フロントエンド",
   "scripts": {
     "dev": "vite --port 3247",
-    "build": "tsc && vite build",
+    "build": "echo '=== ENV CHECK ===' && echo VITE_SUPABASE_URL=$VITE_SUPABASE_URL && echo VITE_BACKEND_URL=$VITE_BACKEND_URL && tsc && vite build",
     "build:analyze": "tsc && vite build --mode analyze",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
