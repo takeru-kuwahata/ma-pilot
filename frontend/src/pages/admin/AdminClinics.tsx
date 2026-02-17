@@ -38,6 +38,7 @@ export const AdminClinics = () => {
   const [clinics, setClinics] = useState<Clinic[]>([]);
   const [, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
+  const [geocoding, setGeocoding] = useState(false);
   const [newClinic, setNewClinic] = useState({
     name: '',
     postal_code: '',
@@ -107,6 +108,32 @@ export const AdminClinics = () => {
 
   const handleAddClinic = () => {
     setOpenDialog(true);
+  };
+
+  const geocodeAddress = async (address: string) => {
+    if (!address.trim()) return;
+    setGeocoding(true);
+    try {
+      const res = await fetch(
+        `https://geocoder.csis.u-tokyo.ac.jp/cgi-bin/geocode.cgi?charset=UTF8&addr=${encodeURIComponent(address)}`
+      );
+      const text = await res.text();
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, 'text/xml');
+      const lat = xml.querySelector('latitude')?.textContent;
+      const lng = xml.querySelector('longitude')?.textContent;
+      if (lat && lng && parseFloat(lat) !== 0) {
+        setNewClinic((prev) => ({
+          ...prev,
+          latitude: parseFloat(lat),
+          longitude: parseFloat(lng),
+        }));
+      }
+    } catch {
+      // ジオコーディング失敗時はデフォルト値のまま
+    } finally {
+      setGeocoding(false);
+    }
   };
 
   const handleCloseDialog = () => {
@@ -525,8 +552,10 @@ export const AdminClinics = () => {
               label="住所"
               value={newClinic.address}
               onChange={(e) => setNewClinic((prev) => ({ ...prev, address: e.target.value }))}
+              onBlur={(e) => geocodeAddress(e.target.value)}
               fullWidth
               required
+              helperText={geocoding ? '位置情報を取得中...' : ''}
             />
             <TextField
               label="電話番号"
