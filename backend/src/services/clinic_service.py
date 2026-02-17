@@ -81,6 +81,15 @@ class ClinicService:
         except Exception as e:
             raise ValueError(f'Failed to deactivate clinic: {str(e)}')
 
+    async def delete_clinic(self, clinic_id: str) -> None:
+        '''Delete clinic'''
+        try:
+            response = self.supabase.table('clinics').delete().eq('id', clinic_id).execute()
+            if not response.data or len(response.data) == 0:
+                raise ValueError('Clinic not found')
+        except Exception as e:
+            raise ValueError(f'Failed to delete clinic: {str(e)}')
+
     async def list_clinics(self, is_active: Optional[bool] = None) -> list[Clinic]:
         '''List all clinics'''
         try:

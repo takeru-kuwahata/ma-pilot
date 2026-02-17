@@ -73,6 +73,19 @@ async def create_clinic(
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@router.delete('/clinics/{clinic_id}')
+async def delete_clinic(
+    clinic_id: str,
+    clinic_service: ClinicService = Depends(get_clinic_service)
+):
+    '''Delete clinic'''
+    try:
+        await clinic_service.delete_clinic(clinic_id)
+        return {'message': 'Clinic deleted successfully'}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @router.put('/clinics/{clinic_id}/activate', response_model=ClinicResponse)
 async def activate_clinic(
     clinic_id: str,

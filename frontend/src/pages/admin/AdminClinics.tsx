@@ -23,6 +23,9 @@ import {
   DialogContent,
   DialogActions,
   CircularProgress,
+  Select,
+  MenuItem,
+  TableSortLabel,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -31,6 +34,7 @@ import {
   Edit as EditIcon,
   Block as BlockIcon,
   PlayArrow as PlayArrowIcon,
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 import { adminService } from '../../services/api';
 import { clinicService } from '../../services/api';
@@ -78,6 +82,15 @@ export const AdminClinics = () => {
     address: '',
     phone_number: '',
   });
+
+  // 削除確認ダイアログ
+  const [deleteTarget, setDeleteTarget] = useState<Clinic | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  // 件数・ソート
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortKey, setSortKey] = useState<'name' | 'createdAt' | 'status'>('createdAt');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   useEffect(() => {
     loadClinics();
@@ -149,6 +162,34 @@ export const AdminClinics = () => {
     } finally {
       setSavingEdit(false);
     }
+  };
+
+  // 削除実行
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await adminService.deleteClinic(deleteTarget.id);
+      await loadClinics();
+      setDeleteTarget(null);
+    } catch (error) {
+      console.error('Failed to delete clinic:', error);
+      const msg = error instanceof Error ? error.message : String(error);
+      alert(`削除に失敗しました。\n${msg}`);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // ソート切り替え
+  const handleSort = (key: 'name' | 'createdAt' | 'status') => {
+    if (sortKey === key) {
+      setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortKey(key);
+      setSortOrder('asc');
+    }
+    setPage(1);
   };
 
   const handleToggleStatus = async (clinicId: string, isActive: boolean) => {
@@ -247,9 +288,20 @@ export const AdminClinics = () => {
     return statusMatch && searchMatch;
   });
 
-  const itemsPerPage = 10;
-  const totalPages = Math.ceil(filteredClinics.length / itemsPerPage);
-  const paginatedClinics = filteredClinics.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+  const sortedClinics = [...filteredClinics].sort((a, b) => {
+    let cmp = 0;
+    if (sortKey === 'name') {
+      cmp = a.name.localeCompare(b.name, 'ja');
+    } else if (sortKey === 'createdAt') {
+      cmp = getCreatedAt(a).localeCompare(getCreatedAt(b));
+    } else if (sortKey === 'status') {
+      cmp = Number(getIsActive(a)) - Number(getIsActive(b));
+    }
+    return sortOrder === 'asc' ? cmp : -cmp;
+  });
+
+  const totalPages = Math.ceil(sortedClinics.length / itemsPerPage);
+  const paginatedClinics = sortedClinics.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
   const getStatusLabel = (isActive: boolean) => isActive ? 'アクティブ' : '停止中';
   const getStatusColor = (isActive: boolean) =>
@@ -329,11 +381,36 @@ export const AdminClinics = () => {
           <Table>
             <TableHead>
               <TableRow>
-                {['医院名', '住所', '登録日', 'プラン', 'ステータス', '操作'].map((label) => (
-                  <TableCell key={label} sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
-                    {label}
-                  </TableCell>
-                ))}
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                  <TableSortLabel
+                    active={sortKey === 'name'}
+                    direction={sortKey === 'name' ? sortOrder : 'asc'}
+                    onClick={() => handleSort('name')}
+                  >
+                    医院名
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>住所</TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                  <TableSortLabel
+                    active={sortKey === 'createdAt'}
+                    direction={sortKey === 'createdAt' ? sortOrder : 'asc'}
+                    onClick={() => handleSort('createdAt')}
+                  >
+                    登録日
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>プラン</TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                  <TableSortLabel
+                    active={sortKey === 'status'}
+                    direction={sortKey === 'status' ? sortOrder : 'asc'}
+                    onClick={() => handleSort('status')}
+                  >
+                    ステータス
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>操作</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -371,6 +448,9 @@ export const AdminClinics = () => {
                           <BlockIcon />
                         </IconButton>
                       )}
+                      <IconButton size="small" onClick={() => setDeleteTarget(clinic)} title="削除" sx={{ color: '#bdbdbd', '&:hover': { color: '#F44336' } }}>
+                        <DeleteIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 );
@@ -379,7 +459,23 @@ export const AdminClinics = () => {
           </Table>
         </TableContainer>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '24px' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography sx={{ fontSize: '14px', color: '#616161' }}>表示件数：</Typography>
+            <Select
+              value={itemsPerPage}
+              onChange={(e) => { setItemsPerPage(Number(e.target.value)); setPage(1); }}
+              size="small"
+              sx={{ fontSize: '14px', minWidth: '80px' }}
+            >
+              {[10, 25, 50, 100].map((n) => (
+                <MenuItem key={n} value={n} sx={{ fontSize: '14px' }}>{n}件</MenuItem>
+              ))}
+            </Select>
+            <Typography sx={{ fontSize: '14px', color: '#616161' }}>
+              全{filteredClinics.length}件
+            </Typography>
+          </Box>
           <Pagination
             count={totalPages}
             page={page}
@@ -391,6 +487,31 @@ export const AdminClinics = () => {
           />
         </Box>
       </Paper>
+
+      {/* 削除確認ダイアログ */}
+      <Dialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ color: '#F44336' }}>医院を削除しますか？</DialogTitle>
+        <DialogContent>
+          <Typography sx={{ fontSize: '14px' }}>
+            <strong>「{deleteTarget?.name}」</strong>を削除します。<br />
+            この操作は取り消せません。本当に削除しますか？
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteTarget(null)} sx={{ color: '#616161' }} disabled={deleting}>
+            キャンセル
+          </Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            variant="contained"
+            disabled={deleting}
+            sx={{ backgroundColor: '#F44336', '&:hover': { backgroundColor: '#C62828' } }}
+            startIcon={deleting ? <CircularProgress size={16} sx={{ color: '#fff' }} /> : <DeleteIcon />}
+          >
+            {deleting ? '削除中...' : '削除する'}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* 編集ダイアログ */}
       <Dialog open={editClinic !== null} onClose={() => setEditClinic(null)} maxWidth="sm" fullWidth>

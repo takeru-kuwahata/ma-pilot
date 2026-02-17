@@ -72,6 +72,14 @@ export const adminService = {
     return result.data;
   },
 
+  async deleteClinic(clinicId: string): Promise<void> {
+    const response = await fetch(
+      `${API_BASE_URL}/api/admin/clinics/${clinicId}`,
+      { method: 'DELETE', headers: getAuthHeaders() }
+    );
+    await handleResponse<{ message: string }>(response);
+  },
+
   async activateClinic(clinicId: string): Promise<Clinic> {
     const response = await fetch(
       `${API_BASE_URL}/api/admin/clinics/${clinicId}/activate`,
