@@ -5,6 +5,8 @@ from ..core.database import get_supabase_client
 from ..middleware.auth import get_current_user
 from supabase import Client
 from typing import List, Dict, Any
+import httpx
+import xml.etree.ElementTree as ET
 
 router = APIRouter(prefix='/api/admin', tags=['Admin'])
 
@@ -118,3 +120,20 @@ async def update_admin_settings(settings: Dict[str, Any]):
         'message': 'Settings updated successfully',
         'settings': settings
     }
+
+
+@router.get('/geocode')
+async def geocode_address(address: str):
+    '''住所から緯度経度を取得（Community Geocoder経由）'''
+    try:
+        url = f'https://geocoder.csis.u-tokyo.ac.jp/cgi-bin/geocode.cgi?charset=UTF8&addr={address}'
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(url)
+        root = ET.fromstring(response.text)
+        lat = root.findtext('.//latitude')
+        lng = root.findtext('.//longitude')
+        if lat and lng and float(lat) != 0:
+            return {'latitude': float(lat), 'longitude': float(lng)}
+        return {'latitude': 35.6762, 'longitude': 139.6503}
+    except Exception:
+        return {'latitude': 35.6762, 'longitude': 139.6503}

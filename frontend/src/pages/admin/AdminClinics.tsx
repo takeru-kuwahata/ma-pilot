@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL, getAuthHeaders } from '../../services/api/config';
 import {
   Box,
   Typography,
@@ -136,22 +137,19 @@ export const AdminClinics = () => {
     setGeocoding(true);
     try {
       const res = await fetch(
-        `https://geocoder.csis.u-tokyo.ac.jp/cgi-bin/geocode.cgi?charset=UTF8&addr=${encodeURIComponent(address)}`
+        `${API_BASE_URL}/api/admin/geocode?address=${encodeURIComponent(address)}`,
+        { headers: getAuthHeaders() }
       );
-      const text = await res.text();
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(text, 'text/xml');
-      const lat = xml.querySelector('latitude')?.textContent;
-      const lng = xml.querySelector('longitude')?.textContent;
-      if (lat && lng && parseFloat(lat) !== 0) {
+      if (res.ok) {
+        const data = await res.json();
         setNewClinic((prev) => ({
           ...prev,
-          latitude: parseFloat(lat),
-          longitude: parseFloat(lng),
+          latitude: data.latitude,
+          longitude: data.longitude,
         }));
       }
     } catch {
-      // ジオコーディング失敗時はデフォルト値のまま
+      // 失敗時はデフォルト値のまま
     } finally {
       setGeocoding(false);
     }
@@ -184,7 +182,8 @@ export const AdminClinics = () => {
       handleCloseDialog();
     } catch (error) {
       console.error('Failed to create clinic:', error);
-      alert('医院の登録に失敗しました。入力内容を確認してください。');
+      const msg = error instanceof Error ? error.message : String(error);
+      alert(`医院の登録に失敗しました。\n${msg}`);
     }
   };
 
