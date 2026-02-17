@@ -70,9 +70,6 @@ export const AdminClinics = () => {
     longitude: 139.6503,
   });
 
-  // 詳細表示ダイアログ
-  const [viewClinic, setViewClinic] = useState<Clinic | null>(null);
-
   // 編集ダイアログ
   const [editClinic, setEditClinic] = useState<Clinic | null>(null);
   const [editForm, setEditForm] = useState({
@@ -115,9 +112,10 @@ export const AdminClinics = () => {
     setPage(value);
   };
 
-  // 詳細表示
+  // 詳細表示（その医院のダッシュボードへ遷移）
   const handleView = (clinic: Clinic) => {
-    setViewClinic(clinic);
+    setSelectedClinic(clinic.id);
+    navigate('/clinic/dashboard');
   };
 
   // 編集ダイアログを開く
@@ -358,7 +356,7 @@ export const AdminClinics = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      <IconButton size="small" onClick={() => handleView(clinic)} title="詳細表示" sx={{ color: '#616161', '&:hover': { color: '#FF6B35' } }}>
+                      <IconButton size="small" onClick={() => handleView(clinic)} title="この医院として操作する" sx={{ color: '#FF6B35', '&:hover': { color: '#E55A2B' } }}>
                         <VisibilityIcon />
                       </IconButton>
                       <IconButton size="small" onClick={() => handleEdit(clinic)} title="編集" sx={{ color: '#616161', '&:hover': { color: '#FF6B35' } }}>
@@ -393,46 +391,6 @@ export const AdminClinics = () => {
           />
         </Box>
       </Paper>
-
-      {/* 詳細表示ダイアログ */}
-      <Dialog open={viewClinic !== null} onClose={() => setViewClinic(null)} maxWidth="sm" fullWidth>
-        <DialogTitle>医院詳細</DialogTitle>
-        <DialogContent>
-          {viewClinic && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-              {[
-                { label: '医院名', value: viewClinic.name },
-                { label: '郵便番号', value: getPostalCode(viewClinic) || '未登録' },
-                { label: '住所', value: viewClinic.address },
-                { label: '電話番号', value: getPhoneNumber(viewClinic) || '未登録' },
-                { label: 'ステータス', value: getIsActive(viewClinic) ? 'アクティブ' : '停止中' },
-                { label: '登録日', value: getCreatedAt(viewClinic) ? new Date(getCreatedAt(viewClinic)).toLocaleDateString('ja-JP') : 'N/A' },
-              ].map(({ label, value }) => (
-                <Box key={label} sx={{ display: 'flex', gap: 2, borderBottom: '1px solid #f0f0f0', pb: 1 }}>
-                  <Typography sx={{ width: '100px', color: '#616161', fontSize: '14px', flexShrink: 0 }}>{label}</Typography>
-                  <Typography sx={{ fontSize: '14px' }}>{value}</Typography>
-                </Box>
-              ))}
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setViewClinic(null)} sx={{ color: '#616161' }}>閉じる</Button>
-          {viewClinic && (
-            <Button
-              variant="contained"
-              onClick={() => {
-                setSelectedClinic(viewClinic.id);
-                setViewClinic(null);
-                navigate('/clinic/dashboard');
-              }}
-              sx={{ backgroundColor: '#FF6B35', '&:hover': { backgroundColor: '#E55A2B' } }}
-            >
-              この医院として操作する
-            </Button>
-          )}
-        </DialogActions>
-      </Dialog>
 
       {/* 編集ダイアログ */}
       <Dialog open={editClinic !== null} onClose={() => setEditClinic(null)} maxWidth="sm" fullWidth>
