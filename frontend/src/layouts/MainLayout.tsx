@@ -67,7 +67,7 @@ export const MainLayout = () => {
         }}
       >
         <Toolbar>
-          {/* ロゴ */}
+          {/* ロゴ＋クリニック名 */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexGrow: 1 }}>
             <Box
               sx={{
@@ -95,21 +95,21 @@ export const MainLayout = () => {
             >
               MA-Pilot
             </Typography>
+            {clinicName && (
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 700,
+                  fontSize: 16,
+                  color: '#212121',
+                  display: { xs: 'none', sm: 'block' },
+                  ml: 0.5,
+                }}
+              >
+                {clinicName}
+              </Typography>
+            )}
           </Box>
-
-          {/* 医院名 */}
-          <Typography
-            variant="body2"
-            sx={{
-              color: '#616161',
-              pr: 2,
-              mr: 2,
-              borderRight: '1px solid #e0e0e0',
-              display: { xs: 'none', md: 'block' },
-            }}
-          >
-            {clinicName}
-          </Typography>
 
           {/* system_admin用のモード切替ボタン */}
           {isSystemAdmin && (

@@ -104,14 +104,20 @@ export const AdminLayout = () => {
 
           {/* モード切替ボタン */}
           <Button
-            color="inherit"
+            variant="contained"
             startIcon={<SwapHorizIcon />}
             onClick={() => {
-              // クリニック選択状態をクリア（医院モードに入る際に再選択）
               clearSelectedClinic();
               navigate('/clinic/dashboard');
             }}
-            sx={{ mr: 2 }}
+            sx={{
+              mr: 2,
+              backgroundColor: '#FF6B35',
+              color: '#ffffff',
+              fontWeight: 600,
+              '&:hover': { backgroundColor: '#e55a25' },
+              boxShadow: 'none',
+            }}
           >
             医院モードへ
           </Button>
