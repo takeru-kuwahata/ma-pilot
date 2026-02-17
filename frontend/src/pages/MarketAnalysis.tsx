@@ -302,7 +302,7 @@ export const MarketAnalysis = () => {
         >
           <MapIcon sx={{ fontSize: '48px', color: '#9e9e9e' }} />
           <Typography sx={{ fontSize: '16px', color: '#616161' }}>
-            診療圏マップ（近日公開予定）
+            診療圏マップ（準備中）
           </Typography>
         </Box>
       </Paper>
@@ -394,15 +394,6 @@ export const MarketAnalysis = () => {
             }}
           >
             診療圏内人口統計
-          </Typography>
-          <Typography
-            sx={{
-              color: '#616161',
-              fontSize: '14px',
-              marginTop: '8px',
-            }}
-          >
-            e-Stat APIを活用した詳細な人口統計データ（Phase 6以降で実装）
           </Typography>
           <Box
             sx={{
