@@ -18,6 +18,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
+import { authService } from '../services/api';
 import { useCurrentClinic } from '../hooks/useCurrentClinic';
 import { clinicMenuItems } from '../constants/menuConfig';
 import { filterMenuByRole } from '../utils/menuFilter';
@@ -27,7 +28,7 @@ const drawerWidth = 240;
 export const MainLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuthStore();
+  const { user, logout: storeLogout } = useAuthStore();
   const { clinicName } = useCurrentClinic();
 
   // 権限によるメニューフィルタリング
@@ -46,8 +47,9 @@ export const MainLayout = () => {
     navigate(path);
   };
 
-  const handleLogout = () => {
-    // TODO: ログアウト処理（Phase 5以降）
+  const handleLogout = async () => {
+    await authService.logout();
+    storeLogout();
     navigate('/login');
   };
 

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
@@ -6,6 +7,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { theme } from './theme';
 import { queryClient } from './hooks/useOptimizedQuery';
 import './i18n/config';
+import { useAuthStore } from './stores/authStore';
+import { authService } from './services/api';
 
 // ルーティング保護コンポーネント
 import { PrivateRoute } from './components/routing/PrivateRoute';
@@ -40,6 +43,16 @@ import PriceTableManagement from './pages/PriceTableManagement';
 import { Forbidden } from './pages/Forbidden';
 
 function App() {
+  const { setUser } = useAuthStore();
+
+  // リロード時にlocalStorageからユーザー情報を復元
+  useEffect(() => {
+    const savedUser = authService.getCurrentUser();
+    if (savedUser) {
+      setUser(savedUser);
+    }
+  }, [setUser]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>

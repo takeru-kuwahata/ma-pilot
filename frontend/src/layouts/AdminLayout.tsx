@@ -19,6 +19,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
+import { authService } from '../services/api';
 import { adminMenuItems } from '../constants/menuConfig';
 
 const drawerWidth = 240;
@@ -26,7 +27,7 @@ const drawerWidth = 240;
 export const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { clearSelectedClinic } = useAuthStore();
+  const { clearSelectedClinic, logout: storeLogout } = useAuthStore();
 
   // 運営者エリア用のメニューを使用
   const filteredMenuItems = adminMenuItems;
@@ -39,8 +40,10 @@ export const AdminLayout = () => {
     navigate(path);
   };
 
-  const handleLogout = () => {
-    // TODO: ログアウト処理（Phase 5以降）
+  const handleLogout = async () => {
+    await authService.logout();
+    storeLogout();
+    clearSelectedClinic();
     navigate('/login');
   };
 
