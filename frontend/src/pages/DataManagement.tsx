@@ -12,15 +12,21 @@ import {
   TableRow,
   Alert,
   Snackbar,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
 } from '@mui/material';
 import {
   AddCircle as AddCircleIcon,
   Add as AddIcon,
   UploadFile as UploadFileIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import Papa from 'papaparse';
 import { monthlyDataService, authService } from '../services/api';
-import type { MonthlyData } from '../types';
+import { MonthlyDataForm } from '../components/MonthlyDataForm';
+import type { MonthlyData, MonthlyDataFormData } from '../types';
 
 interface MonthlyDataRow {
   id: string;
@@ -37,10 +43,13 @@ const formatCurrency = (value: number): string => {
 
 export const DataManagement = () => {
   const [monthlyData, setMonthlyData] = useState<MonthlyDataRow[]>([]);
+  const [rawMonthlyData, setRawMonthlyData] = useState<MonthlyData[]>([]);
   const [loading, setLoading] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const [formDialogOpen, setFormDialogOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<{ id: string; data: MonthlyDataFormData } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -56,6 +65,7 @@ export const DataManagement = () => {
       }
 
       const data = await monthlyDataService.getMonthlyData(user.clinic_id);
+      setRawMonthlyData(data);
       const rows: MonthlyDataRow[] = data.map((item: MonthlyData) => ({
         id: item.id,
         yearMonth: item.yearMonth,
@@ -73,10 +83,33 @@ export const DataManagement = () => {
   };
 
   const handleNewDataEntry = () => {
-    // TODO: モーダルダイアログで月次データ入力フォームを表示
-    setSnackbarMessage('月次データ入力機能は開発中です');
-    setSnackbarSeverity('error');
-    setSnackbarOpen(true);
+    setEditTarget(null);
+    setFormDialogOpen(true);
+  };
+
+  const handleFormSubmit = async (data: MonthlyDataFormData) => {
+    try {
+      const user = authService.getCurrentUser();
+      if (!user?.clinic_id) return;
+
+      if (editTarget) {
+        await monthlyDataService.updateMonthlyData(editTarget.id, data);
+        setSnackbarMessage('データを更新しました');
+      } else {
+        await monthlyDataService.createMonthlyData({ ...data, clinicId: user.clinic_id });
+        setSnackbarMessage('データを保存しました');
+      }
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+      setFormDialogOpen(false);
+      setEditTarget(null);
+      await loadMonthlyData();
+    } catch (error) {
+      console.error('Failed to save monthly data:', error);
+      setSnackbarMessage('保存に失敗しました');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
   };
 
   const handleCsvUpload = () => {
@@ -146,11 +179,25 @@ export const DataManagement = () => {
     event.target.value = '';
   };
 
-  const handleEdit = () => {
-    // TODO: モーダルダイアログで編集フォームを表示
-    setSnackbarMessage('データ編集機能は開発中です');
-    setSnackbarSeverity('error');
-    setSnackbarOpen(true);
+  const handleEdit = (id: string) => {
+    const raw = rawMonthlyData.find((item) => item.id === id);
+    if (!raw) return;
+    setEditTarget({
+      id,
+      data: {
+        yearMonth: raw.yearMonth,
+        totalRevenue: raw.totalRevenue,
+        insuranceRevenue: raw.insuranceRevenue,
+        selfPayRevenue: raw.selfPayRevenue,
+        retailRevenue: 0,
+        variableCost: raw.personnelCost,
+        fixedCost: raw.fixedCost,
+        newPatients: raw.newPatients,
+        returningPatients: raw.returningPatients,
+        totalPatients: raw.totalPatients,
+      }
+    });
+    setFormDialogOpen(true);
   };
 
   const handleSnackbarClose = () => {
@@ -475,7 +522,7 @@ export const DataManagement = () => {
                     >
                       <Button
                         variant="outlined"
-                        onClick={handleEdit}
+                        onClick={() => handleEdit(row.id)}
                         sx={{
                           padding: '6px 16px',
                           fontSize: '14px',
@@ -519,6 +566,28 @@ export const DataManagement = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+
+      {/* 月次データ入力ダイアログ */}
+      <Dialog
+        open={formDialogOpen}
+        onClose={() => setFormDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {editTarget ? '月次データ編集' : '月次データ新規入力'}
+          <IconButton onClick={() => setFormDialogOpen(false)} size="small">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <MonthlyDataForm
+            onSubmit={handleFormSubmit}
+            onCancel={() => setFormDialogOpen(false)}
+            initialData={editTarget?.data}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

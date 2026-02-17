@@ -122,7 +122,14 @@ export const AdminClinics = () => {
     });
   };
 
+  const isValidUuid = (value: string) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+
   const handleCreateClinic = async () => {
+    if (!isValidUuid(newClinic.owner_id)) {
+      alert('オーナーIDはUUID形式で入力してください。\nSupabaseダッシュボード → Authentication → Users から対象ユーザーのIDをコピーしてください。');
+      return;
+    }
     try {
       await adminService.createClinic(newClinic);
       await loadClinics();
@@ -533,10 +540,15 @@ export const AdminClinics = () => {
               label="オーナーID（UUID）"
               value={newClinic.owner_id}
               onChange={(e) => setNewClinic((prev) => ({ ...prev, owner_id: e.target.value }))}
-              placeholder="ユーザーのUUID"
+              placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
               fullWidth
               required
-              helperText="user_metadataテーブルに存在するユーザーのIDを入力してください"
+              error={newClinic.owner_id.length > 0 && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(newClinic.owner_id)}
+              helperText={
+                newClinic.owner_id.length > 0 && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(newClinic.owner_id)
+                  ? "UUID形式で入力してください（例: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx）"
+                  : "Supabaseダッシュボード → Authentication → Users から対象ユーザーのIDをコピー"
+              }
             />
             <TextField
               label="緯度"
