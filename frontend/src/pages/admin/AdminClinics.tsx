@@ -148,11 +148,22 @@ export const AdminClinics = () => {
           longitude: data.longitude,
         }));
       }
+      // 404等の場合はデフォルト値のまま（エラーとして扱わない）
     } catch {
       // 失敗時はデフォルト値のまま
     } finally {
       setGeocoding(false);
     }
+  };
+
+  // APIレスポンスはスネークケース（is_active, owner_id等）で返るため変換
+  const getIsActive = (clinic: Clinic): boolean => {
+    const raw = clinic as unknown as Record<string, unknown>;
+    return (raw.is_active ?? clinic.isActive) as boolean;
+  };
+  const getOwnerId = (clinic: Clinic): string => {
+    const raw = clinic as unknown as Record<string, unknown>;
+    return ((raw.owner_id ?? clinic.ownerId) as string) || '';
   };
 
   const handleCloseDialog = () => {
@@ -189,11 +200,12 @@ export const AdminClinics = () => {
 
   // フィルタリングとページネーション
   const filteredClinics = clinics.filter((clinic) => {
+    const isActive = getIsActive(clinic);
     // ステータスフィルタ
     const statusMatch =
       filterStatus === 'all' ||
-      (filterStatus === 'active' && clinic.isActive) ||
-      (filterStatus === 'inactive' && !clinic.isActive) ||
+      (filterStatus === 'active' && isActive) ||
+      (filterStatus === 'inactive' && !isActive) ||
       (filterStatus === 'trial' && false); // トライアルフラグは未実装
 
     // 検索クエリフィルタ
@@ -427,6 +439,7 @@ export const AdminClinics = () => {
                   ? new Date(createdAt).toLocaleDateString('ja-JP')
                   : 'N/A';
 
+                const isActive = getIsActive(clinic);
                 return (
                 <TableRow key={clinic.id}>
                   <TableCell sx={{ fontSize: '14px' }}>{clinic.name}</TableCell>
@@ -446,16 +459,16 @@ export const AdminClinics = () => {
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={getStatusLabel(clinic.isActive)}
+                      label={getStatusLabel(isActive)}
                       sx={{
-                        ...getStatusColor(clinic.isActive),
+                        ...getStatusColor(isActive),
                         fontSize: '12px',
                         fontWeight: 600,
                         height: '24px',
                       }}
                     />
                   </TableCell>
-                  <TableCell sx={{ fontSize: '14px' }}>{clinic.ownerId}</TableCell>
+                  <TableCell sx={{ fontSize: '14px' }}>{getOwnerId(clinic)}</TableCell>
                   <TableCell>
                     <IconButton
                       size="small"
@@ -483,10 +496,10 @@ export const AdminClinics = () => {
                     >
                       <EditIcon />
                     </IconButton>
-                    {!clinic.isActive ? (
+                    {!isActive ? (
                       <IconButton
                         size="small"
-                        onClick={() => handleToggleStatus(clinic.id, clinic.isActive)}
+                        onClick={() => handleToggleStatus(clinic.id, isActive)}
                         title="再開"
                         sx={{
                           color: '#4CAF50',
@@ -500,7 +513,7 @@ export const AdminClinics = () => {
                     ) : (
                       <IconButton
                         size="small"
-                        onClick={() => handleToggleStatus(clinic.id, clinic.isActive)}
+                        onClick={() => handleToggleStatus(clinic.id, isActive)}
                         title="停止"
                         sx={{
                           color: '#616161',
