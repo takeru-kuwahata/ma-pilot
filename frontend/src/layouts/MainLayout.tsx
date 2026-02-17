@@ -114,10 +114,17 @@ export const MainLayout = () => {
           {/* system_admin用のモード切替ボタン */}
           {isSystemAdmin && (
             <Button
-              color="inherit"
+              variant="contained"
               startIcon={<SwapHorizIcon />}
               onClick={() => navigate('/admin/dashboard')}
-              sx={{ mr: 2 }}
+              sx={{
+                mr: 2,
+                backgroundColor: '#FF6B35',
+                color: '#ffffff',
+                fontWeight: 600,
+                '&:hover': { backgroundColor: '#e55a25' },
+                boxShadow: 'none',
+              }}
             >
               運営者モードへ
             </Button>

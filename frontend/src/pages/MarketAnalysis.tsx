@@ -302,7 +302,7 @@ export const MarketAnalysis = () => {
         >
           <MapIcon sx={{ fontSize: '48px', color: '#9e9e9e' }} />
           <Typography sx={{ fontSize: '16px', color: '#616161' }}>
-            Google Maps統合（Phase 5以降）
+            診療圏マップ（近日公開予定）
           </Typography>
         </Box>
       </Paper>

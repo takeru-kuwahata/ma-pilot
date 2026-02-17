@@ -808,7 +808,7 @@ export const Simulation = () => {
         >
           <ShowChartIcon sx={{ fontSize: '48px', color: '#9e9e9e' }} />
           <Typography sx={{ fontSize: '16px', color: '#616161' }}>
-            Rechartsでグラフ表示（Phase 4で実装）
+            推移予測グラフ（近日公開予定）
           </Typography>
         </Box>
       </Paper>
