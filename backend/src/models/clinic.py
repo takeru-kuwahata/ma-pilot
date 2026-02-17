@@ -26,7 +26,7 @@ class ClinicCreate(BaseModel):
     phone_number: str
     latitude: float
     longitude: float
-    owner_id: str
+    owner_id: Optional[str] = None
 
 
 class ClinicUpdate(BaseModel):

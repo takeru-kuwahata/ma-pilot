@@ -18,7 +18,9 @@ interface CreateClinicRequest {
   postal_code: string;
   address: string;
   phone_number: string;
-  owner_id: string;
+  owner_id?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 interface AdminSettings {

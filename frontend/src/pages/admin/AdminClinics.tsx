@@ -126,8 +126,8 @@ export const AdminClinics = () => {
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
 
   const handleCreateClinic = async () => {
-    if (!isValidUuid(newClinic.owner_id)) {
-      alert('オーナーIDはUUID形式で入力してください。\nSupabaseダッシュボード → Authentication → Users から対象ユーザーのIDをコピーしてください。');
+    if (newClinic.owner_id.length > 0 && !isValidUuid(newClinic.owner_id)) {
+      alert('オーナーIDを入力する場合はUUID形式で入力してください。\n空白のままにすると現在ログイン中のアカウントがオーナーになります。');
       return;
     }
     try {
@@ -537,17 +537,16 @@ export const AdminClinics = () => {
               required
             />
             <TextField
-              label="オーナーID（UUID）"
+              label="オーナーID（UUID）※任意"
               value={newClinic.owner_id}
               onChange={(e) => setNewClinic((prev) => ({ ...prev, owner_id: e.target.value }))}
               placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
               fullWidth
-              required
               error={newClinic.owner_id.length > 0 && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(newClinic.owner_id)}
               helperText={
                 newClinic.owner_id.length > 0 && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(newClinic.owner_id)
                   ? "UUID形式で入力してください（例: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx）"
-                  : "Supabaseダッシュボード → Authentication → Users から対象ユーザーのIDをコピー"
+                  : "空白の場合は現在ログイン中のアカウントがオーナーになります"
               }
             />
             <TextField
