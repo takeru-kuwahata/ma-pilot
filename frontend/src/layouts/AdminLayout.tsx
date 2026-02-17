@@ -11,11 +11,9 @@ import {
   Avatar,
   Divider,
   Chip,
-  Button,
 } from '@mui/material';
 import {
   Logout as LogoutIcon,
-  SwapHoriz as SwapHorizIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
@@ -27,7 +25,7 @@ const drawerWidth = 240;
 export const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { clearSelectedClinic, logout: storeLogout } = useAuthStore();
+  const { logout: storeLogout } = useAuthStore();
 
   // 運営者エリア用のメニューを使用
   const filteredMenuItems = adminMenuItems;
@@ -43,7 +41,6 @@ export const AdminLayout = () => {
   const handleLogout = async () => {
     await authService.logout();
     storeLogout();
-    clearSelectedClinic();
     navigate('/login');
   };
 
@@ -101,26 +98,6 @@ export const AdminLayout = () => {
               }}
             />
           </Box>
-
-          {/* モード切替ボタン */}
-          <Button
-            variant="contained"
-            startIcon={<SwapHorizIcon />}
-            onClick={() => {
-              clearSelectedClinic();
-              navigate('/clinic/dashboard');
-            }}
-            sx={{
-              mr: 2,
-              backgroundColor: '#FF6B35',
-              color: '#ffffff',
-              fontWeight: 600,
-              '&:hover': { backgroundColor: '#e55a25' },
-              boxShadow: 'none',
-            }}
-          >
-            医院モードへ
-          </Button>
 
           {/* ユーザー情報 */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

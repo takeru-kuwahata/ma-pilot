@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL, getAuthHeaders } from '../../services/api/config';
+import { useAuthStore } from '../../stores/authStore';
 import {
   Box,
   Typography,
@@ -46,6 +48,8 @@ const getCreatedAt = (clinic: Clinic): string =>
   ((getRaw(clinic).created_at ?? clinic.createdAt) as string) || '';
 
 export const AdminClinics = () => {
+  const navigate = useNavigate();
+  const { setSelectedClinic } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [page, setPage] = useState(1);
@@ -414,6 +418,19 @@ export const AdminClinics = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setViewClinic(null)} sx={{ color: '#616161' }}>閉じる</Button>
+          {viewClinic && (
+            <Button
+              variant="contained"
+              onClick={() => {
+                setSelectedClinic(viewClinic.id);
+                setViewClinic(null);
+                navigate('/clinic/dashboard');
+              }}
+              sx={{ backgroundColor: '#FF6B35', '&:hover': { backgroundColor: '#E55A2B' } }}
+            >
+              この医院として操作する
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
 
