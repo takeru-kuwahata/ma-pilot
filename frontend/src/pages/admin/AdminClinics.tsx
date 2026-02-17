@@ -110,6 +110,27 @@ export const AdminClinics = () => {
     setOpenDialog(true);
   };
 
+  const formatPostalCode = (value: string) => {
+    const digits = value.replace(/\D/g, '');
+    if (digits.length <= 3) return digits;
+    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}`;
+  };
+
+  const formatPhoneNumber = (value: string) => {
+    const digits = value.replace(/\D/g, '');
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    // 市外局番が2桁（03, 06等）か3桁（090等）かで分岐
+    if (digits.startsWith('0') && (digits[1] === '3' || digits[1] === '6' || digits[1] === '4' || digits[1] === '5')) {
+      // 市内局番あり（2-4-4）
+      if (digits.length <= 10) return `${digits.slice(0, 2)}-${digits.slice(2, 6)}-${digits.slice(6)}`;
+      return `${digits.slice(0, 2)}-${digits.slice(2, 6)}-${digits.slice(6, 10)}`;
+    }
+    // 携帯・フリーダイヤル等（3-4-4）
+    if (digits.length <= 11) return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
+  };
+
   const geocodeAddress = async (address: string) => {
     if (!address.trim()) return;
     setGeocoding(true);
@@ -543,10 +564,12 @@ export const AdminClinics = () => {
             <TextField
               label="郵便番号"
               value={newClinic.postal_code}
-              onChange={(e) => setNewClinic((prev) => ({ ...prev, postal_code: e.target.value }))}
-              placeholder="150-0001"
+              onChange={(e) => setNewClinic((prev) => ({ ...prev, postal_code: formatPostalCode(e.target.value) }))}
+              placeholder="1500001"
               fullWidth
               required
+              helperText="数字を入力するとハイフンを自動入力します"
+              inputProps={{ maxLength: 8 }}
             />
             <TextField
               label="住所"
@@ -560,10 +583,12 @@ export const AdminClinics = () => {
             <TextField
               label="電話番号"
               value={newClinic.phone_number}
-              onChange={(e) => setNewClinic((prev) => ({ ...prev, phone_number: e.target.value }))}
-              placeholder="03-1234-5678"
+              onChange={(e) => setNewClinic((prev) => ({ ...prev, phone_number: formatPhoneNumber(e.target.value) }))}
+              placeholder="0312345678"
               fullWidth
               required
+              helperText="数字を入力するとハイフンを自動入力します"
+              inputProps={{ maxLength: 13 }}
             />
             <TextField
               label="オーナーID（UUID）※任意"

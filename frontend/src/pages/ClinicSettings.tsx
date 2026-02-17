@@ -27,6 +27,24 @@ interface SnackbarState {
   severity: 'success' | 'error';
 }
 
+const formatPostalCode = (value: string) => {
+  const digits = value.replace(/\D/g, '');
+  if (digits.length <= 3) return digits;
+  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}`;
+};
+
+const formatPhoneNumber = (value: string) => {
+  const digits = value.replace(/\D/g, '');
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  if (digits.startsWith('0') && (digits[1] === '3' || digits[1] === '6' || digits[1] === '4' || digits[1] === '5')) {
+    if (digits.length <= 10) return `${digits.slice(0, 2)}-${digits.slice(2, 6)}-${digits.slice(6)}`;
+    return `${digits.slice(0, 2)}-${digits.slice(2, 6)}-${digits.slice(6, 10)}`;
+  }
+  if (digits.length <= 11) return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
+};
+
 export const ClinicSettings = () => {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
@@ -197,8 +215,9 @@ export const ClinicSettings = () => {
           <TextField
             label="郵便番号"
             value={basicInfo.postalCode}
-            onChange={(e) => setBasicInfo((prev) => ({ ...prev, postalCode: e.target.value }))}
+            onChange={(e) => setBasicInfo((prev) => ({ ...prev, postalCode: formatPostalCode(e.target.value) }))}
             fullWidth
+            inputProps={{ maxLength: 8 }}
           />
           <TextField
             label="住所"
@@ -210,8 +229,9 @@ export const ClinicSettings = () => {
           <TextField
             label="電話番号"
             value={basicInfo.phone}
-            onChange={(e) => setBasicInfo((prev) => ({ ...prev, phone: e.target.value }))}
+            onChange={(e) => setBasicInfo((prev) => ({ ...prev, phone: formatPhoneNumber(e.target.value) }))}
             fullWidth
+            inputProps={{ maxLength: 13 }}
           />
           <TextField
             label="オーナー名"
