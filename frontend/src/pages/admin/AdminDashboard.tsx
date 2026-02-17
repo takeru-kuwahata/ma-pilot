@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../stores/authStore';
 import {
   Box,
   Typography,
@@ -49,6 +51,8 @@ interface SystemStats {
 }
 
 export const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const { setSelectedClinic } = useAuthStore();
   const [stats, setStats] = useState<SystemStats>({
     totalClinics: 0,
     activeClinics: 0,
@@ -125,13 +129,18 @@ export const AdminDashboard = () => {
     }
   };
 
-  const recentClinics = clinics.slice(0, 5).map(clinic => ({
-    id: clinic.id,
-    name: clinic.name,
-    registeredAt: new Date(clinic.createdAt).toLocaleDateString('ja-JP'),
-    plan: clinic.isActive ? 'アクティブ' : '非アクティブ',
-    status: clinic.isActive ? ('active' as const) : ('inactive' as const)
-  }));
+  const recentClinics = clinics.slice(0, 5).map(clinic => {
+    const raw = clinic as unknown as Record<string, unknown>;
+    const isActive = (raw.is_active ?? clinic.isActive) as boolean;
+    const createdAtStr = (raw.created_at ?? clinic.createdAt) as string;
+    return {
+      id: clinic.id,
+      name: clinic.name,
+      registeredAt: createdAtStr ? new Date(createdAtStr).toLocaleDateString('ja-JP') : 'N/A',
+      plan: '無料プラン',
+      status: isActive ? ('active' as const) : ('inactive' as const),
+    };
+  });
 
   const getStatusLabel = (status: string): string => {
     switch (status) {
@@ -454,23 +463,17 @@ export const AdminDashboard = () => {
                   <TableCell>
                     <IconButton
                       size="small"
-                      sx={{
-                        color: '#616161',
-                        '&:hover': {
-                          color: '#FF6B35',
-                        },
-                      }}
+                      title="この医院として操作する"
+                      onClick={() => { setSelectedClinic(clinic.id); navigate('/clinic/dashboard'); }}
+                      sx={{ color: '#FF6B35', '&:hover': { color: '#E55A2B' } }}
                     >
                       <VisibilityIcon />
                     </IconButton>
                     <IconButton
                       size="small"
-                      sx={{
-                        color: '#616161',
-                        '&:hover': {
-                          color: '#FF6B35',
-                        },
-                      }}
+                      title="医院アカウント管理へ"
+                      onClick={() => navigate('/admin/clinics')}
+                      sx={{ color: '#616161', '&:hover': { color: '#FF6B35' } }}
                     >
                       <EditIcon />
                     </IconButton>

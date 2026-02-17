@@ -36,6 +36,7 @@ import PrintOrderHistory from './pages/PrintOrderHistory';
 // 運営者エリアページ
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminClinics } from './pages/admin/AdminClinics';
+import { AdminOperators } from './pages/admin/AdminOperators';
 import { AdminSettings } from './pages/admin/AdminSettings';
 import PriceTableManagement from './pages/PriceTableManagement';
 
@@ -93,6 +94,7 @@ function App() {
                 <Route element={<RoleRoute allowedRoles={['system_admin']} />}>
                   <Route element={<AdminLayout />}>
                     <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                    <Route path="/admin/operators" element={<AdminOperators />} />
                     <Route path="/admin/clinics" element={<AdminClinics />} />
                     <Route path="/admin/settings" element={<AdminSettings />} />
                     <Route path="/admin/price-tables" element={<PriceTableManagement />} />

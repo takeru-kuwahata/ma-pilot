@@ -5,8 +5,15 @@ from ..core.database import get_supabase_client
 from ..middleware.auth import get_current_user
 from supabase import Client
 from typing import List, Dict, Any
+from pydantic import BaseModel
 import httpx
 import xml.etree.ElementTree as ET
+
+
+class CreateOperatorRequest(BaseModel):
+    email: str
+    password: str
+    display_name: str
 
 router = APIRouter(prefix='/api/admin', tags=['Admin'])
 
@@ -109,6 +116,75 @@ async def deactivate_clinic(
         clinic = await clinic_service.deactivate_clinic(clinic_id)
         return ClinicResponse(data=clinic, message='Clinic deactivated successfully')
     except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get('/operators')
+async def get_operators(supabase: Client = Depends(get_supabase_client)):
+    '''Get all system_admin operators'''
+    try:
+        response = supabase.table('user_metadata').select('*').eq('role', 'system_admin').execute()
+        operators = []
+        for metadata in response.data:
+            try:
+                user_response = supabase.auth.admin.get_user_by_id(metadata['user_id'])
+                if user_response.user:
+                    operators.append({
+                        'id': metadata['user_id'],
+                        'email': user_response.user.email,
+                        'display_name': metadata.get('display_name', ''),
+                        'created_at': metadata.get('created_at', ''),
+                    })
+            except Exception:
+                pass
+        return operators
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post('/operators')
+async def create_operator(
+    request: CreateOperatorRequest,
+    supabase: Client = Depends(get_supabase_client)
+):
+    '''Create a new system_admin operator'''
+    try:
+        # Supabase Admin APIでユーザー作成（パスワード付き）
+        auth_response = supabase.auth.admin.create_user({
+            'email': request.email,
+            'password': request.password,
+            'email_confirm': True,
+        })
+        user_id = auth_response.user.id
+
+        # user_metadataにsystem_adminロールで登録
+        supabase.table('user_metadata').insert({
+            'user_id': user_id,
+            'role': 'system_admin',
+            'display_name': request.display_name,
+        }).execute()
+
+        return {
+            'id': user_id,
+            'email': request.email,
+            'display_name': request.display_name,
+            'message': 'Operator created successfully',
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.delete('/operators/{user_id}')
+async def delete_operator(
+    user_id: str,
+    supabase: Client = Depends(get_supabase_client)
+):
+    '''Delete an operator'''
+    try:
+        supabase.table('user_metadata').delete().eq('user_id', user_id).execute()
+        supabase.auth.admin.delete_user(user_id)
+        return {'message': 'Operator deleted successfully'}
+    except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 

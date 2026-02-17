@@ -77,6 +77,12 @@ export const adminMenuItems: MenuItemConfig[] = [
     roles: ['system_admin'],
   },
   {
+    path: '/admin/operators',
+    label: '運営者アカウント管理',
+    icon: <PeopleIcon />,
+    roles: ['system_admin'],
+  },
+  {
     path: '/admin/clinics',
     label: '医院アカウント管理',
     icon: <BusinessIcon />,
