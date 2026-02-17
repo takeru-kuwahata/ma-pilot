@@ -104,6 +104,8 @@ export const AdminClinics = () => {
       await loadClinics();
     } catch (error) {
       console.error('Failed to toggle clinic status:', error);
+      const msg = error instanceof Error ? error.message : String(error);
+      alert(`ステータス変更に失敗しました。\n${msg}`);
     }
   };
 
@@ -160,10 +162,6 @@ export const AdminClinics = () => {
   const getIsActive = (clinic: Clinic): boolean => {
     const raw = clinic as unknown as Record<string, unknown>;
     return (raw.is_active ?? clinic.isActive) as boolean;
-  };
-  const getOwnerId = (clinic: Clinic): string => {
-    const raw = clinic as unknown as Record<string, unknown>;
-    return ((raw.owner_id ?? clinic.ownerId) as string) || '';
   };
 
   const handleCloseDialog = () => {
@@ -424,9 +422,6 @@ export const AdminClinics = () => {
                   ステータス
                 </TableCell>
                 <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
-                  オーナー
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
                   操作
                 </TableCell>
               </TableRow>
@@ -468,7 +463,6 @@ export const AdminClinics = () => {
                       }}
                     />
                   </TableCell>
-                  <TableCell sx={{ fontSize: '14px' }}>{getOwnerId(clinic)}</TableCell>
                   <TableCell>
                     <IconButton
                       size="small"
