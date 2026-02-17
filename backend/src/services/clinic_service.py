@@ -25,7 +25,8 @@ class ClinicService:
     async def create_clinic(self, clinic_data: ClinicCreate) -> Clinic:
         '''Create new clinic'''
         try:
-            response = self.supabase.table('clinics').insert(clinic_data.model_dump()).execute()
+            data = {k: v for k, v in clinic_data.model_dump().items() if v is not None}
+            response = self.supabase.table('clinics').insert(data).execute()
 
             if not response.data or len(response.data) == 0:
                 raise ValueError('Failed to create clinic')

@@ -49,10 +49,21 @@ export const adminService = {
   },
 
   async createClinic(request: CreateClinicRequest): Promise<Clinic> {
+    const body: Record<string, unknown> = {
+      name: request.name,
+      postal_code: request.postal_code,
+      address: request.address,
+      phone_number: request.phone_number,
+      latitude: request.latitude ?? 35.6762,
+      longitude: request.longitude ?? 139.6503,
+    };
+    if (request.owner_id && request.owner_id.trim() !== '') {
+      body.owner_id = request.owner_id.trim();
+    }
     const response = await fetch(`${API_BASE_URL}/api/admin/clinics`, {
       method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify(request)
+      body: JSON.stringify(body)
     });
     const result = await handleResponse<ClinicResponse>(response);
     return result.data;
