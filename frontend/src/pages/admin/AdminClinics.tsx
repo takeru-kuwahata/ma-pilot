@@ -549,26 +549,6 @@ export const AdminClinics = () => {
                   : "空白の場合は現在ログイン中のアカウントがオーナーになります"
               }
             />
-            <TextField
-              label="緯度"
-              type="number"
-              value={newClinic.latitude}
-              onChange={(e) => setNewClinic((prev) => ({ ...prev, latitude: Number(e.target.value) }))}
-              fullWidth
-              required
-              inputProps={{ step: 0.0001 }}
-              helperText="デフォルト: 35.6762（東京）"
-            />
-            <TextField
-              label="経度"
-              type="number"
-              value={newClinic.longitude}
-              onChange={(e) => setNewClinic((prev) => ({ ...prev, longitude: Number(e.target.value) }))}
-              fullWidth
-              required
-              inputProps={{ step: 0.0001 }}
-              helperText="デフォルト: 139.6503（東京）"
-            />
           </Box>
         </DialogContent>
         <DialogActions>

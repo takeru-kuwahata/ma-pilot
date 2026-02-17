@@ -24,8 +24,8 @@ class ClinicCreate(BaseModel):
     postal_code: str
     address: str
     phone_number: str
-    latitude: float
-    longitude: float
+    latitude: Optional[float] = 35.6762
+    longitude: Optional[float] = 139.6503
     owner_id: Optional[str] = None
 
 
