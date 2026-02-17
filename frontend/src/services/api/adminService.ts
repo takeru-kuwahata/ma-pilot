@@ -1,4 +1,5 @@
 import { API_BASE_URL, handleResponse, getAuthHeaders } from './config';
+import { authService } from './authService';
 import type { Clinic } from '../../types';
 
 interface AdminDashboard {
@@ -49,6 +50,10 @@ export const adminService = {
   },
 
   async createClinic(request: CreateClinicRequest): Promise<Clinic> {
+    const currentUser = authService.getCurrentUser();
+    const ownerId = (request.owner_id && request.owner_id.trim() !== '')
+      ? request.owner_id.trim()
+      : currentUser?.id ?? '';
     const body: Record<string, unknown> = {
       name: request.name,
       postal_code: request.postal_code,
@@ -56,10 +61,8 @@ export const adminService = {
       phone_number: request.phone_number,
       latitude: request.latitude ?? 35.6762,
       longitude: request.longitude ?? 139.6503,
+      owner_id: ownerId,
     };
-    if (request.owner_id && request.owner_id.trim() !== '') {
-      body.owner_id = request.owner_id.trim();
-    }
     const response = await fetch(`${API_BASE_URL}/api/admin/clinics`, {
       method: 'POST',
       headers: getAuthHeaders(),
