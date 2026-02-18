@@ -9,6 +9,7 @@ export interface User {
   email: string;
   role: UserRole;
   clinic_id?: string;
+  display_name?: string;
   createdAt: string;
   updatedAt: string;
 }

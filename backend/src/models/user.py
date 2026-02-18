@@ -12,6 +12,7 @@ class User(BaseModel):
     email: EmailStr
     role: UserRole
     clinic_id: Optional[str] = None
+    display_name: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

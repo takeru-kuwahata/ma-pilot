@@ -25,14 +25,13 @@ const drawerWidth = 240;
 export const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout: storeLogout } = useAuthStore();
+  const { logout: storeLogout, user } = useAuthStore();
 
   // 運営者エリア用のメニューを使用
   const filteredMenuItems = adminMenuItems;
 
-  // TODO: 認証コンテキストから取得（Phase 5以降）
-  const userName = 'システム管理者';
-  const userInitial = '管';
+  const userName = user?.display_name || 'システム管理者';
+  const userInitial = user?.display_name ? user.display_name.charAt(0) : '管';
 
   const handleNavigation = (path: string) => {
     navigate(path);

@@ -39,9 +39,8 @@ export const MainLayout = () => {
   // system_adminかどうか判定
   const isSystemAdmin = user?.role === 'system_admin';
 
-  // TODO: 認証コンテキストから取得（Phase 5以降）
-  const userName = '田中太郎';
-  const userInitial = '田';
+  const userName = user?.display_name || user?.email?.split('@')[0] || 'ユーザー';
+  const userInitial = user?.display_name ? user.display_name.charAt(0) : (user?.email?.charAt(0).toUpperCase() || 'U');
 
   const handleNavigation = (path: string) => {
     navigate(path);

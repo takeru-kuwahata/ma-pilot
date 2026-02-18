@@ -25,11 +25,13 @@ class AuthService:
             # Get user metadata
             user_metadata = self.supabase.table('user_metadata').select('*').eq('user_id', auth_response.user.id).single().execute()
 
+            auth_user_meta = auth_response.user.user_metadata or {}
             user = User(
                 id=auth_response.user.id,
                 email=auth_response.user.email,
                 role=user_metadata.data.get('role', 'clinic_viewer'),
                 clinic_id=user_metadata.data.get('clinic_id'),
+                display_name=auth_user_meta.get('display_name'),
                 created_at=user_metadata.data.get('created_at'),
                 updated_at=user_metadata.data.get('updated_at')
             )
