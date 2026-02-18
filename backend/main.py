@@ -19,6 +19,7 @@ from src.api import (
     market_analysis_router,
     staff_router,
     admin_router,
+    my_router,
 )
 import logging
 
@@ -124,6 +125,7 @@ app.include_router(reports_router)
 app.include_router(market_analysis_router)
 app.include_router(staff_router)
 app.include_router(admin_router)
+app.include_router(my_router)
 
 
 # ヘルスチェック

@@ -8,6 +8,7 @@ from .reports import router as reports_router
 from .market_analysis import router as market_analysis_router
 from .staff import router as staff_router
 from .admin import router as admin_router
+from .my import router as my_router
 
 __all__ = [
     "print_orders_router",
@@ -20,4 +21,5 @@ __all__ = [
     "market_analysis_router",
     "staff_router",
     "admin_router",
+    "my_router",
 ]

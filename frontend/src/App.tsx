@@ -38,6 +38,7 @@ import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminClinics } from './pages/admin/AdminClinics';
 import { AdminOperators } from './pages/admin/AdminOperators';
 import { AdminSettings } from './pages/admin/AdminSettings';
+import { AdminMySettings } from './pages/admin/AdminMySettings';
 import PriceTableManagement from './pages/PriceTableManagement';
 
 // エラーページ
@@ -99,6 +100,7 @@ function App() {
                     <Route path="/admin/settings" element={<AdminSettings />} />
                     <Route path="/admin/price-tables" element={<PriceTableManagement />} />
                     <Route path="/admin/print-orders" element={<PrintOrderHistory />} />
+                    <Route path="/admin/my-settings" element={<AdminMySettings />} />
                   </Route>
                 </Route>
               </Route>

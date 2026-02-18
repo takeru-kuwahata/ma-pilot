@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import {
   Logout as LogoutIcon,
+  AccountCircle as AccountCircleIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
@@ -98,29 +99,13 @@ export const AdminLayout = () => {
             />
           </Box>
 
-          {/* ユーザー情報 */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography
-              variant="body2"
-              sx={{
-                color: '#616161',
-                display: { xs: 'none', md: 'block' },
-              }}
-            >
-              {userName}
-            </Typography>
-            <Avatar
-              sx={{
-                width: 32,
-                height: 32,
-                backgroundColor: '#F44336',
-                fontSize: 14,
-                fontWeight: 600,
-              }}
-            >
-              {userInitial}
-            </Avatar>
-          </Box>
+          {/* ユーザー名のみ表示（アイコンなし） */}
+          <Typography
+            variant="body2"
+            sx={{ color: '#616161', display: { xs: 'none', md: 'block' } }}
+          >
+            {userName}
+          </Typography>
         </Toolbar>
       </AppBar>
 
@@ -190,16 +175,38 @@ export const AdminLayout = () => {
           <ListItem disablePadding>
             <ListItemButton
               onClick={handleLogout}
-              sx={{
-                py: 1.5,
-                px: 3,
-              }}
+              sx={{ py: 1.5, px: 3 }}
             >
               <ListItemIcon sx={{ minWidth: 40 }}>
                 <LogoutIcon />
               </ListItemIcon>
               <ListItemText
                 primary="ログアウト"
+                primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              selected={location.pathname === '/admin/my-settings'}
+              onClick={() => handleNavigation('/admin/my-settings')}
+              sx={{
+                py: 1.5,
+                px: 3,
+                '&.Mui-selected': {
+                  backgroundColor: 'rgba(255, 107, 53, 0.08)',
+                  borderLeft: '3px solid #FF6B35',
+                  color: '#FF6B35',
+                  pl: 'calc(24px - 3px)',
+                  '& .MuiListItemIcon-root': { color: '#FF6B35' },
+                },
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                <AccountCircleIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="マイページ設定"
                 primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
               />
             </ListItemButton>
