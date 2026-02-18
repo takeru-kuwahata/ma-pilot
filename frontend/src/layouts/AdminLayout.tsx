@@ -172,20 +172,6 @@ export const AdminLayout = () => {
         <List sx={{ pt: 0, pb: 0 }}>
           <ListItem disablePadding>
             <ListItemButton
-              onClick={handleLogout}
-              sx={{ py: 1.5, px: 3 }}
-            >
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <LogoutIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="ログアウト"
-                primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
               selected={location.pathname === '/admin/my-settings'}
               onClick={() => handleNavigation('/admin/my-settings')}
               sx={{
@@ -205,6 +191,20 @@ export const AdminLayout = () => {
               </ListItemIcon>
               <ListItemText
                 primary="マイページ設定"
+                primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={handleLogout}
+              sx={{ py: 1.5, px: 3 }}
+            >
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="ログアウト"
                 primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
               />
             </ListItemButton>
