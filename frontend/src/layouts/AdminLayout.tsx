@@ -8,7 +8,6 @@ import {
   ListItemText,
   Toolbar,
   Typography,
-  Avatar,
   Divider,
   Chip,
 } from '@mui/material';
@@ -32,7 +31,6 @@ export const AdminLayout = () => {
   const filteredMenuItems = adminMenuItems;
 
   const userName = user?.display_name || 'システム管理者';
-  const userInitial = user?.display_name ? user.display_name.charAt(0) : '管';
 
   const handleNavigation = (path: string) => {
     navigate(path);
