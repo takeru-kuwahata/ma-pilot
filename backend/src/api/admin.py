@@ -129,10 +129,13 @@ async def get_operators(supabase: Client = Depends(get_supabase_client)):
             try:
                 user_response = supabase.auth.admin.get_user_by_id(metadata['user_id'])
                 if user_response.user:
+                    # display_nameはSupabase Authのuser_metadataから取得
+                    auth_user_meta = user_response.user.user_metadata or {}
+                    display_name = auth_user_meta.get('display_name', '')
                     operators.append({
                         'id': metadata['user_id'],
                         'email': user_response.user.email,
-                        'display_name': metadata.get('display_name', ''),
+                        'display_name': display_name,
                         'created_at': metadata.get('created_at', ''),
                     })
             except Exception:
@@ -149,19 +152,19 @@ async def create_operator(
 ):
     '''Create a new system_admin operator'''
     try:
-        # Supabase Admin APIでユーザー作成（パスワード付き）
+        # Supabase Admin APIでユーザー作成（パスワード付き、display_nameをuser_metadataに保存）
         auth_response = supabase.auth.admin.create_user({
             'email': request.email,
             'password': request.password,
             'email_confirm': True,
+            'user_metadata': {'display_name': request.display_name},
         })
         user_id = auth_response.user.id
 
-        # user_metadataにsystem_adminロールで登録
+        # user_metadataテーブルにsystem_adminロールで登録（display_nameカラムなし）
         supabase.table('user_metadata').insert({
             'user_id': user_id,
             'role': 'system_admin',
-            'display_name': request.display_name,
         }).execute()
 
         return {
