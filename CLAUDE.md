@@ -5,14 +5,15 @@
 ```yaml
 プロジェクト名: MA-Pilot（歯科医院経営分析システム）
 開始日: 2025-11-13
-最終更新日: 2025-12-26
+最終更新日: 2026-02-18
 
 実装状況:
-  ✅ フロントエンド: 完全実装済み（全10ページ、TypeScriptエラー0件）
-  ✅ バックエンド: 完全実装済み（30エンドポイント、セキュリティ実装済み）
-  ✅ API統合: 完了（全サービス実API接続済み）
-  ✅ コード品質: ESLintエラー0件、ビルド成功
-  ⏳ デプロイ: 準備完了、実施中
+  ✅ フロントエンド: 実装済み・本番稼働中（Vercel、git pushで自動デプロイ）
+  ✅ バックエンド: 実装済み・本番稼働中（Render.com、git pushで自動デプロイ）
+  ✅ 運営者アカウント管理: 実装済み（一覧・追加・削除）
+  ✅ マイページ設定: 実装済み（表示名・パスワード変更）
+  ✅ 自動デプロイ: 設定済み（GitHub Actions + Render Deploy Hook）
+  ⚠️ 既知の問題: docs/DEV_STATUS.md を参照
 
 技術スタック:
   frontend:
@@ -29,17 +30,19 @@
 
   backend: ✅ 完全実装済み
     - Python 3.11+
-    - FastAPI（main.py 161行、完全実装）
-    - Supabase SDK
+    - FastAPI
+    - Supabase SDK + httpx（Auth Admin API は httpx REST で直接呼び出し）
     - WeasyPrint（PDF生成）
     - Pandas（データ分析）
     - Jinja2（テンプレート）
-    - 10個のAPIルーター（38エンドポイント: コア30 + 印刷物受注8）
+    - 11個のAPIルーター（admin, auth, clinics, monthly_data, dashboard,
+      simulations, reports, market_analysis, staff, print_orders, my）
     - セキュリティ実装（CORS、レート制限、セキュリティヘッダー）
 
   database:
     - Supabase（PostgreSQL 15 + Auth + Storage）
-    - 8テーブル作成済み（コア6 + 印刷物受注2） + RLS設定完了
+    - 8テーブル（コア6 + 印刷物受注2） + RLS設定完了
+    - display_name は Supabase Auth の user_metadata に保存（user_metadataテーブルにカラムなし）
 ```
 
 ## 開発環境
@@ -338,19 +341,22 @@ PILOTデータ取込:
 
 ```yaml
 フロントエンド（Vercel）:
-  - ビルドコマンド: npm run build
-  - 出力ディレクトリ: dist
-  - 環境変数: Vercelダッシュボードで設定
+  - git push → GitHub App連携で自動デプロイ（手動操作不要）
+  - 環境変数: Vercelダッシュボードで設定済み
 
 バックエンド（Render.com）:
-  - ビルドコマンド: pip install -r requirements.txt
-  - 起動コマンド: uvicorn main:app --host 0.0.0.0 --port 8432
-  - 環境変数: Renderダッシュボードで設定
-  - 注意: 15分間アクセスなしで自動スリープ
+  - URL: https://ma-pilot.onrender.com
+  - git push → GitHub Actions → RENDER_DEPLOY_HOOK で自動デプロイ
+  - 注意: 無料プランのため15分間アクセスなしで自動スリープ（初回リクエスト最大50秒）
+  - 手動デプロイ: Renderダッシュボード → Manual Deploy → Deploy latest commit
 
-CI/CD（GitHub Actions）:
-  - プルリクエスト時: Lint + 型チェック + テスト
-  - mainマージ時: 自動デプロイ（Vercel + Render）
+GitHub Secrets（設定済み）:
+  - RENDER_DEPLOY_HOOK: RenderのDeploy Hook URL
+  - VITE_SUPABASE_URL
+  - VITE_SUPABASE_ANON_KEY
+  - VITE_BACKEND_URL
+  - BACKEND_URL
+  ※ VERCELのシークレットは不要（GitHub App連携で動作）
 ```
 
 ## ドキュメント管理ルール
