@@ -15,6 +15,7 @@ import {
 import {
   Logout as LogoutIcon,
   SwapHoriz as SwapHorizIcon,
+  AccountCircle as AccountCircleIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
@@ -198,6 +199,27 @@ export const MainLayout = () => {
         <Divider sx={{ my: 2, mx: 3 }} />
 
         <List sx={{ pt: 0, pb: 0 }}>
+          <ListItem disablePadding>
+            <ListItemButton
+              selected={location.pathname === '/clinic/my-settings'}
+              onClick={() => navigate('/clinic/my-settings')}
+              sx={{
+                py: 1.5,
+                px: 3,
+                '&.Mui-selected': {
+                  backgroundColor: 'rgba(255, 107, 53, 0.08)',
+                },
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                <AccountCircleIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="マイページ設定"
+                primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
+              />
+            </ListItemButton>
+          </ListItem>
           <ListItem disablePadding>
             <ListItemButton
               onClick={handleLogout}

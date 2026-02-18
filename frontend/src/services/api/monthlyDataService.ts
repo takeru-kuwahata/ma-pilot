@@ -26,25 +26,25 @@ export const monthlyDataService = {
     return result.data;
   },
 
-  async createMonthlyData(data: MonthlyDataFormData & { clinicId: string }): Promise<MonthlyData> {
+  async createMonthlyData(data: MonthlyDataFormData & { clinic_id: string }): Promise<MonthlyData> {
     const response = await fetch(`${API_BASE_URL}/api/monthly-data`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify({
-        clinic_id: data.clinicId,
-        year_month: data.yearMonth,
-        total_revenue: data.totalRevenue,
-        insurance_revenue: data.insuranceRevenue,
-        self_pay_revenue: data.selfPayRevenue,
-        personnel_cost: data.variableCost,
+        clinic_id: data.clinic_id,
+        year_month: data.year_month,
+        total_revenue: data.total_revenue,
+        insurance_revenue: data.insurance_revenue,
+        self_pay_revenue: data.self_pay_revenue,
+        personnel_cost: data.variable_cost,
         material_cost: 0,
-        fixed_cost: data.fixedCost,
+        fixed_cost: data.fixed_cost,
         other_cost: 0,
-        new_patients: data.newPatients,
-        returning_patients: data.returningPatients,
-        total_patients: data.totalPatients,
+        new_patients: data.new_patients,
+        returning_patients: data.returning_patients,
+        total_patients: data.total_patients,
         treatment_count: 0,
-        average_revenue_per_patient: data.totalPatients > 0 ? data.totalRevenue / data.totalPatients : 0
+        average_revenue_per_patient: data.total_patients > 0 ? data.total_revenue / data.total_patients : 0
       })
     });
     const result = await handleResponse<MonthlyDataResponse>(response);
@@ -56,15 +56,15 @@ export const monthlyDataService = {
       method: 'PUT',
       headers: getAuthHeaders(),
       body: JSON.stringify({
-        year_month: data.yearMonth,
-        total_revenue: data.totalRevenue,
-        insurance_revenue: data.insuranceRevenue,
-        self_pay_revenue: data.selfPayRevenue,
-        personnel_cost: data.variableCost,
-        fixed_cost: data.fixedCost,
-        new_patients: data.newPatients,
-        returning_patients: data.returningPatients,
-        total_patients: data.totalPatients
+        year_month: data.year_month,
+        total_revenue: data.total_revenue,
+        insurance_revenue: data.insurance_revenue,
+        self_pay_revenue: data.self_pay_revenue,
+        personnel_cost: data.variable_cost,
+        fixed_cost: data.fixed_cost,
+        new_patients: data.new_patients,
+        returning_patients: data.returning_patients,
+        total_patients: data.total_patients
       })
     });
     const result = await handleResponse<MonthlyDataResponse>(response);

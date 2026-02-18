@@ -47,10 +47,10 @@ export const MarketAnalysis = () => {
   };
 
   const stats: MarketStats = analysis ? {
-    population: analysis.populationData.totalPopulation,
-    agingRate: (analysis.populationData.ageGroups.age65Plus / analysis.populationData.totalPopulation) * 100,
+    population: analysis.population_data.total_population,
+    agingRate: (analysis.population_data.age_groups.age65Plus / analysis.population_data.total_population) * 100,
     competitorCount: analysis.competitors.length,
-    marketPotential: Math.round(analysis.marketShare * 100)
+    marketPotential: Math.round(analysis.market_share * 100)
   } : {
     population: 0,
     agingRate: 0,
@@ -61,18 +61,18 @@ export const MarketAnalysis = () => {
   const demographics: DemographicData[] = analysis ? [
     {
       ageGroup: '0-14歳',
-      count: analysis.populationData.ageGroups.age0_14,
-      percentage: (analysis.populationData.ageGroups.age0_14 / analysis.populationData.totalPopulation) * 100
+      count: analysis.population_data.age_groups.age0_14,
+      percentage: (analysis.population_data.age_groups.age0_14 / analysis.population_data.total_population) * 100
     },
     {
       ageGroup: '15-64歳',
-      count: analysis.populationData.ageGroups.age15_64,
-      percentage: (analysis.populationData.ageGroups.age15_64 / analysis.populationData.totalPopulation) * 100
+      count: analysis.population_data.age_groups.age15_64,
+      percentage: (analysis.population_data.age_groups.age15_64 / analysis.population_data.total_population) * 100
     },
     {
       ageGroup: '65歳以上',
-      count: analysis.populationData.ageGroups.age65Plus,
-      percentage: (analysis.populationData.ageGroups.age65Plus / analysis.populationData.totalPopulation) * 100
+      count: analysis.population_data.age_groups.age65Plus,
+      percentage: (analysis.population_data.age_groups.age65Plus / analysis.population_data.total_population) * 100
     }
   ] : [];
   return (

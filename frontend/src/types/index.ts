@@ -10,8 +10,8 @@ export interface User {
   role: UserRole;
   clinic_id?: string;
   display_name?: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 // ============================================
@@ -21,15 +21,15 @@ export interface User {
 export interface Clinic {
   id: string;
   name: string;
-  postalCode: string;
+  postal_code: string;
   address: string;
-  phoneNumber: string;
+  phone_number: string;
   latitude: number;
   longitude: number;
-  ownerId: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  owner_id: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 // ============================================
@@ -38,31 +38,31 @@ export interface Clinic {
 
 export interface MonthlyData {
   id: string;
-  clinicId: string;
-  yearMonth: string; // YYYY-MM形式
+  clinic_id: string;
+  year_month: string; // YYYY-MM形式
 
   // 収益関連
-  totalRevenue: number;
-  insuranceRevenue: number;
-  selfPayRevenue: number;
+  total_revenue: number;
+  insurance_revenue: number;
+  self_pay_revenue: number;
 
   // コスト関連
-  personnelCost: number;
-  materialCost: number;
-  fixedCost: number;
-  otherCost: number;
+  personnel_cost: number;
+  material_cost: number;
+  fixed_cost: number;
+  other_cost: number;
 
   // 患者数
-  newPatients: number;
-  returningPatients: number;
-  totalPatients: number;
+  new_patients: number;
+  returning_patients: number;
+  total_patients: number;
 
   // 診療関連
-  treatmentCount: number;
-  averageRevenuePerPatient: number;
+  treatment_count: number;
+  average_revenue_per_patient: number;
 
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 // ============================================
@@ -70,31 +70,31 @@ export interface MonthlyData {
 // ============================================
 
 export interface SimulationInput {
-  targetRevenue: number;
-  targetProfit: number;
-  assumedAverageRevenuePerPatient: number;
-  assumedPersonnelCostRate: number;
-  assumedMaterialCostRate: number;
-  assumedFixedCost: number;
+  target_revenue: number;
+  target_profit: number;
+  assumed_average_revenue_per_patient: number;
+  assumed_personnel_cost_rate: number;
+  assumed_material_cost_rate: number;
+  assumed_fixed_cost: number;
 }
 
 export interface SimulationResult {
-  requiredPatients: number;
-  requiredTreatments: number;
-  estimatedRevenue: number;
-  estimatedProfit: number;
-  profitMargin: number;
+  required_patients: number;
+  required_treatments: number;
+  estimated_revenue: number;
+  estimated_profit: number;
+  profit_margin: number;
   strategies: string[];
 }
 
 export interface Simulation {
   id: string;
-  clinicId: string;
+  clinic_id: string;
   title: string;
   input: SimulationInput;
   result: SimulationResult;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 // ============================================
@@ -106,13 +106,13 @@ export type ReportFormat = 'pdf' | 'csv';
 
 export interface Report {
   id: string;
-  clinicId: string;
+  clinic_id: string;
   type: ReportType;
   format: ReportFormat;
   title: string;
-  generatedAt: string;
-  fileUrl: string;
-  createdAt: string;
+  generated_at: string;
+  file_url: string;
+  created_at: string;
 }
 
 // ============================================
@@ -121,8 +121,8 @@ export interface Report {
 
 export interface PopulationData {
   area: string;
-  totalPopulation: number;
-  ageGroups: {
+  total_population: number;
+  age_groups: {
     age0_14: number;
     age15_64: number;
     age65Plus: number;
@@ -139,15 +139,15 @@ export interface CompetitorClinic {
 
 export interface MarketAnalysis {
   id: string;
-  clinicId: string;
-  radiusKm: number;
-  populationData: PopulationData;
+  clinic_id: string;
+  radius_km: number;
+  population_data: PopulationData;
   competitors: CompetitorClinic[];
-  estimatedPotentialPatients: number;
-  marketShare: number;
-  analysisDate: string;
-  createdAt: string;
-  updatedAt: string;
+  estimated_potential_patients: number;
+  market_share: number;
+  analysis_date: string;
+  created_at: string;
+  updated_at: string;
 }
 
 // ============================================
@@ -170,23 +170,23 @@ export interface PasswordResetFormData {
 }
 
 export interface MonthlyDataFormData {
-  yearMonth: string;
-  totalRevenue: number;           // 自動計算
-  insuranceRevenue: number;
-  selfPayRevenue: number;
-  retailRevenue: number;
-  variableCost: number;
-  fixedCost: number;
-  newPatients: number;
-  returningPatients: number;
-  totalPatients: number;          // 自動計算
+  year_month: string;
+  total_revenue: number;           // 自動計算
+  insurance_revenue: number;
+  self_pay_revenue: number;
+  retail_revenue: number;
+  variable_cost: number;
+  fixed_cost: number;
+  new_patients: number;
+  returning_patients: number;
+  total_patients: number;          // 自動計算
 }
 
 export interface ClinicFormData {
   name: string;
-  postalCode: string;
+  postal_code: string;
   address: string;
-  phoneNumber: string;
+  phone_number: string;
 }
 
 // ============================================
@@ -225,8 +225,8 @@ export type ComparisonTrend = 'positive' | 'negative' | 'neutral';
 
 export interface KpiComparison {
   trend: ComparisonTrend;
-  monthOverMonth: number;  // 前月比（%）
-  yearOverYear: number;    // 前年比（%）
+  month_over_month: number;  // 前月比（%）
+  year_over_year: number;    // 前年比（%）
 }
 
 export interface DashboardKpi {
@@ -248,21 +248,21 @@ export interface DashboardAlert {
 }
 
 export interface MonthlyTrendData {
-  yearMonth: string;       // YYYY-MM形式
-  totalRevenue: number;
-  operatingProfit: number;
-  newPatients: number;
-  returningPatients: number;
-  unitUtilization: number; // ユニット稼働率（%）
-  selfPayRate: number;     // 自費率（%）
+  year_month: string;       // YYYY-MM形式
+  total_revenue: number;
+  operating_profit: number;
+  new_patients: number;
+  returning_patients: number;
+  unit_utilization: number; // ユニット稼働率（%）
+  self_pay_rate: number;     // 自費率（%）
 }
 
 export interface DashboardData {
   kpis: DashboardKpi[];
   alerts: DashboardAlert[];
   trends: MonthlyTrendData[];
-  lastUpdated: string;
-  dataSource: string;      // データソース（例: 手動入力、CSV取込）
+  last_updated: string;
+  data_source: string;      // データソース（例: 手動入力、CSV取込）
 }
 
 // ============================================

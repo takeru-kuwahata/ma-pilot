@@ -24,9 +24,9 @@
 
 | # | 内容 | 場所 |
 |---|------|------|
-| B-1 | APIレスポンスがスネークケース（`is_active`）なのに TypeScript 型がキャメルケース（`isActive`）のまま。現状は `getRaw()` ヘルパーで逃げているが、根本的には型変換レイヤーを統一すべき | `AdminClinics.tsx`, `AdminDashboard.tsx` |
+| ~~B-1~~ | ✅ **修正済み（2026-02-18）** TypeScript 型をスネークケースに統一。`getRaw()` ヘルパー削除。全15ファイル対応 | |
 | B-2 | Supabase Python SDK の `auth.admin.get_user_by_id()` が Render 環境で動作しないため、operators エンドポイントは httpx で直接 REST API を叩いている。原因未特定 | `backend/src/api/admin.py` |
-| B-3 | `display_name` がログイン時に取得されるが、再ログインしないと反映されない（マイページで変更後、右上の表示が即時更新されない） | `AdminMySettings.tsx`, `authStore` |
+| ~~B-3~~ | ✅ **修正済み（2026-02-18）** `display_name` 変更後に `localStorage` も更新するよう修正。リロード後も反映される | |
 
 ### 中優先度
 
@@ -35,7 +35,7 @@
 | M-1 | 診療圏分析ページのデータが実APIと繋がっていない可能性あり（e-Stat / RESAS API キーが未設定のため） | `MarketAnalysis.tsx` |
 | M-2 | AdminSettings ページの設定保存がプレースホルダー実装（DBに保存されない） | `backend/src/api/admin.py` |
 | M-3 | レポート生成（PDF）が実際に動作するか未確認（WeasyPrint の Render 環境での動作要確認） | `backend/src/api/reports.py` |
-| M-4 | MainLayout の医院モードでもマイページ設定が未実装（AdminLayout のみ対応済み） | `MainLayout.tsx` |
+| ~~M-4~~ | ✅ **修正済み（2026-02-18）** `ClinicMySettings.tsx` 作成、`/clinic/my-settings` ルート追加、MainLayout にリンク追加 | |
 
 ### 低優先度
 
@@ -67,6 +67,9 @@
 |------|------|
 | 2026-02-18 | 運営者アカウント管理ページ実装（一覧・追加・削除） |
 | 2026-02-18 | マイページ設定実装（表示名・パスワード変更） |
+| 2026-02-18 | B-1: TypeScript型をスネークケースに統一（全15ファイル、TypeScriptエラー0件確認） |
+| 2026-02-18 | B-3: display_name変更後にlocalStorageも更新（リロード後も反映） |
+| 2026-02-18 | M-4: 医院モードのマイページ設定実装（ClinicMySettings.tsx + /clinic/my-settings ルート） |
 | 2026-02-18 | AdminLayout 右上アイコン削除、display_name をヘッダーに表示 |
 | 2026-02-18 | Render 自動デプロイ設定（GitHub Actions + Deploy Hook） |
 | 2026-02-18 | AdminClinics に医院削除・並び替え・件数切り替えを実装 |

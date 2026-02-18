@@ -90,9 +90,9 @@ export const ClinicSettings = () => {
 
         setBasicInfo({
           name: clinic.name || '',
-          postalCode: clinic.postalCode || '',
+          postalCode: clinic.postal_code || '',
           address: clinic.address || '',
-          phone: clinic.phoneNumber || '',
+          phone: clinic.phone_number || '',
           ownerName: '',
           foundedDate: '',
           departments: '',
@@ -136,9 +136,9 @@ export const ClinicSettings = () => {
 
       await clinicService.updateClinic(user.clinic_id, {
         name: basicInfo.name,
-        postalCode: basicInfo.postalCode,
+        postal_code: basicInfo.postalCode,
         address: basicInfo.address,
-        phoneNumber: basicInfo.phone,
+        phone_number: basicInfo.phone,
       });
 
       setSnackbar({

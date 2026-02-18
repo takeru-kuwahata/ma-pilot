@@ -39,43 +39,43 @@ const formatNumber = (num: number): string => {
 export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: MonthlyDataFormProps) => {
   const [formData, setFormData] = useState<MonthlyDataFormData>(
     initialData || {
-      yearMonth: '',
-      totalRevenue: 0,
-      insuranceRevenue: 0,
-      selfPayRevenue: 0,
-      retailRevenue: 0,
-      variableCost: 0,
-      fixedCost: 0,
-      newPatients: 0,
-      returningPatients: 0,
-      totalPatients: 0,
+      year_month: '',
+      total_revenue: 0,
+      insurance_revenue: 0,
+      self_pay_revenue: 0,
+      retail_revenue: 0,
+      variable_cost: 0,
+      fixed_cost: 0,
+      new_patients: 0,
+      returning_patients: 0,
+      total_patients: 0,
     }
   );
 
   // 表示用の文字列状態（フォーカス時：カンマなし、非フォーカス時：カンマあり）
   const [displayValues, setDisplayValues] = useState({
-    insuranceRevenue: '',
-    selfPayRevenue: '',
-    retailRevenue: '',
-    variableCost: '',
-    fixedCost: '',
-    newPatients: '',
-    returningPatients: '',
+    insurance_revenue: '',
+    self_pay_revenue: '',
+    retail_revenue: '',
+    variable_cost: '',
+    fixed_cost: '',
+    new_patients: '',
+    returning_patients: '',
   });
 
   // メモ化: 総売上と総患者数を計算（派生値として扱う）
   const totalRevenue = useMemo(
-    () => formData.insuranceRevenue + formData.selfPayRevenue + formData.retailRevenue,
-    [formData.insuranceRevenue, formData.selfPayRevenue, formData.retailRevenue]
+    () => formData.insurance_revenue + formData.self_pay_revenue + formData.retail_revenue,
+    [formData.insurance_revenue, formData.self_pay_revenue, formData.retail_revenue]
   );
 
   const totalPatients = useMemo(
-    () => formData.newPatients + formData.returningPatients,
-    [formData.newPatients, formData.returningPatients]
+    () => formData.new_patients + formData.returning_patients,
+    [formData.new_patients, formData.returning_patients]
   );
 
   const handleYearMonthChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, yearMonth: e.target.value }));
+    setFormData((prev) => ({ ...prev, year_month: e.target.value }));
   }, []);
 
   const handleNumberChange = useCallback((field: keyof typeof displayValues) => (
@@ -105,7 +105,7 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ ...formData, totalRevenue, totalPatients });
+    onSubmit({ ...formData, total_revenue: totalRevenue, total_patients: totalPatients });
   }, [formData, totalRevenue, totalPatients, onSubmit]);
 
   return (
@@ -122,7 +122,7 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
               required
               label="対象年月"
               type="month"
-              value={formData.yearMonth}
+              value={formData.year_month}
               onChange={handleYearMonthChange}
               InputLabelProps={{ shrink: true }}
             />
@@ -141,10 +141,10 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
               required
               label="保険診療収入"
               type="text"
-              value={displayValues.insuranceRevenue}
-              onChange={handleNumberChange('insuranceRevenue')}
-              onFocus={handleFocus('insuranceRevenue')}
-              onBlur={handleBlur('insuranceRevenue')}
+              value={displayValues.insurance_revenue}
+              onChange={handleNumberChange('insurance_revenue')}
+              onFocus={handleFocus('insurance_revenue')}
+              onBlur={handleBlur('insurance_revenue')}
               helperText="数字を入力（カンマ可）"
               InputProps={{
                 endAdornment: <InputAdornment position="end">円</InputAdornment>,
@@ -158,10 +158,10 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
               required
               label="自由診療収入"
               type="text"
-              value={displayValues.selfPayRevenue}
-              onChange={handleNumberChange('selfPayRevenue')}
-              onFocus={handleFocus('selfPayRevenue')}
-              onBlur={handleBlur('selfPayRevenue')}
+              value={displayValues.self_pay_revenue}
+              onChange={handleNumberChange('self_pay_revenue')}
+              onFocus={handleFocus('self_pay_revenue')}
+              onBlur={handleBlur('self_pay_revenue')}
               helperText="数字を入力（カンマ可）"
               InputProps={{
                 endAdornment: <InputAdornment position="end">円</InputAdornment>,
@@ -175,10 +175,10 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
               required
               label="物販（その他）"
               type="text"
-              value={displayValues.retailRevenue}
-              onChange={handleNumberChange('retailRevenue')}
-              onFocus={handleFocus('retailRevenue')}
-              onBlur={handleBlur('retailRevenue')}
+              value={displayValues.retail_revenue}
+              onChange={handleNumberChange('retail_revenue')}
+              onFocus={handleFocus('retail_revenue')}
+              onBlur={handleBlur('retail_revenue')}
               helperText="数字を入力（カンマ可）"
               InputProps={{
                 endAdornment: <InputAdornment position="end">円</InputAdornment>,
@@ -213,10 +213,10 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
               required
               label="変動費"
               type="text"
-              value={displayValues.variableCost}
-              onChange={handleNumberChange('variableCost')}
-              onFocus={handleFocus('variableCost')}
-              onBlur={handleBlur('variableCost')}
+              value={displayValues.variable_cost}
+              onChange={handleNumberChange('variable_cost')}
+              onFocus={handleFocus('variable_cost')}
+              onBlur={handleBlur('variable_cost')}
               helperText="材料費、技工料など（カンマ可）"
               InputProps={{
                 endAdornment: <InputAdornment position="end">円</InputAdornment>,
@@ -230,10 +230,10 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
               required
               label="固定費"
               type="text"
-              value={displayValues.fixedCost}
-              onChange={handleNumberChange('fixedCost')}
-              onFocus={handleFocus('fixedCost')}
-              onBlur={handleBlur('fixedCost')}
+              value={displayValues.fixed_cost}
+              onChange={handleNumberChange('fixed_cost')}
+              onFocus={handleFocus('fixed_cost')}
+              onBlur={handleBlur('fixed_cost')}
               helperText="人件費、家賃、光熱費など（カンマ可）"
               InputProps={{
                 endAdornment: <InputAdornment position="end">円</InputAdornment>,
@@ -254,10 +254,10 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
               required
               label="新患数"
               type="text"
-              value={displayValues.newPatients}
-              onChange={handleNumberChange('newPatients')}
-              onFocus={handleFocus('newPatients')}
-              onBlur={handleBlur('newPatients')}
+              value={displayValues.new_patients}
+              onChange={handleNumberChange('new_patients')}
+              onFocus={handleFocus('new_patients')}
+              onBlur={handleBlur('new_patients')}
               helperText="数字を入力（カンマ可）"
               InputProps={{
                 endAdornment: <InputAdornment position="end">人</InputAdornment>,
@@ -271,10 +271,10 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
               required
               label="再診患者数"
               type="text"
-              value={displayValues.returningPatients}
-              onChange={handleNumberChange('returningPatients')}
-              onFocus={handleFocus('returningPatients')}
-              onBlur={handleBlur('returningPatients')}
+              value={displayValues.returning_patients}
+              onChange={handleNumberChange('returning_patients')}
+              onFocus={handleFocus('returning_patients')}
+              onBlur={handleBlur('returning_patients')}
               helperText="数字を入力（カンマ可）"
               InputProps={{
                 endAdornment: <InputAdornment position="end">人</InputAdornment>,

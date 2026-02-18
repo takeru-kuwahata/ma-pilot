@@ -129,18 +129,13 @@ export const AdminDashboard = () => {
     }
   };
 
-  const recentClinics = clinics.slice(0, 5).map(clinic => {
-    const raw = clinic as unknown as Record<string, unknown>;
-    const isActive = (raw.is_active ?? clinic.isActive) as boolean;
-    const createdAtStr = (raw.created_at ?? clinic.createdAt) as string;
-    return {
-      id: clinic.id,
-      name: clinic.name,
-      registeredAt: createdAtStr ? new Date(createdAtStr).toLocaleDateString('ja-JP') : 'N/A',
-      plan: '無料プラン',
-      status: isActive ? ('active' as const) : ('inactive' as const),
-    };
-  });
+  const recentClinics = clinics.slice(0, 5).map(clinic => ({
+    id: clinic.id,
+    name: clinic.name,
+    registeredAt: clinic.created_at ? new Date(clinic.created_at).toLocaleDateString('ja-JP') : 'N/A',
+    plan: '無料プラン',
+    status: clinic.is_active ? ('active' as const) : ('inactive' as const),
+  }));
 
   const getStatusLabel = (status: string): string => {
     switch (status) {

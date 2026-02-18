@@ -341,7 +341,7 @@ export const StaffManagement = () => {
                     />
                   </TableCell>
                   <TableCell sx={{ fontSize: '14px' }}>
-                    {new Date(staff.createdAt).toLocaleDateString('ja-JP')}
+                    {new Date(staff.created_at).toLocaleDateString('ja-JP')}
                   </TableCell>
                   <TableCell sx={{ fontSize: '14px' }}>
                     <IconButton

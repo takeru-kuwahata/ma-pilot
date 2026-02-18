@@ -20,9 +20,9 @@ export const RevenueChart = memo<RevenueChartProps>(({ data }) => {
   // メモ化: グラフ用データの整形をキャッシュ（重い計算）
   const chartData = useMemo(() =>
     data.map((item) => ({
-      month: item.yearMonth.substring(5), // "2024-10" → "10"
-      売上: item.totalRevenue / 10000, // 万円単位に変換
-      利益: (item.totalRevenue - item.personnelCost - item.materialCost - item.fixedCost - item.otherCost) / 10000,
+      month: item.year_month.substring(5), // "2024-10" → "10"
+      売上: item.total_revenue / 10000, // 万円単位に変換
+      利益: (item.total_revenue - item.personnel_cost - item.material_cost - item.fixed_cost - item.other_cost) / 10000,
     })),
     [data]
   );

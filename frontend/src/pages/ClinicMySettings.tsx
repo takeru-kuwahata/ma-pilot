@@ -8,10 +8,10 @@ import {
   CircularProgress,
   Divider,
 } from '@mui/material';
-import { API_BASE_URL, getAuthHeaders, handleResponse } from '../../services/api/config';
-import { useAuthStore } from '../../stores/authStore';
+import { API_BASE_URL, getAuthHeaders, handleResponse } from '../services/api/config';
+import { useAuthStore } from '../stores/authStore';
 
-export const AdminMySettings = () => {
+export const ClinicMySettings = () => {
   const { user, setUser } = useAuthStore();
 
   // 名前変更
@@ -97,7 +97,7 @@ export const AdminMySettings = () => {
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             fullWidth
-            placeholder="例：桑畑健"
+            placeholder="例：山田太郎"
           />
           {nameMsg && (
             <Typography sx={{ fontSize: '13px', color: nameMsg.startsWith('エラー') ? '#F44336' : '#4CAF50' }}>

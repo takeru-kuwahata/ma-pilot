@@ -86,7 +86,7 @@ export const Simulation = () => {
       const data = await monthlyDataService.getMonthlyData(user.clinic_id);
       if (data.length > 0) {
         // 最新のデータを取得（year_monthでソート）
-        const sorted = [...data].sort((a, b) => b.yearMonth.localeCompare(a.yearMonth));
+        const sorted = [...data].sort((a, b) => b.year_month.localeCompare(a.year_month));
         setLatestData(sorted[0]);
       }
     } catch (error) {
@@ -120,12 +120,12 @@ export const Simulation = () => {
       }
 
       // 現在の値を基に変動率を適用
-      const currentRevenue = latestData.totalRevenue;
-      const currentInsuranceRevenue = latestData.insuranceRevenue;
-      const currentSelfPayRevenue = latestData.selfPayRevenue;
-      const currentPersonnelCost = latestData.personnelCost || 0;
-      const currentMaterialCost = latestData.materialCost || 0;
-      const currentFixedCost = latestData.fixedCost || 0;
+      const currentRevenue = latestData.total_revenue;
+      const currentInsuranceRevenue = latestData.insurance_revenue;
+      const currentSelfPayRevenue = latestData.self_pay_revenue;
+      const currentPersonnelCost = latestData.personnel_cost || 0;
+      const currentMaterialCost = latestData.material_cost || 0;
+      const currentFixedCost = latestData.fixed_cost || 0;
 
       // 変動率を適用して目標値を計算
       const targetInsuranceRevenue = currentInsuranceRevenue * (1 + params.insuranceRevenueChange / 100);
@@ -137,8 +137,8 @@ export const Simulation = () => {
       const targetFixedCost = currentFixedCost * (1 + params.fixedCostChange / 100);
       const targetProfit = targetRevenue - targetVariableCost - targetFixedCost;
 
-      const targetNewPatients = (latestData.newPatients || 0) * (1 + params.newPatientChange / 100);
-      const targetReturningPatients = (latestData.returningPatients || 0) * (1 + params.returningPatientChange / 100);
+      const targetNewPatients = (latestData.new_patients || 0) * (1 + params.newPatientChange / 100);
+      const targetReturningPatients = (latestData.returning_patients || 0) * (1 + params.returningPatientChange / 100);
       const targetTotalPatients = targetNewPatients + targetReturningPatients;
 
       const targetAverageRevenuePerPatient = targetTotalPatients > 0 ? targetRevenue / targetTotalPatients : 0;
@@ -149,26 +149,26 @@ export const Simulation = () => {
         user.clinic_id,
         `${params.period}ヶ月後のシミュレーション`,
         {
-          targetRevenue: Math.round(targetRevenue),
-          targetProfit: Math.round(targetProfit),
-          assumedAverageRevenuePerPatient: Math.round(targetAverageRevenuePerPatient),
-          assumedPersonnelCostRate: Math.round(targetPersonnelCostRate * 10) / 10,
-          assumedMaterialCostRate: Math.round(targetMaterialCostRate * 10) / 10,
-          assumedFixedCost: Math.round(targetFixedCost)
+          target_revenue: Math.round(targetRevenue),
+          target_profit: Math.round(targetProfit),
+          assumed_average_revenue_per_patient: Math.round(targetAverageRevenuePerPatient),
+          assumed_personnel_cost_rate: Math.round(targetPersonnelCostRate * 10) / 10,
+          assumed_material_cost_rate: Math.round(targetMaterialCostRate * 10) / 10,
+          assumed_fixed_cost: Math.round(targetFixedCost)
         }
       );
 
       // 現在値との変動額を計算
-      const revenueChange = simulation.result.estimatedRevenue - currentRevenue;
+      const revenueChange = simulation.result.estimated_revenue - currentRevenue;
       const currentProfit = currentRevenue - (currentPersonnelCost + currentMaterialCost + currentFixedCost);
-      const profitChange = simulation.result.estimatedProfit - currentProfit;
+      const profitChange = simulation.result.estimated_profit - currentProfit;
       const currentProfitRate = currentRevenue > 0 ? (currentProfit / currentRevenue * 100) : 0;
-      const profitRateChange = simulation.result.profitMargin - currentProfitRate;
+      const profitRateChange = simulation.result.profit_margin - currentProfitRate;
 
       setResult({
-        projectedRevenue: simulation.result.estimatedRevenue,
-        projectedProfit: simulation.result.estimatedProfit,
-        projectedProfitRate: simulation.result.profitMargin,
+        projectedRevenue: simulation.result.estimated_revenue,
+        projectedProfit: simulation.result.estimated_profit,
+        projectedProfitRate: simulation.result.profit_margin,
         revenueChange: Math.round(revenueChange),
         profitChange: Math.round(profitChange),
         profitRateChange: Math.round(profitRateChange * 10) / 10

@@ -29,6 +29,7 @@ import { MarketAnalysis } from './pages/MarketAnalysis';
 import { Simulation } from './pages/Simulation';
 import { Reports } from './pages/Reports';
 import { ClinicSettings } from './pages/ClinicSettings';
+import { ClinicMySettings } from './pages/ClinicMySettings';
 import { StaffManagement } from './pages/StaffManagement';
 import PrintOrderForm from './pages/PrintOrderForm';
 import PrintOrderHistory from './pages/PrintOrderHistory';
@@ -84,6 +85,7 @@ function App() {
                     <Route path="/clinic/reports" element={<Reports />} />
                     <Route path="/clinic/settings" element={<ClinicSettings />} />
                     <Route path="/clinic/staff" element={<StaffManagement />} />
+                    <Route path="/clinic/my-settings" element={<ClinicMySettings />} />
                     <Route path="/clinic/print-order" element={<PrintOrderForm />} />
                     <Route path="/clinic/print-order-history" element={<PrintOrderHistory />} />
                   </Route>

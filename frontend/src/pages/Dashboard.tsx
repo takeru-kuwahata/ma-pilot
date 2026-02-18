@@ -56,7 +56,7 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
         <TrendIcon sx={{ fontSize: 16, color: trendColor }} />
         <Typography variant="caption" sx={{ color: trendColor, fontWeight: 600 }}>
-          {isPositive ? '+' : ''}{kpi.comparison.monthOverMonth}%
+          {isPositive ? '+' : ''}{kpi.comparison.month_over_month}%
         </Typography>
         <Typography variant="caption" color="text.secondary">
           前月比
@@ -126,16 +126,13 @@ export const Dashboard = () => {
   try {
     chartData = (data.trends || [])
       .map((trend) => {
-        const yearMonth = trend?.yearMonth || (trend as unknown as Record<string, unknown>)?.year_month;
-        if (!yearMonth || typeof yearMonth !== 'string' || yearMonth.length < 7) {
+        if (!trend?.year_month || trend.year_month.length < 7) {
           return null;
         }
-        const totalRevenue = trend?.totalRevenue ?? (trend as unknown as Record<string, unknown>)?.total_revenue ?? 0;
-        const operatingProfit = trend?.operatingProfit ?? (trend as unknown as Record<string, unknown>)?.operating_profit ?? 0;
         return {
-          month: yearMonth.substring(5, 7) + '月',
-          総売上: Math.round(Number(totalRevenue) / 10000),
-          営業利益: Math.round(Number(operatingProfit) / 10000),
+          month: trend.year_month.substring(5, 7) + '月',
+          総売上: Math.round(trend.total_revenue / 10000),
+          営業利益: Math.round(trend.operating_profit / 10000),
         };
       })
       .filter((item): item is { month: string; 総売上: number; 営業利益: number } => item !== null);
@@ -143,16 +140,13 @@ export const Dashboard = () => {
     // 患者数推移データ
     patientChartData = (data.trends || [])
       .map((trend) => {
-        const yearMonth = trend?.yearMonth || (trend as unknown as Record<string, unknown>)?.year_month;
-        if (!yearMonth || typeof yearMonth !== 'string' || yearMonth.length < 7) {
+        if (!trend?.year_month || trend.year_month.length < 7) {
           return null;
         }
-        const newPatients = trend?.newPatients ?? (trend as unknown as Record<string, unknown>)?.new_patients ?? 0;
-        const returningPatients = trend?.returningPatients ?? (trend as unknown as Record<string, unknown>)?.returning_patients ?? 0;
         return {
-          month: yearMonth.substring(5, 7) + '月',
-          新患: Number(newPatients),
-          既存患者: Number(returningPatients),
+          month: trend.year_month.substring(5, 7) + '月',
+          新患: trend.new_patients,
+          既存患者: trend.returning_patients,
         };
       })
       .filter((item): item is { month: string; 新患: number; 既存患者: number } => item !== null);
@@ -168,7 +162,7 @@ export const Dashboard = () => {
           経営ダッシュボード
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {data.lastUpdated} のデータ（データソース: {data.dataSource}）
+          {data.last_updated} のデータ（データソース: {data.data_source}）
         </Typography>
       </Box>
 
@@ -267,13 +261,10 @@ export const Dashboard = () => {
               </Typography>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart
-                  data={(data.trends || []).map((t) => {
-                    const ym = t?.yearMonth || (t as unknown as Record<string, unknown>)?.year_month || '0000-00';
-                    return {
-                      month: String(ym).substring(5, 7) + '月',
-                      稼働率: Number(t?.unitUtilization ?? (t as unknown as Record<string, unknown>)?.unit_utilization ?? 0),
-                    };
-                  })}
+                  data={(data.trends || []).map((t) => ({
+                    month: (t?.year_month || '0000-00').substring(5, 7) + '月',
+                    稼働率: t?.unit_utilization ?? 0,
+                  }))}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
@@ -300,13 +291,10 @@ export const Dashboard = () => {
               </Typography>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart
-                  data={(data.trends || []).map((t) => {
-                    const ym = t?.yearMonth || (t as unknown as Record<string, unknown>)?.year_month || '0000-00';
-                    return {
-                      month: String(ym).substring(5, 7) + '月',
-                      自費率: Number(t?.selfPayRate ?? (t as unknown as Record<string, unknown>)?.self_pay_rate ?? 0),
-                    };
-                  })}
+                  data={(data.trends || []).map((t) => ({
+                    month: (t?.year_month || '0000-00').substring(5, 7) + '月',
+                    自費率: t?.self_pay_rate ?? 0,
+                  }))}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />

@@ -30,10 +30,10 @@ import type { MonthlyData, MonthlyDataFormData } from '../types';
 
 interface MonthlyDataRow {
   id: string;
-  yearMonth: string;
-  totalRevenue: number;
-  operatingProfit: number;
-  totalPatients: number;
+  year_month: string;
+  total_revenue: number;
+  operating_profit: number;
+  total_patients: number;
   dataSource: '手動入力' | 'CSV取込';
 }
 
@@ -68,10 +68,10 @@ export const DataManagement = () => {
       setRawMonthlyData(data);
       const rows: MonthlyDataRow[] = data.map((item: MonthlyData) => ({
         id: item.id,
-        yearMonth: item.yearMonth,
-        totalRevenue: item.totalRevenue,
-        operatingProfit: item.totalRevenue - (item.personnelCost + item.materialCost + item.fixedCost + item.otherCost),
-        totalPatients: item.totalPatients,
+        year_month: item.year_month,
+        total_revenue: item.total_revenue,
+        operating_profit: item.total_revenue - (item.personnel_cost + item.material_cost + item.fixed_cost + item.other_cost),
+        total_patients: item.total_patients,
         dataSource: '手動入力'
       }));
       setMonthlyData(rows);
@@ -96,7 +96,7 @@ export const DataManagement = () => {
         await monthlyDataService.updateMonthlyData(editTarget.id, data);
         setSnackbarMessage('データを更新しました');
       } else {
-        await monthlyDataService.createMonthlyData({ ...data, clinicId: user.clinic_id });
+        await monthlyDataService.createMonthlyData({ ...data, clinic_id: user.clinic_id });
         setSnackbarMessage('データを保存しました');
       }
       setSnackbarSeverity('success');
@@ -185,16 +185,16 @@ export const DataManagement = () => {
     setEditTarget({
       id,
       data: {
-        yearMonth: raw.yearMonth,
-        totalRevenue: raw.totalRevenue,
-        insuranceRevenue: raw.insuranceRevenue,
-        selfPayRevenue: raw.selfPayRevenue,
-        retailRevenue: 0,
-        variableCost: raw.personnelCost,
-        fixedCost: raw.fixedCost,
-        newPatients: raw.newPatients,
-        returningPatients: raw.returningPatients,
-        totalPatients: raw.totalPatients,
+        year_month: raw.year_month,
+        total_revenue: raw.total_revenue,
+        insurance_revenue: raw.insurance_revenue,
+        self_pay_revenue: raw.self_pay_revenue,
+        retail_revenue: 0,
+        variable_cost: raw.personnel_cost,
+        fixed_cost: raw.fixed_cost,
+        new_patients: raw.new_patients,
+        returning_patients: raw.returning_patients,
+        total_patients: raw.total_patients,
       }
     });
     setFormDialogOpen(true);
@@ -475,7 +475,7 @@ export const DataManagement = () => {
                         borderBottom: '1px solid #e0e0e0',
                       }}
                     >
-                      {row.yearMonth}
+                      {row.year_month}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -484,7 +484,7 @@ export const DataManagement = () => {
                         borderBottom: '1px solid #e0e0e0',
                       }}
                     >
-                      {formatCurrency(row.totalRevenue)}
+                      {formatCurrency(row.total_revenue)}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -493,7 +493,7 @@ export const DataManagement = () => {
                         borderBottom: '1px solid #e0e0e0',
                       }}
                     >
-                      {formatCurrency(row.operatingProfit)}
+                      {formatCurrency(row.operating_profit)}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -502,7 +502,7 @@ export const DataManagement = () => {
                         borderBottom: '1px solid #e0e0e0',
                       }}
                     >
-                      {row.totalPatients}人
+                      {row.total_patients}人
                     </TableCell>
                     <TableCell
                       sx={{

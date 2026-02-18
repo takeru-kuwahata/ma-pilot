@@ -40,16 +40,10 @@ import { adminService } from '../../services/api';
 import { clinicService } from '../../services/api';
 import type { Clinic } from '../../types';
 
-// APIレスポンスはスネークケースで返るため、型アサーションで取得するヘルパー
-const getRaw = (clinic: Clinic) => clinic as unknown as Record<string, unknown>;
-const getIsActive = (clinic: Clinic): boolean =>
-  (getRaw(clinic).is_active ?? clinic.isActive) as boolean;
-const getPostalCode = (clinic: Clinic): string =>
-  ((getRaw(clinic).postal_code ?? clinic.postalCode) as string) || '';
-const getPhoneNumber = (clinic: Clinic): string =>
-  ((getRaw(clinic).phone_number ?? clinic.phoneNumber) as string) || '';
-const getCreatedAt = (clinic: Clinic): string =>
-  ((getRaw(clinic).created_at ?? clinic.createdAt) as string) || '';
+const getIsActive = (clinic: Clinic): boolean => clinic.is_active;
+const getPostalCode = (clinic: Clinic): string => clinic.postal_code || '';
+const getPhoneNumber = (clinic: Clinic): string => clinic.phone_number || '';
+const getCreatedAt = (clinic: Clinic): string => clinic.created_at || '';
 
 export const AdminClinics = () => {
   const navigate = useNavigate();
@@ -149,9 +143,9 @@ export const AdminClinics = () => {
     try {
       await clinicService.updateClinic(editClinic.id, {
         name: editForm.name,
-        postalCode: editForm.postal_code,
+        postal_code: editForm.postal_code,
         address: editForm.address,
-        phoneNumber: editForm.phone_number,
+        phone_number: editForm.phone_number,
       });
       await loadClinics();
       setEditClinic(null);

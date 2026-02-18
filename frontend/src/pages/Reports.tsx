@@ -398,7 +398,7 @@ export const Reports = () => {
                   <TableRow key={report.id}>
                     <TableCell sx={{ fontSize: '14px' }}>{report.title}</TableCell>
                     <TableCell sx={{ fontSize: '14px' }}>
-                      {new Date(report.generatedAt).toLocaleString('ja-JP')}
+                      {new Date(report.generated_at).toLocaleString('ja-JP')}
                     </TableCell>
                     <TableCell sx={{ fontSize: '14px' }}>
                       {report.type === 'monthly' ? '月次' :

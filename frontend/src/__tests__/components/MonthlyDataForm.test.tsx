@@ -100,16 +100,16 @@ describe('MonthlyDataForm', () => {
 
   it('初期値が正しく設定される', () => {
     const initialData = {
-      yearMonth: '2025-01',
-      totalRevenue: 5000000,
-      insuranceRevenue: 3000000,
-      selfPayRevenue: 2000000,
-      retailRevenue: 0,
-      variableCost: 1000000,
-      fixedCost: 1500000,
-      newPatients: 25,
-      returningPatients: 100,
-      totalPatients: 125,
+      year_month: '2025-01',
+      total_revenue: 5000000,
+      insurance_revenue: 3000000,
+      self_pay_revenue: 2000000,
+      retail_revenue: 0,
+      variable_cost: 1000000,
+      fixed_cost: 1500000,
+      new_patients: 25,
+      returning_patients: 100,
+      total_patients: 125,
     };
 
     render(<MonthlyDataForm {...defaultProps} initialData={initialData} />);
