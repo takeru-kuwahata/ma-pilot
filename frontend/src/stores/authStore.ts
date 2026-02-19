@@ -31,15 +31,15 @@ export const useAuthStore = create<AuthState>((set) => ({
       isLoading: loading,
     }),
 
-  setSelectedClinic: (clinicId) =>
-    set({
-      selectedClinicId: clinicId,
-    }),
+  setSelectedClinic: (clinicId) => {
+    localStorage.setItem('selectedClinicId', clinicId);
+    set({ selectedClinicId: clinicId });
+  },
 
-  clearSelectedClinic: () =>
-    set({
-      selectedClinicId: null,
-    }),
+  clearSelectedClinic: () => {
+    localStorage.removeItem('selectedClinicId');
+    set({ selectedClinicId: null });
+  },
 
   logout: () =>
     set({

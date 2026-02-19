@@ -46,15 +46,23 @@ import PriceTableManagement from './pages/PriceTableManagement';
 import { Forbidden } from './pages/Forbidden';
 
 function App() {
-  const { setUser } = useAuthStore();
+  const { setLoading } = useAuthStore();
 
-  // リロード時にlocalStorageからユーザー情報を復元
-  useEffect(() => {
-    const savedUser = authService.getCurrentUser();
-    if (savedUser) {
-      setUser(savedUser);
+  // リロード時にlocalStorageからユーザー情報とselectedClinicIdを同期的に復元
+  const savedUser = authService.getCurrentUser();
+  if (savedUser && !useAuthStore.getState().user) {
+    useAuthStore.getState().setUser(savedUser);
+    const savedClinicId = localStorage.getItem('selectedClinicId');
+    if (savedClinicId) {
+      useAuthStore.getState().setSelectedClinic(savedClinicId);
     }
-  }, [setUser]);
+  }
+
+  useEffect(() => {
+    if (!authService.getCurrentUser()) {
+      setLoading(false);
+    }
+  }, [setLoading]);
 
   return (
     <QueryClientProvider client={queryClient}>
