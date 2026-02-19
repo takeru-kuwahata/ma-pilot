@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useAuthStore } from '../stores/authStore';
 import { Box, Typography, Grid, Paper, Alert, CircularProgress } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -67,18 +68,15 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
 };
 
 export const Dashboard = () => {
-  // TODO: 認証コンテキストから取得（Phase 5以降）
+  const { selectedClinicId } = useAuthStore();
+
   const user = useMemo(() => {
     const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
   }, []);
 
-  const userClinicId = user?.clinic_id || null;
-
-  // clinic_idがない場合、デフォルトで最初の医院（さくら歯科クリニック）を表示
-  // TODO: Phase 2で医院選択機能を実装
-  const DEMO_CLINIC_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
-  const clinicId = userClinicId || DEMO_CLINIC_ID;
+  // 管理者が医院を選択している場合はそのIDを優先、なければログインユーザーの医院ID
+  const clinicId = selectedClinicId || user?.clinic_id || null;
 
   const { data, loading, error } = useDashboardData(clinicId);
 
