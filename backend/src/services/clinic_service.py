@@ -45,48 +45,40 @@ class ClinicService:
             if not update_data:
                 raise ValueError('No data to update')
 
-            response = self.supabase.table('clinics').update(update_data).eq('id', clinic_id).execute()
+            self.supabase.table('clinics').update(update_data).eq('id', clinic_id).execute()
 
-            if not response.data or len(response.data) == 0:
-                raise ValueError('Clinic not found')
+            # 更新後に再取得
+            return await self.get_clinic(clinic_id)
 
-            return Clinic(**response.data[0])
-
+        except ValueError:
+            raise
         except Exception as e:
             raise ValueError(f'Failed to update clinic: {str(e)}')
 
     async def activate_clinic(self, clinic_id: str) -> Clinic:
         '''Activate clinic'''
         try:
-            response = self.supabase.table('clinics').update({'is_active': True}).eq('id', clinic_id).execute()
-
-            if not response.data or len(response.data) == 0:
-                raise ValueError('Clinic not found')
-
-            return Clinic(**response.data[0])
-
+            self.supabase.table('clinics').update({'is_active': True}).eq('id', clinic_id).execute()
+            return await self.get_clinic(clinic_id)
+        except ValueError:
+            raise
         except Exception as e:
             raise ValueError(f'Failed to activate clinic: {str(e)}')
 
     async def deactivate_clinic(self, clinic_id: str) -> Clinic:
         '''Deactivate clinic'''
         try:
-            response = self.supabase.table('clinics').update({'is_active': False}).eq('id', clinic_id).execute()
-
-            if not response.data or len(response.data) == 0:
-                raise ValueError('Clinic not found')
-
-            return Clinic(**response.data[0])
-
+            self.supabase.table('clinics').update({'is_active': False}).eq('id', clinic_id).execute()
+            return await self.get_clinic(clinic_id)
+        except ValueError:
+            raise
         except Exception as e:
             raise ValueError(f'Failed to deactivate clinic: {str(e)}')
 
     async def delete_clinic(self, clinic_id: str) -> None:
         '''Delete clinic'''
         try:
-            response = self.supabase.table('clinics').delete().eq('id', clinic_id).execute()
-            if not response.data or len(response.data) == 0:
-                raise ValueError('Clinic not found')
+            self.supabase.table('clinics').delete().eq('id', clinic_id).execute()
         except Exception as e:
             raise ValueError(f'Failed to delete clinic: {str(e)}')
 

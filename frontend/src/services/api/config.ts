@@ -15,6 +15,13 @@ export class ApiError extends Error {
 
 export async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
+    // 401: セッション切れ → ローカルストレージをクリアしてログイン画面へ
+    if (response.status === 401) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('selectedClinicId');
+      window.location.href = '/login';
+    }
     const error = await response.json().catch(() => ({
       error: 'Unknown Error',
       message: response.statusText

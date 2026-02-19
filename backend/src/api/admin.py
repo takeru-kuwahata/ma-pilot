@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException, Depends
 from ..models.clinic import Clinic, ClinicCreate, ClinicResponse
 from ..services.clinic_service import ClinicService
 from ..core.database import get_supabase_client
-from ..middleware.auth import get_current_user
 from supabase import Client
 from typing import List, Dict, Any
 from pydantic import BaseModel
@@ -67,14 +66,10 @@ async def get_all_clinics(
 @router.post('/clinics', response_model=ClinicResponse)
 async def create_clinic(
     request: ClinicCreate,
-    clinic_service: ClinicService = Depends(get_clinic_service),
-    current_user: Dict[str, Any] = Depends(get_current_user)
+    clinic_service: ClinicService = Depends(get_clinic_service)
 ):
     '''Create new clinic'''
     try:
-        # owner_idが未指定の場合はリクエスト者のIDを使用
-        if not request.owner_id:
-            request.owner_id = str(current_user.id)
         clinic = await clinic_service.create_clinic(request)
         return ClinicResponse(data=clinic, message='Clinic created successfully')
     except ValueError as e:
