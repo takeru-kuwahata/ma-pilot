@@ -21,6 +21,7 @@ export interface User {
 export interface Clinic {
   id: string;
   name: string;
+  slug?: string;
   postal_code: string;
   address: string;
   phone_number: string;

@@ -10,9 +10,14 @@ class ClinicService:
         self.supabase = supabase
 
     async def get_clinic(self, clinic_id: str) -> Clinic:
-        '''Get clinic by ID'''
+        '''Get clinic by ID or slug'''
         try:
-            response = self.supabase.table('clinics').select('*').eq('id', clinic_id).single().execute()
+            # Try UUID format first
+            if len(clinic_id) == 36 and '-' in clinic_id:
+                response = self.supabase.table('clinics').select('*').eq('id', clinic_id).single().execute()
+            else:
+                # Assume it's a slug
+                response = self.supabase.table('clinics').select('*').eq('slug', clinic_id).single().execute()
 
             if not response.data:
                 raise ValueError('Clinic not found')

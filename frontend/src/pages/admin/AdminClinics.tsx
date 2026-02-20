@@ -122,7 +122,8 @@ export const AdminClinics = () => {
   // 詳細表示（その医院のダッシュボードへ遷移）
   const handleView = (clinic: Clinic) => {
     setSelectedClinic(clinic.id);
-    navigate(`/clinic/${clinic.id}/dashboard`);
+    const clinicIdentifier = clinic.slug || clinic.id;
+    navigate(`/clinic/${clinicIdentifier}/dashboard`);
   };
 
   // 編集ダイアログを開く

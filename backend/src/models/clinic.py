@@ -7,6 +7,7 @@ class Clinic(BaseModel):
     '''Clinic model'''
     id: str
     name: str
+    slug: Optional[str] = None
     postal_code: str
     address: str
     phone_number: str
@@ -21,6 +22,7 @@ class Clinic(BaseModel):
 class ClinicCreate(BaseModel):
     '''Create clinic request'''
     name: str
+    slug: Optional[str] = None
     postal_code: str
     address: str
     phone_number: str
@@ -32,6 +34,7 @@ class ClinicCreate(BaseModel):
 class ClinicUpdate(BaseModel):
     '''Update clinic request'''
     name: Optional[str] = None
+    slug: Optional[str] = None
     postal_code: Optional[str] = None
     address: Optional[str] = None
     phone_number: Optional[str] = None

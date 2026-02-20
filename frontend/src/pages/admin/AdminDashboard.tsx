@@ -132,6 +132,7 @@ export const AdminDashboard = () => {
   const recentClinics = clinics.slice(0, 5).map(clinic => ({
     id: clinic.id,
     name: clinic.name,
+    slug: clinic.slug,
     registeredAt: clinic.created_at ? new Date(clinic.created_at).toLocaleDateString('ja-JP') : 'N/A',
     plan: '無料プラン',
     status: clinic.is_active ? ('active' as const) : ('inactive' as const),
@@ -459,7 +460,7 @@ export const AdminDashboard = () => {
                     <IconButton
                       size="small"
                       title="この医院として操作する"
-                      onClick={() => { setSelectedClinic(clinic.id); navigate(`/clinic/${clinic.id}/dashboard`); }}
+                      onClick={() => { setSelectedClinic(clinic.id); const clinicIdentifier = clinic.slug || clinic.id; navigate(`/clinic/${clinicIdentifier}/dashboard`); }}
                       sx={{ color: '#FF6B35', '&:hover': { color: '#E55A2B' } }}
                     >
                       <VisibilityIcon />
