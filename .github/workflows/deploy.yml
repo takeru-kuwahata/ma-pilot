@@ -78,24 +78,8 @@ jobs:
           VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
 
   # Vercelフロントエンドデプロイ
-  deploy-frontend:
-    name: Deploy Frontend to Vercel
-    needs: [test-backend, test-frontend]
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./frontend
-          vercel-args: '--prod'
+  # 注: VercelはGitHub App連携で自動デプロイされるため、このジョブは不要
+  # GitHub Actions経由でのデプロイは無効化
 
   # Render.comバックエンドデプロイ
   deploy-backend:
