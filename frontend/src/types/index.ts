@@ -185,6 +185,7 @@ export interface MonthlyDataFormData {
 
 export interface ClinicFormData {
   name: string;
+  slug?: string;
   postal_code: string;
   address: string;
   phone_number: string;

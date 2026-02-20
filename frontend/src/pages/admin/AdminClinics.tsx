@@ -72,6 +72,7 @@ export const AdminClinics = () => {
   const [editClinic, setEditClinic] = useState<Clinic | null>(null);
   const [editForm, setEditForm] = useState({
     name: '',
+    slug: '',
     postal_code: '',
     address: '',
     phone_number: '',
@@ -131,6 +132,7 @@ export const AdminClinics = () => {
     setEditClinic(clinic);
     setEditForm({
       name: clinic.name || '',
+      slug: clinic.slug || '',
       postal_code: getPostalCode(clinic),
       address: clinic.address || '',
       phone_number: getPhoneNumber(clinic),
@@ -144,6 +146,7 @@ export const AdminClinics = () => {
     try {
       await clinicService.updateClinic(editClinic.id, {
         name: editForm.name,
+        slug: editForm.slug || undefined,
         postal_code: editForm.postal_code,
         address: editForm.address,
         phone_number: editForm.phone_number,
@@ -519,6 +522,14 @@ export const AdminClinics = () => {
               onChange={(e) => setEditForm((prev) => ({ ...prev, name: e.target.value }))}
               fullWidth
               required
+            />
+            <TextField
+              label="URL識別子（スラッグ）"
+              value={editForm.slug}
+              onChange={(e) => setEditForm((prev) => ({ ...prev, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') }))}
+              fullWidth
+              placeholder="例: kanda-soba"
+              helperText="URL用の識別子（半角英数字とハイフンのみ）。未入力の場合はIDを使用します。"
             />
             <TextField
               label="郵便番号"
