@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Query
 from ..models.monthly_data import MonthlyData, MonthlyDataCreate, MonthlyDataUpdate, MonthlyDataListResponse, MonthlyDataResponse, CsvImportResult
 from ..services.monthly_data_service import MonthlyDataService
+from ..services.clinic_service import ClinicService
 from ..core.database import get_supabase_client
 from ..middleware.auth import get_current_user_metadata, UserContext
 from supabase import Client
@@ -14,19 +15,32 @@ def get_monthly_data_service(supabase: Client = Depends(get_supabase_client)) ->
     return MonthlyDataService(supabase)
 
 
+def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> ClinicService:
+    '''Get clinic service dependency'''
+    return ClinicService(supabase)
+
+
 @router.get('', response_model=MonthlyDataListResponse)
 async def get_monthly_data(
     clinic_id: str = Query(...),
     year_month: Optional[str] = Query(None),
     monthly_data_service: MonthlyDataService = Depends(get_monthly_data_service),
+    clinic_service: ClinicService = Depends(get_clinic_service),
     user_context: UserContext = Depends(get_current_user_metadata)
 ):
     '''Get monthly data for clinic'''
-    if not user_context.has_clinic_access(clinic_id):
+    # clinic_idがスラッグの場合、実際のIDに変換
+    try:
+        clinic = await clinic_service.get_clinic(clinic_id)
+        actual_clinic_id = clinic.id
+    except ValueError:
+        raise HTTPException(status_code=404, detail='Clinic not found')
+
+    if not user_context.has_clinic_access(actual_clinic_id):
         raise HTTPException(status_code=403, detail='You do not have access to this clinic')
 
     try:
-        data = await monthly_data_service.get_monthly_data(clinic_id, year_month)
+        data = await monthly_data_service.get_monthly_data(actual_clinic_id, year_month)
         return MonthlyDataListResponse(data=data)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
