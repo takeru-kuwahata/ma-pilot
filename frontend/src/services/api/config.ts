@@ -21,6 +21,8 @@ export async function handleResponse<T>(response: Response): Promise<T> {
       localStorage.removeItem('user');
       localStorage.removeItem('selectedClinicId');
       window.location.href = '/login';
+      // リダイレクト後はエラーをthrowせずに空のPromiseを返す
+      return new Promise(() => {}) as Promise<T>;
     }
     const error = await response.json().catch(() => ({
       error: 'Unknown Error',
