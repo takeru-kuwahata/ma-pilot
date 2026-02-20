@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { Box, Typography, Grid, Paper, Alert, CircularProgress } from '@mui/material';
 import {
@@ -68,6 +69,7 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
 };
 
 export const Dashboard = () => {
+  const { clinicId: clinicIdParam } = useParams<{ clinicId: string }>();
   const { selectedClinicId } = useAuthStore();
 
   const user = useMemo(() => {
@@ -75,8 +77,8 @@ export const Dashboard = () => {
     return userStr ? JSON.parse(userStr) : null;
   }, []);
 
-  // 管理者が医院を選択している場合はそのIDを優先、なければログインユーザーの医院ID
-  const clinicId = selectedClinicId || user?.clinic_id || null;
+  // URLパラメータを最優先、次にselectedClinicId、最後にuser.clinic_id
+  const clinicId = clinicIdParam || selectedClinicId || user?.clinic_id || null;
 
   const { data, loading, error } = useDashboardData(clinicId);
 

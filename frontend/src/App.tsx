@@ -13,6 +13,7 @@ import { authService } from './services/api';
 // ルーティング保護コンポーネント
 import { PrivateRoute } from './components/routing/PrivateRoute';
 import { RoleRoute } from './components/routing/RoleRoute';
+import { ClinicRedirect } from './components/routing/ClinicRedirect';
 
 // レイアウトコンポーネント
 import { PublicLayout } from './layouts/PublicLayout';
@@ -76,7 +77,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/login" replace />} />
               </Route>
 
-              {/* ========== 医院エリア（/clinic/*） ========== */}
+              {/* ========== 医院エリア（/clinic/:clinicId/*） ========== */}
               <Route element={<PrivateRoute />}>
                 <Route
                   element={
@@ -86,16 +87,16 @@ function App() {
                   }
                 >
                   <Route element={<MainLayout />}>
-                    <Route path="/clinic/dashboard" element={<Dashboard />} />
-                    <Route path="/clinic/data-management" element={<DataManagement />} />
-                    <Route path="/clinic/market-analysis" element={<MarketAnalysis />} />
-                    <Route path="/clinic/simulation" element={<Simulation />} />
-                    <Route path="/clinic/reports" element={<Reports />} />
-                    <Route path="/clinic/settings" element={<ClinicSettings />} />
-                    <Route path="/clinic/staff" element={<StaffManagement />} />
-                    <Route path="/clinic/my-settings" element={<ClinicMySettings />} />
-                    <Route path="/clinic/print-order" element={<PrintOrderForm />} />
-                    <Route path="/clinic/print-order-history" element={<PrintOrderHistory />} />
+                    <Route path="/clinic/:clinicId/dashboard" element={<Dashboard />} />
+                    <Route path="/clinic/:clinicId/data-management" element={<DataManagement />} />
+                    <Route path="/clinic/:clinicId/market-analysis" element={<MarketAnalysis />} />
+                    <Route path="/clinic/:clinicId/simulation" element={<Simulation />} />
+                    <Route path="/clinic/:clinicId/reports" element={<Reports />} />
+                    <Route path="/clinic/:clinicId/settings" element={<ClinicSettings />} />
+                    <Route path="/clinic/:clinicId/staff" element={<StaffManagement />} />
+                    <Route path="/clinic/:clinicId/my-settings" element={<ClinicMySettings />} />
+                    <Route path="/clinic/:clinicId/print-order" element={<PrintOrderForm />} />
+                    <Route path="/clinic/:clinicId/print-order-history" element={<PrintOrderHistory />} />
                   </Route>
                 </Route>
               </Route>
@@ -116,15 +117,26 @@ function App() {
               </Route>
 
               {/* ========== 旧URLからのリダイレクト（後方互換性） ========== */}
-              <Route path="/dashboard" element={<Navigate to="/clinic/dashboard" replace />} />
-              <Route path="/data-management" element={<Navigate to="/clinic/data-management" replace />} />
-              <Route path="/market-analysis" element={<Navigate to="/clinic/market-analysis" replace />} />
-              <Route path="/simulation" element={<Navigate to="/clinic/simulation" replace />} />
-              <Route path="/reports" element={<Navigate to="/clinic/reports" replace />} />
-              <Route path="/clinic-settings" element={<Navigate to="/clinic/settings" replace />} />
-              <Route path="/staff-management" element={<Navigate to="/clinic/staff" replace />} />
-              <Route path="/print-order" element={<Navigate to="/clinic/print-order" replace />} />
-              <Route path="/print-order-history" element={<Navigate to="/clinic/print-order-history" replace />} />
+              <Route path="/clinic/dashboard" element={<ClinicRedirect to="/dashboard" />} />
+              <Route path="/clinic/data-management" element={<ClinicRedirect to="/data-management" />} />
+              <Route path="/clinic/market-analysis" element={<ClinicRedirect to="/market-analysis" />} />
+              <Route path="/clinic/simulation" element={<ClinicRedirect to="/simulation" />} />
+              <Route path="/clinic/reports" element={<ClinicRedirect to="/reports" />} />
+              <Route path="/clinic/settings" element={<ClinicRedirect to="/settings" />} />
+              <Route path="/clinic/staff" element={<ClinicRedirect to="/staff" />} />
+              <Route path="/clinic/my-settings" element={<ClinicRedirect to="/my-settings" />} />
+              <Route path="/clinic/print-order" element={<ClinicRedirect to="/print-order" />} />
+              <Route path="/clinic/print-order-history" element={<ClinicRedirect to="/print-order-history" />} />
+
+              <Route path="/dashboard" element={<ClinicRedirect to="/dashboard" />} />
+              <Route path="/data-management" element={<ClinicRedirect to="/data-management" />} />
+              <Route path="/market-analysis" element={<ClinicRedirect to="/market-analysis" />} />
+              <Route path="/simulation" element={<ClinicRedirect to="/simulation" />} />
+              <Route path="/reports" element={<ClinicRedirect to="/reports" />} />
+              <Route path="/clinic-settings" element={<ClinicRedirect to="/settings" />} />
+              <Route path="/staff-management" element={<ClinicRedirect to="/staff" />} />
+              <Route path="/print-order" element={<ClinicRedirect to="/print-order" />} />
+              <Route path="/print-order-history" element={<ClinicRedirect to="/print-order-history" />} />
 
               {/* ========== 403 Forbidden ========== */}
               <Route path="/forbidden" element={<Forbidden />} />

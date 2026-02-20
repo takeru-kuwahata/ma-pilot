@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   AppBar,
   Box,
@@ -17,7 +18,7 @@ import {
   SwapHoriz as SwapHorizIcon,
   AccountCircle as AccountCircleIcon,
 } from '@mui/icons-material';
-import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { useNavigate, useLocation, useParams, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { authService } from '../services/api';
 import { useCurrentClinic } from '../hooks/useCurrentClinic';
@@ -29,13 +30,19 @@ const drawerWidth = 240;
 export const MainLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout: storeLogout } = useAuthStore();
+  const { clinicId: clinicIdParam } = useParams<{ clinicId: string }>();
+  const { user, logout: storeLogout, setSelectedClinic } = useAuthStore();
   const { clinicName } = useCurrentClinic();
 
-  // 権限によるメニューフィルタリング
-  const filteredMenuItems = user
-    ? filterMenuByRole(clinicMenuItems, user.role)
-    : [];
+  // 権限によるメニューフィルタリング & パスにclinicIdを含める
+  const filteredMenuItems = React.useMemo(() => {
+    if (!user || !clinicIdParam) return [];
+    const filtered = filterMenuByRole(clinicMenuItems, user.role);
+    return filtered.map(item => ({
+      ...item,
+      path: item.path.replace('/clinic/', `/clinic/${clinicIdParam}/`)
+    }));
+  }, [user, clinicIdParam]);
 
   // system_adminかどうか判定
   const isSystemAdmin = user?.role === 'system_admin';
@@ -43,8 +50,21 @@ export const MainLayout = () => {
   const userName = user?.display_name || user?.email?.split('@')[0] || 'ユーザー';
   const userInitial = user?.display_name ? user.display_name.charAt(0) : (user?.email?.charAt(0).toUpperCase() || 'U');
 
+  // URLパラメータのclinicIdをZustandに同期
+  React.useEffect(() => {
+    if (clinicIdParam && user?.role === 'system_admin') {
+      setSelectedClinic(clinicIdParam);
+    }
+  }, [clinicIdParam, user?.role, setSelectedClinic]);
+
   const handleNavigation = (path: string) => {
-    navigate(path);
+    // パスが相対パスの場合、clinicIdを含めた完全パスに変換
+    if (clinicIdParam && path.startsWith('/clinic/') && !path.includes(clinicIdParam)) {
+      const newPath = path.replace('/clinic/', `/clinic/${clinicIdParam}/`);
+      navigate(newPath);
+    } else {
+      navigate(path);
+    }
   };
 
   const handleLogout = async () => {
@@ -201,8 +221,8 @@ export const MainLayout = () => {
         <List sx={{ pt: 0, pb: 0 }}>
           <ListItem disablePadding>
             <ListItemButton
-              selected={location.pathname === '/clinic/my-settings'}
-              onClick={() => navigate('/clinic/my-settings')}
+              selected={location.pathname === `/clinic/${clinicIdParam}/my-settings`}
+              onClick={() => navigate(`/clinic/${clinicIdParam}/my-settings`)}
               sx={{
                 py: 1.5,
                 px: 3,

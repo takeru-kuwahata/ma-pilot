@@ -459,7 +459,7 @@ export const AdminDashboard = () => {
                     <IconButton
                       size="small"
                       title="この医院として操作する"
-                      onClick={() => { setSelectedClinic(clinic.id); navigate('/clinic/dashboard'); }}
+                      onClick={() => { setSelectedClinic(clinic.id); navigate(`/clinic/${clinic.id}/dashboard`); }}
                       sx={{ color: '#FF6B35', '&:hover': { color: '#E55A2B' } }}
                     >
                       <VisibilityIcon />
