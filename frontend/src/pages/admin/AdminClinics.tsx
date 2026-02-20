@@ -121,6 +121,8 @@ export const AdminClinics = () => {
 
   // 詳細表示（その医院のダッシュボードへ遷移）
   const handleView = (clinic: Clinic) => {
+    console.log('[AdminClinics] handleView:', clinic.id, clinic.name);
+    console.log('[AdminClinics] Navigate to:', `/clinic/${clinic.id}/dashboard`);
     setSelectedClinic(clinic.id);
     navigate(`/clinic/${clinic.id}/dashboard`);
   };
