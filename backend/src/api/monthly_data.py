@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Query
 from ..models.monthly_data import MonthlyData, MonthlyDataCreate, MonthlyDataUpdate, MonthlyDataListResponse, MonthlyDataResponse, CsvImportResult
 from ..services.monthly_data_service import MonthlyDataService
 from ..core.database import get_supabase_client
+from ..middleware.auth import get_current_user_metadata, UserContext
 from supabase import Client
 from typing import Optional
 
@@ -17,9 +18,13 @@ def get_monthly_data_service(supabase: Client = Depends(get_supabase_client)) ->
 async def get_monthly_data(
     clinic_id: str = Query(...),
     year_month: Optional[str] = Query(None),
-    monthly_data_service: MonthlyDataService = Depends(get_monthly_data_service)
+    monthly_data_service: MonthlyDataService = Depends(get_monthly_data_service),
+    user_context: UserContext = Depends(get_current_user_metadata)
 ):
     '''Get monthly data for clinic'''
+    if not user_context.has_clinic_access(clinic_id):
+        raise HTTPException(status_code=403, detail='You do not have access to this clinic')
+
     try:
         data = await monthly_data_service.get_monthly_data(clinic_id, year_month)
         return MonthlyDataListResponse(data=data)
@@ -30,9 +35,13 @@ async def get_monthly_data(
 @router.post('', response_model=MonthlyDataResponse)
 async def create_monthly_data(
     request: MonthlyDataCreate,
-    monthly_data_service: MonthlyDataService = Depends(get_monthly_data_service)
+    monthly_data_service: MonthlyDataService = Depends(get_monthly_data_service),
+    user_context: UserContext = Depends(get_current_user_metadata)
 ):
     '''Create new monthly data'''
+    if not user_context.can_edit_clinic_data(request.clinic_id):
+        raise HTTPException(status_code=403, detail='You do not have permission to edit this clinic data')
+
     try:
         data = await monthly_data_service.create_monthly_data(request)
         return MonthlyDataResponse(data=data, message='Monthly data created successfully')
