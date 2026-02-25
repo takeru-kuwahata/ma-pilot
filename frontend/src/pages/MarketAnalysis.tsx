@@ -4,9 +4,9 @@ import {
   Typography,
   Paper,
 } from '@mui/material';
-import { Map as MapIcon } from '@mui/icons-material';
-import { marketAnalysisService, authService } from '../services/api';
-import type { MarketAnalysis as MarketAnalysisType } from '../types';
+import { marketAnalysisService, authService, clinicService } from '../services/api';
+import { GoogleMap } from '../components/GoogleMap';
+import type { MarketAnalysis as MarketAnalysisType, Clinic } from '../types';
 
 interface MarketStats {
   population: number;
@@ -23,6 +23,7 @@ interface DemographicData {
 
 export const MarketAnalysis = () => {
   const [analysis, setAnalysis] = useState<MarketAnalysisType | null>(null);
+  const [clinic, setClinic] = useState<Clinic | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,8 +38,13 @@ export const MarketAnalysis = () => {
         return;
       }
 
-      const data = await marketAnalysisService.getMarketAnalysis(user.clinic_id);
-      setAnalysis(data);
+      const [analysisData, clinicData] = await Promise.all([
+        marketAnalysisService.getMarketAnalysis(user.clinic_id),
+        clinicService.getClinic(user.clinic_id)
+      ]);
+
+      setAnalysis(analysisData);
+      setClinic(clinicData);
     } catch (error) {
       console.error('Failed to load market analysis:', error);
     } finally {
@@ -286,25 +292,47 @@ export const MarketAnalysis = () => {
         >
           診療圏マップ
         </Typography>
-        <Box
-          sx={{
-            width: '100%',
-            height: '400px',
-            backgroundColor: '#e0e0e0',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#616161',
-            fontSize: '16px',
-            gap: '16px',
-          }}
-        >
-          <MapIcon sx={{ fontSize: '48px', color: '#9e9e9e' }} />
-          <Typography sx={{ fontSize: '16px', color: '#616161' }}>
-            診療圏マップ（準備中）
-          </Typography>
-        </Box>
+        {loading ? (
+          <Box
+            sx={{
+              width: '100%',
+              height: '400px',
+              backgroundColor: '#f5f5f5',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ fontSize: '14px', color: '#616161' }}>
+              地図を読み込み中...
+            </Typography>
+          </Box>
+        ) : clinic && analysis ? (
+          <GoogleMap
+            clinicLatitude={clinic.latitude}
+            clinicLongitude={clinic.longitude}
+            clinicName={clinic.name}
+            competitors={analysis.competitors}
+            radiusKm={analysis.radius_km}
+          />
+        ) : (
+          <Box
+            sx={{
+              width: '100%',
+              height: '400px',
+              backgroundColor: '#f5f5f5',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ fontSize: '14px', color: '#616161' }}>
+              データがありません
+            </Typography>
+          </Box>
+        )}
       </Paper>
 
       {/* 競合分析と人口統計を2列レイアウト */}
