@@ -56,9 +56,9 @@ MA-Pilotは、開業歯科医院向けの経営分析システムです。PILOT�
 
 ### 外部API連携
 
-- **e-Stat API** - 政府統計データ（人口統計）
-- **RESAS API** - 地域経済分析データ
-- **Google Maps API** - 地図表示・競合検索
+- **e-Stat API** - 政府統計データ（人口統計）→ [セットアップガイド](ESTAT_RESAS_SETUP.md)
+- **RESAS API** - 地域経済分析データ → [セットアップガイド](ESTAT_RESAS_SETUP.md)
+- **Google Maps API** - 地図表示・競合検索 → [セットアップガイド](GOOGLE_MAPS_SETUP.md)
 - **Community Geocoder** - 住所→緯度経度変換
 
 ## ディレクトリ構成
@@ -106,6 +106,8 @@ MA-Lstep/
 ├── CHANGELOG.md          # 変更履歴
 ├── CONTRIBUTING.md       # コントリビューションガイド
 ├── SECURITY.md           # セキュリティポリシー
+├── GOOGLE_MAPS_SETUP.md  # Google Maps API設定ガイド
+├── ESTAT_RESAS_SETUP.md  # e-Stat/RESAS API設定ガイド
 └── LICENSE               # ライセンス
 
 ```
