@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Box,
   Typography,
   Paper,
 } from '@mui/material';
-import { marketAnalysisService, authService, clinicService } from '../services/api';
+import { marketAnalysisService, clinicService } from '../services/api';
 import { GoogleMap } from '../components/GoogleMap';
 import type { MarketAnalysis as MarketAnalysisType, Clinic } from '../types';
 
@@ -22,25 +23,25 @@ interface DemographicData {
 }
 
 export const MarketAnalysis = () => {
+  const { clinicId } = useParams<{ clinicId: string }>();
   const [analysis, setAnalysis] = useState<MarketAnalysisType | null>(null);
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadMarketAnalysis();
-  }, []);
+  }, [clinicId]);
 
   const loadMarketAnalysis = async () => {
     try {
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) {
+      if (!clinicId) {
         setLoading(false);
         return;
       }
 
       const [analysisData, clinicData] = await Promise.all([
-        marketAnalysisService.getMarketAnalysis(user.clinic_id),
-        clinicService.getClinic(user.clinic_id)
+        marketAnalysisService.getMarketAnalysis(clinicId),
+        clinicService.getClinic(clinicId)
       ]);
 
       setAnalysis(analysisData);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -11,7 +12,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { PlayArrow as PlayArrowIcon, ShowChart as ShowChartIcon } from '@mui/icons-material';
-import { simulationService, authService, monthlyDataService } from '../services/api';
+import { simulationService, monthlyDataService } from '../services/api';
 import type { Simulation as SimulationType, MonthlyData } from '../types';
 
 interface SimulationParams {
@@ -42,6 +43,7 @@ const periodOptions = [
 ];
 
 export const Simulation = () => {
+  const { clinicId } = useParams<{ clinicId: string }>();
   const [params, setParams] = useState<SimulationParams>({
     period: '6',
     insuranceRevenueChange: 0,
@@ -62,16 +64,17 @@ export const Simulation = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
   useEffect(() => {
-    loadSimulations();
-    loadLatestMonthlyData();
-  }, []);
+    if (clinicId) {
+      loadSimulations();
+      loadLatestMonthlyData();
+    }
+  }, [clinicId]);
 
   const loadSimulations = async () => {
-    try {
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) return;
+    if (!clinicId) return;
 
-      const data = await simulationService.getSimulations(user.clinic_id);
+    try {
+      const data = await simulationService.getSimulations(clinicId);
       setSimulations(data);
     } catch (error) {
       console.error('Failed to load simulations:', error);
@@ -79,11 +82,10 @@ export const Simulation = () => {
   };
 
   const loadLatestMonthlyData = async () => {
-    try {
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) return;
+    if (!clinicId) return;
 
-      const data = await monthlyDataService.getMonthlyData(user.clinic_id);
+    try {
+      const data = await monthlyDataService.getMonthlyData(clinicId);
       if (data.length > 0) {
         // 最新のデータを取得（year_monthでソート）
         const sorted = [...data].sort((a, b) => b.year_month.localeCompare(a.year_month));
@@ -102,15 +104,15 @@ export const Simulation = () => {
   };
 
   const handleSimulate = async () => {
+    if (!clinicId) {
+      setSnackbarMessage('医院IDが取得できませんでした');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
+
     try {
       setLoading(true);
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) {
-        setSnackbarMessage('ユーザー情報が取得できませんでした');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-        return;
-      }
 
       if (!latestData) {
         setSnackbarMessage('月次データが登録されていません。基礎データ管理から月次データを登録してください。');
@@ -146,7 +148,7 @@ export const Simulation = () => {
       const targetMaterialCostRate = targetRevenue > 0 ? (currentMaterialCost * (1 + params.variableCostChange / 100)) / targetRevenue * 100 : 0;
 
       const simulation = await simulationService.createSimulation(
-        user.clinic_id,
+        clinicId,
         `${params.period}ヶ月後のシミュレーション`,
         {
           target_revenue: Math.round(targetRevenue),

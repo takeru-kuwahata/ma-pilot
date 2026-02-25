@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Box, Typography, Paper, Button, TextField, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { Save as SaveIcon } from '@mui/icons-material';
-import { clinicService, authService } from '../services/api';
+import { clinicService } from '../services/api';
 
 interface ClinicBasicInfo {
   name: string;
@@ -46,6 +47,7 @@ const formatPhoneNumber = (value: string) => {
 };
 
 export const ClinicSettings = () => {
+  const { clinicId } = useParams<{ clinicId: string }>();
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [snackbar, setSnackbar] = useState<SnackbarState>({
@@ -75,18 +77,17 @@ export const ClinicSettings = () => {
   useEffect(() => {
     const loadClinicData = async () => {
       try {
-        const user = authService.getCurrentUser();
-        if (!user?.clinic_id) {
+        if (!clinicId) {
           setSnackbar({
             open: true,
-            message: 'ユーザー情報が取得できませんでした',
+            message: '医院情報が取得できませんでした',
             severity: 'error'
           });
           setLoadingData(false);
           return;
         }
 
-        const clinic = await clinicService.getClinic(user.clinic_id);
+        const clinic = await clinicService.getClinic(clinicId);
 
         setBasicInfo({
           name: clinic.name || '',
@@ -119,22 +120,21 @@ export const ClinicSettings = () => {
     };
 
     loadClinicData();
-  }, []);
+  }, [clinicId]);
 
   const handleSaveBasicInfo = async () => {
     try {
       setLoading(true);
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) {
+      if (!clinicId) {
         setSnackbar({
           open: true,
-          message: 'ユーザー情報が取得できませんでした',
+          message: '医院情報が取得できませんでした',
           severity: 'error'
         });
         return;
       }
 
-      await clinicService.updateClinic(user.clinic_id, {
+      await clinicService.updateClinic(clinicId, {
         name: basicInfo.name,
         postal_code: basicInfo.postalCode,
         address: basicInfo.address,

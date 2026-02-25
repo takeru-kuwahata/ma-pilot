@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -23,7 +24,7 @@ import {
   PieChart as PieChartIcon,
   Timeline as TimelineIcon,
 } from '@mui/icons-material';
-import { reportService, authService } from '../services/api';
+import { reportService } from '../services/api';
 import type { Report } from '../types';
 
 interface ReportTemplate {
@@ -35,6 +36,7 @@ interface ReportTemplate {
 }
 
 export const Reports = () => {
+  const { clinicId } = useParams<{ clinicId: string }>();
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -67,18 +69,19 @@ export const Reports = () => {
   ];
 
   useEffect(() => {
-    loadReports();
-  }, []);
+    if (clinicId) {
+      loadReports();
+    }
+  }, [clinicId]);
 
   const loadReports = async () => {
-    try {
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) {
-        setLoading(false);
-        return;
-      }
+    if (!clinicId) {
+      setLoading(false);
+      return;
+    }
 
-      const data = await reportService.getReports(user.clinic_id);
+    try {
+      const data = await reportService.getReports(clinicId);
       setReports(data);
     } catch (error) {
       console.error('Failed to load reports:', error);
@@ -97,15 +100,15 @@ export const Reports = () => {
   };
 
   const handleGenerateReport = async (templateId: string) => {
+    if (!clinicId) {
+      setSnackbarMessage('医院IDが取得できませんでした');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
+
     try {
       setGenerating(true);
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) {
-        setSnackbarMessage('ユーザー情報が取得できませんでした');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-        return;
-      }
 
       // テンプレートIDに応じてレポートタイプを決定
       let reportType: 'monthly' | 'market_analysis' | 'simulation';
@@ -129,7 +132,7 @@ export const Reports = () => {
 
       // レポート生成
       const report = await reportService.generateReport({
-        clinic_id: user.clinic_id,
+        clinic_id: clinicId,
         type: reportType,
         format: 'pdf',
         title: title,

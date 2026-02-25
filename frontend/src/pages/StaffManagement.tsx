@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -31,10 +32,11 @@ import {
   Add as AddIcon,
   Info as InfoIcon,
 } from '@mui/icons-material';
-import { staffService, authService } from '../services/api';
+import { staffService } from '../services/api';
 import type { User, UserRole } from '../types';
 
 export const StaffManagement = () => {
+  const { clinicId } = useParams<{ clinicId: string }>();
   const [staffList, setStaffList] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,20 +58,22 @@ export const StaffManagement = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
   useEffect(() => {
-    loadStaffList();
-  }, []);
+    if (clinicId) {
+      loadStaffList();
+    }
+  }, [clinicId]);
 
   const loadStaffList = async () => {
+    if (!clinicId) {
+      setError('医院IDが見つかりません');
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) {
-        setError('クリニック情報が見つかりません');
-        setLoading(false);
-        return;
-      }
-      const staff = await staffService.getStaff(user.clinic_id);
+      const staff = await staffService.getStaff(clinicId);
       setStaffList(staff);
     } catch (err) {
       console.error('Failed to load staff:', err);
@@ -89,20 +93,20 @@ export const StaffManagement = () => {
       return;
     }
 
+    if (!clinicId) {
+      setSnackbarMessage('医院IDが見つかりません');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
+
     try {
       setInviteLoading(true);
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) {
-        setSnackbarMessage('クリニック情報が見つかりません');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-        return;
-      }
 
       await staffService.inviteStaff({
         email: inviteForm.email,
         role: inviteForm.role,
-        clinic_id: user.clinic_id
+        clinic_id: clinicId
       });
 
       setSnackbarMessage('招待メールを送信しました');

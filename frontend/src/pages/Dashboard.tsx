@@ -1,6 +1,4 @@
-import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAuthStore } from '../stores/authStore';
 import { Box, Typography, Grid, Paper, Alert, CircularProgress } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -69,24 +67,15 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
 };
 
 export const Dashboard = () => {
-  const { clinicId: clinicIdParam } = useParams<{ clinicId: string }>();
-  const { selectedClinicId } = useAuthStore();
+  const { clinicId } = useParams<{ clinicId: string }>();
 
-  const user = useMemo(() => {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
-  }, []);
+  const { data, loading, error } = useDashboardData(clinicId || null);
 
-  // URLパラメータを最優先、次にselectedClinicId、最後にuser.clinic_id
-  const clinicId = clinicIdParam || selectedClinicId || user?.clinic_id || null;
-
-  const { data, loading, error } = useDashboardData(clinicId);
-
-  // clinic_idが取得できない場合（医院がまだ登録されていない）
+  // clinicIdが取得できない場合
   if (!clinicId && !loading) {
     return (
       <Alert severity="warning">
-        表示する医院データがありません。医院アカウント管理から医院を登録してください。
+        表示する医院データがありません。医院を選択してください。
       </Alert>
     );
   }

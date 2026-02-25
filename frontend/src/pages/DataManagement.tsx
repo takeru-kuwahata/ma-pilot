@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -24,7 +25,7 @@ import {
   Close as CloseIcon,
 } from '@mui/icons-material';
 import Papa from 'papaparse';
-import { monthlyDataService, authService } from '../services/api';
+import { monthlyDataService } from '../services/api';
 import { MonthlyDataForm } from '../components/MonthlyDataForm';
 import type { MonthlyData, MonthlyDataFormData } from '../types';
 
@@ -42,6 +43,7 @@ const formatCurrency = (value: number): string => {
 };
 
 export const DataManagement = () => {
+  const { clinicId } = useParams<{ clinicId: string }>();
   const [monthlyData, setMonthlyData] = useState<MonthlyDataRow[]>([]);
   const [rawMonthlyData, setRawMonthlyData] = useState<MonthlyData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,18 +55,16 @@ export const DataManagement = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    loadMonthlyData();
-  }, []);
+    if (clinicId) {
+      loadMonthlyData();
+    }
+  }, [clinicId]);
 
   const loadMonthlyData = async () => {
-    try {
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) {
-        setLoading(false);
-        return;
-      }
+    if (!clinicId) return;
 
-      const data = await monthlyDataService.getMonthlyData(user.clinic_id);
+    try {
+      const data = await monthlyDataService.getMonthlyData(clinicId);
       setRawMonthlyData(data);
       const rows: MonthlyDataRow[] = data.map((item: MonthlyData) => ({
         id: item.id,
@@ -88,15 +88,14 @@ export const DataManagement = () => {
   };
 
   const handleFormSubmit = async (data: MonthlyDataFormData) => {
-    try {
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) return;
+    if (!clinicId) return;
 
+    try {
       if (editTarget) {
         await monthlyDataService.updateMonthlyData(editTarget.id, data);
         setSnackbarMessage('データを更新しました');
       } else {
-        await monthlyDataService.createMonthlyData({ ...data, clinic_id: user.clinic_id });
+        await monthlyDataService.createMonthlyData({ ...data, clinic_id: clinicId });
         setSnackbarMessage('データを保存しました');
       }
       setSnackbarSeverity('success');
@@ -128,16 +127,14 @@ export const DataManagement = () => {
       return;
     }
 
-    try {
-      const user = authService.getCurrentUser();
-      if (!user?.clinic_id) {
-        setSnackbarMessage('ログインしていません');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-        return;
-      }
+    if (!clinicId) {
+      setSnackbarMessage('医院IDが取得できませんでした');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
 
-      const clinicId = user.clinic_id;
+    try {
 
       // PapaParseでCSVをパース
       Papa.parse(file, {
