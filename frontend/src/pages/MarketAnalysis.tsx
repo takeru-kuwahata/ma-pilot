@@ -4,7 +4,11 @@ import {
   Box,
   Typography,
   Paper,
+  Button,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
+import { Refresh as RefreshIcon } from '@mui/icons-material';
 import { marketAnalysisService, clinicService } from '../services/api';
 import { GoogleMap } from '../components/GoogleMap';
 import type { MarketAnalysis as MarketAnalysisType, Clinic } from '../types';
@@ -27,6 +31,8 @@ export const MarketAnalysis = () => {
   const [analysis, setAnalysis] = useState<MarketAnalysisType | null>(null);
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [loading, setLoading] = useState(true);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadMarketAnalysis();
@@ -44,12 +50,42 @@ export const MarketAnalysis = () => {
       setClinic(clinicData);
 
       // UUID IDを使って診療圏分析データを取得
-      const analysisData = await marketAnalysisService.getMarketAnalysis(clinicData.id);
-      setAnalysis(analysisData);
+      try {
+        const analysisData = await marketAnalysisService.getMarketAnalysis(clinicData.id);
+        setAnalysis(analysisData);
+        setError(null);
+      } catch (analysisError: any) {
+        // 404エラーの場合は分析データがまだ存在しない
+        if (analysisError.message?.includes('404') || analysisError.message?.includes('not found')) {
+          setAnalysis(null);
+          setError(null);
+        } else {
+          throw analysisError;
+        }
+      }
     } catch (error) {
       console.error('Failed to load market analysis:', error);
+      setError('データの読み込みに失敗しました');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRunAnalysis = async () => {
+    if (!clinic) return;
+
+    try {
+      setAnalyzing(true);
+      setError(null);
+
+      // 半径2kmで診療圏分析を実行
+      const analysisData = await marketAnalysisService.createMarketAnalysis(clinic.id, 2);
+      setAnalysis(analysisData);
+    } catch (error) {
+      console.error('Failed to run analysis:', error);
+      setError('分析の実行に失敗しました');
+    } finally {
+      setAnalyzing(false);
     }
   };
 
@@ -85,27 +121,59 @@ export const MarketAnalysis = () => {
   return (
     <>
       {/* ページヘッダー */}
-      <Box sx={{ marginBottom: '24px' }}>
-        <Typography
-          variant="h4"
-          sx={{
-            fontSize: '32px',
-            fontWeight: 500,
-            marginBottom: '8px',
-          }}
-        >
-          診療圏分析
-        </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            color: '#616161',
-            fontSize: '14px',
-          }}
-        >
-          人口統計、競合分析、市場ポテンシャル
-        </Typography>
+      <Box sx={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box>
+          <Typography
+            variant="h4"
+            sx={{
+              fontSize: '32px',
+              fontWeight: 500,
+              marginBottom: '8px',
+            }}
+          >
+            診療圏分析
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              color: '#616161',
+              fontSize: '14px',
+            }}
+          >
+            人口統計、競合分析、市場ポテンシャル
+          </Typography>
+        </Box>
+        {!loading && !analysis && clinic && (
+          <Button
+            variant="contained"
+            onClick={handleRunAnalysis}
+            disabled={analyzing}
+            startIcon={analyzing ? <CircularProgress size={20} sx={{ color: '#ffffff' }} /> : <RefreshIcon />}
+            sx={{
+              backgroundColor: '#FF6B35',
+              color: '#ffffff',
+              '&:hover': { backgroundColor: '#E55A2B' },
+              minWidth: '160px',
+            }}
+          >
+            {analyzing ? '分析中...' : '分析を実行'}
+          </Button>
+        )}
       </Box>
+
+      {/* エラーメッセージ */}
+      {error && (
+        <Alert severity="error" sx={{ marginBottom: '24px' }}>
+          {error}
+        </Alert>
+      )}
+
+      {/* 分析データがない場合のメッセージ */}
+      {!loading && !analysis && !error && (
+        <Alert severity="info" sx={{ marginBottom: '24px' }}>
+          診療圏分析データがまだ作成されていません。右上の「分析を実行」ボタンをクリックして分析を開始してください。
+        </Alert>
+      )}
 
       {/* 統計サマリー */}
       <Box
