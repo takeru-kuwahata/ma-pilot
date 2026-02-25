@@ -34,6 +34,15 @@ export const GoogleMap = ({
     } else {
       setApiKey(key);
     }
+
+    // Listen for Google Maps API errors
+    const handleError = () => {
+      // This will catch billing and other API errors
+      setError('Google Maps APIの読み込みに失敗しました。APIキーの設定を確認してください。');
+    };
+
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
   }, []);
 
   const center = {
@@ -109,7 +118,7 @@ export const GoogleMap = ({
           position={center}
           title={clinicName}
           icon={{
-            url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+            url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
           }}
         />
 
@@ -129,7 +138,7 @@ export const GoogleMap = ({
             }}
             title={competitor.name}
             icon={{
-              url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+              url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
             }}
           />
         ))}
