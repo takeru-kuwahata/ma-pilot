@@ -249,6 +249,7 @@ export const AdminClinics = () => {
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setNewClinic({ name: '', postal_code: '', address: '', phone_number: '', owner_id: '', latitude: 35.6762, longitude: 139.6503 });
+    setSearchQuery(''); // 検索ボックスをクリア
   };
 
   const isValidUuid = (value: string) =>
