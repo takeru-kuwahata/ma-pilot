@@ -39,13 +39,13 @@ export const MarketAnalysis = () => {
         return;
       }
 
-      const [analysisData, clinicData] = await Promise.all([
-        marketAnalysisService.getMarketAnalysis(clinicId),
-        clinicService.getClinic(clinicId)
-      ]);
-
-      setAnalysis(analysisData);
+      // まず医院情報を取得してUUID IDを確認
+      const clinicData = await clinicService.getClinic(clinicId);
       setClinic(clinicData);
+
+      // UUID IDを使って診療圏分析データを取得
+      const analysisData = await marketAnalysisService.getMarketAnalysis(clinicData.id);
+      setAnalysis(analysisData);
     } catch (error) {
       console.error('Failed to load market analysis:', error);
     } finally {
