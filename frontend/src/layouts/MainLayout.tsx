@@ -12,11 +12,16 @@ import {
   Avatar,
   Divider,
   Button,
+  Drawer,
+  IconButton,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {
   Logout as LogoutIcon,
   SwapHoriz as SwapHorizIcon,
   AccountCircle as AccountCircleIcon,
+  Menu as MenuIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation, useParams, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
@@ -33,6 +38,9 @@ export const MainLayout = () => {
   const { clinicId: clinicIdParam } = useParams<{ clinicId: string }>();
   const { user, logout: storeLogout, setSelectedClinic } = useAuthStore();
   const { clinicName } = useCurrentClinic();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
   // 権限によるメニューフィルタリング & パスにclinicIdを含める
   const filteredMenuItems = React.useMemo(() => {
@@ -73,6 +81,95 @@ export const MainLayout = () => {
     navigate('/login');
   };
 
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const handleMenuClick = (path: string) => {
+    handleNavigation(path);
+    if (isMobile) {
+      setMobileOpen(false);
+    }
+  };
+
+  // サイドバーの内容（デスクトップとモバイルで共通）
+  const drawerContent = (
+    <>
+      <List sx={{ pt: 2, pb: 0 }}>
+        {filteredMenuItems.map((item) => (
+          <ListItem key={item.path} disablePadding>
+            <ListItemButton
+              selected={location.pathname === item.path}
+              onClick={() => handleMenuClick(item.path)}
+              sx={{
+                py: 1.5,
+                px: 3,
+                '&.Mui-selected': {
+                  backgroundColor: 'rgba(255, 107, 53, 0.08)',
+                  borderLeft: '3px solid #FF6B35',
+                  color: '#FF6B35',
+                  pl: 'calc(24px - 3px)',
+                  '& .MuiListItemIcon-root': {
+                    color: '#FF6B35',
+                  },
+                },
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+
+      <Divider sx={{ my: 2, mx: 3 }} />
+
+      <List sx={{ pt: 0, pb: 0 }}>
+        <ListItem disablePadding>
+          <ListItemButton
+            selected={location.pathname === `/clinic/${clinicIdParam}/my-settings`}
+            onClick={() => handleMenuClick(`/clinic/${clinicIdParam}/my-settings`)}
+            sx={{
+              py: 1.5,
+              px: 3,
+              '&.Mui-selected': {
+                backgroundColor: 'rgba(255, 107, 53, 0.08)',
+              },
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="マイページ設定"
+              primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
+            />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={handleLogout}
+            sx={{
+              py: 1.5,
+              px: 3,
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="ログアウト"
+              primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
+            />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </>
+  );
+
   return (
     <Box sx={{ display: 'flex' }}>
       {/* ヘッダー */}
@@ -87,6 +184,17 @@ export const MainLayout = () => {
         }}
       >
         <Toolbar>
+          {/* ハンバーガーメニュー（モバイルのみ） */}
+          <IconButton
+            color="inherit"
+            aria-label="メニューを開く"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { md: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+
           {/* ロゴ＋クリニック名 */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexGrow: 1 }}>
             <Box
@@ -173,103 +281,57 @@ export const MainLayout = () => {
         </Toolbar>
       </AppBar>
 
-      {/* サイドバー */}
-      <Box
+      {/* モバイル用Drawer（一時的表示） */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true, // モバイルでのパフォーマンス向上
+        }}
         sx={{
-          position: 'fixed',
-          top: '64px',
-          left: 0,
-          width: `${drawerWidth}px`,
-          height: 'calc(100vh - 64px)',
-          backgroundColor: '#ffffff',
-          borderRight: '1px solid #e0e0e0',
-          overflowY: 'auto',
+          display: { xs: 'block', md: 'none' },
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
+            width: drawerWidth,
+            top: '64px',
+            height: 'calc(100vh - 64px)',
+          },
         }}
       >
-        <List sx={{ pt: 2, pb: 0 }}>
-          {filteredMenuItems.map((item) => (
-            <ListItem key={item.path} disablePadding>
-              <ListItemButton
-                selected={location.pathname === item.path}
-                onClick={() => handleNavigation(item.path)}
-                sx={{
-                  py: 1.5,
-                  px: 3,
-                  '&.Mui-selected': {
-                    backgroundColor: 'rgba(255, 107, 53, 0.08)',
-                    borderLeft: '3px solid #FF6B35',
-                    color: '#FF6B35',
-                    pl: 'calc(24px - 3px)',
-                    '& .MuiListItemIcon-root': {
-                      color: '#FF6B35',
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        {drawerContent}
+      </Drawer>
 
-        <Divider sx={{ my: 2, mx: 3 }} />
-
-        <List sx={{ pt: 0, pb: 0 }}>
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={location.pathname === `/clinic/${clinicIdParam}/my-settings`}
-              onClick={() => navigate(`/clinic/${clinicIdParam}/my-settings`)}
-              sx={{
-                py: 1.5,
-                px: 3,
-                '&.Mui-selected': {
-                  backgroundColor: 'rgba(255, 107, 53, 0.08)',
-                },
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <AccountCircleIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="マイページ設定"
-                primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={handleLogout}
-              sx={{
-                py: 1.5,
-                px: 3,
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <LogoutIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="ログアウト"
-                primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
-              />
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </Box>
+      {/* デスクトップ用Drawer（固定表示） */}
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: 'none', md: 'block' },
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
+            width: drawerWidth,
+            top: '64px',
+            height: 'calc(100vh - 64px)',
+            position: 'fixed',
+            borderRight: '1px solid #e0e0e0',
+          },
+        }}
+        open
+      >
+        {drawerContent}
+      </Drawer>
 
       {/* メインコンテンツ */}
       <Box
         component="main"
         sx={{
-          marginLeft: `${drawerWidth}px`,
+          flexGrow: 1,
+          marginLeft: { xs: 0, md: `${drawerWidth}px` },
           marginTop: '64px',
-          padding: '24px',
+          padding: { xs: '16px', sm: '24px' },
           minHeight: 'calc(100vh - 64px)',
           backgroundColor: '#f5f5f5',
-          width: `calc(100vw - ${drawerWidth}px)`,
+          width: { xs: '100%', md: `calc(100% - ${drawerWidth}px)` },
           boxSizing: 'border-box',
         }}
       >
