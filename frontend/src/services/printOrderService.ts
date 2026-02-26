@@ -26,28 +26,38 @@ export const getPriceTables = async (): Promise<PriceTable[]> => {
 };
 
 /**
- * 見積もり計算
+ * 見積もり計算（Supabaseから価格マスタを取得して計算）
  */
 export const calculateEstimate = async (
   productType: string,
   quantity: number
 ): Promise<PriceEstimateResponse> => {
-  const response = await fetch(`${API_BASE_URL}/api/print-orders/estimate`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      product_type: productType,
-      quantity,
-    }),
-  });
+  // 価格マスタから該当する商品・数量を取得
+  const { data, error } = await supabase
+    .from('price_tables')
+    .select('*')
+    .eq('product_type', productType)
+    .eq('quantity', quantity)
+    .single();
 
-  if (!response.ok) {
-    throw new Error(`見積もり計算に失敗しました: ${response.statusText}`);
+  if (error || !data) {
+    throw new Error(`該当する価格情報が見つかりませんでした`);
   }
 
-  return response.json();
+  // 見積もり計算
+  const basePrice = data.price;
+  const designFee = 0; // フロントエンドでは基本価格のみ表示、デザイン料は含めない
+
+  return {
+    estimated_price: basePrice,
+    breakdown: {
+      base_price: basePrice,
+      design_fee: designFee,
+      total: basePrice + designFee,
+    },
+    delivery_days: data.delivery_days,
+    price_table_id: data.id,
+  };
 };
 
 /**
