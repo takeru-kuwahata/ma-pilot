@@ -4,25 +4,25 @@ import type {
   PrintOrderFormData,
   PriceEstimateResponse,
 } from '../types';
+import { supabase } from './supabase';
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8432';
 
 /**
- * 価格マスタ取得
+ * 価格マスタ取得（Supabaseから直接取得）
  */
 export const getPriceTables = async (): Promise<PriceTable[]> => {
-  const response = await fetch(`${API_BASE_URL}/api/price-tables`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  const { data, error } = await supabase
+    .from('price_tables')
+    .select('*')
+    .order('product_type', { ascending: true })
+    .order('quantity', { ascending: true });
 
-  if (!response.ok) {
-    throw new Error(`価格マスタの取得に失敗しました: ${response.statusText}`);
+  if (error) {
+    throw new Error(`価格マスタの取得に失敗しました: ${error.message}`);
   }
 
-  return response.json();
+  return data || [];
 };
 
 /**
