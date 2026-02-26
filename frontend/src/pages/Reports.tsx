@@ -24,8 +24,8 @@ import {
   PieChart as PieChartIcon,
   Timeline as TimelineIcon,
 } from '@mui/icons-material';
-import { reportService } from '../services/api';
-import type { Report } from '../types';
+import { reportService, clinicService } from '../services/api';
+import type { Report, Clinic } from '../types';
 
 interface ReportTemplate {
   id: string;
@@ -36,7 +36,8 @@ interface ReportTemplate {
 }
 
 export const Reports = () => {
-  const { clinicId } = useParams<{ clinicId: string }>();
+  const { clinicId: clinicIdParam } = useParams<{ clinicId: string }>();
+  const [clinic, setClinic] = useState<Clinic | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -68,20 +69,34 @@ export const Reports = () => {
     },
   ];
 
+  // Fetch clinic to get UUID from slug
   useEffect(() => {
-    if (clinicId) {
+    const fetchClinic = async () => {
+      if (!clinicIdParam) return;
+      try {
+        const clinicData = await clinicService.getClinic(clinicIdParam);
+        setClinic(clinicData);
+      } catch (error) {
+        console.error('Failed to fetch clinic:', error);
+      }
+    };
+    fetchClinic();
+  }, [clinicIdParam]);
+
+  useEffect(() => {
+    if (clinic?.id) {
       loadReports();
     }
-  }, [clinicId]);
+  }, [clinic?.id]);
 
   const loadReports = async () => {
-    if (!clinicId) {
+    if (!clinic?.id) {
       setLoading(false);
       return;
     }
 
     try {
-      const data = await reportService.getReports(clinicId);
+      const data = await reportService.getReports(clinic.id);
       setReports(data);
     } catch (error) {
       console.error('Failed to load reports:', error);
@@ -100,7 +115,7 @@ export const Reports = () => {
   };
 
   const handleGenerateReport = async (templateId: string) => {
-    if (!clinicId) {
+    if (!clinic?.id) {
       setSnackbarMessage('医院IDが取得できませんでした');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
@@ -132,7 +147,7 @@ export const Reports = () => {
 
       // レポート生成
       const report = await reportService.generateReport({
-        clinic_id: clinicId,
+        clinic_id: clinic.id,
         type: reportType,
         format: 'pdf',
         title: title,

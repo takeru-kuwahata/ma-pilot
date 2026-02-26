@@ -25,9 +25,9 @@ import {
   Close as CloseIcon,
 } from '@mui/icons-material';
 import Papa from 'papaparse';
-import { monthlyDataService } from '../services/api';
+import { monthlyDataService, clinicService } from '../services/api';
 import { MonthlyDataForm } from '../components/MonthlyDataForm';
-import type { MonthlyData, MonthlyDataFormData } from '../types';
+import type { MonthlyData, MonthlyDataFormData, Clinic } from '../types';
 
 interface MonthlyDataRow {
   id: string;
@@ -43,7 +43,8 @@ const formatCurrency = (value: number): string => {
 };
 
 export const DataManagement = () => {
-  const { clinicId } = useParams<{ clinicId: string }>();
+  const { clinicId: clinicIdParam } = useParams<{ clinicId: string }>();
+  const [clinic, setClinic] = useState<Clinic | null>(null);
   const [monthlyData, setMonthlyData] = useState<MonthlyDataRow[]>([]);
   const [rawMonthlyData, setRawMonthlyData] = useState<MonthlyData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,17 +55,31 @@ export const DataManagement = () => {
   const [editTarget, setEditTarget] = useState<{ id: string; data: MonthlyDataFormData } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // 医院情報を取得（slugまたはUUIDからUUID IDを取得）
   useEffect(() => {
-    if (clinicId) {
+    const fetchClinic = async () => {
+      if (!clinicIdParam) return;
+      try {
+        const clinicData = await clinicService.getClinic(clinicIdParam);
+        setClinic(clinicData);
+      } catch (error) {
+        console.error('Failed to fetch clinic:', error);
+      }
+    };
+    fetchClinic();
+  }, [clinicIdParam]);
+
+  useEffect(() => {
+    if (clinic?.id) {
       loadMonthlyData();
     }
-  }, [clinicId]);
+  }, [clinic?.id]);
 
   const loadMonthlyData = async () => {
-    if (!clinicId) return;
+    if (!clinic?.id) return;
 
     try {
-      const data = await monthlyDataService.getMonthlyData(clinicId);
+      const data = await monthlyDataService.getMonthlyData(clinic.id);
       setRawMonthlyData(data);
       const rows: MonthlyDataRow[] = data.map((item: MonthlyData) => ({
         id: item.id,
@@ -88,14 +103,14 @@ export const DataManagement = () => {
   };
 
   const handleFormSubmit = async (data: MonthlyDataFormData) => {
-    if (!clinicId) return;
+    if (!clinic?.id) return;
 
     try {
       if (editTarget) {
         await monthlyDataService.updateMonthlyData(editTarget.id, data);
         setSnackbarMessage('データを更新しました');
       } else {
-        await monthlyDataService.createMonthlyData({ ...data, clinic_id: clinicId });
+        await monthlyDataService.createMonthlyData({ ...data, clinic_id: clinic.id });
         setSnackbarMessage('データを保存しました');
       }
       setSnackbarSeverity('success');
@@ -127,7 +142,7 @@ export const DataManagement = () => {
       return;
     }
 
-    if (!clinicId) {
+    if (!clinic?.id) {
       setSnackbarMessage('医院IDが取得できませんでした');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
@@ -143,7 +158,7 @@ export const DataManagement = () => {
         complete: async (results) => {
           try {
             // CSVデータをバックエンドに送信
-            const response = await monthlyDataService.importCsv(clinicId, results.data);
+            const response = await monthlyDataService.importCsv(clinic.id, results.data);
 
             setSnackbarMessage(`${response.success}件のデータを取り込みました（失敗: ${response.failed}件）`);
             setSnackbarSeverity(response.failed > 0 ? 'error' : 'success');

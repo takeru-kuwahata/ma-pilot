@@ -32,11 +32,12 @@ import {
   Add as AddIcon,
   Info as InfoIcon,
 } from '@mui/icons-material';
-import { staffService } from '../services/api';
-import type { User, UserRole } from '../types';
+import { staffService, clinicService } from '../services/api';
+import type { User, UserRole, Clinic } from '../types';
 
 export const StaffManagement = () => {
-  const { clinicId } = useParams<{ clinicId: string }>();
+  const { clinicId: clinicIdParam } = useParams<{ clinicId: string }>();
+  const [clinic, setClinic] = useState<Clinic | null>(null);
   const [staffList, setStaffList] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -57,14 +58,29 @@ export const StaffManagement = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
+  // Fetch clinic to get UUID from slug
   useEffect(() => {
-    if (clinicId) {
+    const fetchClinic = async () => {
+      if (!clinicIdParam) return;
+      try {
+        const clinicData = await clinicService.getClinic(clinicIdParam);
+        setClinic(clinicData);
+      } catch (error) {
+        console.error('Failed to fetch clinic:', error);
+        setError('医院情報の取得に失敗しました');
+      }
+    };
+    fetchClinic();
+  }, [clinicIdParam]);
+
+  useEffect(() => {
+    if (clinic?.id) {
       loadStaffList();
     }
-  }, [clinicId]);
+  }, [clinic?.id]);
 
   const loadStaffList = async () => {
-    if (!clinicId) {
+    if (!clinic?.id) {
       setError('医院IDが見つかりません');
       setLoading(false);
       return;
@@ -73,7 +89,7 @@ export const StaffManagement = () => {
     try {
       setLoading(true);
       setError(null);
-      const staff = await staffService.getStaff(clinicId);
+      const staff = await staffService.getStaff(clinic.id);
       setStaffList(staff);
     } catch (err) {
       console.error('Failed to load staff:', err);
@@ -93,7 +109,7 @@ export const StaffManagement = () => {
       return;
     }
 
-    if (!clinicId) {
+    if (!clinic?.id) {
       setSnackbarMessage('医院IDが見つかりません');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
@@ -106,7 +122,7 @@ export const StaffManagement = () => {
       await staffService.inviteStaff({
         email: inviteForm.email,
         role: inviteForm.role,
-        clinic_id: clinicId
+        clinic_id: clinic.id
       });
 
       setSnackbarMessage('招待メールを送信しました');
