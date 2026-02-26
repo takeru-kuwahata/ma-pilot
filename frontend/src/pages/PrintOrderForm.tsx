@@ -29,16 +29,27 @@ import type {
   PrintOrderPattern,
 } from '../types';
 import * as printOrderService from '../services/printOrderService';
+import { useCurrentClinic } from '../hooks/useCurrentClinic';
+import { useAuthStore } from '../stores/authStore';
 
 const PRODUCT_TYPES = [
   '診察券',
-  '名刺',
+  '名刺（片面・カラー）',
+  '名刺（片面・モノクロ）',
+  '名刺（両面・カラー）',
+  '名刺（両面・モノクロ）',
   'リコールハガキ',
   'A4三つ折りリーフレット',
   'ネームプレート',
 ];
 
+const SHIPPING_FEE = 1000; // 送料（税抜）
+const DELIVERY_DAYS = 7; // 発送予定日数
+
 export default function PrintOrderForm() {
+  const { clinicName } = useCurrentClinic();
+  const { user } = useAuthStore();
+
   const [pattern, setPattern] = useState<PrintOrderPattern>('consultation');
   const [priceTables, setPriceTables] = useState<PriceTable[]>([]);
   const [selectedProductType, setSelectedProductType] = useState<string>('');
@@ -58,8 +69,8 @@ export default function PrintOrderForm() {
     formState: { errors },
   } = useForm<PrintOrderFormData>({
     defaultValues: {
-      clinic_name: '',
-      email: '',
+      clinic_name: clinicName || '',
+      email: user?.email || '',
       pattern: 'consultation',
       product_type: '',
       quantity: undefined,
@@ -68,6 +79,16 @@ export default function PrintOrderForm() {
       notes: '',
     },
   });
+
+  // クリニック名とメールアドレスを自動反映
+  useEffect(() => {
+    if (clinicName) {
+      setValue('clinic_name', clinicName);
+    }
+    if (user?.email) {
+      setValue('email', user.email);
+    }
+  }, [clinicName, user, setValue]);
 
   const watchProductType = watch('product_type');
   const watchQuantity = watch('quantity');
@@ -104,7 +125,7 @@ export default function PrintOrderForm() {
     }
   }, [watchProductType, pattern, priceTables, setValue]);
 
-  // 見積もり計算
+  // 見積もり計算（送料込み）
   const calculateEstimate = useCallback(async () => {
     if (!watchProductType || !watchQuantity) return;
 
@@ -115,7 +136,9 @@ export default function PrintOrderForm() {
         watchProductType,
         watchQuantity
       );
-      setEstimatedPrice(estimateData.estimated_price);
+      // 送料を加算（税抜）
+      const totalPrice = estimateData.estimated_price + SHIPPING_FEE;
+      setEstimatedPrice(totalPrice);
     } catch (error) {
       console.error('見積もり計算エラー:', error);
       setEstimatedPrice(null);
@@ -230,7 +253,7 @@ export default function PrintOrderForm() {
                       fullWidth
                       required
                       error={!!errors.clinic_name}
-                      helperText={errors.clinic_name?.message}
+                      helperText={errors.clinic_name?.message || '自動入力されています。異なる場合は修正してください。'}
                     />
                   )}
                 />
@@ -255,7 +278,7 @@ export default function PrintOrderForm() {
                       fullWidth
                       required
                       error={!!errors.email}
-                      helperText={errors.email?.message}
+                      helperText={errors.email?.message || '登録されているメールアドレスが自動入力されています。異なる場合は修正してください。'}
                     />
                   )}
                 />
@@ -364,23 +387,14 @@ export default function PrintOrderForm() {
                 </>
               )}
 
-              {/* 納期希望日 */}
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  name="delivery_date"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="納期希望日"
-                      type="date"
-                      fullWidth
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  )}
-                />
+              {/* 納品予定日 */}
+              <Grid item xs={12}>
+                <Alert severity="info">
+                  <Typography variant="body2">
+                    ご注文確定後、<strong>{DELIVERY_DAYS}日後に発送予定</strong>です。
+                    お急ぎの場合は備考欄にご記入ください。
+                  </Typography>
+                </Alert>
               </Grid>
 
               {/* デザイン要否 */}
@@ -421,14 +435,20 @@ export default function PrintOrderForm() {
               <Card sx={{ mt: 4, bgcolor: 'primary.light', color: 'primary.contrastText' }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    見積もり金額
+                    見積もり金額（税抜）
                   </Typography>
                   <Typography variant="h4">
                     ¥{estimatedPrice.toLocaleString()}
                     {estimating && <CircularProgress size={24} sx={{ ml: 2 }} />}
                   </Typography>
+                  <Typography variant="body2" display="block" sx={{ mt: 2 }}>
+                    内訳：商品代 ¥{(estimatedPrice - SHIPPING_FEE).toLocaleString()} + 送料 ¥{SHIPPING_FEE.toLocaleString()}
+                  </Typography>
                   <Typography variant="caption" display="block" sx={{ mt: 1 }}>
                     ※この金額は自動計算による概算です。正式な見積もりは別途メールでお送りします。
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    ※税込金額は見積書にてご確認ください。
                   </Typography>
                 </CardContent>
               </Card>
