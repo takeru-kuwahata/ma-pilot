@@ -50,13 +50,23 @@ async def get_monthly_data(
 async def create_monthly_data(
     request: MonthlyDataCreate,
     monthly_data_service: MonthlyDataService = Depends(get_monthly_data_service),
+    clinic_service: ClinicService = Depends(get_clinic_service),
     user_context: UserContext = Depends(get_current_user_metadata)
 ):
     '''Create new monthly data'''
-    if not user_context.can_edit_clinic_data(request.clinic_id):
+    # clinic_idがスラッグの場合、実際のIDに変換
+    try:
+        clinic = await clinic_service.get_clinic(request.clinic_id)
+        actual_clinic_id = clinic.id
+    except ValueError:
+        raise HTTPException(status_code=404, detail='Clinic not found')
+
+    if not user_context.can_edit_clinic_data(actual_clinic_id):
         raise HTTPException(status_code=403, detail='You do not have permission to edit this clinic data')
 
     try:
+        # リクエストのclinic_idを実際のUUIDに置き換え
+        request.clinic_id = actual_clinic_id
         data = await monthly_data_service.create_monthly_data(request)
         return MonthlyDataResponse(data=data, message='Monthly data created successfully')
     except ValueError as e:
@@ -94,15 +104,23 @@ async def delete_monthly_data(
 async def import_csv(
     clinic_id: str = Query(...),
     file: UploadFile = File(...),
-    monthly_data_service: MonthlyDataService = Depends(get_monthly_data_service)
+    monthly_data_service: MonthlyDataService = Depends(get_monthly_data_service),
+    clinic_service: ClinicService = Depends(get_clinic_service)
 ):
     '''Import monthly data from CSV'''
+    # clinic_idがスラッグの場合、実際のIDに変換
+    try:
+        clinic = await clinic_service.get_clinic(clinic_id)
+        actual_clinic_id = clinic.id
+    except ValueError:
+        raise HTTPException(status_code=404, detail='Clinic not found')
+
     try:
         # Read CSV file
         csv_content = await file.read()
         csv_text = csv_content.decode('utf-8')
 
-        result = await monthly_data_service.import_csv(clinic_id, csv_text)
+        result = await monthly_data_service.import_csv(actual_clinic_id, csv_text)
         return result
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
