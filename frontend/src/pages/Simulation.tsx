@@ -309,7 +309,7 @@ export const Simulation = () => {
                   handleParamChange('insuranceRevenueChange', Number(e.target.value))
                 }
                 placeholder="例: +10 または -5"
-                inputProps={{ step: 5, min: -50, max: 50 }}
+                inputProps={{ step: 1, min: -50, max: 50 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -339,7 +339,7 @@ export const Simulation = () => {
                   handleParamChange('selfPayRevenueChange', Number(e.target.value))
                 }
                 placeholder="例: +20 または -10"
-                inputProps={{ step: 5, min: -50, max: 100 }}
+                inputProps={{ step: 1, min: -50, max: 100 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -369,7 +369,7 @@ export const Simulation = () => {
                   handleParamChange('retailRevenueChange', Number(e.target.value))
                 }
                 placeholder="例: +5 または -3"
-                inputProps={{ step: 5, min: -50, max: 50 }}
+                inputProps={{ step: 1, min: -50, max: 50 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -402,7 +402,7 @@ export const Simulation = () => {
                   handleParamChange('variableCostChange', Number(e.target.value))
                 }
                 placeholder="例: +8 または -2"
-                inputProps={{ step: 5, min: -50, max: 50 }}
+                inputProps={{ step: 1, min: -50, max: 50 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -432,7 +432,7 @@ export const Simulation = () => {
                   handleParamChange('fixedCostChange', Number(e.target.value))
                 }
                 placeholder="例: +5 または -5"
-                inputProps={{ step: 5, min: -50, max: 50 }}
+                inputProps={{ step: 1, min: -50, max: 50 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -462,7 +462,7 @@ export const Simulation = () => {
                   handleParamChange('newPatientChange', Number(e.target.value))
                 }
                 placeholder="例: +15 または -10"
-                inputProps={{ step: 5, min: -50, max: 100 }}
+                inputProps={{ step: 1, min: -50, max: 100 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -492,7 +492,7 @@ export const Simulation = () => {
                   handleParamChange('returningPatientChange', Number(e.target.value))
                 }
                 placeholder="例: +10 または -5"
-                inputProps={{ step: 5, min: -50, max: 50 }}
+                inputProps={{ step: 1, min: -50, max: 50 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
