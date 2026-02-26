@@ -193,7 +193,11 @@ export const AdminDashboard = () => {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridTemplateColumns: {
+            xs: 'repeat(1, 1fr)',  // スマホ: 1列
+            sm: 'repeat(2, 1fr)',  // タブレット: 2列
+            md: 'repeat(4, 1fr)',  // デスクトップ: 4列
+          },
           gap: '24px',
           marginBottom: '24px',
         }}
@@ -328,7 +332,10 @@ export const AdminDashboard = () => {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
+          gridTemplateColumns: {
+            xs: 'repeat(1, 1fr)',  // スマホ: 1列
+            md: 'repeat(2, 1fr)',  // デスクトップ: 2列
+          },
           gap: '24px',
           marginBottom: '24px',
         }}
@@ -421,8 +428,8 @@ export const AdminDashboard = () => {
         >
           最近の登録医院
         </Typography>
-        <TableContainer>
-          <Table>
+        <TableContainer sx={{ overflowX: 'auto' }}>
+          <Table sx={{ minWidth: { xs: 600, sm: 'auto' } }}>
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
@@ -488,7 +495,10 @@ export const AdminDashboard = () => {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
+          gridTemplateColumns: {
+            xs: 'repeat(1, 1fr)',  // スマホ: 1列
+            md: 'repeat(2, 1fr)',  // デスクトップ: 2列
+          },
           gap: '24px',
         }}
       >
