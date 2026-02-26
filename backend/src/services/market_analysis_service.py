@@ -151,6 +151,7 @@ class MarketAnalysisService:
             # Calculate estimated potential patients
             # Assume 5% of population visits dentist annually, divided by number of clinics
             num_clinics = len(competitors) + 1  # Including this clinic
+            total_population = population_data.total_population
             estimated_potential_patients = int((total_population * 0.05) / num_clinics / 12)  # Monthly
 
             # Calculate market share
