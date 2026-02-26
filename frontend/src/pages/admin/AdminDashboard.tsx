@@ -241,20 +241,23 @@ export const AdminDashboard = () => {
               アクティブ医院数
             </Typography>
           </Box>
-          <Typography sx={{ fontSize: '32px', fontWeight: 600, color: '#424242' }}>
-            {stats.activeClinics}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+            <Typography sx={{ fontSize: '32px', fontWeight: 600, color: '#424242' }}>
+              {stats.activeClinics}
+            </Typography>
+            <Typography sx={{ fontSize: '16px', color: '#9e9e9e' }}>
+              / {stats.totalClinics}
+            </Typography>
+          </Box>
           <Typography
             sx={{
-              fontSize: '12px',
-              color: '#4CAF50',
+              fontSize: '14px',
+              color: stats.totalClinics > 0 && (stats.activeClinics / stats.totalClinics) >= 0.8 ? '#4CAF50' : stats.totalClinics > 0 && (stats.activeClinics / stats.totalClinics) >= 0.5 ? '#FF9800' : '#F44336',
               marginTop: '8px',
-              display: 'flex',
-              alignItems: 'center',
+              fontWeight: 600,
             }}
           >
-            <ArrowUpwardIcon sx={{ fontSize: 12 }} />
-            前月比 +{stats.activeClinicsChange}医院
+            稼働率: {stats.totalClinics > 0 ? Math.round((stats.activeClinics / stats.totalClinics) * 100) : 0}%
           </Typography>
         </Paper>
 
