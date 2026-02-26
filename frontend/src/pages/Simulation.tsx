@@ -12,8 +12,8 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { PlayArrow as PlayArrowIcon, ShowChart as ShowChartIcon } from '@mui/icons-material';
-import { simulationService, monthlyDataService } from '../services/api';
-import type { Simulation as SimulationType, MonthlyData } from '../types';
+import { simulationService, monthlyDataService, clinicService } from '../services/api';
+import type { Simulation as SimulationType, MonthlyData, Clinic } from '../types';
 
 interface SimulationParams {
   period: string;
@@ -43,7 +43,8 @@ const periodOptions = [
 ];
 
 export const Simulation = () => {
-  const { clinicId } = useParams<{ clinicId: string }>();
+  const { clinicId: clinicIdParam } = useParams<{ clinicId: string }>();
+  const [clinic, setClinic] = useState<Clinic | null>(null);
   const [params, setParams] = useState<SimulationParams>({
     period: '6',
     insuranceRevenueChange: 0,
@@ -63,18 +64,32 @@ export const Simulation = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
+  // Fetch clinic to get UUID from slug
   useEffect(() => {
-    if (clinicId) {
+    const fetchClinic = async () => {
+      if (!clinicIdParam) return;
+      try {
+        const clinicData = await clinicService.getClinic(clinicIdParam);
+        setClinic(clinicData);
+      } catch (error) {
+        console.error('Failed to fetch clinic:', error);
+      }
+    };
+    fetchClinic();
+  }, [clinicIdParam]);
+
+  useEffect(() => {
+    if (clinic?.id) {
       loadSimulations();
       loadLatestMonthlyData();
     }
-  }, [clinicId]);
+  }, [clinic?.id]);
 
   const loadSimulations = async () => {
-    if (!clinicId) return;
+    if (!clinic?.id) return;
 
     try {
-      const data = await simulationService.getSimulations(clinicId);
+      const data = await simulationService.getSimulations(clinic.id);
       setSimulations(data);
     } catch (error) {
       console.error('Failed to load simulations:', error);
@@ -82,10 +97,10 @@ export const Simulation = () => {
   };
 
   const loadLatestMonthlyData = async () => {
-    if (!clinicId) return;
+    if (!clinic?.id) return;
 
     try {
-      const data = await monthlyDataService.getMonthlyData(clinicId);
+      const data = await monthlyDataService.getMonthlyData(clinic.id);
       if (data.length > 0) {
         // 最新のデータを取得（year_monthでソート）
         const sorted = [...data].sort((a, b) => b.year_month.localeCompare(a.year_month));
@@ -104,7 +119,7 @@ export const Simulation = () => {
   };
 
   const handleSimulate = async () => {
-    if (!clinicId) {
+    if (!clinic?.id) {
       setSnackbarMessage('医院IDが取得できませんでした');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
@@ -148,7 +163,7 @@ export const Simulation = () => {
       const targetMaterialCostRate = targetRevenue > 0 ? (currentMaterialCost * (1 + params.variableCostChange / 100)) / targetRevenue * 100 : 0;
 
       const simulation = await simulationService.createSimulation(
-        clinicId,
+        clinic.id,
         `${params.period}ヶ月後のシミュレーション`,
         {
           target_revenue: Math.round(targetRevenue),
