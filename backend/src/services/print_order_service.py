@@ -147,14 +147,27 @@ class PrintOrderService:
 
         # 再注文パターンの場合、明細から合計金額を計算
         if order_data.pattern == PrintOrderPattern.REORDER:
+            logger.info(f"[DEBUG] Reorder pattern detected")
+            logger.info(f"[DEBUG] order_data.items is None: {order_data.items is None}")
+            logger.info(f"[DEBUG] order_data.items length: {len(order_data.items) if order_data.items else 0}")
+
             if not order_data.items or len(order_data.items) == 0:
+                logger.error("[DEBUG] No items provided for reorder pattern")
                 raise ValueError("再注文パターンでは商品明細が必須です")
 
             # 各商品のproduct_typeとquantityをバリデーション
             for idx, item in enumerate(order_data.items):
+                logger.info(f"[DEBUG] Validating item {idx}")
+                logger.info(f"[DEBUG] item.product_type type: {type(item.product_type)}")
+                logger.info(f"[DEBUG] item.product_type value: '{item.product_type}'")
+                logger.info(f"[DEBUG] item.product_type is None: {item.product_type is None}")
+                logger.info(f"[DEBUG] item.quantity: {item.quantity}")
+
                 if not item.product_type or item.product_type.strip() == "":
+                    logger.error(f"[DEBUG] Item {idx} has empty product_type")
                     raise ValueError(f"再注文パターンでは商品種類と数量が必須です")
                 if not item.quantity or item.quantity <= 0:
+                    logger.error(f"[DEBUG] Item {idx} has invalid quantity: {item.quantity}")
                     raise ValueError(f"再注文パターンでは商品種類と数量が必須です")
 
             # 各商品の価格を計算
