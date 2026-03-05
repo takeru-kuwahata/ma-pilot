@@ -97,13 +97,16 @@ export default function PrintOrderFormPhase2() {
       if (clinicId) {
         try {
           const data = await clinicService.getClinic(clinicId);
+          console.log('[DEBUG] Clinic data fetched:', data);
           setClinicData(data);
           // 住所と電話番号を自動反映
           if (data.address) {
-            setValue('delivery_address', data.address);
+            console.log('[DEBUG] Setting delivery_address:', data.address);
+            setValue('delivery_address', data.address, { shouldValidate: false });
           }
           if (data.phone_number) {
-            setValue('daytime_contact', data.phone_number);
+            console.log('[DEBUG] Setting daytime_contact:', data.phone_number);
+            setValue('daytime_contact', data.phone_number, { shouldValidate: false });
           }
         } catch (error) {
           console.error('クリニック情報取得エラー:', error);
@@ -436,7 +439,6 @@ export default function PrintOrderFormPhase2() {
                     <TableRow>
                       <TableCell>商品種類</TableCell>
                       <TableCell>数量</TableCell>
-                      <TableCell align="right">単価</TableCell>
                       <TableCell align="right">小計</TableCell>
                       <TableCell align="center">削除</TableCell>
                     </TableRow>
@@ -491,9 +493,6 @@ export default function PrintOrderFormPhase2() {
                                 </FormControl>
                               )}
                             />
-                          </TableCell>
-                          <TableCell align="right">
-                            ¥{price.toLocaleString()}
                           </TableCell>
                           <TableCell align="right">
                             <strong>¥{price.toLocaleString()}</strong>
@@ -735,7 +734,14 @@ export default function PrintOrderFormPhase2() {
                       <FormControlLabel
                         value="yes"
                         control={<Radio />}
-                        label="デザイン修正費を含めたお見積りを依頼する"
+                        label={
+                          <Box>
+                            <Typography component="span">デザイン修正費を含めたお見積りを依頼する</Typography>
+                            <Typography variant="caption" display="block" color="text.secondary" sx={{ mt: 0.5 }}>
+                              ※上記の見積もり金額にデザイン修正費が加わることをご了承ください
+                            </Typography>
+                          </Box>
+                        }
                       />
                     </RadioGroup>
                   )}
