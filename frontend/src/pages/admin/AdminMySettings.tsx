@@ -100,16 +100,18 @@ export const AdminMySettings = () => {
 
   useEffect(() => {
     // 印刷物注文メール受信先を取得
-    fetch(`${API_BASE_URL}/api/admin/settings`, {
-      headers: getAuthHeaders(),
-    })
-      .then(handleResponse)
-      .then((data: { settings: Record<string, string> }) => {
+    const loadSettings = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/settings`, {
+          headers: getAuthHeaders(),
+        });
+        const data = await handleResponse(response) as { settings: Record<string, string> };
         setPrintOrderEmail(data.settings.print_order_email || 'dr@medical-advance.com');
-      })
-      .catch(() => {
+      } catch {
         setPrintOrderEmail('dr@medical-advance.com');
-      });
+      }
+    };
+    loadSettings();
   }, []);
 
   return (

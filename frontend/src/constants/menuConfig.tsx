@@ -8,7 +8,6 @@ import PrintIcon from '@mui/icons-material/Print';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PeopleIcon from '@mui/icons-material/People';
 import BusinessIcon from '@mui/icons-material/Business';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 // 医院エリア用メニュー
 export const clinicMenuItems: MenuItemConfig[] = [
