@@ -204,7 +204,6 @@ export default function PrintOrderFormPhase2() {
   const onSubmit = async (data: PrintOrderFormData) => {
     setSubmitting(true);
     setSubmitError(null);
-    setSubmitSuccess(false);
 
     try {
       // Phase 2: 複数商品対応
