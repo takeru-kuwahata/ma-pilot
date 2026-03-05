@@ -205,12 +205,20 @@ export default function PrintOrderHistory() {
                         {new Date(order.created_at).toLocaleDateString('ja-JP')}
                       </TableCell>
                       <TableCell>{order.clinic_name}</TableCell>
-                      <TableCell>{order.product_type || '未定'}</TableCell>
-                      <TableCell align="right">
-                        {order.quantity ? order.quantity.toLocaleString() : '-'}
+                      <TableCell>
+                        {order.items && order.items.length > 0
+                          ? `${order.items.length}点の商品`
+                          : '相談フォーム'}
                       </TableCell>
                       <TableCell align="right">
-                        {order.estimated_price
+                        {order.items && order.items.length > 0
+                          ? order.items.map((item) => item.quantity).reduce((a, b) => a + b, 0).toLocaleString()
+                          : '-'}
+                      </TableCell>
+                      <TableCell align="right">
+                        {order.total_amount
+                          ? `¥${order.total_amount.toLocaleString()}`
+                          : order.estimated_price
                           ? `¥${order.estimated_price.toLocaleString()}`
                           : '-'}
                       </TableCell>
@@ -295,23 +303,43 @@ export default function PrintOrderHistory() {
                   </Typography>
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    商品種類
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {selectedOrder.product_type || '未定'}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    数量
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {selectedOrder.quantity ? selectedOrder.quantity.toLocaleString() : '未定'}
-                  </Typography>
-                </Grid>
+                {/* Phase 2: 商品明細表示 */}
+                {selectedOrder.items && selectedOrder.items.length > 0 ? (
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      注文明細
+                    </Typography>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>商品種類</TableCell>
+                          <TableCell align="right">数量</TableCell>
+                          <TableCell align="right">単価</TableCell>
+                          <TableCell align="right">小計</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {selectedOrder.items.map((item, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{item.product_type}</TableCell>
+                            <TableCell align="right">{item.quantity.toLocaleString()}</TableCell>
+                            <TableCell align="right">¥{item.unit_price.toLocaleString()}</TableCell>
+                            <TableCell align="right">¥{item.subtotal.toLocaleString()}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </Grid>
+                ) : (
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      相談内容
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      初回相談フォームでのお問い合わせ
+                    </Typography>
+                  </Grid>
+                )}
 
                 <Grid item xs={12} sm={6}>
                   <Typography variant="subtitle2" color="text.secondary">

@@ -32,10 +32,8 @@ import {
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import type {
   PrintOrderFormData,
-  PrintOrderFormItem,
   PriceTable,
   PrintOrderPattern,
-  PaymentMethod,
 } from '../types';
 import * as printOrderService from '../services/printOrderService';
 import { useCurrentClinic } from '../hooks/useCurrentClinic';
@@ -95,7 +93,6 @@ export default function PrintOrderFormPhase2() {
   }, [clinicName, user, setValue]);
 
   const watchItems = watch('items');
-  const watchPaymentMethod = watch('payment_method');
 
   // 価格マスタ取得
   useEffect(() => {
