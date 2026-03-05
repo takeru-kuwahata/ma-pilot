@@ -126,12 +126,20 @@ export const LoginPage = () => {
 
           {/* ログインタブ */}
           {activeTab === 'login' && (
-            <Box component="form" onSubmit={handleLoginSubmit}>
+            <Box
+              component="form"
+              onSubmit={handleLoginSubmit}
+              id="login-form"
+              autoComplete="on"
+              method="post"
+              action="#"
+            >
               <TextField
                 fullWidth
                 label="メールアドレス"
                 type="email"
                 name="email"
+                id="email"
                 value={loginData.email}
                 onChange={(e) =>
                   setLoginData({ ...loginData, email: e.target.value })
@@ -139,6 +147,7 @@ export const LoginPage = () => {
                 margin="normal"
                 required
                 placeholder="your@email.com"
+                autoComplete="username"
                 inputProps={{ autoComplete: 'username' }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -156,6 +165,7 @@ export const LoginPage = () => {
                 label="パスワード"
                 type="password"
                 name="password"
+                id="password"
                 value={loginData.password}
                 onChange={(e) =>
                   setLoginData({ ...loginData, password: e.target.value })
@@ -163,6 +173,7 @@ export const LoginPage = () => {
                 margin="normal"
                 required
                 placeholder="パスワードを入力"
+                autoComplete="current-password"
                 inputProps={{ autoComplete: 'current-password' }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
