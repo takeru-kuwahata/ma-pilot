@@ -201,9 +201,10 @@ export default function PrintOrderFormPhase2() {
       };
 
       console.log('[DEBUG] Form data:', data);
-      console.log('[DEBUG] Valid items after filter:', validItems);
+      console.log('[DEBUG] data.items:', JSON.stringify(data.items, null, 2));
+      console.log('[DEBUG] Valid items after filter:', JSON.stringify(validItems, null, 2));
       console.log('[DEBUG] Order data to send:', orderData);
-      console.log('[DEBUG] Items:', orderData.items);
+      console.log('[DEBUG] Items:', JSON.stringify(orderData.items, null, 2));
 
       await printOrderService.createPrintOrder(orderData);
 
