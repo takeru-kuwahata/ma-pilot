@@ -343,6 +343,7 @@ export interface PrintOrderFormItem {
   subtotal?: number;                // 自動計算
   design_fee?: number;              // 自動計算
   delivery_days?: number;           // 自動計算
+  specifications?: PriceTableSpecifications | string; // オブジェクトまたはJSON文字列
 }
 
 export interface PrintOrderFormData {
@@ -354,7 +355,7 @@ export interface PrintOrderFormData {
   // 後方互換性のため残す（相談モードで使用）
   product_type?: string;
   quantity?: number;
-  specifications?: PriceTableSpecifications;
+  specifications?: PriceTableSpecifications | string; // オブジェクトまたはJSON文字列
   delivery_date?: string;
   design_required?: boolean;
   notes?: string;
