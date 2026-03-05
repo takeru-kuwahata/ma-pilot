@@ -865,14 +865,12 @@ export default function PrintOrderFormPhase2() {
               type="submit"
               variant="contained"
               size="large"
-              disabled={
-                submitting ||
-                (pattern === 'reorder' &&
-                  (!watchItems ||
-                   watchItems.filter(item => item?.product_type && item.product_type.trim() !== '').length === 0
-                  )
-                )
-              }
+              disabled={(() => {
+                const validItemCount = watchItems?.filter(item => item?.product_type && item.product_type.trim() !== '').length || 0;
+                const isDisabled = submitting || (pattern === 'reorder' && validItemCount === 0);
+                console.log('[DEBUG] Submit button - pattern:', pattern, 'validItems:', validItemCount, 'disabled:', isDisabled);
+                return isDisabled;
+              })()}
               sx={{ minWidth: 200 }}
             >
               {submitting ? <CircularProgress size={24} /> : '注文を送信'}
