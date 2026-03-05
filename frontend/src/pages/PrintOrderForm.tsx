@@ -132,6 +132,12 @@ export default function PrintOrderFormPhase2() {
     name: 'items',
   });
 
+  // 相談モードの商品種類を監視
+  const watchConsultationProductType = useWatch({
+    control,
+    name: 'product_type',
+  });
+
   // 価格マスタ取得
   useEffect(() => {
     const fetchPriceTables = async () => {
@@ -630,15 +636,27 @@ export default function PrintOrderFormPhase2() {
                   <Controller
                     name="quantity"
                     control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label="数量（任意）"
-                        type="number"
-                        fullWidth
-                        inputProps={{ min: 1 }}
-                      />
-                    )}
+                    render={({ field }) => {
+                      const availableQuantities = watchConsultationProductType
+                        ? getAvailableQuantities(watchConsultationProductType)
+                        : [];
+
+                      return (
+                        <FormControl fullWidth disabled={!watchConsultationProductType}>
+                          <InputLabel>数量（任意）</InputLabel>
+                          <Select {...field} label="数量（任意）" value={field.value || ''}>
+                            <MenuItem value="">
+                              <em>未定</em>
+                            </MenuItem>
+                            {availableQuantities.map((qty) => (
+                              <MenuItem key={qty} value={qty}>
+                                {qty.toLocaleString()}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      );
+                    }}
                   />
                 </Grid>
               </>
