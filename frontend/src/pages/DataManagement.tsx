@@ -216,6 +216,52 @@ export const DataManagement = () => {
     setSnackbarOpen(false);
   };
 
+  // CSVテンプレートダウンロード
+  const handleDownloadTemplate = () => {
+    // CSVヘッダー（フォームの順番に合わせる）
+    const headers = [
+      '対象年月',
+      '保険診療収入',
+      '自由診療収入',
+      '物販（その他）',
+      '変動費',
+      '固定費',
+      '新患数',
+      '再診患者数'
+    ];
+
+    // サンプル行（1行だけ）
+    const sampleRow = [
+      '2026-01',
+      '2500000',
+      '1500000',
+      '300000',
+      '800000',
+      '2000000',
+      '45',
+      '380'
+    ];
+
+    // CSV形式に変換（UTF-8 BOM付き）
+    const csvContent = [
+      headers.join(','),
+      sampleRow.join(',')
+    ].join('\n');
+
+    // BOM付きでダウンロード（Excel互換）
+    const bom = '\uFEFF';
+    const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', '月次データ入力テンプレート.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
       {/* ページヘッダー */}
@@ -370,6 +416,23 @@ export const DataManagement = () => {
             <UploadFileIcon sx={{ fontSize: '20px' }} />
             CSVファイル選択
           </Button>
+          <Box sx={{ mt: 2 }}>
+            <Button
+              variant="text"
+              onClick={handleDownloadTemplate}
+              sx={{
+                fontSize: '14px',
+                color: '#1976D2',
+                textDecoration: 'underline',
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  textDecoration: 'underline',
+                },
+              }}
+            >
+              📄 CSVテンプレートをダウンロード
+            </Button>
+          </Box>
         </Paper>
       </Box>
 
