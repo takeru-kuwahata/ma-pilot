@@ -149,11 +149,17 @@ class PrintOrderService:
         if order_data.pattern == PrintOrderPattern.REORDER:
             logger.info(f"[DEBUG] Reorder pattern detected")
             logger.info(f"[DEBUG] order_data.items is None: {order_data.items is None}")
+            logger.info(f"[DEBUG] order_data.items type: {type(order_data.items)}")
+            logger.info(f"[DEBUG] order_data.items value: {order_data.items}")
             logger.info(f"[DEBUG] order_data.items length: {len(order_data.items) if order_data.items else 0}")
 
-            if not order_data.items or len(order_data.items) == 0:
-                logger.error("[DEBUG] No items provided for reorder pattern")
-                raise ValueError("再注文パターンでは商品明細が必須です")
+            if not order_data.items:
+                logger.error("[DEBUG] order_data.items is None or empty (falsy)")
+                raise ValueError("再注文パターンでは商品明細が必須です（items is None or falsy）")
+
+            if len(order_data.items) == 0:
+                logger.error("[DEBUG] order_data.items is empty list")
+                raise ValueError("再注文パターンでは商品明細が必須です（items is empty list）")
 
             # 各商品のproduct_typeとquantityをバリデーション
             for idx, item in enumerate(order_data.items):
