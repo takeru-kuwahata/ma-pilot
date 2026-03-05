@@ -19,12 +19,15 @@ async def get_clinic(
     clinic_service: ClinicService = Depends(get_clinic_service),
     user_context: UserContext = Depends(get_current_user_metadata)
 ):
-    '''Get clinic by ID'''
-    if not user_context.has_clinic_access(clinic_id):
-        raise HTTPException(status_code=403, detail='You do not have access to this clinic')
-
+    '''Get clinic by ID or slug'''
     try:
+        # First fetch clinic (handles both UUID and slug)
         clinic = await clinic_service.get_clinic(clinic_id)
+
+        # Then check permission using actual UUID
+        if not user_context.has_clinic_access(clinic.id):
+            raise HTTPException(status_code=403, detail='You do not have access to this clinic')
+
         return ClinicResponse(data=clinic)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -38,11 +41,16 @@ async def update_clinic(
     user_context: UserContext = Depends(get_current_user_metadata)
 ):
     '''Update clinic'''
-    if not user_context.can_edit_clinic_data(clinic_id):
-        raise HTTPException(status_code=403, detail='You do not have permission to edit this clinic')
-
     try:
-        clinic = await clinic_service.update_clinic(clinic_id, request)
-        return ClinicResponse(data=clinic, message='Clinic updated successfully')
+        # First fetch clinic to get UUID (handles both UUID and slug)
+        clinic = await clinic_service.get_clinic(clinic_id)
+
+        # Then check permission using actual UUID
+        if not user_context.can_edit_clinic_data(clinic.id):
+            raise HTTPException(status_code=403, detail='You do not have permission to edit this clinic')
+
+        # Update using actual UUID
+        updated_clinic = await clinic_service.update_clinic(clinic.id, request)
+        return ClinicResponse(data=updated_clinic, message='Clinic updated successfully')
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
