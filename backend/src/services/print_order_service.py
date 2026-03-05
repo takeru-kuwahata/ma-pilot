@@ -23,7 +23,7 @@ class PrintOrderService:
 
     def __init__(self, supabase: Client):
         self.supabase = supabase
-        self.email_service = EmailService()
+        self.email_service = EmailService(supabase)
 
     # ============================================
     # 価格表関連

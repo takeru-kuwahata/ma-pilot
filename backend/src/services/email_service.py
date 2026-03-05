@@ -2,6 +2,7 @@
 import logging
 from typing import Optional
 from datetime import datetime
+from supabase import Client
 
 logger = logging.getLogger(__name__)
 
@@ -9,9 +10,42 @@ logger = logging.getLogger(__name__)
 class EmailService:
     """メール送信サービス"""
 
-    def __init__(self):
-        """初期化"""
-        pass
+    def __init__(self, supabase: Optional[Client] = None):
+        """初期化
+
+        Args:
+            supabase: Supabaseクライアント（system_settingsテーブルからメールアドレス取得用）
+        """
+        self.supabase = supabase
+        self._cached_email = None
+
+    def get_print_order_email(self) -> str:
+        """印刷物注文メール受信先アドレスを取得
+
+        Returns:
+            メールアドレス（デフォルト: dr@medical-advance.com）
+        """
+        if self._cached_email:
+            return self._cached_email
+
+        if not self.supabase:
+            return "dr@medical-advance.com"
+
+        try:
+            response = (
+                self.supabase.table("system_settings")
+                .select("value")
+                .eq("key", "print_order_email")
+                .single()
+                .execute()
+            )
+            if response.data:
+                self._cached_email = response.data["value"]
+                return self._cached_email
+        except Exception as e:
+            logger.warning(f"Failed to fetch print_order_email from system_settings: {e}")
+
+        return "dr@medical-advance.com"
 
     def send_order_confirmation_to_clinic(
         self,
@@ -126,8 +160,9 @@ MA-Pilot 印刷物受注システム
 """
 
         # MVP版: ログ出力のみ
+        staff_email = self.get_print_order_email()
         logger.info("=" * 80)
-        logger.info("[メール送信 - 京葉広告スタッフ宛]")
+        logger.info(f"[メール送信 - 京葉広告スタッフ宛] To: {staff_email}")
         logger.info(f"Subject: {subject}")
         logger.info(f"Body:\n{body}")
         logger.info("=" * 80)

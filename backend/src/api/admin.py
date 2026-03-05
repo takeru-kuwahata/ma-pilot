@@ -212,26 +212,32 @@ async def delete_operator(
 
 
 @router.get('/settings')
-async def get_admin_settings():
+async def get_admin_settings(supabase: Client = Depends(get_supabase_client)):
     '''Get admin settings'''
-    # Placeholder for system settings
-    return {
-        'settings': {
-            'maintenance_mode': False,
-            'max_clinics': 100,
-            'data_retention_days': 365
-        }
-    }
+    try:
+        response = supabase.table('system_settings').select('*').execute()
+        settings = {row['key']: row['value'] for row in response.data}
+        return {'settings': settings}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.put('/settings')
-async def update_admin_settings(settings: Dict[str, Any]):
+async def update_admin_settings(
+    settings: Dict[str, str],
+    supabase: Client = Depends(get_supabase_client)
+):
     '''Update admin settings'''
-    # Placeholder for updating system settings
-    return {
-        'message': 'Settings updated successfully',
-        'settings': settings
-    }
+    try:
+        for key, value in settings.items():
+            # Upsert (INSERT or UPDATE)
+            supabase.table('system_settings').upsert({
+                'key': key,
+                'value': value
+            }).execute()
+        return {'message': 'Settings updated successfully', 'settings': settings}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get('/geocode')

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -24,6 +24,11 @@ export const AdminMySettings = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [savingPw, setSavingPw] = useState(false);
   const [pwMsg, setPwMsg] = useState('');
+
+  // メール設定（印刷物注文受信先）
+  const [printOrderEmail, setPrintOrderEmail] = useState('');
+  const [savingEmail, setSavingEmail] = useState(false);
+  const [emailMsg, setEmailMsg] = useState('');
 
   const handleSaveName = async () => {
     if (!displayName.trim()) return;
@@ -75,6 +80,38 @@ export const AdminMySettings = () => {
     }
   };
 
+  const handleSaveEmail = async () => {
+    if (!printOrderEmail.trim()) return;
+    setSavingEmail(true);
+    setEmailMsg('');
+    try {
+      await fetch(`${API_BASE_URL}/api/admin/settings`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ print_order_email: printOrderEmail.trim() }),
+      }).then(handleResponse);
+      setEmailMsg('メールアドレスを更新しました');
+    } catch (e) {
+      setEmailMsg(`エラー: ${e instanceof Error ? e.message : String(e)}`);
+    } finally {
+      setSavingEmail(false);
+    }
+  };
+
+  useEffect(() => {
+    // 印刷物注文メール受信先を取得
+    fetch(`${API_BASE_URL}/api/admin/settings`, {
+      headers: getAuthHeaders(),
+    })
+      .then(handleResponse)
+      .then((data: { settings: Record<string, string> }) => {
+        setPrintOrderEmail(data.settings.print_order_email || 'dr@medical-advance.com');
+      })
+      .catch(() => {
+        setPrintOrderEmail('dr@medical-advance.com');
+      });
+  }, []);
+
   return (
     <>
       <Box sx={{ marginBottom: '24px' }}>
@@ -112,6 +149,38 @@ export const AdminMySettings = () => {
             startIcon={savingName ? <CircularProgress size={16} sx={{ color: '#fff' }} /> : undefined}
           >
             {savingName ? '保存中...' : '保存する'}
+          </Button>
+        </Box>
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* メール設定 */}
+        <Typography sx={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px' }}>
+          印刷物注文メール受信先
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <TextField
+            label="メールアドレス"
+            type="email"
+            value={printOrderEmail}
+            onChange={(e) => setPrintOrderEmail(e.target.value)}
+            fullWidth
+            placeholder="例：dr@medical-advance.com"
+            helperText="印刷物注文時にこのアドレスへ通知メールが送信されます"
+          />
+          {emailMsg && (
+            <Typography sx={{ fontSize: '13px', color: emailMsg.startsWith('エラー') ? '#F44336' : '#4CAF50' }}>
+              {emailMsg}
+            </Typography>
+          )}
+          <Button
+            variant="contained"
+            onClick={handleSaveEmail}
+            disabled={savingEmail || !printOrderEmail.trim()}
+            sx={{ backgroundColor: '#FF6B35', '&:hover': { backgroundColor: '#E55A2B' }, alignSelf: 'flex-start' }}
+            startIcon={savingEmail ? <CircularProgress size={16} sx={{ color: '#fff' }} /> : undefined}
+          >
+            {savingEmail ? '保存中...' : '保存する'}
           </Button>
         </Box>
 
