@@ -179,11 +179,16 @@ export default function PrintOrderFormPhase2() {
 
     try {
       // Phase 2: 複数商品対応
+      // 再注文パターンの場合、空のproduct_typeを持つアイテムを除外
+      const validItems = pattern === 'reorder' && data.items
+        ? data.items.filter(item => item.product_type && item.product_type.trim() !== '' && item.quantity > 0)
+        : undefined;
+
       const orderData: PrintOrderFormData = {
         clinic_name: data.clinic_name,
         email: data.email,
         pattern,
-        items: pattern === 'reorder' ? data.items : undefined,
+        items: validItems,
         product_type: pattern === 'consultation' ? data.product_type : undefined,
         quantity: pattern === 'consultation' ? data.quantity : undefined,
         delivery_date: data.delivery_date || '',
@@ -196,6 +201,7 @@ export default function PrintOrderFormPhase2() {
       };
 
       console.log('[DEBUG] Form data:', data);
+      console.log('[DEBUG] Valid items after filter:', validItems);
       console.log('[DEBUG] Order data to send:', orderData);
       console.log('[DEBUG] Items:', orderData.items);
 
