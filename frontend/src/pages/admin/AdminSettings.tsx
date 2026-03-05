@@ -8,6 +8,7 @@ import {
   Switch,
   Alert,
   Divider,
+  Chip,
 } from '@mui/material';
 import {
   Save as SaveIcon,
@@ -65,36 +66,40 @@ export const AdminSettings = () => {
     maintenanceMode: false,
   });
 
+  const showNotImplementedAlert = () => {
+    alert('この機能は未実装です。\n\n実装が必要な場合はお知らせください。\n優先順位に応じて実装します。');
+  };
+
   const handleSaveApiSettings = () => {
-    // TODO: Phase 4でAPI呼び出し実装
+    showNotImplementedAlert();
   };
 
   const handleTestConnection = () => {
-    // TODO: Phase 4でAPI接続テスト実装
+    showNotImplementedAlert();
   };
 
   const handleSaveEmailSettings = () => {
-    // TODO: Phase 4でAPI呼び出し実装
+    showNotImplementedAlert();
   };
 
   const handleSendTestEmail = () => {
-    // TODO: Phase 4でテストメール送信実装
+    showNotImplementedAlert();
   };
 
   const handleSaveSystemSettings = () => {
-    // TODO: Phase 4でAPI呼び出し実装
+    showNotImplementedAlert();
   };
 
   const handleExportData = () => {
-    // TODO: Phase 4でデータエクスポート実装
+    showNotImplementedAlert();
   };
 
   const handleDeleteInactiveClinics = () => {
-    // TODO: Phase 4で削除処理実装（確認ダイアログ付き）
+    showNotImplementedAlert();
   };
 
   const handleDeleteOldLogs = () => {
-    // TODO: Phase 4で削除処理実装（確認ダイアログ付き）
+    showNotImplementedAlert();
   };
 
   return (
@@ -121,6 +126,24 @@ export const AdminSettings = () => {
           外部API設定、メール設定、システム全般の設定
         </Typography>
       </Box>
+
+      {/* 現状説明 */}
+      <Alert severity="info" sx={{ mb: 3 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+          システム設定について
+        </Typography>
+        <Typography variant="body2">
+          このページで設定できる項目：
+        </Typography>
+        <ul style={{ marginTop: '8px', marginBottom: '8px' }}>
+          <li><strong>外部API設定:</strong> 現在はダミーデータ。実装すれば環境変数を管理画面から変更可能になります。</li>
+          <li><strong>メール設定:</strong> 現在はダミーデータ。実装すればSMTP設定を変更可能になります。</li>
+          <li><strong>システム全般設定:</strong> 現在はダミーデータ。実装すれば新規登録承認制やトライアル期間を設定可能になります。</li>
+        </ul>
+        <Typography variant="body2" sx={{ fontWeight: 600, mt: 1 }}>
+          これらの機能を実装しますか？
+        </Typography>
+      </Alert>
 
       {/* 外部API設定 */}
       <Paper
