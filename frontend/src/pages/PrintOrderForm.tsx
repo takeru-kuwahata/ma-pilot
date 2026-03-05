@@ -662,6 +662,14 @@ export default function PrintOrderFormPhase2() {
                       helperText={errors.delivery_address?.message || (clinicData?.address && !isAddressEditable ? 'クリニック情報から自動入力されています' : undefined)}
                       placeholder="〒000-0000 東京都..."
                       disabled={!isAddressEditable && !!clinicData?.address}
+                      InputProps={{
+                        sx: {
+                          color: 'text.primary',
+                          '& .MuiInputBase-input.Mui-disabled': {
+                            WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)',
+                          },
+                        },
+                      }}
                     />
                   )}
                 />
@@ -696,6 +704,14 @@ export default function PrintOrderFormPhase2() {
                       helperText={errors.daytime_contact?.message || (clinicData?.phone_number && !isPhoneEditable ? 'クリニック情報から自動入力されています' : undefined)}
                       placeholder="03-1234-5678"
                       disabled={!isPhoneEditable && !!clinicData?.phone_number}
+                      InputProps={{
+                        sx: {
+                          color: 'text.primary',
+                          '& .MuiInputBase-input.Mui-disabled': {
+                            WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)',
+                          },
+                        },
+                      }}
                     />
                   )}
                 />
@@ -737,7 +753,7 @@ export default function PrintOrderFormPhase2() {
                         label={
                           <Box>
                             <Typography component="span">デザイン修正費を含めたお見積りを依頼する</Typography>
-                            <Typography variant="caption" display="block" color="text.secondary" sx={{ mt: 0.5 }}>
+                            <Typography variant="caption" display="block" color="error" sx={{ mt: 0.5, fontWeight: 600 }}>
                               ※上記の見積もり金額にデザイン修正費が加わることをご了承ください
                             </Typography>
                           </Box>
