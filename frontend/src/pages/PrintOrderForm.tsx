@@ -236,11 +236,12 @@ export default function PrintOrderFormPhase2() {
                   cursor: 'pointer',
                   border: pattern === 'consultation' ? '3px solid' : '1px solid',
                   borderColor: pattern === 'consultation' ? 'primary.main' : 'divider',
-                  bgcolor: pattern === 'consultation' ? 'primary.light' : 'background.paper',
+                  bgcolor: pattern === 'consultation' ? 'rgba(255, 152, 0, 0.08)' : 'background.paper',
                   transition: 'all 0.3s',
                   '&:hover': {
                     borderColor: 'primary.main',
                     boxShadow: 3,
+                    bgcolor: pattern === 'consultation' ? 'rgba(255, 152, 0, 0.08)' : 'rgba(255, 152, 0, 0.04)',
                   },
                 }}
                 onClick={() => {
@@ -256,7 +257,7 @@ export default function PrintOrderFormPhase2() {
                       value="consultation"
                       sx={{ mr: 1 }}
                     />
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
                       相談フォーム
                     </Typography>
                   </Box>
@@ -272,11 +273,12 @@ export default function PrintOrderFormPhase2() {
                   cursor: 'pointer',
                   border: pattern === 'reorder' ? '3px solid' : '1px solid',
                   borderColor: pattern === 'reorder' ? 'primary.main' : 'divider',
-                  bgcolor: pattern === 'reorder' ? 'primary.light' : 'background.paper',
+                  bgcolor: pattern === 'reorder' ? 'rgba(255, 152, 0, 0.08)' : 'background.paper',
                   transition: 'all 0.3s',
                   '&:hover': {
                     borderColor: 'primary.main',
                     boxShadow: 3,
+                    bgcolor: pattern === 'reorder' ? 'rgba(255, 152, 0, 0.08)' : 'rgba(255, 152, 0, 0.04)',
                   },
                 }}
                 onClick={() => {
@@ -292,7 +294,7 @@ export default function PrintOrderFormPhase2() {
                       value="reorder"
                       sx={{ mr: 1 }}
                     />
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
                       再注文
                     </Typography>
                   </Box>
