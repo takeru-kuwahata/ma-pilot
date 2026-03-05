@@ -147,53 +147,8 @@ class PrintOrderService:
 
         # 再注文パターンの場合、明細から合計金額を計算
         if order_data.pattern == PrintOrderPattern.REORDER:
-            logger.info(f"[DEBUG] Reorder pattern detected")
-            logger.info(f"[DEBUG] order_data.items is None: {order_data.items is None}")
-            logger.info(f"[DEBUG] order_data.items type: {type(order_data.items)}")
-            logger.info(f"[DEBUG] order_data.items value: {order_data.items}")
-            logger.info(f"[DEBUG] order_data.items length: {len(order_data.items) if order_data.items else 0}")
-
-            if not order_data.items:
-                logger.error("[DEBUG] order_data.items is None or empty (falsy)")
-                raise ValueError("再注文パターンでは商品明細が必須です（items is None or falsy）")
-
-            if len(order_data.items) == 0:
-                logger.error("[DEBUG] order_data.items is empty list")
-                raise ValueError("再注文パターンでは商品明細が必須です（items is empty list）")
-
-            # 各商品のproduct_typeとquantityをバリデーション
-            for idx, item in enumerate(order_data.items):
-                logger.info(f"[DEBUG] Validating item {idx}")
-                logger.info(f"[DEBUG] item object: {item}")
-                logger.info(f"[DEBUG] item dict: {item.model_dump()}")
-                logger.info(f"[DEBUG] item.product_type type: {type(item.product_type)}")
-                logger.info(f"[DEBUG] item.product_type value: '{item.product_type}'")
-                logger.info(f"[DEBUG] item.product_type repr: {repr(item.product_type)}")
-                logger.info(f"[DEBUG] item.product_type is None: {item.product_type is None}")
-                logger.info(f"[DEBUG] item.product_type len: {len(item.product_type) if item.product_type else 'N/A'}")
-                logger.info(f"[DEBUG] item.quantity: {item.quantity}")
-                logger.info(f"[DEBUG] item.quantity type: {type(item.quantity)}")
-
-                # 検証を一時的に緩和してログを見る
-                if item.product_type is None:
-                    logger.error(f"[DEBUG] Item {idx} has None product_type")
-                    raise ValueError(f"再注文パターンでは商品種類と数量が必須です（product_type is None）")
-
-                if not isinstance(item.product_type, str):
-                    logger.error(f"[DEBUG] Item {idx} product_type is not a string, type: {type(item.product_type)}")
-                    raise ValueError(f"再注文パターンでは商品種類と数量が必須です（product_type is not string）")
-
-                if len(item.product_type) == 0:
-                    logger.error(f"[DEBUG] Item {idx} has empty string product_type")
-                    raise ValueError(f"再注文パターンでは商品種類と数量が必須です（product_type is empty string）")
-
-                if item.product_type.strip() == "":
-                    logger.error(f"[DEBUG] Item {idx} has whitespace-only product_type")
-                    raise ValueError(f"再注文パターンでは商品種類と数量が必須です（product_type is whitespace）")
-
-                if not item.quantity or item.quantity <= 0:
-                    logger.error(f"[DEBUG] Item {idx} has invalid quantity: {item.quantity}")
-                    raise ValueError(f"再注文パターンでは商品種類と数量が必須です（invalid quantity）")
+            if not order_data.items or len(order_data.items) == 0:
+                raise ValueError("再注文パターンでは商品明細が必須です")
 
             # 各商品の価格を計算
             item_count = len(order_data.items)

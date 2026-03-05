@@ -87,22 +87,6 @@ async def create_print_order(
     service: PrintOrderService = Depends(get_print_order_service),
 ):
     """注文を作成"""
-    import logging
-    import json
-    logger = logging.getLogger(__name__)
-
-    # Pydantic model dump for debugging
-    logger.info(f"[API DEBUG] Full order_data dump: {json.dumps(order_data.model_dump(), ensure_ascii=False, default=str)}")
-
-    # APIエンドポイントレベルでのデバッグログ
-    logger.info(f"[API DEBUG] Received order_data.pattern: {order_data.pattern}")
-    logger.info(f"[API DEBUG] order_data.items type: {type(order_data.items)}")
-    logger.info(f"[API DEBUG] order_data.items: {order_data.items}")
-    if order_data.items:
-        logger.info(f"[API DEBUG] Items count: {len(order_data.items)}")
-        for idx, item in enumerate(order_data.items):
-            logger.info(f"[API DEBUG] Item {idx}: product_type='{item.product_type}', quantity={item.quantity}")
-
     try:
         order = service.create_order(order_data)
         return ApiResponse(
@@ -110,10 +94,8 @@ async def create_print_order(
             message="注文を受け付けました",
         )
     except ValueError as e:
-        logger.error(f"[API DEBUG] ValueError: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        logger.error(f"[API DEBUG] Exception: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
