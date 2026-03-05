@@ -131,6 +131,7 @@ export const LoginPage = () => {
                 fullWidth
                 label="メールアドレス"
                 type="email"
+                name="email"
                 value={loginData.email}
                 onChange={(e) =>
                   setLoginData({ ...loginData, email: e.target.value })
@@ -138,7 +139,7 @@ export const LoginPage = () => {
                 margin="normal"
                 required
                 placeholder="your@email.com"
-                inputProps={{ autoComplete: 'email' }}
+                inputProps={{ autoComplete: 'username' }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '&.Mui-focused fieldset': {
@@ -154,6 +155,7 @@ export const LoginPage = () => {
                 fullWidth
                 label="パスワード"
                 type="password"
+                name="password"
                 value={loginData.password}
                 onChange={(e) =>
                   setLoginData({ ...loginData, password: e.target.value })

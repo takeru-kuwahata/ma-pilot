@@ -56,7 +56,7 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
         <TrendIcon sx={{ fontSize: 16, color: trendColor }} />
         <Typography variant="caption" sx={{ color: trendColor, fontWeight: 600 }}>
-          {isPositive ? '+' : ''}{kpi.comparison.month_over_month}%
+          {isPositive ? '+' : ''}{kpi.comparison.month_over_month.toFixed(1)}%
         </Typography>
         <Typography variant="caption" color="text.secondary">
           前月比

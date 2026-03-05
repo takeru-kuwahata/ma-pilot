@@ -125,6 +125,7 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
               value={formData.year_month}
               onChange={handleYearMonthChange}
               InputLabelProps={{ shrink: true }}
+              inputProps={{ min: '2020-01', max: '2099-12' }}
             />
           </Grid>
 
