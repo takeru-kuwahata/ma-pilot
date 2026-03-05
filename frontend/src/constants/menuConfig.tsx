@@ -89,12 +89,6 @@ export const adminMenuItems: MenuItemConfig[] = [
     roles: ['system_admin'],
   },
   {
-    path: '/admin/settings',
-    label: 'システム設定',
-    icon: <AdminPanelSettingsIcon />,
-    roles: ['system_admin'],
-  },
-  {
     path: '/admin/price-tables',
     label: '価格表管理',
     icon: <EditNoteIcon />,
