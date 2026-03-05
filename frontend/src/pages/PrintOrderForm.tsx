@@ -529,7 +529,7 @@ export default function PrintOrderFormPhase2() {
                     商品を追加
                   </Button>
                   {pattern === 'reorder' &&
-                   (!watchItems || watchItems.length === 0 || watchItems.every(item => !item?.product_type || item.product_type.trim() === '')) && (
+                   (!watchItems || watchItems.filter(item => item?.product_type && item.product_type.trim() !== '').length === 0) && (
                     <Typography variant="caption" color="error" display="block" sx={{ mt: 1 }}>
                       ※最低1つの商品を選択してください
                     </Typography>
@@ -869,8 +869,7 @@ export default function PrintOrderFormPhase2() {
                 submitting ||
                 (pattern === 'reorder' &&
                   (!watchItems ||
-                   watchItems.length === 0 ||
-                   watchItems.every(item => !item?.product_type || item.product_type.trim() === '')
+                   watchItems.filter(item => item?.product_type && item.product_type.trim() !== '').length === 0
                   )
                 )
               }
