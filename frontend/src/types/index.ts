@@ -327,6 +327,10 @@ export interface PrintOrderFormData {
   delivery_date?: string;
   design_required?: boolean;
   notes?: string;
+  // Phase 1 追加フィールド
+  delivery_address?: string;        // 納品先住所
+  daytime_contact?: string;         // 日中連絡先
+  terms_agreed?: boolean;           // 注意事項への同意
 }
 
 export interface PriceEstimateRequest {

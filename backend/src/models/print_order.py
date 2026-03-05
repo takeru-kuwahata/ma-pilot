@@ -131,6 +131,10 @@ class PrintOrderCreate(BaseModel):
     delivery_date: Optional[str] = None  # ISO 8601形式
     design_required: Optional[bool] = False
     notes: Optional[str] = None
+    # Phase 1 追加フィールド
+    delivery_address: Optional[str] = Field(None, max_length=500)
+    daytime_contact: Optional[str] = Field(None, max_length=100)
+    terms_agreed: Optional[bool] = False
 
 
 class PrintOrderUpdate(BaseModel):

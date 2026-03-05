@@ -38,7 +38,8 @@ const PRODUCT_TYPES = [
   '名刺（片面・モノクロ）',
   '名刺（両面・カラー）',
   '名刺（両面・モノクロ）',
-  'リコールハガキ',
+  'リコールハガキ（官製はがき）',
+  'リコールハガキ（ポストカード）',
   'A4三つ折りリーフレット',
   'ネームプレート',
 ];
@@ -77,6 +78,9 @@ export default function PrintOrderForm() {
       delivery_date: '',
       design_required: false,
       notes: '',
+      delivery_address: '',
+      daytime_contact: '',
+      terms_agreed: false,
     },
   });
 
@@ -170,6 +174,9 @@ export default function PrintOrderForm() {
         delivery_date: data.delivery_date || '',
         design_required: data.design_required || false,
         notes: data.notes || '',
+        delivery_address: data.delivery_address || '',
+        daytime_contact: data.daytime_contact || '',
+        terms_agreed: data.terms_agreed || false,
       };
 
       await printOrderService.createPrintOrder(orderData);
@@ -391,10 +398,55 @@ export default function PrintOrderForm() {
               <Grid item xs={12}>
                 <Alert severity="info">
                   <Typography variant="body2">
-                    ご注文確定後、<strong>{DELIVERY_DAYS}日後に発送予定</strong>です。
-                    お急ぎの場合は備考欄にご記入ください。
+                    {pattern === 'consultation' ? (
+                      <>オンラインにてご注文いただいた後、内容を確認のうえ、正式なお見積りおよび制作内容について担当者よりご連絡させていただきます。</>
+                    ) : (
+                      <>ご注文確定後、<strong>{DELIVERY_DAYS}日後に発送予定</strong>です。お急ぎの場合は備考欄にご記入ください。</>
+                    )}
                   </Typography>
                 </Alert>
+              </Grid>
+
+              {/* 納品先住所 */}
+              <Grid item xs={12}>
+                <Controller
+                  name="delivery_address"
+                  control={control}
+                  rules={{ required: '納品先住所は必須です' }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="納品先住所"
+                      fullWidth
+                      required
+                      multiline
+                      rows={2}
+                      error={!!errors.delivery_address}
+                      helperText={errors.delivery_address?.message}
+                      placeholder="〒000-0000 東京都..."
+                    />
+                  )}
+                />
+              </Grid>
+
+              {/* 日中連絡先 */}
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name="daytime_contact"
+                  control={control}
+                  rules={{ required: '日中連絡先は必須です' }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="日中連絡先（電話番号）"
+                      fullWidth
+                      required
+                      error={!!errors.daytime_contact}
+                      helperText={errors.daytime_contact?.message}
+                      placeholder="03-1234-5678"
+                    />
+                  )}
+                />
               </Grid>
 
               {/* デザイン要否 */}
@@ -453,6 +505,67 @@ export default function PrintOrderForm() {
                 </CardContent>
               </Card>
             )}
+
+            {/* 注意事項 */}
+            <Paper sx={{ mt: 4, p: 3, bgcolor: '#fff3e0' }}>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                印刷物ご注文の方はご一読ください
+              </Typography>
+
+              <Typography variant="subtitle2" sx={{ mt: 2, mb: 1, fontWeight: 600 }}>
+                【印刷物の色合いについて】
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 2 }}>
+                ・パソコンなどの画面上で表示されるRGBカラーと、印刷時に使用されるCMYKカラーでは色の再現方式が異なるため、画面上と実際の印刷物の色味に差異が生じる場合がございます。<br />
+                ・仕上がりの色合いに関しまして、印刷毎に機械が変わるため同一データであっても毎回同じ色合いでの仕上がりは保証しかねます。<br />
+                ・ゴールド、シルバー、ブロンズ等の色は出力出来かねる為、ベージュやグレーなどの【近似色対応】となります。
+              </Typography>
+
+              <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
+                【各印刷物の修正費用に関して】
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 2 }}>
+                ・修正費用は、修正の内容、量によって異なります。ご依頼時に算出いたしますが、作成過程で増えた場合は別途料金が発生いたしますので予めご了承ください。
+              </Typography>
+
+              <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
+                【納品に関して】
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 2 }}>
+                天候・交通事情により商品のお届けに遅れが生じる可能性がございます。お客様には大変ご迷惑をお掛けいたしますが、何卒ご理解を賜りますようお願い申し上げます。
+              </Typography>
+
+              <Controller
+                name="terms_agreed"
+                control={control}
+                rules={{ required: '注意事項への同意が必要です' }}
+                render={({ field }) => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        {...field}
+                        checked={field.value}
+                        sx={{
+                          '&.Mui-checked': {
+                            color: '#ff6b35',
+                          },
+                        }}
+                      />
+                    }
+                    label={
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        上記の注意事項を確認しました
+                      </Typography>
+                    }
+                  />
+                )}
+              />
+              {errors.terms_agreed && (
+                <Typography variant="caption" color="error" display="block" sx={{ mt: 1 }}>
+                  {errors.terms_agreed.message}
+                </Typography>
+              )}
+            </Paper>
 
             {/* 送信ボタン */}
             <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
