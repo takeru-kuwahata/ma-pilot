@@ -39,6 +39,7 @@ import PrintOrderHistory from './pages/PrintOrderHistory';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminClinics } from './pages/admin/AdminClinics';
 import { AdminOperators } from './pages/admin/AdminOperators';
+import { AdminSettings } from './pages/admin/AdminSettings';
 import { AdminMySettings } from './pages/admin/AdminMySettings';
 import PriceTableManagement from './pages/PriceTableManagement';
 
@@ -107,6 +108,7 @@ function App() {
                     <Route path="/admin/dashboard" element={<AdminDashboard />} />
                     <Route path="/admin/operators" element={<AdminOperators />} />
                     <Route path="/admin/clinics" element={<AdminClinics />} />
+                    <Route path="/admin/settings" element={<AdminSettings />} />
                     <Route path="/admin/price-tables" element={<PriceTableManagement />} />
                     <Route path="/admin/print-orders" element={<PrintOrderHistory />} />
                     <Route path="/admin/my-settings" element={<AdminMySettings />} />
