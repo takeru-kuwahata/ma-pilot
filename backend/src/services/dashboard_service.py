@@ -41,7 +41,7 @@ class DashboardService:
                     alerts=[],
                     trends=[],
                     last_updated=datetime.now().isoformat(),
-                    data_source='No data available'
+                    data_source='データなし'
                 )
 
             # Current month (most recent)
@@ -75,7 +75,7 @@ class DashboardService:
                 alerts=alerts,
                 trends=trends,
                 last_updated=datetime.now().isoformat(),
-                data_source='Monthly data input'
+                data_source='月次データ入力'
             )
 
         except Exception as e:
@@ -92,7 +92,7 @@ class DashboardService:
 
         kpis.append(DashboardKpi(
             id=str(uuid.uuid4()),
-            label='Total Revenue',
+            label='総売上',
             value=current_revenue,
             unit='¥',
             comparison=KpiComparison(
@@ -108,7 +108,7 @@ class DashboardService:
 
         kpis.append(DashboardKpi(
             id=str(uuid.uuid4()),
-            label='Operating Profit',
+            label='営業利益',
             value=current_profit,
             unit='¥',
             comparison=KpiComparison(
@@ -124,7 +124,7 @@ class DashboardService:
 
         kpis.append(DashboardKpi(
             id=str(uuid.uuid4()),
-            label='Total Patients',
+            label='総患者数',
             value=current_patients,
             unit='人',
             comparison=KpiComparison(
@@ -152,8 +152,8 @@ class DashboardService:
                 alerts.append(DashboardAlert(
                     id=str(uuid.uuid4()),
                     severity='warning',
-                    title='Profit Decline',
-                    message='Operating profit decreased compared to last month',
+                    title='利益減少',
+                    message='営業利益が前月と比較して減少しています',
                     timestamp=datetime.now().isoformat()
                 ))
 
@@ -162,8 +162,8 @@ class DashboardService:
                 alerts.append(DashboardAlert(
                     id=str(uuid.uuid4()),
                     severity='info',
-                    title='Patient Count Decrease',
-                    message='Total patients decreased compared to last month',
+                    title='患者数減少',
+                    message='総患者数が前月と比較して減少しています',
                     timestamp=datetime.now().isoformat()
                 ))
 
