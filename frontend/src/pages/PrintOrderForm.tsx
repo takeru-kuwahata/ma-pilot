@@ -225,29 +225,85 @@ export default function PrintOrderFormPhase2() {
         <Divider sx={{ my: 3 }} />
 
         {/* パターン選択 */}
-        <FormControl component="fieldset" sx={{ mb: 4 }}>
-          <FormLabel component="legend">注文パターン</FormLabel>
-          <RadioGroup
-            row
-            value={pattern}
-            onChange={(e) => {
-              setPattern(e.target.value as PrintOrderPattern);
-              setValue('pattern', e.target.value as PrintOrderPattern);
-              setTotalAmount(0);
-            }}
-          >
-            <FormControlLabel
-              value="consultation"
-              control={<Radio />}
-              label="相談フォーム（初回・内容未確定）"
-            />
-            <FormControlLabel
-              value="reorder"
-              control={<Radio />}
-              label="再注文（内容確定・見積もり自動計算）"
-            />
-          </RadioGroup>
-        </FormControl>
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
+            注文パターンを選択してください
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Card
+                sx={{
+                  cursor: 'pointer',
+                  border: pattern === 'consultation' ? '3px solid' : '1px solid',
+                  borderColor: pattern === 'consultation' ? 'primary.main' : 'divider',
+                  bgcolor: pattern === 'consultation' ? 'primary.light' : 'background.paper',
+                  transition: 'all 0.3s',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    boxShadow: 3,
+                  },
+                }}
+                onClick={() => {
+                  setPattern('consultation');
+                  setValue('pattern', 'consultation');
+                  setTotalAmount(0);
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                    <Radio
+                      checked={pattern === 'consultation'}
+                      value="consultation"
+                      sx={{ mr: 1 }}
+                    />
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      相談フォーム
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" color="text.secondary">
+                    初回のご注文や内容が未確定の場合はこちら。担当者よりご連絡いたします。
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Card
+                sx={{
+                  cursor: 'pointer',
+                  border: pattern === 'reorder' ? '3px solid' : '1px solid',
+                  borderColor: pattern === 'reorder' ? 'primary.main' : 'divider',
+                  bgcolor: pattern === 'reorder' ? 'primary.light' : 'background.paper',
+                  transition: 'all 0.3s',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    boxShadow: 3,
+                  },
+                }}
+                onClick={() => {
+                  setPattern('reorder');
+                  setValue('pattern', 'reorder');
+                  setTotalAmount(0);
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                    <Radio
+                      checked={pattern === 'reorder'}
+                      value="reorder"
+                      sx={{ mr: 1 }}
+                    />
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      再注文
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" color="text.secondary">
+                    内容が確定している場合はこちら。見積もりを自動計算します。
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Box>
 
         {/* 成功・エラーメッセージ */}
         {submitSuccess && (
