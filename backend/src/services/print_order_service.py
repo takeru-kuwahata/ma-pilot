@@ -124,6 +124,16 @@ class PrintOrderService:
 
     def create_order(self, order_data: PrintOrderCreate) -> PrintOrder:
         """注文を作成（Phase 2: 複数商品対応）"""
+        import logging
+        logger = logging.getLogger(__name__)
+
+        # デバッグログ
+        logger.info(f"[DEBUG] create_order called with pattern: {order_data.pattern}")
+        logger.info(f"[DEBUG] order_data.items: {order_data.items}")
+        if order_data.items:
+            for idx, item in enumerate(order_data.items):
+                logger.info(f"[DEBUG] Item {idx}: product_type={item.product_type}, quantity={item.quantity}")
+
         # 仕様をJSON文字列に変換
         specifications_str = (
             json.dumps(order_data.specifications, ensure_ascii=False)
