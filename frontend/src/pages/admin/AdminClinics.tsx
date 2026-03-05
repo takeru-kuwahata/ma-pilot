@@ -60,6 +60,7 @@ export const AdminClinics = () => {
   const [geocoding, setGeocoding] = useState(false);
   const [newClinic, setNewClinic] = useState({
     name: '',
+    slug: '',
     postal_code: '',
     address: '',
     phone_number: '',
@@ -248,7 +249,7 @@ export const AdminClinics = () => {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setNewClinic({ name: '', postal_code: '', address: '', phone_number: '', owner_id: '', latitude: 35.6762, longitude: 139.6503 });
+    setNewClinic({ name: '', slug: '', postal_code: '', address: '', phone_number: '', owner_id: '', latitude: 35.6762, longitude: 139.6503 });
     setSearchQuery(''); // 検索ボックスをクリア
   };
 
@@ -584,6 +585,14 @@ export const AdminClinics = () => {
               onChange={(e) => setNewClinic((prev) => ({ ...prev, name: e.target.value }))}
               fullWidth
               required
+            />
+            <TextField
+              label="URL識別子（スラッグ）※任意"
+              value={newClinic.slug}
+              onChange={(e) => setNewClinic((prev) => ({ ...prev, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') }))}
+              fullWidth
+              placeholder="例: kanda-soba"
+              helperText="URL用の識別子（半角英数字とハイフンのみ）。未入力の場合はIDを使用します。"
             />
             <TextField
               label="郵便番号"
