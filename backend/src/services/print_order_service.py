@@ -151,7 +151,6 @@ class PrintOrderService:
                 raise ValueError("再注文パターンでは商品明細が必須です")
 
             # 各商品の価格を計算
-            item_count = len(order_data.items)
             for item in order_data.items:
                 price_table = self.find_matching_price_table(
                     item.product_type, item.quantity
@@ -162,10 +161,9 @@ class PrintOrderService:
                     )
                 total_amount += price_table.price
 
-            # 送料を加算（商品数 × 1000円）
-            SHIPPING_FEE_PER_ITEM = 1000
-            shipping_fee = SHIPPING_FEE_PER_ITEM * item_count
-            total_amount += shipping_fee
+            # 送料を加算（定額1000円）
+            SHIPPING_FEE = 1000
+            total_amount += SHIPPING_FEE
             estimated_price = total_amount
 
         # print_ordersテーブルに挿入

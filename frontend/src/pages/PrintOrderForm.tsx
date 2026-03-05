@@ -28,22 +28,28 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
-import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import type {
   PrintOrderFormData,
   PriceTable,
   PrintOrderPattern,
+  Clinic,
 } from '../types';
 import * as printOrderService from '../services/printOrderService';
+import * as clinicService from '../services/api/clinicService';
 import { useCurrentClinic } from '../hooks/useCurrentClinic';
 import { useAuthStore } from '../stores/authStore';
 
-const SHIPPING_FEE = 1000; // 送料（税抜）
+const SHIPPING_FEE = 1000; // 送料（税抜・定額）
 const DELIVERY_DAYS = 7; // 発送予定日数
 
 export default function PrintOrderFormPhase2() {
-  const { clinicName } = useCurrentClinic();
+  const { clinicName, clinicId } = useCurrentClinic();
   const { user } = useAuthStore();
 
   const [pattern, setPattern] = useState<PrintOrderPattern>('consultation');
@@ -53,6 +59,11 @@ export default function PrintOrderFormPhase2() {
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submittedOrderId, setSubmittedOrderId] = useState<string | null>(null);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [clinicData, setClinicData] = useState<Clinic | null>(null);
+  const [isAddressEditable, setIsAddressEditable] = useState(false);
+  const [isPhoneEditable, setIsPhoneEditable] = useState(false);
 
   const {
     control,
@@ -80,6 +91,28 @@ export default function PrintOrderFormPhase2() {
     control,
     name: 'items',
   });
+
+  // クリニックデータ取得
+  useEffect(() => {
+    const fetchClinicData = async () => {
+      if (clinicId) {
+        try {
+          const data = await clinicService.getClinic(clinicId);
+          setClinicData(data);
+          // 住所と電話番号を自動反映
+          if (data.address) {
+            setValue('delivery_address', data.address);
+          }
+          if (data.phone) {
+            setValue('daytime_contact', data.phone);
+          }
+        } catch (error) {
+          console.error('クリニック情報取得エラー:', error);
+        }
+      }
+    };
+    fetchClinicData();
+  }, [clinicId, setValue]);
 
   // クリニック名とメールアドレスを自動反映
   useEffect(() => {
@@ -144,16 +177,13 @@ export default function PrintOrderFormPhase2() {
   useEffect(() => {
     if (pattern === 'reorder' && watchItems && Array.isArray(watchItems)) {
       let subtotal = 0;
-      let itemCount = 0;
       watchItems.forEach((item) => {
         if (item?.product_type && item?.quantity) {
           const price = getItemPrice(item.product_type, item.quantity);
           subtotal += price;
-          itemCount++;
         }
       });
-      const shippingFee = SHIPPING_FEE * itemCount; // 商品数 × 送料
-      const total = subtotal + shippingFee;
+      const total = subtotal + SHIPPING_FEE; // 定額送料
       setTotalAmount(total);
     } else {
       setTotalAmount(0);
@@ -204,16 +234,16 @@ export default function PrintOrderFormPhase2() {
         specifications: data.specifications ? JSON.stringify(data.specifications) : undefined,
       };
 
-      await printOrderService.createPrintOrder(orderData);
+      const result = await printOrderService.createPrintOrder(orderData);
 
+      setSubmittedOrderId(result.id);
+      setSuccessModalOpen(true);
       setSubmitSuccess(true);
       reset();
       setTotalAmount(0);
-
-      // 成功メッセージを5秒後に消す
-      setTimeout(() => {
-        setSubmitSuccess(false);
-      }, 5000);
+      // 編集状態をリセット
+      setIsAddressEditable(false);
+      setIsPhoneEditable(false);
     } catch (error) {
       console.error('注文送信エラー:', error);
       setSubmitError(
@@ -222,6 +252,11 @@ export default function PrintOrderFormPhase2() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleCloseSuccessModal = () => {
+    setSuccessModalOpen(false);
+    setSubmittedOrderId(null);
   };
 
   return (
@@ -316,12 +351,30 @@ export default function PrintOrderFormPhase2() {
           </Grid>
         </Box>
 
-        {/* 成功・エラーメッセージ */}
-        {submitSuccess && (
-          <Alert severity="success" sx={{ mb: 3 }}>
-            ご注文を受け付けました。確認メールをお送りしましたのでご確認ください。
-          </Alert>
-        )}
+        {/* 成功モーダル */}
+        <Dialog open={successModalOpen} onClose={handleCloseSuccessModal}>
+          <DialogTitle>注文を受け付けました</DialogTitle>
+          <DialogContent>
+            <Typography variant="body1" gutterBottom>
+              ご注文ありがとうございます。
+            </Typography>
+            {submittedOrderId && (
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                注文ID: {submittedOrderId}
+              </Typography>
+            )}
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              確認メールをお送りしましたのでご確認ください。
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseSuccessModal} variant="contained">
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* エラーメッセージ */}
         {submitError && (
           <Alert severity="error" sx={{ mb: 3 }}>
             {submitError}
@@ -368,7 +421,7 @@ export default function PrintOrderFormPhase2() {
                     fullWidth
                     required
                     error={!!errors.email}
-                    helperText={errors.email?.message || '登録されているメールアドレスが自動入力されています。異なる場合は修正してください。'}
+                    helperText={errors.email?.message || '登録されているメールアドレスが自動入力されています。変更も可能です。'}
                   />
                 )}
               />
@@ -476,14 +529,11 @@ export default function PrintOrderFormPhase2() {
                 {/* 合計金額表示 */}
                 {totalAmount > 0 && (() => {
                   let subtotal = 0;
-                  let itemCount = 0;
                   watchItems?.forEach((item) => {
                     if (item?.product_type && item?.quantity) {
                       subtotal += getItemPrice(item.product_type, item.quantity);
-                      itemCount++;
                     }
                   });
-                  const shippingFee = SHIPPING_FEE * itemCount;
 
                   return (
                     <Card sx={{ mt: 3, bgcolor: 'primary.light', color: 'primary.contrastText' }}>
@@ -495,7 +545,7 @@ export default function PrintOrderFormPhase2() {
                           ¥{totalAmount.toLocaleString()}
                         </Typography>
                         <Typography variant="body2" display="block" sx={{ mt: 2 }}>
-                          内訳：商品代 ¥{subtotal.toLocaleString()} + 送料 ¥{shippingFee.toLocaleString()}（{itemCount}商品 × ¥{SHIPPING_FEE.toLocaleString()}）
+                          内訳：商品代 ¥{subtotal.toLocaleString()} + 送料 ¥{SHIPPING_FEE.toLocaleString()}（定額）
                         </Typography>
                         <Typography variant="caption" display="block" sx={{ mt: 1 }}>
                           ※この金額は自動計算による概算です。正式な見積もりは別途メールでお送りします。
@@ -599,58 +649,101 @@ export default function PrintOrderFormPhase2() {
 
             {/* 納品先住所 */}
             <Grid item xs={12}>
-              <Controller
-                name="delivery_address"
-                control={control}
-                rules={{ required: '納品先住所は必須です' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="納品先住所"
-                    fullWidth
-                    required
-                    multiline
-                    rows={2}
-                    error={!!errors.delivery_address}
-                    helperText={errors.delivery_address?.message}
-                    placeholder="〒000-0000 東京都..."
-                  />
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                <Controller
+                  name="delivery_address"
+                  control={control}
+                  rules={{ required: '納品先住所は必須です' }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="納品先住所"
+                      fullWidth
+                      required
+                      multiline
+                      rows={2}
+                      error={!!errors.delivery_address}
+                      helperText={errors.delivery_address?.message || (clinicData?.address && !isAddressEditable ? 'クリニック情報から自動入力されています' : undefined)}
+                      placeholder="〒000-0000 東京都..."
+                      disabled={!isAddressEditable && !!clinicData?.address}
+                    />
+                  )}
+                />
+                {!isAddressEditable && clinicData?.address && (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<EditIcon />}
+                    onClick={() => setIsAddressEditable(true)}
+                    sx={{ mt: 0.5, minWidth: '80px' }}
+                  >
+                    編集
+                  </Button>
                 )}
-              />
+              </Box>
             </Grid>
 
             {/* 日中連絡先 */}
             <Grid item xs={12} sm={6}>
-              <Controller
-                name="daytime_contact"
-                control={control}
-                rules={{ required: '日中連絡先は必須です' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="日中連絡先（電話番号）"
-                    fullWidth
-                    required
-                    error={!!errors.daytime_contact}
-                    helperText={errors.daytime_contact?.message}
-                    placeholder="03-1234-5678"
-                  />
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                <Controller
+                  name="daytime_contact"
+                  control={control}
+                  rules={{ required: '日中連絡先は必須です' }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="日中連絡先（電話番号）"
+                      fullWidth
+                      required
+                      error={!!errors.daytime_contact}
+                      helperText={errors.daytime_contact?.message || (clinicData?.phone && !isPhoneEditable ? 'クリニック情報から自動入力されています' : undefined)}
+                      placeholder="03-1234-5678"
+                      disabled={!isPhoneEditable && !!clinicData?.phone}
+                    />
+                  )}
+                />
+                {!isPhoneEditable && clinicData?.phone && (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<EditIcon />}
+                    onClick={() => setIsPhoneEditable(true)}
+                    sx={{ mt: 0.5, minWidth: '80px' }}
+                  >
+                    編集
+                  </Button>
                 )}
-              />
+              </Box>
             </Grid>
 
             {/* デザイン要否 */}
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name="design_required"
-                control={control}
-                render={({ field }) => (
-                  <FormControlLabel
-                    control={<Checkbox {...field} checked={field.value} />}
-                    label="デザイン作成を依頼する"
-                  />
-                )}
-              />
+            <Grid item xs={12}>
+              <FormControl component="fieldset">
+                <FormLabel component="legend">デザイン修正について</FormLabel>
+                <Controller
+                  name="design_required"
+                  control={control}
+                  render={({ field }) => (
+                    <RadioGroup
+                      {...field}
+                      value={field.value ? 'yes' : 'no'}
+                      onChange={(e) => field.onChange(e.target.value === 'yes')}
+                    >
+                      <FormControlLabel
+                        value="no"
+                        control={<Radio />}
+                        label="データ修正なしで印刷物作成を依頼する"
+                      />
+                      <FormControlLabel
+                        value="yes"
+                        control={<Radio />}
+                        label="デザイン修正費を含めたお見積りを依頼する"
+                      />
+                    </RadioGroup>
+                  )}
+                />
+              </FormControl>
             </Grid>
 
             {/* 備考 */}

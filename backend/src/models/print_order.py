@@ -1,7 +1,8 @@
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, Dict, Any, List
+from pydantic import BaseModel, EmailStr, Field, field_validator
+from typing import Optional, Dict, Any, List, Union
 from datetime import datetime
 from enum import Enum
+import json
 
 
 class PrintOrderPattern(str, Enum):
@@ -45,10 +46,18 @@ class PriceTable(BaseModel):
     price: int
     design_fee: int
     design_fee_included: bool
-    specifications: Optional[str] = None
+    specifications: Optional[Union[str, Dict[str, Any]]] = None
     delivery_days: int
     created_at: datetime
     updated_at: datetime
+
+    @field_validator('specifications', mode='before')
+    @classmethod
+    def convert_specifications(cls, v):
+        """JSONB (dict) を文字列に変換"""
+        if isinstance(v, dict):
+            return json.dumps(v, ensure_ascii=False)
+        return v
 
     class Config:
         from_attributes = True
