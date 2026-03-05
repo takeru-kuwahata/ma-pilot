@@ -32,17 +32,7 @@ import * as printOrderService from '../services/printOrderService';
 import { useCurrentClinic } from '../hooks/useCurrentClinic';
 import { useAuthStore } from '../stores/authStore';
 
-const PRODUCT_TYPES = [
-  '診察券',
-  '名刺（片面・カラー）',
-  '名刺（片面・モノクロ）',
-  '名刺（両面・カラー）',
-  '名刺（両面・モノクロ）',
-  'リコールハガキ（官製はがき）',
-  'リコールハガキ（ポストカード）',
-  'A4三つ折りリーフレット',
-  'ネームプレート',
-];
+// PRODUCT_TYPESは動的にprice_tablesから取得するため削除
 
 const SHIPPING_FEE = 1000; // 送料（税抜）
 const DELIVERY_DAYS = 7; // 発送予定日数
@@ -53,6 +43,7 @@ export default function PrintOrderForm() {
 
   const [pattern, setPattern] = useState<PrintOrderPattern>('consultation');
   const [priceTables, setPriceTables] = useState<PriceTable[]>([]);
+  const [availableProductTypes, setAvailableProductTypes] = useState<string[]>([]);
   const [selectedProductType, setSelectedProductType] = useState<string>('');
   const [availableQuantities, setAvailableQuantities] = useState<number[]>([]);
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
@@ -103,6 +94,12 @@ export default function PrintOrderForm() {
       try {
         const data = await printOrderService.getPriceTables();
         setPriceTables(data);
+
+        // 重複なしの商品種類リストを作成
+        const uniqueProductTypes = Array.from(
+          new Set(data.map((pt) => pt.product_type))
+        ).sort();
+        setAvailableProductTypes(uniqueProductTypes);
       } catch (error) {
         console.error('価格マスタ取得エラー:', error);
         setSubmitError('価格マスタの取得に失敗しました。');
@@ -303,7 +300,7 @@ export default function PrintOrderForm() {
                         <FormControl fullWidth required error={!!errors.product_type}>
                           <InputLabel>商品種類</InputLabel>
                           <Select {...field} label="商品種類">
-                            {PRODUCT_TYPES.map((type) => (
+                            {availableProductTypes.map((type) => (
                               <MenuItem key={type} value={type}>
                                 {type}
                               </MenuItem>
@@ -365,7 +362,7 @@ export default function PrintOrderForm() {
                             <MenuItem value="">
                               <em>未定</em>
                             </MenuItem>
-                            {PRODUCT_TYPES.map((type) => (
+                            {availableProductTypes.map((type) => (
                               <MenuItem key={type} value={type}>
                                 {type}
                               </MenuItem>
