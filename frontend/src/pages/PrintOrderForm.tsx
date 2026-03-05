@@ -181,7 +181,10 @@ export default function PrintOrderFormPhase2() {
       // Phase 2: 複数商品対応
       // 再注文パターンの場合、空のproduct_typeを持つアイテムを除外
       const validItems = pattern === 'reorder' && data.items
-        ? data.items.filter(item => item.product_type && item.product_type.trim() !== '' && item.quantity > 0)
+        ? data.items.filter(item => item.product_type && item.product_type.trim() !== '' && item.quantity > 0).map(item => ({
+            ...item,
+            specifications: item.specifications ? JSON.stringify(item.specifications) : undefined
+          }))
         : undefined;
 
       const orderData: PrintOrderFormData = {
@@ -198,13 +201,8 @@ export default function PrintOrderFormPhase2() {
         daytime_contact: data.daytime_contact || '',
         terms_agreed: data.terms_agreed || false,
         payment_method: pattern === 'reorder' ? data.payment_method : undefined,
+        specifications: data.specifications ? JSON.stringify(data.specifications) : undefined,
       };
-
-      console.log('[DEBUG] Form data:', data);
-      console.log('[DEBUG] data.items:', JSON.stringify(data.items, null, 2));
-      console.log('[DEBUG] Valid items after filter:', JSON.stringify(validItems, null, 2));
-      console.log('[DEBUG] Order data to send:', orderData);
-      console.log('[DEBUG] Items:', JSON.stringify(orderData.items, null, 2));
 
       await printOrderService.createPrintOrder(orderData);
 
