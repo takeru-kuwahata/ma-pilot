@@ -3,12 +3,6 @@ import { Box, Typography, Grid, Paper, Alert, CircularProgress } from '@mui/mate
 import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
-  AttachMoney as AttachMoneyIcon,
-  People as PeopleIcon,
-  MedicalServices as MedicalServicesIcon,
-  Percent as PercentIcon,
-  PersonAdd as PersonAddIcon,
-  EventRepeat as EventRepeatIcon,
 } from '@mui/icons-material';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { DashboardKpi } from '../types';
@@ -26,7 +20,7 @@ import {
 } from 'recharts';
 
 // KPIカードコンポーネント
-const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) => {
+const KpiCard = ({ kpi }: { kpi: DashboardKpi }) => {
   const isPositive = kpi.comparison.trend === 'positive';
   const trendColor = isPositive ? '#388E3C' : '#D32F2F';
   const TrendIcon = isPositive ? TrendingUpIcon : TrendingDownIcon;
@@ -48,7 +42,6 @@ const KpiCard = ({ kpi, icon }: { kpi: DashboardKpi; icon: React.ReactNode }) =>
         <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
           {kpi.label}
         </Typography>
-        <Box sx={{ color: '#9e9e9e' }}>{icon}</Box>
       </Box>
       <Typography variant="h4" sx={{ fontWeight: 600, mb: 1 }}>
         {formatValue()}
@@ -96,17 +89,6 @@ export const Dashboard = () => {
     );
   }
 
-  // KPIアイコンマッピング
-  const kpiIcons = [
-    <AttachMoneyIcon key="icon-0" />,
-    <AttachMoneyIcon key="icon-1" />,
-    <PercentIcon key="icon-2" />,
-    <PeopleIcon key="icon-3" />,
-    <MedicalServicesIcon key="icon-4" />,
-    <PercentIcon key="icon-5" />,
-    <PersonAddIcon key="icon-6" />,
-    <EventRepeatIcon key="icon-7" />,
-  ];
 
   // グラフデータのフォーマット（月次推移）
   let chartData: Array<{ month: string; 総売上: number; 営業利益: number }> = [];
@@ -177,9 +159,9 @@ export const Dashboard = () => {
 
         {/* KPIカードグリッド */}
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          {data.kpis.map((kpi, index) => (
+          {data.kpis.map((kpi) => (
             <Grid item xs={12} sm={6} md={3} key={kpi.id}>
-              <KpiCard kpi={kpi} icon={kpiIcons[index]} />
+              <KpiCard kpi={kpi} />
             </Grid>
           ))}
         </Grid>
