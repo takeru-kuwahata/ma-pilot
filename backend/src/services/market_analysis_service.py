@@ -17,6 +17,12 @@ class MarketAnalysisService:
         self.e_stat_api_key = os.getenv('E_STAT_API_KEY')
         self.resas_api_key = os.getenv('RESAS_API_KEY')
 
+        # Debug: Log environment variable status
+        print(f'[DEBUG] GOOGLE_MAPS_API_KEY: {"SET" if self.google_maps_api_key else "NOT SET"}')
+        print(f'[DEBUG] E_STAT_API_KEY: {"SET" if self.e_stat_api_key else "NOT SET"}')
+        if self.google_maps_api_key:
+            print(f'[DEBUG] GOOGLE_MAPS_API_KEY length: {len(self.google_maps_api_key)}')
+
     def _calculate_distance(self, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
         '''Calculate distance between two points using Haversine formula (returns km)'''
         R = 6371  # Earth radius in kilometers
