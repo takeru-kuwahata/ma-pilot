@@ -140,14 +140,17 @@ export default function PrintOrderFormPhase2() {
   // 合計金額の自動計算
   useEffect(() => {
     if (pattern === 'reorder' && watchItems) {
-      let total = 0;
+      let subtotal = 0;
+      let itemCount = 0;
       watchItems.forEach((item) => {
         if (item.product_type && item.quantity) {
           const price = getItemPrice(item.product_type, item.quantity);
-          total += price;
+          subtotal += price;
+          itemCount++;
         }
       });
-      total += SHIPPING_FEE; // 送料加算
+      const shippingFee = SHIPPING_FEE * itemCount; // 商品数 × 送料
+      const total = subtotal + shippingFee;
       setTotalAmount(total);
     } else {
       setTotalAmount(0);
@@ -400,27 +403,39 @@ export default function PrintOrderFormPhase2() {
                 </Button>
 
                 {/* 合計金額表示 */}
-                {totalAmount > 0 && (
-                  <Card sx={{ mt: 3, bgcolor: 'primary.light', color: 'primary.contrastText' }}>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        合計金額（税抜）
-                      </Typography>
-                      <Typography variant="h4">
-                        ¥{totalAmount.toLocaleString()}
-                      </Typography>
-                      <Typography variant="body2" display="block" sx={{ mt: 2 }}>
-                        内訳：商品代 ¥{(totalAmount - SHIPPING_FEE).toLocaleString()} + 送料 ¥{SHIPPING_FEE.toLocaleString()}
-                      </Typography>
-                      <Typography variant="caption" display="block" sx={{ mt: 1 }}>
-                        ※この金額は自動計算による概算です。正式な見積もりは別途メールでお送りします。
-                      </Typography>
-                      <Typography variant="caption" display="block">
-                        ※税込金額は見積書にてご確認ください。
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                )}
+                {totalAmount > 0 && (() => {
+                  let subtotal = 0;
+                  let itemCount = 0;
+                  watchItems?.forEach((item) => {
+                    if (item.product_type && item.quantity) {
+                      subtotal += getItemPrice(item.product_type, item.quantity);
+                      itemCount++;
+                    }
+                  });
+                  const shippingFee = SHIPPING_FEE * itemCount;
+
+                  return (
+                    <Card sx={{ mt: 3, bgcolor: 'primary.light', color: 'primary.contrastText' }}>
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                          合計金額（税抜）
+                        </Typography>
+                        <Typography variant="h4">
+                          ¥{totalAmount.toLocaleString()}
+                        </Typography>
+                        <Typography variant="body2" display="block" sx={{ mt: 2 }}>
+                          内訳：商品代 ¥{subtotal.toLocaleString()} + 送料 ¥{shippingFee.toLocaleString()}（{itemCount}商品 × ¥{SHIPPING_FEE.toLocaleString()}）
+                        </Typography>
+                        <Typography variant="caption" display="block" sx={{ mt: 1 }}>
+                          ※この金額は自動計算による概算です。正式な見積もりは別途メールでお送りします。
+                        </Typography>
+                        <Typography variant="caption" display="block">
+                          ※税込金額は見積書にてご確認ください。
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  );
+                })()}
 
                 {/* 決済方法選択 */}
                 <Grid item xs={12} sx={{ mt: 3 }}>
