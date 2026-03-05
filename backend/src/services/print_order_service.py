@@ -140,6 +140,13 @@ class PrintOrderService:
             if not order_data.items or len(order_data.items) == 0:
                 raise ValueError("再注文パターンでは商品明細が必須です")
 
+            # 各商品のproduct_typeとquantityをバリデーション
+            for idx, item in enumerate(order_data.items):
+                if not item.product_type or item.product_type.strip() == "":
+                    raise ValueError(f"再注文パターンでは商品種類と数量が必須です")
+                if not item.quantity or item.quantity <= 0:
+                    raise ValueError(f"再注文パターンでは商品種類と数量が必須です")
+
             # 各商品の価格を計算
             item_count = len(order_data.items)
             for item in order_data.items:

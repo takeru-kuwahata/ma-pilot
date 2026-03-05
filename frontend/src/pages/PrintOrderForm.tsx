@@ -195,6 +195,10 @@ export default function PrintOrderFormPhase2() {
         payment_method: pattern === 'reorder' ? data.payment_method : undefined,
       };
 
+      console.log('[DEBUG] Form data:', data);
+      console.log('[DEBUG] Order data to send:', orderData);
+      console.log('[DEBUG] Items:', orderData.items);
+
       await printOrderService.createPrintOrder(orderData);
 
       setSubmitSuccess(true);

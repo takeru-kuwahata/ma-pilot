@@ -1,0 +1,114 @@
+- generic [ref=e1]:
+  - generic [ref=e268]:
+    - banner [ref=e269]:
+      - generic [ref=e270]:
+        - generic [ref=e271]:
+          - generic [ref=e272]: MA
+          - heading [level=6] [ref=e584]: MA-Pilot
+          - paragraph [ref=e274]: 神田駅そば総合歯科
+        - button [ref=e585] [cursor=pointer]:
+          - img [ref=e277]
+          - text: 運営者モードへ
+        - generic [ref=e279]:
+          - generic [ref=e280]: 桑
+          - paragraph [ref=e281]: 桑畑 健
+    - generic [ref=e282]:
+      - list [ref=e283]:
+        - listitem [ref=e284]:
+          - button [ref=e586] [cursor=pointer]:
+            - img [ref=e287]
+            - generic [ref=e290]: ダッシュボード
+        - listitem [ref=e291]:
+          - button [ref=e587] [cursor=pointer]:
+            - img [ref=e294]
+            - generic [ref=e297]: 基礎データ管理
+        - listitem [ref=e298]:
+          - button [ref=e588] [cursor=pointer]:
+            - img [ref=e301]
+            - generic [ref=e304]: 診療圏分析
+        - listitem [ref=e305]:
+          - button [ref=e589] [cursor=pointer]:
+            - img [ref=e308]
+            - generic [ref=e311]: 経営シミュレーション
+        - listitem [ref=e312]:
+          - button [ref=e590] [cursor=pointer]:
+            - img [ref=e315]
+            - generic [ref=e318]: レポート管理
+        - listitem [ref=e319]:
+          - button [ref=e591] [cursor=pointer]:
+            - img [ref=e322]
+            - generic [ref=e325]: 印刷物発注
+        - listitem [ref=e326]:
+          - button [ref=e592] [cursor=pointer]:
+            - img [ref=e329]
+            - generic [ref=e332]: 印刷物発注履歴
+        - listitem [ref=e333]:
+          - button [ref=e593] [cursor=pointer]:
+            - img [ref=e336]
+            - generic [ref=e339]: 医院設定
+        - listitem [ref=e340]:
+          - button [ref=e594] [cursor=pointer]:
+            - img [ref=e343]
+            - generic [ref=e346]: スタッフ管理
+      - separator [ref=e347]
+      - list [ref=e348]:
+        - listitem [ref=e349]:
+          - button [ref=e595] [cursor=pointer]:
+            - img [ref=e352]
+            - generic [ref=e355]: マイページ設定
+        - listitem [ref=e356]:
+          - button [ref=e596] [cursor=pointer]:
+            - img [ref=e359]
+            - generic [ref=e362]: ログアウト
+    - main [ref=e363]:
+      - generic [ref=e559]:
+        - heading [level=4] [ref=e597]: スタッフ管理
+        - paragraph [ref=e561]: スタッフアカウントの招待・権限管理
+      - alert [ref=e562]:
+        - img [ref=e564]
+        - paragraph [ref=e567]: スタッフを招待すると、登録したメールアドレスに招待リンクが送信されます。 権限は、オーナー（全権限）、編集者（閲覧・編集）、閲覧者（閲覧のみ）の3種類です。
+      - generic [ref=e568]:
+        - generic [ref=e569]:
+          - heading [level=6] [ref=e598]: 登録スタッフ一覧
+          - button [ref=e599] [cursor=pointer]:
+            - img [ref=e573]
+            - text: スタッフを招待
+        - table [ref=e576]:
+          - rowgroup [ref=e577]:
+            - row [ref=e600]:
+              - columnheader [ref=e601]: 名前
+              - columnheader [ref=e602]: メールアドレス
+              - columnheader [ref=e603]: 権限
+              - columnheader [ref=e604]: 登録日
+              - columnheader [ref=e605]: 操作
+  - generic [ref=e267]: "10"
+  - dialog "スタッフを招待" [ref=e608]:
+    - heading "スタッフを招待" [level=2] [ref=e609]:
+      - paragraph [ref=e610]: スタッフを招待
+    - generic [ref=e612]:
+      - generic [ref=e613]:
+        - generic [ref=e629]:
+          - text: メールアドレス
+          - generic [ref=e630]: "*"
+        - generic [ref=e614]:
+          - textbox "メールアドレス" [active] [ref=e615]:
+            - /placeholder: example@clinic.jp
+            - text: test-staff@example.com
+          - group:
+            - generic: メールアドレス *
+      - generic [ref=e616]:
+        - generic [ref=e617]:
+          - text: 権限
+          - generic [ref=e618]: "*"
+        - generic [ref=e619]:
+          - combobox [ref=e620] [cursor=pointer]: 医院閲覧者
+          - textbox: clinic_viewer
+          - img
+          - group:
+            - generic: 権限 *
+      - alert [ref=e621]:
+        - img [ref=e623]
+        - paragraph [ref=e626]: 招待メールが送信されます。受信者はメール内のリンクからアカウントを作成できます。
+    - generic [ref=e627]:
+      - button "キャンセル" [ref=e628] [cursor=pointer]
+      - button "招待する" [ref=e631] [cursor=pointer]
