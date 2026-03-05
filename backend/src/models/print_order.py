@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from datetime import datetime
 from enum import Enum
 
@@ -96,23 +96,55 @@ class PriceEstimateResponse(BaseModel):
 # 注文関連モデル
 # ============================================
 
+class PrintOrderItem(BaseModel):
+    """印刷物注文明細（Phase 2）"""
+    id: str
+    order_id: str
+    product_type: str
+    quantity: int
+    unit_price: int
+    subtotal: int
+    design_fee: int = 0
+    delivery_days: int = 7
+    specifications: Optional[Dict[str, Any]] = None
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class PrintOrderItemCreate(BaseModel):
+    """印刷物注文明細作成"""
+    product_type: str = Field(..., min_length=1, max_length=100)
+    quantity: int = Field(..., gt=0)
+    unit_price: Optional[int] = Field(None, ge=0)  # 自動計算可能
+    subtotal: Optional[int] = Field(None, ge=0)    # 自動計算可能
+    design_fee: Optional[int] = Field(0, ge=0)
+    delivery_days: Optional[int] = Field(7, gt=0)
+    specifications: Optional[Dict[str, Any]] = None
+
+
 class PrintOrder(BaseModel):
     """印刷物注文"""
     id: str
     clinic_name: str
     email: EmailStr
     pattern: PrintOrderPattern
-    product_type: Optional[str] = None
-    quantity: Optional[int] = None
     specifications: Optional[str] = None
     delivery_date: Optional[datetime] = None
     design_required: Optional[bool] = False
     notes: Optional[str] = None
     estimated_price: Optional[int] = None
+    total_amount: Optional[int] = None  # Phase 2追加
     payment_method: Optional[PaymentMethod] = None
     payment_status: PaymentStatus = PaymentStatus.PENDING
     order_status: OrderStatus = OrderStatus.SUBMITTED
     stripe_payment_intent_id: Optional[str] = None
+    delivery_address: Optional[str] = None  # Phase 1
+    daytime_contact: Optional[str] = None   # Phase 1
+    terms_agreed: Optional[bool] = False    # Phase 1
+    items: Optional[List[PrintOrderItem]] = None  # Phase 2: 注文明細
     created_at: datetime
     updated_at: datetime
 
@@ -125,6 +157,9 @@ class PrintOrderCreate(BaseModel):
     clinic_name: str = Field(..., min_length=1, max_length=200)
     email: EmailStr
     pattern: PrintOrderPattern
+    # Phase 2: 複数商品対応
+    items: Optional[List[PrintOrderItemCreate]] = None  # 商品明細リスト
+    # 後方互換性のため残す（相談モードで使用）
     product_type: Optional[str] = Field(None, max_length=100)
     quantity: Optional[int] = Field(None, gt=0)
     specifications: Optional[Dict[str, Any]] = None
@@ -135,6 +170,8 @@ class PrintOrderCreate(BaseModel):
     delivery_address: Optional[str] = Field(None, max_length=500)
     daytime_contact: Optional[str] = Field(None, max_length=100)
     terms_agreed: Optional[bool] = False
+    # Phase 2 追加フィールド
+    payment_method: Optional[PaymentMethod] = None
 
 
 class PrintOrderUpdate(BaseModel):

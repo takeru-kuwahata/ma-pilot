@@ -7,6 +7,8 @@ from ..models import (
     PriceEstimateResponse,
     PriceEstimateBreakdown,
     PrintOrder,
+    PrintOrderItem,
+    PrintOrderItemCreate,
     PrintOrderCreate,
     PrintOrderUpdate,
     PrintOrderPattern,
@@ -121,7 +123,7 @@ class PrintOrderService:
     # ============================================
 
     def create_order(self, order_data: PrintOrderCreate) -> PrintOrder:
-        """注文を作成"""
+        """注文を作成（Phase 2: 複数商品対応）"""
         # 仕様をJSON文字列に変換
         specifications_str = (
             json.dumps(order_data.specifications, ensure_ascii=False)
@@ -129,51 +131,92 @@ class PrintOrderService:
             else None
         )
 
-        # パターンCの場合、見積もり計算を実行
+        # Phase 2: 複数商品対応
+        total_amount = 0
         estimated_price = None
+
+        # 再注文パターンの場合、明細から合計金額を計算
         if order_data.pattern == PrintOrderPattern.REORDER:
-            if not order_data.product_type or not order_data.quantity:
-                raise ValueError(
-                    "再注文パターンでは商品種類と数量が必須です"
+            if not order_data.items or len(order_data.items) == 0:
+                raise ValueError("再注文パターンでは商品明細が必須です")
+
+            # 各商品の価格を計算
+            for item in order_data.items:
+                price_table = self.find_matching_price_table(
+                    item.product_type, item.quantity
                 )
+                if not price_table:
+                    raise ValueError(
+                        f"商品種類 '{item.product_type}' 数量 {item.quantity} の価格マスタが見つかりません"
+                    )
+                total_amount += price_table.price
 
-            estimate_request = PriceEstimateRequest(
-                product_type=order_data.product_type,
-                quantity=order_data.quantity,
-                specifications=order_data.specifications,
-                design_required=order_data.design_required,
-            )
-            estimate = self.calculate_estimate(estimate_request)
-            estimated_price = estimate.estimated_price
+            # 送料を加算（定数: 1000円）
+            SHIPPING_FEE = 1000
+            total_amount += SHIPPING_FEE
+            estimated_price = total_amount
 
-        # データベースに挿入
+        # print_ordersテーブルに挿入
         insert_data = {
             "clinic_name": order_data.clinic_name,
             "email": order_data.email,
             "pattern": order_data.pattern.value,
-            "product_type": order_data.product_type,
-            "quantity": order_data.quantity,
             "specifications": specifications_str,
             "delivery_date": order_data.delivery_date,
             "design_required": order_data.design_required,
             "notes": order_data.notes,
             "estimated_price": estimated_price,
+            "total_amount": total_amount if total_amount > 0 else None,
+            "payment_method": order_data.payment_method.value if order_data.payment_method else None,
             "order_status": OrderStatus.SUBMITTED.value,
             "payment_status": PaymentStatus.PENDING.value,
+            "delivery_address": order_data.delivery_address,
+            "daytime_contact": order_data.daytime_contact,
+            "terms_agreed": order_data.terms_agreed,
         }
 
         response = self.supabase.table("print_orders").insert(insert_data).execute()
-        created_order = PrintOrder(**response.data[0])
+        created_order_data = response.data[0]
+        order_id = created_order_data["id"]
+
+        # Phase 2: print_order_itemsテーブルに明細を挿入
+        if order_data.items:
+            for item in order_data.items:
+                price_table = self.find_matching_price_table(
+                    item.product_type, item.quantity
+                )
+                if price_table:
+                    item_insert_data = {
+                        "order_id": order_id,
+                        "product_type": item.product_type,
+                        "quantity": item.quantity,
+                        "unit_price": price_table.price,
+                        "subtotal": price_table.price,
+                        "design_fee": item.design_fee or 0,
+                        "delivery_days": item.delivery_days or 7,
+                        "specifications": json.dumps(item.specifications, ensure_ascii=False)
+                        if item.specifications
+                        else None,
+                    }
+                    self.supabase.table("print_order_items").insert(item_insert_data).execute()
+
+        # 注文データを再取得（明細含む）
+        created_order = self.get_order_by_id(order_id)
 
         # メール送信（MVP版: ログ出力のみ）
         try:
             # クリニック宛受付メール
+            product_summary = (
+                f"{len(order_data.items)}点の商品"
+                if order_data.items
+                else order_data.product_type or "未定"
+            )
             self.email_service.send_order_confirmation_to_clinic(
                 order_id=created_order.id,
                 clinic_name=created_order.clinic_name,
                 email=created_order.email,
-                product_type=created_order.product_type,
-                quantity=created_order.quantity,
+                product_type=product_summary,
+                quantity=None,
                 estimated_price=created_order.estimated_price,
             )
 
@@ -182,8 +225,8 @@ class PrintOrderService:
                 order_id=created_order.id,
                 clinic_name=created_order.clinic_name,
                 clinic_email=created_order.email,
-                product_type=created_order.product_type,
-                quantity=created_order.quantity,
+                product_type=product_summary,
+                quantity=None,
                 pattern=created_order.pattern,
                 notes=created_order.notes,
             )
@@ -195,7 +238,7 @@ class PrintOrderService:
         return created_order
 
     def get_orders(self, email: Optional[str] = None) -> List[PrintOrder]:
-        """注文一覧を取得"""
+        """注文一覧を取得（Phase 2: 明細含む）"""
         query = self.supabase.table("print_orders").select("*")
 
         if email:
@@ -203,10 +246,23 @@ class PrintOrderService:
 
         response = query.order("created_at", desc=True).execute()
 
-        return [PrintOrder(**row) for row in response.data]
+        orders = []
+        for row in response.data:
+            # Phase 2: 各注文の明細を取得
+            items_response = (
+                self.supabase.table("print_order_items")
+                .select("*")
+                .eq("order_id", row["id"])
+                .execute()
+            )
+            items = [PrintOrderItem(**item) for item in items_response.data] if items_response.data else []
+            row["items"] = items
+            orders.append(PrintOrder(**row))
+
+        return orders
 
     def get_order_by_id(self, order_id: str) -> Optional[PrintOrder]:
-        """IDで注文を取得"""
+        """IDで注文を取得（Phase 2: 明細含む）"""
         response = (
             self.supabase.table("print_orders")
             .select("*")
@@ -215,7 +271,23 @@ class PrintOrderService:
             .execute()
         )
 
-        return PrintOrder(**response.data) if response.data else None
+        if not response.data:
+            return None
+
+        order_data = response.data
+
+        # Phase 2: 注文明細を取得
+        items_response = (
+            self.supabase.table("print_order_items")
+            .select("*")
+            .eq("order_id", order_id)
+            .execute()
+        )
+
+        items = [PrintOrderItem(**item) for item in items_response.data] if items_response.data else []
+        order_data["items"] = items
+
+        return PrintOrder(**order_data)
 
     def update_order(
         self, order_id: str, update_data: PrintOrderUpdate

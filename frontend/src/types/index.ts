@@ -297,30 +297,61 @@ export interface PriceTable {
   updated_at: string;
 }
 
+// Phase 2: 注文明細
+export interface PrintOrderItem {
+  id: string;
+  order_id: string;             // 注文ID（print_ordersへの外部キー）
+  product_type: string;         // 商品種類
+  quantity: number;             // 数量
+  unit_price: number;           // 単価（円）
+  subtotal: number;             // 小計（円）
+  design_fee: number;           // デザイン料（円）
+  delivery_days: number;        // 納期（日数）
+  specifications?: PriceTableSpecifications; // 仕様詳細
+  created_at: string;
+  updated_at: string;
+}
+
 export interface PrintOrder {
   id: string;
   clinic_name: string;          // クリニック名（必須）
   email: string;                // メールアドレス（必須）
   pattern: PrintOrderPattern;   // パターン（consultation: A/B統合、reorder: C）
-  product_type?: string;        // 商品種類（パターンCでは必須）
-  quantity?: number;            // 数量（パターンCでは必須）
   specifications?: string;      // 仕様詳細（JSON形式文字列）
   delivery_date?: string;       // 納期希望日（ISO 8601形式）
   design_required?: boolean;    // デザイン要否
   notes?: string;               // 備考（自由記述）
   estimated_price?: number;     // 見積もり金額（円、パターンCのみ）
+  total_amount?: number;        // 合計金額（円）Phase 2追加
   payment_method?: PaymentMethod;   // 決済方法
   payment_status: PaymentStatus;    // 決済ステータス
   order_status: OrderStatus;        // 注文ステータス
   stripe_payment_intent_id?: string; // Stripe PaymentIntent ID
+  delivery_address?: string;        // 納品先住所（Phase 1）
+  daytime_contact?: string;         // 日中連絡先（Phase 1）
+  terms_agreed?: boolean;           // 注意事項への同意（Phase 1）
+  items?: PrintOrderItem[];         // 注文明細（Phase 2）
   created_at: string;
   updated_at: string;
+}
+
+// Phase 2: フォーム入力用の商品アイテム
+export interface PrintOrderFormItem {
+  product_type: string;
+  quantity: number;
+  unit_price?: number;              // 自動計算
+  subtotal?: number;                // 自動計算
+  design_fee?: number;              // 自動計算
+  delivery_days?: number;           // 自動計算
 }
 
 export interface PrintOrderFormData {
   clinic_name: string;
   email: string;
   pattern: PrintOrderPattern;
+  // Phase 2: 複数商品対応
+  items?: PrintOrderFormItem[];     // 商品明細リスト
+  // 後方互換性のため残す（相談モードで使用）
   product_type?: string;
   quantity?: number;
   specifications?: PriceTableSpecifications;
@@ -331,6 +362,8 @@ export interface PrintOrderFormData {
   delivery_address?: string;        // 納品先住所
   daytime_contact?: string;         // 日中連絡先
   terms_agreed?: boolean;           // 注意事項への同意
+  // Phase 2 追加フィールド
+  payment_method?: PaymentMethod;   // 決済方法
 }
 
 export interface PriceEstimateRequest {
