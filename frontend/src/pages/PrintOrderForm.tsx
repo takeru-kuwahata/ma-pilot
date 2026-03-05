@@ -41,7 +41,7 @@ import type {
   Clinic,
 } from '../types';
 import * as printOrderService from '../services/printOrderService';
-import * as clinicService from '../services/api/clinicService';
+import { clinicService } from '../services/api/clinicService';
 import { useCurrentClinic } from '../hooks/useCurrentClinic';
 import { useAuthStore } from '../stores/authStore';
 
@@ -57,7 +57,6 @@ export default function PrintOrderFormPhase2() {
   const [availableProductTypes, setAvailableProductTypes] = useState<string[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [submitting, setSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submittedOrderId, setSubmittedOrderId] = useState<string | null>(null);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
@@ -103,8 +102,8 @@ export default function PrintOrderFormPhase2() {
           if (data.address) {
             setValue('delivery_address', data.address);
           }
-          if (data.phone) {
-            setValue('daytime_contact', data.phone);
+          if (data.phone_number) {
+            setValue('daytime_contact', data.phone_number);
           }
         } catch (error) {
           console.error('クリニック情報取得エラー:', error);
@@ -238,7 +237,6 @@ export default function PrintOrderFormPhase2() {
 
       setSubmittedOrderId(result.id);
       setSuccessModalOpen(true);
-      setSubmitSuccess(true);
       reset();
       setTotalAmount(0);
       // 編集状態をリセット
@@ -697,13 +695,13 @@ export default function PrintOrderFormPhase2() {
                       fullWidth
                       required
                       error={!!errors.daytime_contact}
-                      helperText={errors.daytime_contact?.message || (clinicData?.phone && !isPhoneEditable ? 'クリニック情報から自動入力されています' : undefined)}
+                      helperText={errors.daytime_contact?.message || (clinicData?.phone_number && !isPhoneEditable ? 'クリニック情報から自動入力されています' : undefined)}
                       placeholder="03-1234-5678"
-                      disabled={!isPhoneEditable && !!clinicData?.phone}
+                      disabled={!isPhoneEditable && !!clinicData?.phone_number}
                     />
                   )}
                 />
-                {!isPhoneEditable && clinicData?.phone && (
+                {!isPhoneEditable && clinicData?.phone_number && (
                   <Button
                     variant="outlined"
                     size="small"
