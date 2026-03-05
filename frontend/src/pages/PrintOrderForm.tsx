@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import {
   Box,
   Container,
@@ -57,7 +57,6 @@ export default function PrintOrderFormPhase2() {
   const {
     control,
     handleSubmit,
-    watch,
     setValue,
     reset,
     formState: { errors },
@@ -92,7 +91,11 @@ export default function PrintOrderFormPhase2() {
     }
   }, [clinicName, user, setValue]);
 
-  const watchItems = watch('items');
+  // useWatchで配列の内容変更を検知
+  const watchItems = useWatch({
+    control,
+    name: 'items',
+  });
 
   // 価格マスタ取得
   useEffect(() => {
@@ -139,11 +142,11 @@ export default function PrintOrderFormPhase2() {
 
   // 合計金額の自動計算
   useEffect(() => {
-    if (pattern === 'reorder' && watchItems) {
+    if (pattern === 'reorder' && watchItems && Array.isArray(watchItems)) {
       let subtotal = 0;
       let itemCount = 0;
       watchItems.forEach((item) => {
-        if (item.product_type && item.quantity) {
+        if (item?.product_type && item?.quantity) {
           const price = getItemPrice(item.product_type, item.quantity);
           subtotal += price;
           itemCount++;
@@ -155,7 +158,8 @@ export default function PrintOrderFormPhase2() {
     } else {
       setTotalAmount(0);
     }
-  }, [pattern, watchItems, getItemPrice]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pattern, JSON.stringify(watchItems), getItemPrice]);
 
   // 商品を追加
   const handleAddItem = () => {
@@ -407,7 +411,7 @@ export default function PrintOrderFormPhase2() {
                   let subtotal = 0;
                   let itemCount = 0;
                   watchItems?.forEach((item) => {
-                    if (item.product_type && item.quantity) {
+                    if (item?.product_type && item?.quantity) {
                       subtotal += getItemPrice(item.product_type, item.quantity);
                       itemCount++;
                     }
