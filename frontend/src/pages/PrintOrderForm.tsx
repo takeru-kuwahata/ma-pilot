@@ -218,6 +218,13 @@ export default function PrintOrderFormPhase2() {
           }))
         : undefined;
 
+      // 再注文パターンで商品が1つも選択されていない場合はエラー
+      if (pattern === 'reorder' && (!validItems || validItems.length === 0)) {
+        setSubmitError('再注文パターンでは、最低1つの商品を選択してください。');
+        setSubmitting(false);
+        return;
+      }
+
       const orderData: PrintOrderFormData = {
         clinic_name: data.clinic_name,
         email: data.email,
@@ -513,14 +520,21 @@ export default function PrintOrderFormPhase2() {
                   </TableBody>
                 </Table>
 
-                <Button
-                  startIcon={<AddIcon />}
-                  onClick={handleAddItem}
-                  sx={{ mt: 2 }}
-                  variant="outlined"
-                >
-                  商品を追加
-                </Button>
+                <Box sx={{ mt: 2 }}>
+                  <Button
+                    startIcon={<AddIcon />}
+                    onClick={handleAddItem}
+                    variant="outlined"
+                  >
+                    商品を追加
+                  </Button>
+                  {pattern === 'reorder' &&
+                   (!watchItems || watchItems.length === 0 || watchItems.every(item => !item?.product_type || item.product_type.trim() === '')) && (
+                    <Typography variant="caption" color="error" display="block" sx={{ mt: 1 }}>
+                      ※最低1つの商品を選択してください
+                    </Typography>
+                  )}
+                </Box>
 
                 {/* 合計金額表示 */}
                 {totalAmount > 0 && (() => {
@@ -851,7 +865,15 @@ export default function PrintOrderFormPhase2() {
               type="submit"
               variant="contained"
               size="large"
-              disabled={submitting}
+              disabled={
+                submitting ||
+                (pattern === 'reorder' &&
+                  (!watchItems ||
+                   watchItems.length === 0 ||
+                   watchItems.every(item => !item?.product_type || item.product_type.trim() === '')
+                  )
+                )
+              }
               sx={{ minWidth: 200 }}
             >
               {submitting ? <CircularProgress size={24} /> : '注文を送信'}
