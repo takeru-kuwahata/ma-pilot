@@ -88,7 +88,11 @@ async def create_print_order(
 ):
     """注文を作成"""
     import logging
+    import json
     logger = logging.getLogger(__name__)
+
+    # Pydantic model dump for debugging
+    logger.info(f"[API DEBUG] Full order_data dump: {json.dumps(order_data.model_dump(), ensure_ascii=False, default=str)}")
 
     # APIエンドポイントレベルでのデバッグログ
     logger.info(f"[API DEBUG] Received order_data.pattern: {order_data.pattern}")
