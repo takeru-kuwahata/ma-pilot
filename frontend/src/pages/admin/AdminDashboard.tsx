@@ -13,7 +13,6 @@ import {
   TableRow,
   IconButton,
   Chip,
-  LinearProgress,
 } from '@mui/material';
 import {
   Business as BusinessIcon,
@@ -22,7 +21,6 @@ import {
   Description as DescriptionIcon,
   Visibility as VisibilityIcon,
   Edit as EditIcon,
-  ArrowUpward as ArrowUpwardIcon,
 } from '@mui/icons-material';
 import {
   LineChart,
@@ -44,10 +42,6 @@ interface SystemStats {
   activeClinics: number;
   monthlyActiveUsers: number;
   monthlyReports: number;
-  clinicsChange: number;
-  activeClinicsChange: number;
-  usersChange: number;
-  reportsChange: number;
 }
 
 export const AdminDashboard = () => {
@@ -58,10 +52,6 @@ export const AdminDashboard = () => {
     activeClinics: 0,
     monthlyActiveUsers: 0,
     monthlyReports: 0,
-    clinicsChange: 0,
-    activeClinicsChange: 0,
-    usersChange: 0,
-    reportsChange: 0,
   });
   const [clinics, setClinics] = useState<Clinic[]>([]);
   const [, setLoading] = useState(true);
@@ -115,10 +105,6 @@ export const AdminDashboard = () => {
         activeClinics: dashboardData.active_clinics,
         monthlyActiveUsers: dashboardData.total_users,
         monthlyReports: dashboardData.recent_data_entries,
-        clinicsChange: 0,
-        activeClinicsChange: 0,
-        usersChange: 0,
-        reportsChange: 0,
       });
 
       setClinics(clinicsData.slice(0, 5));
@@ -217,18 +203,6 @@ export const AdminDashboard = () => {
           <Typography sx={{ fontSize: '32px', fontWeight: 600, color: '#424242' }}>
             {stats.totalClinics}
           </Typography>
-          <Typography
-            sx={{
-              fontSize: '12px',
-              color: '#4CAF50',
-              marginTop: '8px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <ArrowUpwardIcon sx={{ fontSize: 12 }} />
-            前月比 +{stats.clinicsChange}医院
-          </Typography>
         </Paper>
 
         <Paper
@@ -282,18 +256,6 @@ export const AdminDashboard = () => {
           <Typography sx={{ fontSize: '32px', fontWeight: 600, color: '#424242' }}>
             {stats.monthlyActiveUsers}
           </Typography>
-          <Typography
-            sx={{
-              fontSize: '12px',
-              color: '#4CAF50',
-              marginTop: '8px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <ArrowUpwardIcon sx={{ fontSize: 12 }} />
-            前月比 +{stats.usersChange}人
-          </Typography>
         </Paper>
 
         <Paper
@@ -312,18 +274,6 @@ export const AdminDashboard = () => {
           </Box>
           <Typography sx={{ fontSize: '32px', fontWeight: 600, color: '#424242' }}>
             {stats.monthlyReports.toLocaleString()}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: '12px',
-              color: '#4CAF50',
-              marginTop: '8px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <ArrowUpwardIcon sx={{ fontSize: 12 }} />
-            前月比 +{stats.reportsChange}件
           </Typography>
         </Paper>
       </Box>
@@ -491,163 +441,6 @@ export const AdminDashboard = () => {
         </TableContainer>
       </Paper>
 
-      {/* システムステータス */}
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: 'repeat(1, 1fr)',  // スマホ: 1列
-            md: 'repeat(2, 1fr)',  // デスクトップ: 2列
-          },
-          gap: '24px',
-        }}
-      >
-        <Paper
-          sx={{
-            backgroundColor: '#ffffff',
-            borderRadius: '8px',
-            padding: '24px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{
-              fontSize: '18px',
-              fontWeight: 600,
-              marginBottom: '16px',
-            }}
-          >
-            データベース使用状況
-          </Typography>
-          <Box sx={{ marginBottom: '16px' }}>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: '8px',
-              }}
-            >
-              <Typography sx={{ fontSize: '14px', color: '#616161' }}>使用容量</Typography>
-              <Typography sx={{ fontSize: '14px', fontWeight: 600 }}>
-                234 MB / 500 MB
-              </Typography>
-            </Box>
-            <LinearProgress
-              variant="determinate"
-              value={46.8}
-              sx={{
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: '#e0e0e0',
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: '#4CAF50',
-                },
-              }}
-            />
-          </Box>
-          <Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: '8px',
-              }}
-            >
-              <Typography sx={{ fontSize: '14px', color: '#616161' }}>
-                アクティブ接続数
-              </Typography>
-              <Typography sx={{ fontSize: '14px', fontWeight: 600 }}>12 / 100</Typography>
-            </Box>
-            <LinearProgress
-              variant="determinate"
-              value={12}
-              sx={{
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: '#e0e0e0',
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: '#2196F3',
-                },
-              }}
-            />
-          </Box>
-        </Paper>
-
-        <Paper
-          sx={{
-            backgroundColor: '#ffffff',
-            borderRadius: '8px',
-            padding: '24px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{
-              fontSize: '18px',
-              fontWeight: 600,
-              marginBottom: '16px',
-            }}
-          >
-            API使用状況（今月）
-          </Typography>
-          <Box sx={{ marginBottom: '16px' }}>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: '8px',
-              }}
-            >
-              <Typography sx={{ fontSize: '14px', color: '#616161' }}>e-Stat API</Typography>
-              <Typography sx={{ fontSize: '14px', fontWeight: 600 }}>
-                3,420 / 10,000
-              </Typography>
-            </Box>
-            <LinearProgress
-              variant="determinate"
-              value={34.2}
-              sx={{
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: '#e0e0e0',
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: '#4CAF50',
-                },
-              }}
-            />
-          </Box>
-          <Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: '8px',
-              }}
-            >
-              <Typography sx={{ fontSize: '14px', color: '#616161' }}>
-                Google Maps API
-              </Typography>
-              <Typography sx={{ fontSize: '14px', fontWeight: 600 }}>
-                7,842 / 10,000
-              </Typography>
-            </Box>
-            <LinearProgress
-              variant="determinate"
-              value={78.42}
-              sx={{
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: '#e0e0e0',
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: '#FF9800',
-                },
-              }}
-            />
-          </Box>
-        </Paper>
-      </Box>
     </>
   );
 };
