@@ -14,30 +14,34 @@ export const useCurrentClinic = () => {
   const { clinicId: clinicIdParam } = useParams<{ clinicId: string }>();
   const { user, selectedClinicId } = useAuthStore();
   const [clinicName, setClinicName] = useState<string>('');
+  const [clinicUuid, setClinicUuid] = useState<string>('');
 
   // URLパラメータを最優先、次にselectedClinicId、最後にuser.clinic_id
   const clinicId = clinicIdParam || (user?.role === 'system_admin' ? selectedClinicId : user?.clinic_id);
 
   useEffect(() => {
-    const fetchClinicName = async () => {
+    const fetchClinicData = async () => {
       if (!clinicId) {
         setClinicName('');
+        setClinicUuid('');
         return;
       }
       try {
         const clinic = await clinicService.getClinic(clinicId);
         setClinicName(clinic.name);
+        setClinicUuid(clinic.id); // UUID IDを保存
       } catch (error) {
-        console.error('Failed to fetch clinic name:', error);
+        console.error('Failed to fetch clinic data:', error);
         setClinicName('');
+        setClinicUuid('');
       }
     };
 
-    fetchClinicName();
+    fetchClinicData();
   }, [clinicId]);
 
   return {
-    clinicId,
+    clinicId: clinicUuid || clinicId, // UUID優先、なければ元のclinicId
     clinicName,
   };
 };
