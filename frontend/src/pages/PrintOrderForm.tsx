@@ -75,6 +75,7 @@ export default function PrintOrderFormPhase2() {
     formState: { errors },
   } = useForm<PrintOrderFormData>({
     defaultValues: {
+      clinic_id: clinicId || '',
       clinic_name: clinicName || '',
       email: user?.email || '',
       pattern: 'consultation',
@@ -119,15 +120,18 @@ export default function PrintOrderFormPhase2() {
     fetchClinicData();
   }, [clinicId, setValue]);
 
-  // クリニック名とメールアドレスを自動反映
+  // クリニックIDとクリニック名とメールアドレスを自動反映
   useEffect(() => {
+    if (clinicId) {
+      setValue('clinic_id', clinicId);
+    }
     if (clinicName) {
       setValue('clinic_name', clinicName);
     }
     if (user?.email) {
       setValue('email', user.email);
     }
-  }, [clinicName, user, setValue]);
+  }, [clinicId, clinicName, user, setValue]);
 
   // useWatchで配列の内容変更を検知
   const watchItems = useWatch({
@@ -262,6 +266,7 @@ export default function PrintOrderFormPhase2() {
       }
 
       const orderData: PrintOrderFormData = {
+        clinic_id: clinicId || '',
         clinic_name: data.clinic_name,
         email: data.email,
         pattern,

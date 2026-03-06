@@ -290,7 +290,7 @@ export default function PrintOrderHistory() {
                     パターン
                   </Typography>
                   <Typography variant="body1">
-                    {selectedOrder.order_pattern === 'consultation' ? '相談' : '再注文'}
+                    {selectedOrder.pattern === 'consultation' ? '相談' : '再注文'}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>

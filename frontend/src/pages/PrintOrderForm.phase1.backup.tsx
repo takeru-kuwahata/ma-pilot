@@ -38,7 +38,7 @@ const SHIPPING_FEE = 1000; // 送料（税抜）
 const DELIVERY_DAYS = 7; // 発送予定日数
 
 export default function PrintOrderForm() {
-  const { clinicName } = useCurrentClinic();
+  const { clinicName, clinicId } = useCurrentClinic();
   const { user } = useAuthStore();
 
   const [pattern, setPattern] = useState<PrintOrderPattern>('consultation');
@@ -163,6 +163,7 @@ export default function PrintOrderForm() {
 
     try {
       const orderData: PrintOrderFormData = {
+        clinic_id: clinicId || '',
         clinic_name: data.clinic_name,
         email: data.email,
         pattern,

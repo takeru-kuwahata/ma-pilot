@@ -314,6 +314,7 @@ export interface PrintOrderItem {
 
 export interface PrintOrder {
   id: string;
+  clinic_id: string;            // クリニックID（必須）
   clinic_name: string;          // クリニック名（必須）
   email: string;                // メールアドレス（必須）
   pattern: PrintOrderPattern;   // パターン（consultation: A/B統合、reorder: C）
@@ -347,6 +348,7 @@ export interface PrintOrderFormItem {
 }
 
 export interface PrintOrderFormData {
+  clinic_id: string;
   clinic_name: string;
   email: string;
   pattern: PrintOrderPattern;

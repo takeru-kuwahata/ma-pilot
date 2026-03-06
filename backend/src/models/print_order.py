@@ -137,6 +137,7 @@ class PrintOrderItemCreate(BaseModel):
 class PrintOrder(BaseModel):
     """印刷物注文"""
     id: str
+    clinic_id: str
     clinic_name: str
     email: EmailStr
     pattern: PrintOrderPattern
@@ -163,6 +164,7 @@ class PrintOrder(BaseModel):
 
 class PrintOrderCreate(BaseModel):
     """印刷物注文作成"""
+    clinic_id: str = Field(..., min_length=1)
     clinic_name: str = Field(..., min_length=1, max_length=200)
     email: EmailStr
     pattern: PrintOrderPattern
