@@ -214,7 +214,9 @@ export default function PrintOrderFormPhase2() {
 
   // 再注文データを処理
   useEffect(() => {
+    console.log('[PrintOrderForm] Reorder data received:', reorderData);
     if (reorderData && reorderData.items && reorderData.items.length > 0) {
+      console.log('[PrintOrderForm] Setting pattern to reorder and populating items');
       setPattern('reorder');
       setValue('pattern', 'reorder');
 
@@ -231,7 +233,8 @@ export default function PrintOrderFormPhase2() {
         });
       });
     }
-  }, [reorderData, setValue, append, remove, fields.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reorderData]);
 
   // 商品を追加
   const handleAddItem = () => {

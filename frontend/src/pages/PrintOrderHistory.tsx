@@ -28,7 +28,6 @@ import {
 } from '@mui/material';
 import {
   Visibility as VisibilityIcon,
-  Refresh as RefreshIcon,
 } from '@mui/icons-material';
 import type { PrintOrder } from '../types';
 import * as printOrderService from '../services/printOrderService';
@@ -228,22 +227,26 @@ export default function PrintOrderHistory() {
                         />
                       </TableCell>
                       <TableCell align="center">
-                        <IconButton
-                          color="primary"
-                          onClick={() => handleViewDetail(order.id)}
-                          title="詳細を見る"
-                        >
-                          <VisibilityIcon />
-                        </IconButton>
-                        {order.pattern === 'reorder' && order.items && order.items.length > 0 && (
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
                           <IconButton
-                            color="success"
-                            onClick={() => handleReorder(order)}
-                            title="再注文"
+                            color="primary"
+                            onClick={() => handleViewDetail(order.id)}
+                            title="詳細を見る"
+                            size="small"
                           >
-                            <RefreshIcon />
+                            <VisibilityIcon />
                           </IconButton>
-                        )}
+                          {order.pattern === 'reorder' && order.items && order.items.length > 0 && (
+                            <Button
+                              variant="outlined"
+                              color="primary"
+                              size="small"
+                              onClick={() => handleReorder(order)}
+                            >
+                              再注文
+                            </Button>
+                          )}
+                        </Box>
                       </TableCell>
                     </TableRow>
                   ))
