@@ -113,6 +113,11 @@ export default function PrintOrderHistory() {
 
   // 再注文
   const handleReorder = (order: PrintOrder) => {
+    console.log('[PrintOrderHistory] Reorder clicked', { clinicId, order });
+    if (!clinicId) {
+      setError('クリニックIDが取得できません。ページをリロードしてください。');
+      return;
+    }
     // 注文フォームに遷移し、注文データをstate経由で渡す
     navigate(`/clinic/${clinicId}/print-order`, {
       state: { reorderData: order },
@@ -230,7 +235,7 @@ export default function PrintOrderHistory() {
                         >
                           <VisibilityIcon />
                         </IconButton>
-                        {order.items && order.items.length > 0 && (
+                        {order.pattern === 'reorder' && order.items && order.items.length > 0 && (
                           <IconButton
                             color="success"
                             onClick={() => handleReorder(order)}
