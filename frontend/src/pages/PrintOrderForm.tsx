@@ -98,27 +98,28 @@ export default function PrintOrderFormPhase2() {
   // クリニックデータ取得
   useEffect(() => {
     const fetchClinicData = async () => {
-      if (clinicId) {
-        try {
-          const data = await clinicService.getClinic(clinicId);
-          console.log('[DEBUG] Clinic data fetched:', data);
-          setClinicData(data);
-          // 住所と電話番号を自動反映
-          if (data.address) {
-            console.log('[DEBUG] Setting delivery_address:', data.address);
-            setValue('delivery_address', data.address, { shouldValidate: false });
-          }
-          if (data.phone_number) {
-            console.log('[DEBUG] Setting daytime_contact:', data.phone_number);
-            setValue('daytime_contact', data.phone_number, { shouldValidate: false });
-          }
-        } catch (error) {
-          console.error('クリニック情報取得エラー:', error);
+      if (!clinicId) return; // 空文字列の場合はスキップ
+
+      try {
+        const data = await clinicService.getClinic(clinicId);
+        console.log('[DEBUG] Clinic data fetched:', data);
+        setClinicData(data);
+        // 住所と電話番号を自動反映
+        if (data.address) {
+          console.log('[DEBUG] Setting delivery_address:', data.address);
+          setValue('delivery_address', data.address, { shouldValidate: false });
         }
+        if (data.phone_number) {
+          console.log('[DEBUG] Setting daytime_contact:', data.phone_number);
+          setValue('daytime_contact', data.phone_number, { shouldValidate: false });
+        }
+      } catch (error) {
+        console.error('クリニック情報取得エラー:', error);
       }
     };
     fetchClinicData();
-  }, [clinicId, setValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clinicId]); // setValueを依存配列から削除
 
   // クリニックIDとクリニック名とメールアドレスを自動反映
   useEffect(() => {
@@ -131,7 +132,8 @@ export default function PrintOrderFormPhase2() {
     if (user?.email) {
       setValue('email', user.email);
     }
-  }, [clinicId, clinicName, user, setValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clinicId, clinicName, user?.email]); // setValueを依存配列から削除
 
   // useWatchで配列の内容変更を検知
   const watchItems = useWatch({
