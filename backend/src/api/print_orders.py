@@ -101,12 +101,14 @@ async def create_print_order(
 
 @router.get("/print-orders", response_model=List[PrintOrder])
 async def get_print_orders(
+    clinic_id: Optional[str] = Query(None, description="クリニックIDでフィルタ"),
     email: Optional[str] = Query(None, description="メールアドレスでフィルタ"),
+    status: Optional[str] = Query(None, description="ステータスでフィルタ"),
     service: PrintOrderService = Depends(get_print_order_service),
 ):
     """注文一覧を取得"""
     try:
-        return service.get_orders(email=email)
+        return service.get_orders(clinic_id=clinic_id, email=email, status=status)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

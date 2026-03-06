@@ -88,15 +88,15 @@ export const createPrintOrder = async (
  * 注文履歴取得
  */
 export const getPrintOrders = async (params?: {
-  clinicName?: string;
+  clinic_id?: string;
   status?: string;
   limit?: number;
   offset?: number;
 }): Promise<PrintOrder[]> => {
   const queryParams = new URLSearchParams();
 
-  if (params?.clinicName) {
-    queryParams.append('clinic_name', params.clinicName);
+  if (params?.clinic_id) {
+    queryParams.append('clinic_id', params.clinic_id);
   }
   if (params?.status) {
     queryParams.append('status', params.status);

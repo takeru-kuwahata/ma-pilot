@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import {
   Box,
@@ -51,6 +52,8 @@ const DELIVERY_DAYS = 7; // 発送予定日数
 export default function PrintOrderFormPhase2() {
   const { clinicName, clinicId } = useCurrentClinic();
   const { user } = useAuthStore();
+  const location = useLocation();
+  const reorderData = location.state?.reorderData;
 
   const [pattern, setPattern] = useState<PrintOrderPattern>('consultation');
   const [priceTables, setPriceTables] = useState<PriceTable[]>([]);
@@ -204,6 +207,27 @@ export default function PrintOrderFormPhase2() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pattern, JSON.stringify(watchItems), getItemPrice]);
+
+  // 再注文データを処理
+  useEffect(() => {
+    if (reorderData && reorderData.items && reorderData.items.length > 0) {
+      setPattern('reorder');
+      setValue('pattern', 'reorder');
+
+      // 既存のitemsをクリア
+      while (fields.length > 0) {
+        remove(0);
+      }
+
+      // 再注文データのitemsを追加
+      reorderData.items.forEach((item: any) => {
+        append({
+          product_type: item.product_type,
+          quantity: item.quantity,
+        });
+      });
+    }
+  }, [reorderData, setValue, append, remove, fields.length]);
 
   // 商品を追加
   const handleAddItem = () => {

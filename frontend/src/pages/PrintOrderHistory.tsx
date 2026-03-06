@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -17,7 +18,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  TextField,
   MenuItem,
   Select,
   FormControl,
@@ -26,15 +26,18 @@ import {
   CircularProgress,
   Grid,
 } from '@mui/material';
-import { Visibility as VisibilityIcon } from '@mui/icons-material';
+import {
+  Visibility as VisibilityIcon,
+  Refresh as RefreshIcon,
+} from '@mui/icons-material';
 import type { PrintOrder } from '../types';
 import * as printOrderService from '../services/printOrderService';
+import { useCurrentClinic } from '../hooks/useCurrentClinic';
 
 const STATUS_LABELS: Record<string, string> = {
-  submitted: '受付済み',
-  approved: '承認済み',
-  in_production: '制作中',
-  shipped: '発送済み',
+  submitted: '受付済',
+  approved: '承認済',
+  shipped: '発送済',
   completed: '完了',
   cancelled: 'キャンセル',
 };
@@ -42,33 +45,38 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_COLORS: Record<string, 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'> = {
   submitted: 'info',
   approved: 'primary',
-  in_production: 'warning',
   shipped: 'secondary',
   completed: 'success',
   cancelled: 'error',
 };
 
 export default function PrintOrderHistory() {
+  const { clinicId } = useCurrentClinic();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<PrintOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<PrintOrder | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [filterClinicName, setFilterClinicName] = useState<string>('');
 
   // 注文履歴取得
   const fetchOrders = useCallback(async () => {
+    if (!clinicId) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const params: Record<string, string> = {};
+      const params: { clinic_id: string; status?: string } = {
+        clinic_id: clinicId,
+      };
+
       if (filterStatus !== 'all') {
         params.status = filterStatus;
-      }
-      if (filterClinicName) {
-        params.clinicName = filterClinicName;
       }
 
       const data = await printOrderService.getPrintOrders(params);
@@ -79,7 +87,7 @@ export default function PrintOrderHistory() {
     } finally {
       setLoading(false);
     }
-  }, [filterStatus, filterClinicName]);
+  }, [clinicId, filterStatus]);
 
   useEffect(() => {
     fetchOrders();
@@ -103,9 +111,12 @@ export default function PrintOrderHistory() {
     setSelectedOrder(null);
   };
 
-  // フィルター検索
-  const handleSearch = () => {
-    fetchOrders();
+  // 再注文
+  const handleReorder = (order: PrintOrder) => {
+    // 注文フォームに遷移し、注文データをstate経由で渡す
+    navigate(`/clinic/${clinicId}/print-order`, {
+      state: { reorderData: order },
+    });
   };
 
   return (
@@ -117,7 +128,7 @@ export default function PrintOrderHistory() {
 
         {/* フィルター */}
         <Box sx={{ mb: 3 }}>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} alignItems="center">
             <Grid item xs={12} sm={6} md={4}>
               <FormControl fullWidth>
                 <InputLabel>ステータス</InputLabel>
@@ -127,34 +138,18 @@ export default function PrintOrderHistory() {
                   onChange={(e) => setFilterStatus(e.target.value)}
                 >
                   <MenuItem value="all">すべて</MenuItem>
-                  <MenuItem value="submitted">受付済み</MenuItem>
-                  <MenuItem value="approved">承認済み</MenuItem>
-                  <MenuItem value="in_production">制作中</MenuItem>
-                  <MenuItem value="shipped">発送済み</MenuItem>
+                  <MenuItem value="submitted">受付済</MenuItem>
+                  <MenuItem value="approved">承認済</MenuItem>
+                  <MenuItem value="shipped">発送済</MenuItem>
                   <MenuItem value="completed">完了</MenuItem>
-                  <MenuItem value="cancelled">キャンセル</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
 
             <Grid item xs={12} sm={6} md={4}>
-              <TextField
-                fullWidth
-                label="クリニック名"
-                value={filterClinicName}
-                onChange={(e) => setFilterClinicName(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    handleSearch();
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4}>
               <Button
                 variant="contained"
-                onClick={handleSearch}
+                onClick={fetchOrders}
                 sx={{ height: '56px' }}
                 fullWidth
               >
@@ -183,7 +178,6 @@ export default function PrintOrderHistory() {
               <TableHead>
                 <TableRow>
                   <TableCell>注文日</TableCell>
-                  <TableCell>クリニック名</TableCell>
                   <TableCell>商品種類</TableCell>
                   <TableCell align="right">数量</TableCell>
                   <TableCell align="right">見積金額</TableCell>
@@ -194,7 +188,7 @@ export default function PrintOrderHistory() {
               <TableBody>
                 {orders.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} align="center">
+                    <TableCell colSpan={6} align="center">
                       注文履歴がありません
                     </TableCell>
                   </TableRow>
@@ -204,7 +198,6 @@ export default function PrintOrderHistory() {
                       <TableCell>
                         {new Date(order.created_at).toLocaleDateString('ja-JP')}
                       </TableCell>
-                      <TableCell>{order.clinic_name}</TableCell>
                       <TableCell>
                         {order.items && order.items.length > 0
                           ? `${order.items.length}点の商品`
@@ -233,9 +226,19 @@ export default function PrintOrderHistory() {
                         <IconButton
                           color="primary"
                           onClick={() => handleViewDetail(order.id)}
+                          title="詳細を見る"
                         >
                           <VisibilityIcon />
                         </IconButton>
+                        {order.items && order.items.length > 0 && (
+                          <IconButton
+                            color="success"
+                            onClick={() => handleReorder(order)}
+                            title="再注文"
+                          >
+                            <RefreshIcon />
+                          </IconButton>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))
@@ -254,124 +257,26 @@ export default function PrintOrderHistory() {
         fullWidth
       >
         <DialogTitle>注文詳細</DialogTitle>
-        <DialogContent dividers>
+        <DialogContent>
           {selectedOrder && (
-            <Box>
+            <Box sx={{ mt: 2 }}>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">
                     注文ID
                   </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {selectedOrder.id}
-                  </Typography>
+                  <Typography variant="body1">{selectedOrder.id}</Typography>
                 </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">
                     注文日時
                   </Typography>
-                  <Typography variant="body1" gutterBottom>
+                  <Typography variant="body1">
                     {new Date(selectedOrder.created_at).toLocaleString('ja-JP')}
                   </Typography>
                 </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    クリニック名
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {selectedOrder.clinic_name}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    メールアドレス
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {selectedOrder.email}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    注文パターン
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {selectedOrder.pattern === 'reorder' ? '再注文' : '相談フォーム'}
-                  </Typography>
-                </Grid>
-
-                {/* Phase 2: 商品明細表示 */}
-                {selectedOrder.items && selectedOrder.items.length > 0 ? (
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                      注文明細
-                    </Typography>
-                    <Table size="small">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>商品種類</TableCell>
-                          <TableCell align="right">数量</TableCell>
-                          <TableCell align="right">単価</TableCell>
-                          <TableCell align="right">小計</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {selectedOrder.items.map((item, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{item.product_type}</TableCell>
-                            <TableCell align="right">{item.quantity.toLocaleString()}</TableCell>
-                            <TableCell align="right">¥{item.unit_price.toLocaleString()}</TableCell>
-                            <TableCell align="right">¥{item.subtotal.toLocaleString()}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </Grid>
-                ) : (
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      相談内容
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                      初回相談フォームでのお問い合わせ
-                    </Typography>
-                  </Grid>
-                )}
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    納期希望日
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {selectedOrder.delivery_date || '未定'}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    デザイン作成
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {selectedOrder.design_required ? '必要' : '不要'}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    見積金額
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {selectedOrder.estimated_price
-                      ? `¥${selectedOrder.estimated_price.toLocaleString()}`
-                      : '未算出'}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">
                     ステータス
                   </Typography>
                   <Chip
@@ -380,17 +285,59 @@ export default function PrintOrderHistory() {
                     size="small"
                   />
                 </Grid>
-
-                {selectedOrder.notes && (
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">
+                    パターン
+                  </Typography>
+                  <Typography variant="body1">
+                    {selectedOrder.order_pattern === 'consultation' ? '相談' : '再注文'}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="body2" color="text.secondary">
+                    メールアドレス
+                  </Typography>
+                  <Typography variant="body1">{selectedOrder.email}</Typography>
+                </Grid>
+                {selectedOrder.items && selectedOrder.items.length > 0 && (
                   <Grid item xs={12}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      備考
+                    <Typography variant="h6" gutterBottom>
+                      注文商品
                     </Typography>
-                    <Typography variant="body1" gutterBottom>
-                      {selectedOrder.notes}
-                    </Typography>
+                    <TableContainer>
+                      <Table size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>商品種類</TableCell>
+                            <TableCell align="right">数量</TableCell>
+                            <TableCell align="right">単価</TableCell>
+                            <TableCell align="right">小計</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {selectedOrder.items.map((item, index) => (
+                            <TableRow key={index}>
+                              <TableCell>{item.product_type}</TableCell>
+                              <TableCell align="right">{item.quantity}</TableCell>
+                              <TableCell align="right">
+                                ¥{item.unit_price.toLocaleString()}
+                              </TableCell>
+                              <TableCell align="right">
+                                ¥{item.subtotal.toLocaleString()}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   </Grid>
                 )}
+                <Grid item xs={12}>
+                  <Typography variant="h6" align="right">
+                    合計金額: ¥
+                    {(selectedOrder.total_amount || selectedOrder.estimated_price || 0).toLocaleString()}
+                  </Typography>
+                </Grid>
               </Grid>
             </Box>
           )}
@@ -399,6 +346,6 @@ export default function PrintOrderHistory() {
           <Button onClick={handleCloseDetailDialog}>閉じる</Button>
         </DialogActions>
       </Dialog>
-      </Container>
+    </Container>
   );
 }

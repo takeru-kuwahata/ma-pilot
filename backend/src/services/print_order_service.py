@@ -247,12 +247,23 @@ class PrintOrderService:
 
         return created_order
 
-    def get_orders(self, email: Optional[str] = None) -> List[PrintOrder]:
+    def get_orders(
+        self,
+        clinic_id: Optional[str] = None,
+        email: Optional[str] = None,
+        status: Optional[str] = None,
+    ) -> List[PrintOrder]:
         """注文一覧を取得（Phase 2: 明細含む）"""
         query = self.supabase.table("print_orders").select("*")
 
+        if clinic_id:
+            query = query.eq("clinic_id", clinic_id)
+
         if email:
             query = query.eq("email", email)
+
+        if status:
+            query = query.eq("status", status)
 
         response = query.order("created_at", desc=True).execute()
 
