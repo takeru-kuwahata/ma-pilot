@@ -50,7 +50,7 @@ const STATUS_COLORS: Record<string, 'default' | 'primary' | 'secondary' | 'succe
 };
 
 export default function PrintOrderHistory() {
-  const { clinicId } = useCurrentClinic();
+  const { clinicId, clinicSlug } = useCurrentClinic();
   const navigate = useNavigate();
   const [orders, setOrders] = useState<PrintOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -112,13 +112,13 @@ export default function PrintOrderHistory() {
 
   // 再注文
   const handleReorder = (order: PrintOrder) => {
-    console.log('[PrintOrderHistory] Reorder clicked', { clinicId, order });
-    if (!clinicId) {
-      setError('クリニックIDが取得できません。ページをリロードしてください。');
+    console.log('[PrintOrderHistory] Reorder clicked', { clinicId, clinicSlug, order });
+    if (!clinicSlug) {
+      setError('クリニック情報が取得できません。ページをリロードしてください。');
       return;
     }
-    // 注文フォームに遷移し、注文データをstate経由で渡す
-    navigate(`/clinic/${clinicId}/print-order`, {
+    // 注文フォームに遷移し、注文データをstate経由で渡す（slugを使用してURL維持）
+    navigate(`/clinic/${clinicSlug}/print-order`, {
       state: { reorderData: order },
     });
   };
