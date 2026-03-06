@@ -50,6 +50,7 @@ export const ClinicSettings = () => {
   const { clinicId } = useParams<{ clinicId: string }>();
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
+  const [loadingAddress, setLoadingAddress] = useState(false);
   const [snackbar, setSnackbar] = useState<SnackbarState>({
     open: false,
     message: '',
@@ -182,6 +183,43 @@ export const ClinicSettings = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
+  // 郵便番号から住所を自動取得
+  const handlePostalCodeChange = async (value: string) => {
+    const formatted = formatPostalCode(value);
+    setBasicInfo((prev) => ({ ...prev, postalCode: formatted }));
+
+    // ハイフンを除去して7桁になったら住所検索
+    const digits = formatted.replace(/\D/g, '');
+    if (digits.length === 7) {
+      setLoadingAddress(true);
+      try {
+        const response = await fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${digits}`);
+        const data = await response.json();
+
+        if (data.status === 200 && data.results && data.results.length > 0) {
+          const result = data.results[0];
+          const autoAddress = `${result.address1}${result.address2}${result.address3}`;
+          setBasicInfo((prev) => ({ ...prev, address: autoAddress }));
+        } else {
+          setSnackbar({
+            open: true,
+            message: '郵便番号に該当する住所が見つかりませんでした',
+            severity: 'error'
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch address:', error);
+        setSnackbar({
+          open: true,
+          message: '住所の取得に失敗しました',
+          severity: 'error'
+        });
+      } finally {
+        setLoadingAddress(false);
+      }
+    }
+  };
+
   if (loadingData) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
@@ -215,9 +253,11 @@ export const ClinicSettings = () => {
           <TextField
             label="郵便番号"
             value={basicInfo.postalCode}
-            onChange={(e) => setBasicInfo((prev) => ({ ...prev, postalCode: formatPostalCode(e.target.value) }))}
+            onChange={(e) => handlePostalCodeChange(e.target.value)}
             fullWidth
             inputProps={{ maxLength: 8 }}
+            placeholder="000-0000"
+            helperText="7桁入力すると自動で住所を取得します"
           />
           <TextField
             label="住所"
@@ -225,6 +265,9 @@ export const ClinicSettings = () => {
             onChange={(e) => setBasicInfo((prev) => ({ ...prev, address: e.target.value }))}
             fullWidth
             sx={{ gridColumn: '1 / -1' }}
+            placeholder="郵便番号から自動入力後、番地以降を追記してください"
+            disabled={loadingAddress}
+            helperText={loadingAddress ? '住所を取得中...' : ''}
           />
           <TextField
             label="電話番号"
