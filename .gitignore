@@ -71,3 +71,5 @@ logs/
 
 # Archive documents (実装完了済み・未実装詳細設計のアーカイブ)
 docs_archive/
+docs/archive/
+docs/temp/
