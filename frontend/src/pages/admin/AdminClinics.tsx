@@ -58,6 +58,7 @@ export const AdminClinics = () => {
   // 新規登録ダイアログ
   const [openDialog, setOpenDialog] = useState(false);
   const [geocoding, setGeocoding] = useState(false);
+  const [loadingAddress, setLoadingAddress] = useState(false);
   const [newClinic, setNewClinic] = useState({
     name: '',
     slug: '',
@@ -71,6 +72,7 @@ export const AdminClinics = () => {
 
   // 編集ダイアログ
   const [editClinic, setEditClinic] = useState<Clinic | null>(null);
+  const [loadingEditAddress, setLoadingEditAddress] = useState(false);
   const [editForm, setEditForm] = useState({
     name: '',
     slug: '',
@@ -251,6 +253,62 @@ export const AdminClinics = () => {
     setOpenDialog(false);
     setNewClinic({ name: '', slug: '', postal_code: '', address: '', phone_number: '', owner_id: '', latitude: 35.6762, longitude: 139.6503 });
     setSearchQuery(''); // 検索ボックスをクリア
+  };
+
+  // 新規登録ダイアログ：郵便番号から住所を自動取得
+  const handleNewPostalCodeChange = async (value: string) => {
+    const formatted = formatPostalCode(value);
+    setNewClinic((prev) => ({ ...prev, postal_code: formatted }));
+
+    const digits = formatted.replace(/\D/g, '');
+    if (digits.length === 7) {
+      setLoadingAddress(true);
+      try {
+        const response = await fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${digits}`);
+        const data = await response.json();
+
+        if (data.status === 200 && data.results && data.results.length > 0) {
+          const result = data.results[0];
+          const autoAddress = `${result.address1}${result.address2}${result.address3}`;
+          setNewClinic((prev) => ({ ...prev, address: autoAddress }));
+        } else {
+          alert('郵便番号に該当する住所が見つかりませんでした');
+        }
+      } catch (error) {
+        console.error('Failed to fetch address:', error);
+        alert('住所の取得に失敗しました');
+      } finally {
+        setLoadingAddress(false);
+      }
+    }
+  };
+
+  // 編集ダイアログ：郵便番号から住所を自動取得
+  const handleEditPostalCodeChange = async (value: string) => {
+    const formatted = formatPostalCode(value);
+    setEditForm((prev) => ({ ...prev, postal_code: formatted }));
+
+    const digits = formatted.replace(/\D/g, '');
+    if (digits.length === 7) {
+      setLoadingEditAddress(true);
+      try {
+        const response = await fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${digits}`);
+        const data = await response.json();
+
+        if (data.status === 200 && data.results && data.results.length > 0) {
+          const result = data.results[0];
+          const autoAddress = `${result.address1}${result.address2}${result.address3}`;
+          setEditForm((prev) => ({ ...prev, address: autoAddress }));
+        } else {
+          alert('郵便番号に該当する住所が見つかりませんでした');
+        }
+      } catch (error) {
+        console.error('Failed to fetch address:', error);
+        alert('住所の取得に失敗しました');
+      } finally {
+        setLoadingEditAddress(false);
+      }
+    }
   };
 
   const isValidUuid = (value: string) =>
@@ -536,10 +594,11 @@ export const AdminClinics = () => {
             <TextField
               label="郵便番号"
               value={editForm.postal_code}
-              onChange={(e) => setEditForm((prev) => ({ ...prev, postal_code: formatPostalCode(e.target.value) }))}
+              onChange={(e) => handleEditPostalCodeChange(e.target.value)}
               fullWidth
               inputProps={{ maxLength: 8 }}
-              helperText="数字を入力するとハイフンを自動入力します"
+              placeholder="000-0000"
+              helperText="7桁入力すると自動で住所を取得します"
             />
             <TextField
               label="住所"
@@ -547,6 +606,9 @@ export const AdminClinics = () => {
               onChange={(e) => setEditForm((prev) => ({ ...prev, address: e.target.value }))}
               fullWidth
               required
+              placeholder="郵便番号から自動入力後、番地以降を追記してください"
+              disabled={loadingEditAddress}
+              helperText={loadingEditAddress ? '住所を取得中...' : ''}
             />
             <TextField
               label="電話番号"
@@ -597,11 +659,11 @@ export const AdminClinics = () => {
             <TextField
               label="郵便番号"
               value={newClinic.postal_code}
-              onChange={(e) => setNewClinic((prev) => ({ ...prev, postal_code: formatPostalCode(e.target.value) }))}
-              placeholder="1500001"
+              onChange={(e) => handleNewPostalCodeChange(e.target.value)}
+              placeholder="000-0000"
               fullWidth
               required
-              helperText="数字を入力するとハイフンを自動入力します"
+              helperText="7桁入力すると自動で住所を取得します"
               inputProps={{ maxLength: 8 }}
             />
             <TextField
@@ -611,7 +673,9 @@ export const AdminClinics = () => {
               onBlur={(e) => geocodeAddress(e.target.value)}
               fullWidth
               required
-              helperText={geocoding ? '位置情報を取得中...' : ''}
+              placeholder="郵便番号から自動入力後、番地以降を追記してください"
+              disabled={loadingAddress}
+              helperText={loadingAddress ? '住所を取得中...' : geocoding ? '位置情報を取得中...' : ''}
             />
             <TextField
               label="電話番号"
