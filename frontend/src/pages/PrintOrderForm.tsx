@@ -214,29 +214,41 @@ export default function PrintOrderFormPhase2() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pattern, JSON.stringify(watchItems), getItemPrice]);
 
-  // 再注文データを処理
+  // 再注文データを処理（一度だけ実行）
   useEffect(() => {
     console.log('[PrintOrderForm] Reorder data received:', reorderData);
-    if (reorderData && reorderData.items && reorderData.items.length > 0) {
-      console.log('[PrintOrderForm] Setting pattern to reorder and populating items');
-      setPattern('reorder');
-      setValue('pattern', 'reorder');
-
-      // 既存のitemsをクリア
-      while (fields.length > 0) {
-        remove(0);
-      }
-
-      // 再注文データのitemsを追加
-      reorderData.items.forEach((item: any) => {
-        append({
-          product_type: item.product_type,
-          quantity: item.quantity,
-        });
-      });
+    if (!reorderData || !reorderData.items || reorderData.items.length === 0) {
+      return;
     }
+
+    console.log('[PrintOrderForm] Setting pattern to reorder and populating items');
+    setPattern('reorder');
+
+    // 新しいitemsを作成
+    const newItems = reorderData.items.map((item: any) => ({
+      product_type: item.product_type,
+      quantity: item.quantity,
+    }));
+
+    // フォーム全体をリセットして再注文データをセット
+    reset({
+      clinic_id: clinicId || '',
+      clinic_name: clinicName || '',
+      email: user?.email || '',
+      pattern: 'reorder',
+      items: newItems,
+      delivery_date: '',
+      design_required: false,
+      notes: '',
+      delivery_address: clinicData?.address || '',
+      daytime_contact: clinicData?.phone_number || '',
+      terms_agreed: false,
+      payment_method: undefined,
+    });
+
+    console.log('[PrintOrderForm] Items populated:', newItems);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reorderData]);
+  }, [reorderData?.id]); // reorderData.idに依存させて、一度だけ実行
 
   // 商品を追加
   const handleAddItem = () => {
