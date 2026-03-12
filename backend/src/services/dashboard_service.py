@@ -134,6 +134,38 @@ class DashboardService:
             )
         ))
 
+        # Self-Pay Revenue (自費診療収入)
+        current_self_pay = current.get('self_pay_revenue', 0)
+        prev_self_pay = previous.get('self_pay_revenue', 0) if previous else 0
+
+        kpis.append(DashboardKpi(
+            id=str(uuid.uuid4()),
+            label='自費診療収入',
+            value=current_self_pay,
+            unit='¥',
+            comparison=KpiComparison(
+                trend=self._calculate_trend(current_self_pay, prev_self_pay) if previous else 'neutral',
+                month_over_month=self._calculate_percentage_change(current_self_pay, prev_self_pay) if previous else 0,
+                year_over_year=0  # Simplified
+            )
+        ))
+
+        # New Patients (新患数)
+        current_new_patients = current.get('new_patients', 0)
+        prev_new_patients = previous.get('new_patients', 0) if previous else 0
+
+        kpis.append(DashboardKpi(
+            id=str(uuid.uuid4()),
+            label='新患数',
+            value=current_new_patients,
+            unit='人',
+            comparison=KpiComparison(
+                trend=self._calculate_trend(current_new_patients, prev_new_patients) if previous else 'neutral',
+                month_over_month=self._calculate_percentage_change(current_new_patients, prev_new_patients) if previous else 0,
+                year_over_year=0  # Simplified
+            )
+        ))
+
         return kpis
 
     def _generate_alerts(self, current: dict, previous: dict | None) -> List[DashboardAlert]:
