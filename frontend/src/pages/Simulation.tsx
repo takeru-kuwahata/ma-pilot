@@ -667,7 +667,7 @@ export const Simulation = () => {
                 color: '#4CAF50',
               }}
             >
-              {result.projectedProfitRate}
+              {result.projectedProfitRate.toFixed(1)}
               <Typography
                 component="span"
                 sx={{
