@@ -139,7 +139,6 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
           <Grid item xs={12} md={3}>
             <TextField
               fullWidth
-              required
               label="保険診療収入"
               type="text"
               value={displayValues.insurance_revenue}
@@ -156,7 +155,6 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
           <Grid item xs={12} md={3}>
             <TextField
               fullWidth
-              required
               label="自由診療収入"
               type="text"
               value={displayValues.self_pay_revenue}
@@ -173,7 +171,6 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
           <Grid item xs={12} md={3}>
             <TextField
               fullWidth
-              required
               label="物販（その他）"
               type="text"
               value={displayValues.retail_revenue}
@@ -211,7 +208,6 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              required
               label="変動費"
               type="text"
               value={displayValues.variable_cost}
@@ -228,7 +224,6 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              required
               label="固定費"
               type="text"
               value={displayValues.fixed_cost}
