@@ -46,16 +46,28 @@ export const reportService = {
       `${API_BASE_URL}/api/reports/${reportId}/download`,
       {
         headers: getAuthHeaders(),
-        redirect: 'manual'
+        redirect: 'follow'
       }
     );
 
-    if (response.type === 'opaqueredirect' || response.status === 302 || response.status === 307) {
-      const location = response.headers.get('Location');
-      if (location) return location;
+    // FastAPIのRedirectResponseが返すSupabase Storage URLを取得
+    if (response.redirected) {
+      return response.url;
     }
 
+    // レスポンスボディから直接file_urlを取得する場合
     const result = await handleResponse<{ file_url: string }>(response);
     return result.file_url;
+  },
+
+  async deleteReport(reportId: string): Promise<void> {
+    const response = await fetch(
+      `${API_BASE_URL}/api/reports/${reportId}`,
+      {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      }
+    );
+    await handleResponse<ReportResponse>(response);
   }
 };

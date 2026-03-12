@@ -172,12 +172,29 @@ export const Reports = () => {
     }
   };
 
-  const handleDelete = () => {
-    // TODO: Phase 4でAPI呼び出し実装
+  const handleDelete = async (reportId: string) => {
+    if (!window.confirm('このレポートを削除してもよろしいですか？')) {
+      return;
+    }
+
+    try {
+      await reportService.deleteReport(reportId);
+      setSnackbarMessage('レポートを削除しました');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+      await loadReports();
+    } catch (error) {
+      console.error('Failed to delete report:', error);
+      setSnackbarMessage('レポート削除に失敗しました');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
   };
 
   const handleCreateCustomReport = () => {
-    // TODO: Phase 4でカスタムレポート作成ダイアログ実装
+    setSnackbarMessage('カスタムレポート作成機能は今後のアップデートで実装予定です');
+    setSnackbarSeverity('info');
+    setSnackbarOpen(true);
   };
 
   return (
@@ -452,7 +469,7 @@ export const Reports = () => {
                       </IconButton>
                       <IconButton
                         size="small"
-                        onClick={handleDelete}
+                        onClick={() => handleDelete(report.id)}
                         sx={{
                           color: '#616161',
                           '&:hover': {

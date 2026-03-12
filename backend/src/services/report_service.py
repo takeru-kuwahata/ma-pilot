@@ -217,3 +217,28 @@ class ReportService:
 
         except Exception as e:
             raise ValueError(f'Failed to download report: {str(e)}')
+
+    async def delete_report(self, report_id: str) -> None:
+        '''Delete report and its file from storage'''
+        try:
+            # Get report to get file URL
+            report = await self.get_report(report_id)
+
+            # Extract file path from URL
+            if report.file_url:
+                # URL format: https://xxx.supabase.co/storage/v1/object/public/reports/{file_path}
+                parts = report.file_url.split('/reports/')
+                if len(parts) > 1:
+                    file_path = parts[1]
+                    # Delete file from Supabase Storage
+                    try:
+                        self.supabase.storage.from_('reports').remove([file_path])
+                    except Exception as storage_error:
+                        # Continue even if storage deletion fails
+                        print(f'Failed to delete file from storage: {storage_error}')
+
+            # Delete report record from database
+            self.supabase.table('reports').delete().eq('id', report_id).execute()
+
+        except Exception as e:
+            raise ValueError(f'Failed to delete report: {str(e)}')

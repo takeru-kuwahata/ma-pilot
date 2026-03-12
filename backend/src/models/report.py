@@ -29,7 +29,7 @@ class ReportGenerateRequest(BaseModel):
 
 class ReportResponse(BaseModel):
     '''Report response'''
-    data: Report
+    data: Optional[Report] = None
     message: Optional[str] = None
 
 

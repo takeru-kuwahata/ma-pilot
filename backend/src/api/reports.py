@@ -74,3 +74,16 @@ async def download_report(
         return RedirectResponse(url=file_url)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.delete('/{report_id}', response_model=ReportResponse)
+async def delete_report(
+    report_id: str,
+    report_service: ReportService = Depends(get_report_service)
+):
+    '''Delete report'''
+    try:
+        await report_service.delete_report(report_id)
+        return ReportResponse(data=None, message='Report deleted successfully')
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
