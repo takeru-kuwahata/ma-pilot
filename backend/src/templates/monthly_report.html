@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #FF6B35;
+            margin: 0;
+            font-size: 28px;
+        }
+        .header .subtitle {
+            color: #666;
+            margin-top: 10px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: #424242;
+            border-left: 4px solid #FF6B35;
+            padding-left: 10px;
+            margin-bottom: 15px;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .kpi-card {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .kpi-card .label {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        .kpi-card .value {
+            color: #424242;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .kpi-card .change {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .kpi-card .change.positive {
+            color: #4CAF50;
+        }
+        .kpi-card .change.negative {
+            color: #F44336;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th {
+            background: #FF6B35;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ title }}</h1>
+        <div class="subtitle">
+            {{ clinic_name }}<br>
+            生成日時: {{ generated_at }}
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>主要KPI</h2>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="label">総売上</div>
+                <div class="value">¥{{ "{:,}".format(total_revenue) }}</div>
+                {% if revenue_change is not none %}
+                <div class="change {{ 'positive' if revenue_change >= 0 else 'negative' }}">
+                    {{ '+' if revenue_change >= 0 else '' }}{{ "{:.1f}".format(revenue_change) }}% (前月比)
+                </div>
+                {% endif %}
+            </div>
+            <div class="kpi-card">
+                <div class="label">営業利益</div>
+                <div class="value">¥{{ "{:,}".format(operating_profit) }}</div>
+                {% if profit_change is not none %}
+                <div class="change {{ 'positive' if profit_change >= 0 else 'negative' }}">
+                    {{ '+' if profit_change >= 0 else '' }}{{ "{:.1f}".format(profit_change) }}% (前月比)
+                </div>
+                {% endif %}
+            </div>
+            <div class="kpi-card">
+                <div class="label">利益率</div>
+                <div class="value">{{ "{:.1f}".format(profit_margin) }}%</div>
+            </div>
+        </div>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="label">総患者数</div>
+                <div class="value">{{ "{:,}".format(total_patients) }}人</div>
+                {% if patient_change is not none %}
+                <div class="change {{ 'positive' if patient_change >= 0 else 'negative' }}">
+                    {{ '+' if patient_change >= 0 else '' }}{{ "{:.1f}".format(patient_change) }}% (前月比)
+                </div>
+                {% endif %}
+            </div>
+            <div class="kpi-card">
+                <div class="label">新患数</div>
+                <div class="value">{{ "{:,}".format(new_patients) }}人</div>
+            </div>
+            <div class="kpi-card">
+                <div class="label">患者単価</div>
+                <div class="value">¥{{ "{:,}".format(revenue_per_patient) }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>収益詳細</h2>
+        <table>
+            <tr>
+                <th>項目</th>
+                <th style="text-align: right;">金額</th>
+                <th style="text-align: right;">売上比率</th>
+            </tr>
+            <tr>
+                <td>保険診療収入</td>
+                <td style="text-align: right;">¥{{ "{:,}".format(insurance_revenue) }}</td>
+                <td style="text-align: right;">{{ "{:.1f}".format(insurance_revenue / total_revenue * 100 if total_revenue > 0 else 0) }}%</td>
+            </tr>
+            <tr>
+                <td>自由診療収入</td>
+                <td style="text-align: right;">¥{{ "{:,}".format(self_pay_revenue) }}</td>
+                <td style="text-align: right;">{{ "{:.1f}".format(self_pay_revenue / total_revenue * 100 if total_revenue > 0 else 0) }}%</td>
+            </tr>
+            <tr>
+                <td>物販収入</td>
+                <td style="text-align: right;">¥{{ "{:,}".format(retail_revenue) }}</td>
+                <td style="text-align: right;">{{ "{:.1f}".format(retail_revenue / total_revenue * 100 if total_revenue > 0 else 0) }}%</td>
+            </tr>
+            <tr style="font-weight: bold; background: #f0f0f0;">
+                <td>総売上</td>
+                <td style="text-align: right;">¥{{ "{:,}".format(total_revenue) }}</td>
+                <td style="text-align: right;">100.0%</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>コスト詳細</h2>
+        <table>
+            <tr>
+                <th>項目</th>
+                <th style="text-align: right;">金額</th>
+                <th style="text-align: right;">売上比率</th>
+            </tr>
+            <tr>
+                <td>変動費</td>
+                <td style="text-align: right;">¥{{ "{:,}".format(variable_cost) }}</td>
+                <td style="text-align: right;">{{ "{:.1f}".format(variable_cost / total_revenue * 100 if total_revenue > 0 else 0) }}%</td>
+            </tr>
+            <tr>
+                <td>固定費</td>
+                <td style="text-align: right;">¥{{ "{:,}".format(fixed_cost) }}</td>
+                <td style="text-align: right;">{{ "{:.1f}".format(fixed_cost / total_revenue * 100 if total_revenue > 0 else 0) }}%</td>
+            </tr>
+            <tr style="font-weight: bold; background: #f0f0f0;">
+                <td>総コスト</td>
+                <td style="text-align: right;">¥{{ "{:,}".format(total_cost) }}</td>
+                <td style="text-align: right;">{{ "{:.1f}".format(total_cost / total_revenue * 100 if total_revenue > 0 else 0) }}%</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        MA-Pilot 経営分析システム | 株式会社IDW Japan
+    </div>
+</body>
+</html>
