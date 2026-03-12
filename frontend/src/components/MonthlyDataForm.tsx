@@ -252,7 +252,6 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
           <Grid item xs={12} md={4}>
             <TextField
               fullWidth
-              required
               label="新患数"
               type="text"
               value={displayValues.new_patients}
@@ -269,7 +268,6 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
           <Grid item xs={12} md={4}>
             <TextField
               fullWidth
-              required
               label="再診患者数"
               type="text"
               value={displayValues.returning_patients}
