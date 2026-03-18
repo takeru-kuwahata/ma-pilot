@@ -168,6 +168,7 @@ class PrintOrderService:
 
         # print_ordersテーブルに挿入
         insert_data = {
+            "clinic_id": order_data.clinic_id,
             "clinic_name": order_data.clinic_name,
             "email": order_data.email,
             "pattern": order_data.pattern.value,

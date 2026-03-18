@@ -27,14 +27,19 @@ class ReportService:
             # Upload PDF to Supabase Storage
             file_name = f'{request.clinic_id}/{request.type}_{uuid.uuid4()}.pdf'
 
-            upload_response = self.supabase.storage.from_('reports').upload(
-                file_name,
-                pdf_bytes,
-                {'content-type': 'application/pdf'}
-            )
+            try:
+                upload_response = self.supabase.storage.from_('reports').upload(
+                    file_name,
+                    pdf_bytes,
+                    {'content-type': 'application/pdf'}
+                )
+                print(f'Upload response: {upload_response}')
+            except Exception as upload_error:
+                raise ValueError(f'Failed to upload PDF to storage: {str(upload_error)}')
 
             # Get public URL
             file_url = self.supabase.storage.from_('reports').get_public_url(file_name)
+            print(f'Generated file URL: {file_url}')
 
             report_data = {
                 'clinic_id': request.clinic_id,

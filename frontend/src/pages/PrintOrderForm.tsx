@@ -644,7 +644,7 @@ export default function PrintOrderFormPhase2() {
                           <FormControlLabel
                             value="invoice"
                             control={<Radio />}
-                            label="請求書払い（後日請求書を郵送）"
+                            label="請求書払い（後日請求書をメールアドレスに送付）"
                           />
                         </RadioGroup>
                       )}
@@ -740,7 +740,7 @@ export default function PrintOrderFormPhase2() {
                   {pattern === 'consultation' ? (
                     <>オンラインにてご注文いただいた後、内容を確認のうえ、正式なお見積りおよび制作内容について担当者よりご連絡させていただきます。</>
                   ) : (
-                    <>ご注文確定後、<strong>{DELIVERY_DAYS}日後に発送予定</strong>です。お急ぎの場合は備考欄にご記入ください。</>
+                    <>ご注文確定後、<strong>7〜10日後発送予定</strong>です。お急ぎの場合は備考欄にご記入ください。（診察券のみ特急対応あり・料金別途）</>
                   )}
                 </Typography>
               </Alert>

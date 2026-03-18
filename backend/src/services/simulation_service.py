@@ -22,6 +22,8 @@ class SimulationService:
         fixed_cost = input_data.assumed_fixed_cost
 
         # Calculate required patients to achieve target revenue
+        if avg_revenue_per_patient <= 0:
+            raise ValueError('患者単価が0です。月次データに患者数と売上を入力してください。')
         required_patients = math.ceil(target_revenue / avg_revenue_per_patient)
 
         # Estimate costs

@@ -48,11 +48,11 @@ export const Simulation = () => {
   const [params, setParams] = useState<SimulationParams>({
     period: '6',
     insuranceRevenueChange: 0,
-    selfPayRevenueChange: 15,
+    selfPayRevenueChange: 0,
     retailRevenueChange: 0,
     variableCostChange: 0,
     fixedCostChange: 0,
-    newPatientChange: 20,
+    newPatientChange: 0,
     returningPatientChange: 0,
   });
 
@@ -161,6 +161,20 @@ export const Simulation = () => {
       const targetAverageRevenuePerPatient = targetTotalPatients > 0 ? targetRevenue / targetTotalPatients : 0;
       const targetPersonnelCostRate = targetRevenue > 0 ? (currentPersonnelCost * (1 + params.variableCostChange / 100)) / targetRevenue * 100 : 0;
       const targetMaterialCostRate = targetRevenue > 0 ? (currentMaterialCost * (1 + params.variableCostChange / 100)) / targetRevenue * 100 : 0;
+
+      if (targetRevenue <= 0) {
+        setSnackbarMessage('目標売上が0円です。月次データに売上を入力してください。');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+        return;
+      }
+
+      if (targetAverageRevenuePerPatient <= 0) {
+        setSnackbarMessage('患者単価が計算できません。月次データに患者数を入力してください。');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+        return;
+      }
 
       const simulation = await simulationService.createSimulation(
         clinic.id,
