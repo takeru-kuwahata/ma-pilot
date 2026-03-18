@@ -179,7 +179,7 @@ export const Dashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip />
+                  <Tooltip formatter={(value: number) => [Number(value).toFixed(1), '']} />
                   <Legend />
                   <Line
                     type="monotone"
@@ -213,7 +213,7 @@ export const Dashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip />
+                  <Tooltip formatter={(value: number) => [Number(value).toFixed(1), '']} />
                   <Legend />
                   <Bar dataKey="新患" fill="#FF6B35" name="新患（人）" />
                   <Bar dataKey="既存患者" fill="#1976D2" name="既存患者（人）" />
@@ -240,7 +240,7 @@ export const Dashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip />
+                  <Tooltip formatter={(value: number) => [Number(value).toFixed(1), '']} />
                   <Legend />
                   <Line
                     type="monotone"
@@ -270,7 +270,7 @@ export const Dashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip />
+                  <Tooltip formatter={(value: number) => [Number(value).toFixed(1), '']} />
                   <Legend />
                   <Line
                     type="monotone"
