@@ -47,7 +47,6 @@ import { useCurrentClinic } from '../hooks/useCurrentClinic';
 import { useAuthStore } from '../stores/authStore';
 
 const SHIPPING_FEE = 1000; // 送料（税抜・定額）
-const DELIVERY_DAYS = 7; // 発送予定日数
 
 export default function PrintOrderFormPhase2() {
   const { clinicName, clinicId } = useCurrentClinic();

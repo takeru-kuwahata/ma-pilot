@@ -193,7 +193,7 @@ export const Reports = () => {
 
   const handleCreateCustomReport = () => {
     setSnackbarMessage('カスタムレポート作成機能は今後のアップデートで実装予定です');
-    setSnackbarSeverity('info');
+    setSnackbarSeverity('success');
     setSnackbarOpen(true);
   };
 
