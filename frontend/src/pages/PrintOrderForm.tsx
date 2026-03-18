@@ -303,7 +303,20 @@ export default function PrintOrderFormPhase2() {
 
       setSubmittedOrderId(result.id);
       setSuccessModalOpen(true);
-      reset();
+      reset({
+        clinic_id: clinicId || '',
+        clinic_name: clinicName || '',
+        email: user?.email || '',
+        pattern: 'consultation',
+        items: [{ product_type: '', quantity: 100 }],
+        delivery_date: '',
+        design_required: false,
+        notes: '',
+        delivery_address: clinicData?.address || '',
+        daytime_contact: clinicData?.phone_number || '',
+        terms_agreed: false,
+        payment_method: undefined,
+      });
       setTotalAmount(0);
       // 編集状態をリセット
       setIsAddressEditable(false);
