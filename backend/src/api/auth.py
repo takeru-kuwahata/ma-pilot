@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
-from ..models.user import LoginRequest, LoginResponse, PasswordResetRequest, PasswordResetResponse
+from ..models.user import LoginRequest, LoginResponse, PasswordResetRequest, PasswordResetResponse, RegisterRequest, RegisterResponse
 from ..services.auth_service import AuthService
 from ..core.database import get_supabase_client
 from supabase import Client
@@ -31,6 +31,27 @@ async def login(
     except ValueError as e:
         logger.error(f'Login failed: {str(e)}')
         raise HTTPException(status_code=401, detail=str(e))
+
+
+@router.post('/register', response_model=RegisterResponse)
+async def register(
+    request: RegisterRequest,
+    auth_service: AuthService = Depends(get_auth_service)
+):
+    '''Self-register a new clinic owner'''
+    try:
+        result = await auth_service.register(
+            email=request.email,
+            password=request.password,
+            clinic_name=request.clinic_name,
+            postal_code=request.postal_code,
+            address=request.address,
+            phone_number=request.phone_number,
+            slug=request.slug,
+        )
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.post('/logout')

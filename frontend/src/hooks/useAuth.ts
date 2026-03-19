@@ -8,6 +8,17 @@ import {
   User,
 } from '../types';
 
+export interface RegisterFormData {
+  email: string;
+  password: string;
+  passwordConfirm: string;
+  clinic_name: string;
+  slug: string;
+  postal_code: string;
+  address: string;
+  phone_number: string;
+}
+
 export const useAuth = () => {
   const navigate = useNavigate();
   const { setUser } = useAuthStore();
@@ -47,13 +58,27 @@ export const useAuth = () => {
     }
   };
 
-  const signup = async () => {
+  const signup = async (data: RegisterFormData) => {
     try {
       setLoading(true);
       setError(null);
-      // TODO: signup API実装
-      setSuccessMessage('アカウントを作成しました');
-      navigate('/dashboard');
+
+      if (data.password !== data.passwordConfirm) {
+        setError('パスワードが一致しません');
+        return;
+      }
+
+      const result = await authService.register({
+        email: data.email,
+        password: data.password,
+        clinic_name: data.clinic_name,
+        slug: data.slug || undefined,
+        postal_code: data.postal_code,
+        address: data.address,
+        phone_number: data.phone_number,
+      });
+
+      setSuccessMessage(result.message);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'アカウント作成に失敗しました');
     } finally {

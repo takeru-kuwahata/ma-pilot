@@ -61,6 +61,60 @@ class AuthService:
         except Exception as e:
             raise ValueError(f'Password reset failed: {str(e)}')
 
+    async def register(self, email: str, password: str, clinic_name: str, postal_code: str, address: str, phone_number: str, slug: Optional[str] = None) -> dict:
+        '''Self-register a new clinic owner with email confirmation'''
+        try:
+            # 1. slugの重複チェック
+            if slug:
+                existing = self.supabase.table('clinics').select('id').eq('slug', slug).execute()
+                if existing.data:
+                    raise ValueError('このスラッグはすでに使用されています')
+
+            # 2. Supabase Authでユーザー作成（メール確認あり）
+            auth_response = self.supabase.auth.sign_up({
+                'email': email,
+                'password': password,
+            })
+
+            if not auth_response.user:
+                raise ValueError('ユーザー登録に失敗しました')
+
+            user_id = auth_response.user.id
+
+            # 3. clinicsテーブルにクリニック作成
+            clinic_data: dict = {
+                'name': clinic_name,
+                'postal_code': postal_code,
+                'address': address,
+                'phone_number': phone_number,
+                'latitude': 35.6762,
+                'longitude': 139.6503,
+                'owner_id': user_id,
+            }
+            if slug:
+                clinic_data['slug'] = slug
+
+            clinic_response = self.supabase.table('clinics').insert(clinic_data).execute()
+
+            if not clinic_response.data:
+                raise ValueError('クリニック情報の登録に失敗しました')
+
+            clinic_id = clinic_response.data[0]['id']
+
+            # 4. user_metadataにrole=clinic_ownerで登録
+            self.supabase.table('user_metadata').insert({
+                'user_id': user_id,
+                'role': 'clinic_owner',
+                'clinic_id': clinic_id,
+            }).execute()
+
+            return {'message': '登録完了メールを送信しました。メールを確認してアカウントを有効化してください。'}
+
+        except ValueError:
+            raise
+        except Exception as e:
+            raise ValueError(f'登録に失敗しました: {str(e)}')
+
     async def invite_user(self, email: str, role: UserRole, clinic_id: Optional[str] = None) -> dict:
         '''Invite a new user'''
         try:

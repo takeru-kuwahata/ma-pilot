@@ -56,6 +56,23 @@ export const authService = {
     return handleResponse<PasswordResetResponse>(response);
   },
 
+  async register(data: {
+    email: string;
+    password: string;
+    clinic_name: string;
+    slug?: string;
+    postal_code: string;
+    address: string;
+    phone_number: string;
+  }): Promise<{ message: string }> {
+    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<{ message: string }>(response);
+  },
+
   getCurrentUser(): User | null {
     const userStr = localStorage.getItem('user');
     if (!userStr) return null;

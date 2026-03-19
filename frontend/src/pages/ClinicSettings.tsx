@@ -6,6 +6,7 @@ import { clinicService } from '../services/api';
 
 interface ClinicBasicInfo {
   name: string;
+  slug: string;
   postalCode: string;
   address: string;
   phone: string;
@@ -59,6 +60,7 @@ export const ClinicSettings = () => {
 
   const [basicInfo, setBasicInfo] = useState<ClinicBasicInfo>({
     name: '',
+    slug: '',
     postalCode: '',
     address: '',
     phone: '',
@@ -92,6 +94,7 @@ export const ClinicSettings = () => {
 
         setBasicInfo({
           name: clinic.name || '',
+          slug: clinic.slug || '',
           postalCode: clinic.postal_code || '',
           address: clinic.address || '',
           phone: clinic.phone_number || '',
@@ -137,6 +140,7 @@ export const ClinicSettings = () => {
 
       await clinicService.updateClinic(clinicId, {
         name: basicInfo.name,
+        slug: basicInfo.slug || undefined,
         postal_code: basicInfo.postalCode,
         address: basicInfo.address,
         phone_number: basicInfo.phone,
@@ -249,6 +253,14 @@ export const ClinicSettings = () => {
             value={basicInfo.name}
             onChange={(e) => setBasicInfo((prev) => ({ ...prev, name: e.target.value }))}
             fullWidth
+          />
+          <TextField
+            label="スラッグ（URL識別子）"
+            value={basicInfo.slug}
+            onChange={(e) => setBasicInfo((prev) => ({ ...prev, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') }))}
+            fullWidth
+            placeholder="例: yamada-dental"
+            helperText="半角英小文字・数字・ハイフンのみ。URLのパスとして使用されます。"
           />
           <TextField
             label="郵便番号"
