@@ -147,8 +147,8 @@ export const LoginPage = () => {
                 margin="normal"
                 required
                 placeholder="your@email.com"
-                autoComplete="username"
-                inputProps={{ autoComplete: 'username' }}
+                autoComplete="email"
+                inputProps={{ autoComplete: 'email' }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '&.Mui-focused fieldset': {
