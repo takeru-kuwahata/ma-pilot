@@ -15,6 +15,7 @@ class Clinic(BaseModel):
     longitude: float
     owner_id: str
     is_active: bool
+    openhouse_status: str = 'none'  # 'none' | 'scheduled' | 'completed'
     created_at: datetime
     updated_at: datetime
 

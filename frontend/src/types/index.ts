@@ -18,6 +18,8 @@ export interface User {
 // 医院関連型定義
 // ============================================
 
+export type OpenhouseStatus = 'none' | 'scheduled' | 'completed';
+
 export interface Clinic {
   id: string;
   name: string;
@@ -29,6 +31,7 @@ export interface Clinic {
   longitude: number;
   owner_id: string;
   is_active: boolean;
+  openhouse_status: OpenhouseStatus;
   created_at: string;
   updated_at: string;
 }

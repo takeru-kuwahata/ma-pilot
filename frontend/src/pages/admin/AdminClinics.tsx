@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL, getAuthHeaders } from '../../services/api/config';
 import { useAuthStore } from '../../stores/authStore';
@@ -26,6 +26,9 @@ import {
   Select,
   MenuItem,
   TableSortLabel,
+  Tooltip,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -35,21 +38,37 @@ import {
   Block as BlockIcon,
   PlayArrow as PlayArrowIcon,
   Delete as DeleteIcon,
+  Upload as UploadIcon,
+  Key as KeyIcon,
 } from '@mui/icons-material';
+import Papa from 'papaparse';
 import { adminService } from '../../services/api';
 import { clinicService } from '../../services/api';
-import type { Clinic } from '../../types';
+import type { Clinic, OpenhouseStatus } from '../../types';
 
 const getIsActive = (clinic: Clinic): boolean => clinic.is_active;
 const getPostalCode = (clinic: Clinic): string => clinic.postal_code || '';
 const getPhoneNumber = (clinic: Clinic): string => clinic.phone_number || '';
 const getCreatedAt = (clinic: Clinic): string => clinic.created_at || '';
 
+const OPENHOUSE_STATUS_LABELS: Record<OpenhouseStatus, string> = {
+  none: '検討中',
+  scheduled: '申し込み済み',
+  completed: '完了',
+};
+
+const OPENHOUSE_STATUS_COLORS: Record<OpenhouseStatus, { backgroundColor: string; color: string }> = {
+  none: { backgroundColor: '#F5F5F5', color: '#757575' },
+  scheduled: { backgroundColor: '#FFF8E1', color: '#F57F17' },
+  completed: { backgroundColor: '#E8F5E9', color: '#2E7D32' },
+};
+
 export const AdminClinics = () => {
   const navigate = useNavigate();
   const { setSelectedClinic } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterOpenhouse, setFilterOpenhouse] = useState<string>('all');
   const [page, setPage] = useState(1);
   const [clinics, setClinics] = useState<Clinic[]>([]);
   const [, setLoading] = useState(true);
@@ -87,8 +106,19 @@ export const AdminClinics = () => {
 
   // 件数・ソート
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [sortKey, setSortKey] = useState<'name' | 'createdAt' | 'status'>('createdAt');
+  const [sortKey, setSortKey] = useState<'name' | 'createdAt' | 'status' | 'openhouse'>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // CSVインポートダイアログ
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState<{ success_count: number; failed_count: number; failed_list: { email: string; reason: string }[] } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // パスワード変更ダイアログ
+  const [passwordTarget, setPasswordTarget] = useState<Clinic | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [savingPassword, setSavingPassword] = useState(false);
 
   useEffect(() => {
     loadClinics();
@@ -183,7 +213,7 @@ export const AdminClinics = () => {
   };
 
   // ソート切り替え
-  const handleSort = (key: 'name' | 'createdAt' | 'status') => {
+  const handleSort = (key: 'name' | 'createdAt' | 'status' | 'openhouse') => {
     if (sortKey === key) {
       setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
@@ -191,6 +221,62 @@ export const AdminClinics = () => {
       setSortOrder('asc');
     }
     setPage(1);
+  };
+
+  // 内覧会ステータス変更
+  const handleOpenhouseStatusChange = async (clinicId: string, status: OpenhouseStatus) => {
+    try {
+      await fetch(`${API_BASE_URL}/api/admin/clinics/${clinicId}/openhouse-status`, {
+        method: 'PUT',
+        headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ openhouse_status: status }),
+      });
+      await loadClinics();
+    } catch (error) {
+      console.error('Failed to update openhouse status:', error);
+      alert('内覧会ステータスの更新に失敗しました');
+    }
+  };
+
+  // パスワード変更
+  const handleSavePassword = async () => {
+    if (!passwordTarget) return;
+    setSavingPassword(true);
+    try {
+      await adminService.updateClinicPassword(passwordTarget.id, newPassword);
+      setPasswordTarget(null);
+      setNewPassword('');
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      alert(`パスワードの変更に失敗しました。\n${msg}`);
+    } finally {
+      setSavingPassword(false);
+    }
+  };
+
+  // CSVインポート
+  const handleImportCsv = (file: File) => {
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        setImporting(true);
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/admin/import-wordpress-users`, {
+            method: 'POST',
+            headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ users: results.data }),
+          });
+          const data = await res.json();
+          setImportResult(data);
+          await loadClinics();
+        } catch (error) {
+          alert('インポートに失敗しました');
+        } finally {
+          setImporting(false);
+        }
+      },
+    });
   };
 
   const handleToggleStatus = async (clinicId: string, isActive: boolean) => {
@@ -336,15 +422,19 @@ export const AdminClinics = () => {
     const statusMatch =
       filterStatus === 'all' ||
       (filterStatus === 'active' && isActive) ||
-      (filterStatus === 'inactive' && !isActive) ||
-      (filterStatus === 'trial' && false);
+      (filterStatus === 'inactive' && !isActive);
+    const openhouseMatch =
+      filterOpenhouse === 'all' ||
+      clinic.openhouse_status === filterOpenhouse;
     const searchMatch =
       !searchQuery ||
       clinic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       clinic.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
       getPhoneNumber(clinic).includes(searchQuery);
-    return statusMatch && searchMatch;
+    return statusMatch && openhouseMatch && searchMatch;
   });
+
+  const OPENHOUSE_ORDER: Record<OpenhouseStatus, number> = { none: 0, scheduled: 1, completed: 2 };
 
   const sortedClinics = [...filteredClinics].sort((a, b) => {
     let cmp = 0;
@@ -354,6 +444,8 @@ export const AdminClinics = () => {
       cmp = getCreatedAt(a).localeCompare(getCreatedAt(b));
     } else if (sortKey === 'status') {
       cmp = Number(getIsActive(a)) - Number(getIsActive(b));
+    } else if (sortKey === 'openhouse') {
+      cmp = OPENHOUSE_ORDER[a.openhouse_status] - OPENHOUSE_ORDER[b.openhouse_status];
     }
     return sortOrder === 'asc' ? cmp : -cmp;
   });
@@ -389,14 +481,14 @@ export const AdminClinics = () => {
       </Box>
 
       {/* アクションバー */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
           <TextField
             placeholder="医院名、住所、電話番号で検索"
             value={searchQuery}
             onChange={handleSearch}
             onKeyPress={handleSearchKeyPress}
-            sx={{ width: '300px' }}
+            sx={{ width: '280px' }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -409,7 +501,6 @@ export const AdminClinics = () => {
             {[
               { key: 'all', label: 'すべて' },
               { key: 'active', label: 'アクティブ' },
-              { key: 'trial', label: 'トライアル' },
               { key: 'inactive', label: '停止中' },
             ].map(({ key, label }) => (
               <Button
@@ -422,15 +513,39 @@ export const AdminClinics = () => {
               </Button>
             ))}
           </Box>
+          <FormControl size="small" sx={{ minWidth: 140 }}>
+            <InputLabel sx={{ fontSize: '14px' }}>内覧会</InputLabel>
+            <Select
+              value={filterOpenhouse}
+              label="内覧会"
+              onChange={(e) => { setFilterOpenhouse(e.target.value); setPage(1); }}
+              sx={{ fontSize: '14px' }}
+            >
+              <MenuItem value="all" sx={{ fontSize: '14px' }}>すべて</MenuItem>
+              <MenuItem value="none" sx={{ fontSize: '14px' }}>検討中</MenuItem>
+              <MenuItem value="scheduled" sx={{ fontSize: '14px' }}>申し込み済み</MenuItem>
+              <MenuItem value="completed" sx={{ fontSize: '14px' }}>完了</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
-        <Button
-          variant="contained"
-          onClick={handleAddClinic}
-          sx={{ padding: '10px 24px', borderRadius: '8px', fontWeight: 600, fontSize: '16px', backgroundColor: '#FF6B35', color: '#ffffff', '&:hover': { backgroundColor: '#E55A2B' } }}
-        >
-          <AddIcon sx={{ fontSize: '20px', marginRight: '8px' }} />
-          新規医院を登録
-        </Button>
+        <Box sx={{ display: 'flex', gap: '12px' }}>
+          <Button
+            variant="outlined"
+            onClick={() => setImportDialogOpen(true)}
+            sx={{ padding: '10px 20px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', borderColor: '#FF6B35', color: '#FF6B35', '&:hover': { borderColor: '#E55A2B', backgroundColor: '#FFF3EE' } }}
+          >
+            <UploadIcon sx={{ fontSize: '18px', marginRight: '6px' }} />
+            CSVインポート
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleAddClinic}
+            sx={{ padding: '10px 24px', borderRadius: '8px', fontWeight: 600, fontSize: '16px', backgroundColor: '#FF6B35', color: '#ffffff', '&:hover': { backgroundColor: '#E55A2B' } }}
+          >
+            <AddIcon sx={{ fontSize: '20px', marginRight: '8px' }} />
+            新規医院を登録
+          </Button>
+        </Box>
       </Box>
 
       {/* 医院一覧テーブル */}
@@ -468,6 +583,15 @@ export const AdminClinics = () => {
                     ステータス
                   </TableSortLabel>
                 </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                  <TableSortLabel
+                    active={sortKey === 'openhouse'}
+                    direction={sortKey === 'openhouse' ? sortOrder : 'asc'}
+                    onClick={() => handleSort('openhouse')}
+                  >
+                    内覧会
+                  </TableSortLabel>
+                </TableCell>
                 <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>操作</TableCell>
               </TableRow>
             </TableHead>
@@ -491,6 +615,26 @@ export const AdminClinics = () => {
                       />
                     </TableCell>
                     <TableCell>
+                      <Tooltip title="クリックで変更">
+                        <Select
+                          value={clinic.openhouse_status}
+                          onChange={(e) => handleOpenhouseStatusChange(clinic.id, e.target.value as OpenhouseStatus)}
+                          size="small"
+                          sx={{ fontSize: '12px', height: '28px', minWidth: '110px' }}
+                          renderValue={(val) => (
+                            <Chip
+                              label={OPENHOUSE_STATUS_LABELS[val as OpenhouseStatus]}
+                              sx={{ ...OPENHOUSE_STATUS_COLORS[val as OpenhouseStatus], fontSize: '11px', fontWeight: 600, height: '20px' }}
+                            />
+                          )}
+                        >
+                          <MenuItem value="none" sx={{ fontSize: '13px' }}>検討中</MenuItem>
+                          <MenuItem value="scheduled" sx={{ fontSize: '13px' }}>申し込み済み</MenuItem>
+                          <MenuItem value="completed" sx={{ fontSize: '13px' }}>完了</MenuItem>
+                        </Select>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
                       <IconButton size="small" onClick={() => handleView(clinic)} title="この医院として操作する" sx={{ color: '#FF6B35', '&:hover': { color: '#E55A2B' } }}>
                         <VisibilityIcon />
                       </IconButton>
@@ -506,6 +650,9 @@ export const AdminClinics = () => {
                           <BlockIcon />
                         </IconButton>
                       )}
+                      <IconButton size="small" onClick={() => { setPasswordTarget(clinic); setNewPassword(''); }} title="パスワード変更" sx={{ color: '#bdbdbd', '&:hover': { color: '#1976D2' } }}>
+                        <KeyIcon />
+                      </IconButton>
                       <IconButton size="small" onClick={() => setDeleteTarget(clinic)} title="削除" sx={{ color: '#bdbdbd', '&:hover': { color: '#F44336' } }}>
                         <DeleteIcon />
                       </IconButton>
@@ -545,6 +692,94 @@ export const AdminClinics = () => {
           />
         </Box>
       </Paper>
+
+      {/* パスワード変更ダイアログ */}
+      <Dialog open={passwordTarget !== null} onClose={() => { setPasswordTarget(null); setNewPassword(''); }} maxWidth="xs" fullWidth>
+        <DialogTitle>パスワードを変更</DialogTitle>
+        <DialogContent>
+          <Typography sx={{ fontSize: '13px', color: '#616161', mb: 2 }}>
+            <strong>{passwordTarget?.name}</strong> のパスワードを変更します。
+          </Typography>
+          <TextField
+            label="新しいパスワード"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            fullWidth
+            required
+            inputProps={{ minLength: 8 }}
+            helperText="8文字以上で入力してください"
+            autoComplete="new-password"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => { setPasswordTarget(null); setNewPassword(''); }} sx={{ color: '#616161' }} disabled={savingPassword}>
+            キャンセル
+          </Button>
+          <Button
+            onClick={handleSavePassword}
+            variant="contained"
+            disabled={savingPassword || newPassword.length < 8}
+            sx={{ backgroundColor: '#1976D2', '&:hover': { backgroundColor: '#1565C0' } }}
+            startIcon={savingPassword ? <CircularProgress size={16} sx={{ color: '#fff' }} /> : <KeyIcon />}
+          >
+            {savingPassword ? '変更中...' : '変更する'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* CSVインポートダイアログ */}
+      <Dialog open={importDialogOpen} onClose={() => { setImportDialogOpen(false); setImportResult(null); }} maxWidth="sm" fullWidth>
+        <DialogTitle>WordPressユーザーCSVインポート</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+            <Typography sx={{ fontSize: '13px', color: '#616161' }}>
+              CSVファイルの列：<strong>email, display_name, clinic_name, password, postal_code, address, phone_number, openhouse_status</strong>
+              <br />※ email と clinic_name は必須。password が空の場合はログイン不可アカウントになります。
+            </Typography>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv"
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleImportCsv(file);
+              }}
+            />
+            <Button
+              variant="outlined"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={importing}
+              startIcon={importing ? <CircularProgress size={16} /> : <UploadIcon />}
+              sx={{ borderColor: '#FF6B35', color: '#FF6B35' }}
+            >
+              {importing ? 'インポート中...' : 'CSVファイルを選択してインポート'}
+            </Button>
+            {importResult && (
+              <Box sx={{ backgroundColor: importResult.failed_count > 0 ? '#FFF8E1' : '#E8F5E9', borderRadius: '8px', p: 2 }}>
+                <Typography sx={{ fontWeight: 600, fontSize: '14px' }}>
+                  完了：成功 {importResult.success_count}件 / 失敗 {importResult.failed_count}件
+                </Typography>
+                {importResult.failed_list.length > 0 && (
+                  <Box sx={{ mt: 1, maxHeight: '200px', overflowY: 'auto' }}>
+                    {importResult.failed_list.map((f, i) => (
+                      <Typography key={i} sx={{ fontSize: '12px', color: '#C62828' }}>
+                        {f.email}：{f.reason}
+                      </Typography>
+                    ))}
+                  </Box>
+                )}
+              </Box>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => { setImportDialogOpen(false); setImportResult(null); }} sx={{ color: '#616161' }}>
+            閉じる
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* 削除確認ダイアログ */}
       <Dialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>

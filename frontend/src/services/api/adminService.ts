@@ -119,5 +119,14 @@ export const adminService = {
       body: JSON.stringify(settings)
     });
     return handleResponse<{ message: string; settings: AdminSettings['settings'] }>(response);
-  }
+  },
+
+  async updateClinicPassword(clinicId: string, newPassword: string): Promise<{ message: string }> {
+    const response = await fetch(`${API_BASE_URL}/api/admin/clinics/${clinicId}/password`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ new_password: newPassword }),
+    });
+    return handleResponse<{ message: string }>(response);
+  },
 };

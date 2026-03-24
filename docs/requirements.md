@@ -435,3 +435,129 @@ interface AuthState {
 - **解決**: AdminModeWrapperでクリニック選択UI実装 → 以降のページで選択されたクリニックIDを使用
 
 ---
+
+## 🆕 機能拡張要件 - Lstep連携・Stripe決済・内覧会ステータス管理
+
+**要件確定日**: 2026-03-24
+**ブランチ**: feature/lstep-stripe-integration
+
+### 概要
+
+歯科医院の内覧会申し込みからMA-Pilotアカウント発行までを自動化し、印刷物発注にStripe決済を追加する。
+
+### 背景・ビジネス価値
+
+- **現状**: 内覧会申し込み → 手動でWordPress（シカレッジ）＋MA-PilotのID/PASSを発行 → 工数大
+- **目的**: Lstep Webhookで自動化しユーザー離脱を防止、運営側の手動作業を削減
+- **外部サービス**: シカレッジ（https://si-college.net/）はWordPressで運営するLMS
+
+---
+
+### 機能1: Lstep Webhook → 自動アカウント発行
+
+#### ユーザーストーリー
+「内覧会申し込み者として、申し込みフォーム送信後すぐにMA-PilotとシカレッジのIDが使えるようにしたい、なぜなら手動発行の待ち時間でユーザーが離脱するから」
+
+#### 機能要件
+- **入力**: LstepフォームのWebhookペイロード（JSON）
+- **処理**:
+  1. MA-Pilot（Supabase Auth）にアカウント作成（メール + パスワード、ロール: clinic_owner）
+  2. clinicsテーブルに医院情報を作成
+  3. WordPress（シカレッジ）REST APIでアカウント作成（同メール・同パスワード）
+- **出力**: 成功/失敗レスポンス（Lstepへ）
+- **制約**: Webhook受信エンドポイントは認証不要（公開エンドポイント）、IPホワイトリスト等でセキュリティ確保
+
+#### 外部サービス
+- Lstep: LINE Webhook転送オプション（月額5,500円）※主管理者が申し込み要
+- WordPress REST API: `POST /wp-json/wp/v2/users`、Application Password認証
+
+#### 非機能要件
+- WordPress API呼び出し失敗時はMA-Pilotへの登録は成功扱い（後でリカバリ可能）
+- エラーはログに記録
+
+#### 設計判断
+- `POST /api/webhooks/lstep` を新規エンドポイントとして作成
+- 理由: 既存ルーターとは責務が異なる（外部Webhook受信）
+
+---
+
+### 機能2: WordPressユーザー一括移植（CSV一括インポート）
+
+#### ユーザーストーリー
+「運営者として、既存300件のシカレッジユーザーをMA-Pilotに一括登録したい、なぜなら手動で1件ずつ登録するのは現実的でないから」
+
+#### 機能要件
+- **入力**: CSVファイル（email, display_name, clinic_name, password）
+- **処理**: Supabase Auth Admin APIでユーザー一括作成 + clinicsテーブルに一括登録
+- **出力**: 成功件数・失敗件数・失敗理由のサマリー表示
+- **制約**: 重複メールアドレスはスキップ（エラー扱い）
+
+#### 非機能要件
+- 100件以上はバッチ処理（タイムアウト対策）
+
+#### パスワード管理方針
+- 運営者がMA-Pilot管理画面でアカウントのパスワードを**確認・管理**できる機能を追加
+- 対象: 全アカウント
+- 理由: シカレッジの発行パスワードを運営側で把握・統一管理するため
+
+#### 設計判断
+- `POST /api/admin/import-wordpress-users` を admin.py に追加
+- AdminClinics.tsx にCSVインポートUIを追加（既存のPapaParse活用）
+
+---
+
+### 機能3: 内覧会ステータス管理
+
+#### ユーザーストーリー
+「運営者として、各医院の内覧会進捗ステータスを管理・フィルタリングしたい、なぜなら現在どの医院がどの段階かを把握できないから」
+
+#### 機能要件
+- **ステータス3種**: `none`（検討中）/ `scheduled`（申し込み済み・未実施）/ `completed`（完了）
+- **変更**: 運営者が手動でステータス変更
+- **UI**: AdminClinics画面でステータスによるフィルタ・ソート可能
+- **初期値**: 既存医院はすべて `none`
+
+#### DB変更
+- `clinics` テーブルに `openhouse_status VARCHAR(20) DEFAULT 'none'` カラム追加
+- CHECK制約: `('none', 'scheduled', 'completed')`
+
+#### 型定義追加
+```typescript
+export type OpenhouseStatus = 'none' | 'scheduled' | 'completed';
+// Clinic型に追加
+openhouse_status: OpenhouseStatus;
+```
+
+#### 設計判断
+- `PUT /api/admin/clinics/{clinic_id}/openhouse-status` を追加
+- 理由: ステータス変更は頻繁に行われる操作のため専用エンドポイントが適切
+
+---
+
+### 機能4: Stripe決済（印刷物発注）
+
+#### ユーザーストーリー
+「医院として、印刷物の再注文時にクレジットカードで即座に支払いたい、なぜなら銀行振込は手続きが煩雑だから」
+
+#### 機能要件
+- **対象**: 再注文モード（reorder）のみ
+- **選択肢**: Stripe決済 or 銀行振込（請求書）の2択（現状維持）
+- **処理**:
+  1. Stripe Payment Intent作成
+  2. Stripe Elementsでカード入力
+  3. 決済確定 → `payment_status` を `paid` に更新
+- **定期課金**: 今回は不要
+
+#### 非機能要件
+- Webhook署名検証必須（`stripe_webhook_secret`）
+- べき等性: `stripe_payment_intent_id` で重複処理防止
+
+#### 新規追加ライブラリ
+- バックエンド: `stripe==11.5.0`
+- フロントエンド: `@stripe/stripe-js`, `@stripe/react-stripe-js`
+
+#### 設計判断
+- `stripe_service.py` を新規作成（既存サービスと責務が異なるため）
+- Stripe Webhookは `/api/webhooks/stripe` として機能1と同じwebhook.pyルーターに追加
+
+---

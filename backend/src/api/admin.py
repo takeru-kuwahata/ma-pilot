@@ -15,6 +15,18 @@ class CreateOperatorRequest(BaseModel):
     password: str
     display_name: str
 
+
+class OpenhouseStatusRequest(BaseModel):
+    openhouse_status: str  # 'none' | 'scheduled' | 'completed'
+
+
+class UpdatePasswordRequest(BaseModel):
+    new_password: str
+
+
+class ImportWordPressUsersRequest(BaseModel):
+    users: List[Dict[str, Any]]  # [{email, display_name, clinic_name, password}, ...]
+
 router = APIRouter(prefix='/api/admin', tags=['Admin'])
 
 
@@ -255,3 +267,145 @@ async def geocode_address(address: str):
         return {'latitude': 35.6762, 'longitude': 139.6503}
     except Exception:
         return {'latitude': 35.6762, 'longitude': 139.6503}
+
+
+@router.put('/clinics/{clinic_id}/password')
+async def update_clinic_password(
+    clinic_id: str,
+    request: UpdatePasswordRequest,
+    supabase: Client = Depends(get_supabase_client)
+):
+    '''医院アカウントのパスワードを運営者が変更する'''
+    if len(request.new_password) < 8:
+        raise HTTPException(status_code=400, detail='パスワードは8文字以上で入力してください')
+    try:
+        # clinicsテーブルからowner_idを取得
+        clinic_res = supabase.table('clinics').select('owner_id').eq('id', clinic_id).single().execute()
+        if not clinic_res.data:
+            raise HTTPException(status_code=404, detail='Clinic not found')
+        owner_id = clinic_res.data['owner_id']
+
+        supabase_url = os.environ.get('SUPABASE_URL', '')
+        supabase_key = os.environ.get('SUPABASE_KEY', '')
+
+        # Supabase Auth Admin APIでパスワード更新
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            res = await client.put(
+                f'{supabase_url}/auth/v1/admin/users/{owner_id}',
+                headers={
+                    'apikey': supabase_key,
+                    'Authorization': f'Bearer {supabase_key}',
+                    'Content-Type': 'application/json',
+                },
+                json={'password': request.new_password},
+            )
+        if res.status_code not in (200, 201):
+            raise HTTPException(status_code=400, detail=res.json())
+        return {'message': 'パスワードを更新しました'}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.put('/clinics/{clinic_id}/openhouse-status')
+async def update_openhouse_status(
+    clinic_id: str,
+    request: OpenhouseStatusRequest,
+    supabase: Client = Depends(get_supabase_client)
+):
+    '''内覧会ステータスを更新'''
+    valid_statuses = ('none', 'scheduled', 'completed')
+    if request.openhouse_status not in valid_statuses:
+        raise HTTPException(status_code=400, detail=f'openhouse_status は {valid_statuses} のいずれかを指定してください')
+    try:
+        result = supabase.table('clinics').update(
+            {'openhouse_status': request.openhouse_status}
+        ).eq('id', clinic_id).execute()
+        if not result.data:
+            raise HTTPException(status_code=404, detail='Clinic not found')
+        return {'message': 'openhouse_status updated', 'data': result.data[0]}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post('/import-wordpress-users')
+async def import_wordpress_users(
+    request: ImportWordPressUsersRequest,
+    supabase: Client = Depends(get_supabase_client)
+):
+    '''WordPressユーザーをMA-PilotにCSV一括インポート'''
+    supabase_url = os.environ.get('SUPABASE_URL', '')
+    supabase_key = os.environ.get('SUPABASE_KEY', '')
+    success_count = 0
+    failed_list: List[Dict[str, Any]] = []
+
+    for user in request.users:
+        email = user.get('email', '').strip()
+        display_name = user.get('display_name', '').strip()
+        clinic_name = user.get('clinic_name', '').strip()
+        password = user.get('password', '').strip()
+
+        if not email or not clinic_name:
+            failed_list.append({'email': email, 'reason': 'emailまたはclinic_nameが空です'})
+            continue
+
+        try:
+            # Supabase Authにユーザー作成
+            async with httpx.AsyncClient(timeout=15.0) as client:
+                res = await client.post(
+                    f'{supabase_url}/auth/v1/admin/users',
+                    headers={
+                        'apikey': supabase_key,
+                        'Authorization': f'Bearer {supabase_key}',
+                        'Content-Type': 'application/json',
+                    },
+                    json={
+                        'email': email,
+                        'password': password if password else None,
+                        'email_confirm': True,
+                        'user_metadata': {'display_name': display_name or clinic_name},
+                    },
+                )
+
+            if res.status_code not in (200, 201):
+                error_detail = res.json().get('msg', res.text)
+                failed_list.append({'email': email, 'reason': error_detail})
+                continue
+
+            user_id = res.json()['id']
+
+            # clinicsテーブルに医院情報を作成
+            clinic_res = supabase.table('clinics').insert({
+                'name': clinic_name,
+                'postal_code': user.get('postal_code', ''),
+                'address': user.get('address', ''),
+                'phone_number': user.get('phone_number', ''),
+                'owner_id': user_id,
+                'is_active': True,
+                'latitude': 35.6762,
+                'longitude': 139.6503,
+                'openhouse_status': user.get('openhouse_status', 'none'),
+            }).execute()
+
+            clinic_id = clinic_res.data[0]['id'] if clinic_res.data else None
+
+            # user_metadataテーブルにclinic_ownerロールで登録
+            supabase.table('user_metadata').insert({
+                'user_id': user_id,
+                'role': 'clinic_owner',
+                'clinic_id': clinic_id,
+            }).execute()
+
+            success_count += 1
+
+        except Exception as e:
+            failed_list.append({'email': email, 'reason': str(e)})
+
+    return {
+        'success_count': success_count,
+        'failed_count': len(failed_list),
+        'failed_list': failed_list,
+    }
