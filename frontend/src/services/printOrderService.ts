@@ -4,7 +4,7 @@ import type {
   PrintOrderFormData,
   PriceEstimateResponse,
 } from '../types';
-import { supabase } from './supabase';
+import { supabase } from '../lib/supabase';
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8432';
 
