@@ -1,5 +1,8 @@
-"""メール送信サービス（MVP版: ログ出力のみ）"""
+"""メール送信サービス"""
 import logging
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from typing import Optional
 from datetime import datetime
 from supabase import Client
@@ -7,45 +10,72 @@ from supabase import Client
 logger = logging.getLogger(__name__)
 
 
+def _get_smtp_config():
+    """SMTP設定を取得（循環インポート回避のため遅延import）"""
+    from src.core.config import get_settings
+    s = get_settings()
+    return s.smtp_host, s.smtp_port, s.smtp_user, s.smtp_password, s.smtp_from
+
+
+def _send_email(to_email: str, subject: str, body: str) -> None:
+    """SMTPでメール送信。設定が不完全な場合はログ出力のみ。"""
+    smtp_host, smtp_port, smtp_user, smtp_password, smtp_from = _get_smtp_config()
+
+    if not smtp_host or not smtp_user or not smtp_password:
+        logger.warning('SMTP設定が未完了のためメール送信をスキップします（SMTP_HOST/SMTP_USER/SMTP_PASSWORDを設定してください）')
+        logger.info(f'[未送信メール] To: {to_email} | Subject: {subject}')
+        return
+
+    from_addr = smtp_from or smtp_user
+
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = subject
+    msg['From'] = from_addr
+    msg['To'] = to_email
+    msg.attach(MIMEText(body, 'plain', 'utf-8'))
+
+    try:
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
+            server.ehlo()
+            server.starttls()
+            server.login(smtp_user, smtp_password)
+            server.sendmail(from_addr, [to_email], msg.as_string())
+        logger.info(f'メール送信成功: To={to_email}, Subject={subject}')
+    except Exception as e:
+        logger.error(f'メール送信失敗: To={to_email}, Error={e}')
+        raise
+
+
 class EmailService:
     """メール送信サービス"""
 
     def __init__(self, supabase: Optional[Client] = None):
-        """初期化
-
-        Args:
-            supabase: Supabaseクライアント（system_settingsテーブルからメールアドレス取得用）
-        """
         self.supabase = supabase
         self._cached_email = None
 
     def get_print_order_email(self) -> str:
-        """印刷物注文メール受信先アドレスを取得
-
-        Returns:
-            メールアドレス（デフォルト: dr@medical-advance.com）
-        """
+        """印刷物注文メール受信先アドレスを取得"""
         if self._cached_email:
             return self._cached_email
 
         if not self.supabase:
-            return "dr@medical-advance.com"
+            return 'dr@medical-advance.com'
 
         try:
             response = (
-                self.supabase.table("system_settings")
-                .select("value")
-                .eq("key", "print_order_email")
+                self.supabase.table('system_settings')
+                .select('value')
+                .eq('key', 'print_order_email')
                 .single()
                 .execute()
             )
             if response.data:
-                self._cached_email = response.data["value"]
+                self._cached_email = response.data['value']
                 return self._cached_email
         except Exception as e:
-            logger.warning(f"Failed to fetch print_order_email from system_settings: {e}")
+            logger.warning(f'Failed to fetch print_order_email from system_settings: {e}')
 
-        return "dr@medical-advance.com"
+        return 'dr@medical-advance.com'
 
     def send_order_confirmation_to_clinic(
         self,
@@ -56,20 +86,9 @@ class EmailService:
         quantity: Optional[int],
         estimated_price: Optional[int],
     ) -> None:
-        """
-        クリニックへの注文受付メール送信（MVP: ログ出力のみ）
-
-        Args:
-            order_id: 注文ID
-            clinic_name: クリニック名
-            email: 送信先メールアドレス
-            product_type: 商品種類
-            quantity: 数量
-            estimated_price: 見積金額
-        """
-        subject = "【MA-Pilot】印刷物ご注文を受け付けました"
-        body = f"""
-{clinic_name} 様
+        """クリニックへの注文受付メール送信"""
+        subject = '【MA-Pilot】印刷物ご注文を受け付けました'
+        body = f"""{clinic_name} 様
 
 この度は、印刷物のご注文をいただきありがとうございます。
 以下の内容で受付いたしました。
@@ -87,30 +106,9 @@ class EmailService:
 
 ---
 株式会社京葉広告
-〒260-0013 千葉県千葉市中央区中央4-8-5
-TEL: 043-123-4567
-Email: info@keiyo-ad.co.jp
 ---
 """
-
-        # MVP版: ログ出力のみ
-        logger.info("=" * 80)
-        logger.info(f"[メール送信 - クリニック宛] To: {email}")
-        logger.info(f"Subject: {subject}")
-        logger.info(f"Body:\n{body}")
-        logger.info("=" * 80)
-
-        # 本番実装時: SMTPサーバー経由でメール送信
-        # import smtplib
-        # from email.mime.text import MIMEText
-        # msg = MIMEText(body)
-        # msg['Subject'] = subject
-        # msg['From'] = 'noreply@ma-pilot.com'
-        # msg['To'] = email
-        # with smtplib.SMTP('smtp.example.com', 587) as server:
-        #     server.starttls()
-        #     server.login(smtp_user, smtp_password)
-        #     server.send_message(msg)
+        _send_email(email, subject, body)
 
     def send_order_notification_to_staff(
         self,
@@ -122,21 +120,9 @@ Email: info@keiyo-ad.co.jp
         pattern: str,
         notes: Optional[str],
     ) -> None:
-        """
-        京葉広告スタッフへの受注通知メール送信（MVP: ログ出力のみ）
-
-        Args:
-            order_id: 注文ID
-            clinic_name: クリニック名
-            clinic_email: クリニックメールアドレス
-            product_type: 商品種類
-            quantity: 数量
-            pattern: 注文パターン
-            notes: 備考
-        """
-        subject = f"【新規注文】{clinic_name} 様から印刷物のご注文"
-        body = f"""
-新規注文が入りました。
+        """京葉広告スタッフへの受注通知メール送信"""
+        subject = f'【新規注文】{clinic_name} 様から印刷物のご注文'
+        body = f"""新規注文が入りました。
 
 ■注文情報
 注文番号: {order_id}
@@ -158,15 +144,5 @@ Email: info@keiyo-ad.co.jp
 MA-Pilot 印刷物受注システム
 ---
 """
-
-        # MVP版: ログ出力のみ
         staff_email = self.get_print_order_email()
-        logger.info("=" * 80)
-        logger.info(f"[メール送信 - 京葉広告スタッフ宛] To: {staff_email}")
-        logger.info(f"Subject: {subject}")
-        logger.info(f"Body:\n{body}")
-        logger.info("=" * 80)
-
-        # 本番実装時: SMTPサーバー経由でメール送信
-        # staff_email = "orders@keiyo-ad.co.jp"
-        # （実装は上記と同様）
+        _send_email(staff_email, subject, body)

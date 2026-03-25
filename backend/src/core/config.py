@@ -37,6 +37,13 @@ class Settings(BaseSettings):
     resas_api_key: str = Field(default='', description='RESAS API key (optional)')
     google_maps_api_key: str = Field(default='', description='Google Maps API key (optional)')
 
+    # SMTP Email Configuration (optional)
+    smtp_host: str = Field(default='', description='SMTP server host')
+    smtp_port: int = Field(default=587, description='SMTP server port')
+    smtp_user: str = Field(default='', description='SMTP username')
+    smtp_password: str = Field(default='', description='SMTP password')
+    smtp_from: str = Field(default='', description='From email address')
+
     @validator('supabase_url')
     def validate_supabase_url(cls, v: str) -> str:
         """Supabase URLのバリデーション: HTTPS必須"""
