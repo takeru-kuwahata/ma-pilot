@@ -44,6 +44,20 @@ class Settings(BaseSettings):
     smtp_password: str = Field(default='', description='SMTP password')
     smtp_from: str = Field(default='', description='From email address')
 
+    # WordPress API Configuration
+    wordpress_api_url: str = Field(
+        default='https://si-college.net/wp-json/wp/v2',
+        description='WordPress REST API URL'
+    )
+    wordpress_api_username: str = Field(
+        default='admin_ma',
+        description='WordPress API username'
+    )
+    wordpress_api_password: str = Field(
+        default='',
+        description='WordPress API password (Application Password)'
+    )
+
     @validator('supabase_url')
     def validate_supabase_url(cls, v: str) -> str:
         """Supabase URLのバリデーション: HTTPS必須"""

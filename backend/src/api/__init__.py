@@ -9,6 +9,7 @@ from .market_analysis import router as market_analysis_router
 from .staff import router as staff_router
 from .admin import router as admin_router
 from .my import router as my_router
+from .webhooks import router as webhooks_router
 
 __all__ = [
     "print_orders_router",
@@ -22,4 +23,5 @@ __all__ = [
     "staff_router",
     "admin_router",
     "my_router",
+    "webhooks_router",
 ]

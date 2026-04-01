@@ -146,3 +146,83 @@ MA-Pilot 印刷物受注システム
 """
         staff_email = self.get_print_order_email()
         _send_email(staff_email, subject, body)
+
+    async def send_welcome_email(
+        self,
+        to_email: str,
+        clinic_name: str,
+        password: str,
+    ) -> None:
+        """
+        ウェルカムメール送信（MA-Pilotアカウント作成時）
+
+        Args:
+            to_email: 送信先メールアドレス
+            clinic_name: クリニック名
+            password: 初期パスワード
+        """
+        # system_settingsからテンプレート取得
+        subject_template = self._get_email_template('welcome_email_subject')
+        body_template = self._get_email_template('welcome_email_body')
+
+        # プレースホルダー置換
+        login_url = 'https://ma-pilot.vercel.app'
+        subject = subject_template.replace('{clinic_name}', clinic_name)
+        body = (
+            body_template
+            .replace('{clinic_name}', clinic_name)
+            .replace('{email}', to_email)
+            .replace('{password}', password)
+            .replace('{login_url}', login_url)
+        )
+
+        _send_email(to_email, subject, body)
+
+    def _get_email_template(self, key: str) -> str:
+        """
+        system_settingsからメールテンプレートを取得
+
+        Args:
+            key: テンプレートキー（welcome_email_subject または welcome_email_body）
+
+        Returns:
+            テンプレート文字列、取得失敗時はデフォルト文面
+        """
+        default_templates = {
+            'welcome_email_subject': '【シカレッジ/MA-Pilot】アカウント登録が完了しました',
+            'welcome_email_body': """{clinic_name} 院長 様
+
+この度は内覧会のお申し込みをいただき、誠にありがとうございます。
+MA-Pilotのアカウントを発行いたしました。
+
+■ログイン情報
+URL: {login_url}
+メールアドレス: {email}
+初期パスワード: {password}
+
+ログイン後、パスワードの変更をお勧めいたします。
+
+ご不明な点はお気軽にお問い合わせください。
+
+---
+メディカルアドバンス
+---""",
+        }
+
+        if not self.supabase:
+            return default_templates.get(key, '')
+
+        try:
+            response = (
+                self.supabase.table('system_settings')
+                .select('value')
+                .eq('key', key)
+                .single()
+                .execute()
+            )
+            if response.data:
+                return response.data['value']
+        except Exception as e:
+            logger.warning(f'Failed to fetch {key} from system_settings: {e}')
+
+        return default_templates.get(key, '')
