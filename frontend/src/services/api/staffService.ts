@@ -3,6 +3,7 @@ import type { User, UserRole } from '../../types';
 
 interface InviteUserRequest {
   email: string;
+  password: string;
   role: UserRole;
   clinic_id: string;
 }

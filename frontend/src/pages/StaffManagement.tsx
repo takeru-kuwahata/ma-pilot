@@ -44,6 +44,7 @@ export const StaffManagement = () => {
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [inviteForm, setInviteForm] = useState({
     email: '',
+    password: '',
     role: 'clinic_viewer' as 'clinic_owner' | 'clinic_editor' | 'clinic_viewer'
   });
   const [inviteLoading, setInviteLoading] = useState(false);
@@ -109,6 +110,13 @@ export const StaffManagement = () => {
       return;
     }
 
+    if (!inviteForm.password || inviteForm.password.length < 8) {
+      setSnackbarMessage('パスワードは8文字以上で入力してください');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
+
     if (!clinic?.id) {
       setSnackbarMessage('医院IDが見つかりません');
       setSnackbarSeverity('error');
@@ -121,15 +129,16 @@ export const StaffManagement = () => {
 
       await staffService.inviteStaff({
         email: inviteForm.email,
+        password: inviteForm.password,
         role: inviteForm.role,
         clinic_id: clinic.id
       });
 
-      setSnackbarMessage('招待メールを送信しました');
+      setSnackbarMessage('スタッフアカウントを作成しました');
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
       setInviteDialogOpen(false);
-      setInviteForm({ email: '', role: 'clinic_viewer' });
+      setInviteForm({ email: '', password: '', role: 'clinic_viewer' });
 
       // スタッフ一覧を再取得
       await loadStaffList();
@@ -407,7 +416,7 @@ export const StaffManagement = () => {
       >
         <DialogTitle>
           <Typography sx={{ fontSize: '20px', fontWeight: 600 }}>
-            スタッフを招待
+            スタッフを追加
           </Typography>
         </DialogTitle>
         <DialogContent>
@@ -423,16 +432,28 @@ export const StaffManagement = () => {
               placeholder="example@clinic.jp"
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  '&:hover fieldset': {
-                    borderColor: '#FF6B35',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#FF6B35',
-                  },
+                  '&:hover fieldset': { borderColor: '#FF6B35' },
+                  '&.Mui-focused fieldset': { borderColor: '#FF6B35' },
                 },
-                '& .MuiInputLabel-root.Mui-focused': {
-                  color: '#FF6B35',
+                '& .MuiInputLabel-root.Mui-focused': { color: '#FF6B35' },
+              }}
+            />
+            <TextField
+              label="初期パスワード"
+              type="password"
+              required
+              fullWidth
+              value={inviteForm.password}
+              onChange={(e) => setInviteForm((prev) => ({ ...prev, password: e.target.value }))}
+              disabled={inviteLoading}
+              placeholder="8文字以上"
+              inputProps={{ minLength: 8 }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&:hover fieldset': { borderColor: '#FF6B35' },
+                  '&.Mui-focused fieldset': { borderColor: '#FF6B35' },
                 },
+                '& .MuiInputLabel-root.Mui-focused': { color: '#FF6B35' },
               }}
             />
             <FormControl
@@ -441,16 +462,10 @@ export const StaffManagement = () => {
               disabled={inviteLoading}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  '&:hover fieldset': {
-                    borderColor: '#FF6B35',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#FF6B35',
-                  },
+                  '&:hover fieldset': { borderColor: '#FF6B35' },
+                  '&.Mui-focused fieldset': { borderColor: '#FF6B35' },
                 },
-                '& .MuiInputLabel-root.Mui-focused': {
-                  color: '#FF6B35',
-                },
+                '& .MuiInputLabel-root.Mui-focused': { color: '#FF6B35' },
               }}
             >
               <InputLabel>権限</InputLabel>
@@ -466,7 +481,7 @@ export const StaffManagement = () => {
             </FormControl>
             <Alert severity="info" icon={<InfoIcon />}>
               <Typography sx={{ fontSize: '13px' }}>
-                招待メールが送信されます。受信者はメール内のリンクからアカウントを作成できます。
+                メールアドレスと初期パスワードを設定してスタッフアカウントを作成します。ログイン後にパスワードを変更するよう案内してください。
               </Typography>
             </Alert>
           </Box>
@@ -487,7 +502,7 @@ export const StaffManagement = () => {
           <Button
             variant="contained"
             onClick={handleInviteStaff}
-            disabled={inviteLoading || !inviteForm.email}
+            disabled={inviteLoading || !inviteForm.email || !inviteForm.password}
             sx={{
               backgroundColor: '#FF6B35',
               color: '#ffffff',
@@ -500,7 +515,7 @@ export const StaffManagement = () => {
               },
             }}
           >
-            {inviteLoading ? <CircularProgress size={24} sx={{ color: '#ffffff' }} /> : '招待する'}
+            {inviteLoading ? <CircularProgress size={24} sx={{ color: '#ffffff' }} /> : 'アカウントを作成'}
           </Button>
         </DialogActions>
       </Dialog>

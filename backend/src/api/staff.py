@@ -71,7 +71,7 @@ async def invite_staff(
         raise HTTPException(status_code=404, detail='Clinic not found')
 
     try:
-        result = await auth_service.invite_user(request.email, request.role, actual_clinic_id)
+        result = await auth_service.invite_user(request.email, request.role, actual_clinic_id, request.password)
         return result
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

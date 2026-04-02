@@ -115,26 +115,54 @@ class AuthService:
         except Exception as e:
             raise ValueError(f'登録に失敗しました: {str(e)}')
 
-    async def invite_user(self, email: str, role: UserRole, clinic_id: Optional[str] = None) -> dict:
-        '''Invite a new user'''
+    async def invite_user(self, email: str, role: UserRole, clinic_id: Optional[str] = None, password: Optional[str] = None) -> dict:
+        '''Create a new staff user with password'''
+        import httpx
+        import os
         try:
-            # Create user via Supabase Admin API
-            auth_response = self.supabase.auth.admin.invite_user_by_email(email)
+            if not password:
+                raise ValueError('パスワードは必須です')
+
+            # Supabase Admin REST APIで直接ユーザー作成（email_confirm=True）
+            supabase_url = os.environ.get('SUPABASE_URL', '')
+            service_role_key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
+
+            async with httpx.AsyncClient() as client:
+                resp = await client.post(
+                    f'{supabase_url}/auth/v1/admin/users',
+                    headers={
+                        'apikey': service_role_key,
+                        'Authorization': f'Bearer {service_role_key}',
+                        'Content-Type': 'application/json',
+                    },
+                    json={
+                        'email': email,
+                        'password': password,
+                        'email_confirm': True,
+                    },
+                    timeout=15,
+                )
+                if resp.status_code not in (200, 201):
+                    raise ValueError(f'ユーザー作成失敗: {resp.text}')
+                user_data = resp.json()
+                user_id = user_data['id']
 
             # Create user metadata
             self.supabase.table('user_metadata').insert({
-                'user_id': auth_response.user.id,
+                'user_id': user_id,
                 'role': role,
                 'clinic_id': clinic_id
             }).execute()
 
             return {
-                'message': 'User invited successfully',
-                'invite_token': auth_response.user.id
+                'message': 'スタッフアカウントを作成しました',
+                'invite_token': user_id
             }
 
+        except ValueError:
+            raise
         except Exception as e:
-            raise ValueError(f'User invitation failed: {str(e)}')
+            raise ValueError(f'スタッフ作成に失敗しました: {str(e)}')
 
     async def update_user_role(self, user_id: str, role: UserRole) -> dict:
         '''Update user role'''

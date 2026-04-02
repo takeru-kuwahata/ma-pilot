@@ -55,6 +55,7 @@ class InviteUserRequest(BaseModel):
     email: EmailStr
     role: UserRole
     clinic_id: Optional[str] = None
+    password: Optional[str] = Field(None, min_length=8, max_length=128)
 
 
 class InviteUserResponse(BaseModel):
