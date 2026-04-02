@@ -214,20 +214,26 @@ class PrintOrderService:
         # 注文データを再取得（明細含む）
         created_order = self.get_order_by_id(order_id)
 
-        # メール送信（MVP版: ログ出力のみ）
+        # メール送信
         try:
-            # クリニック宛受付メール
-            product_summary = (
-                f"{len(order_data.items)}点の商品"
-                if order_data.items
-                else order_data.product_type or "未定"
-            )
+            # 明細一覧を文字列化
+            if order_data.items and len(order_data.items) > 0:
+                items_lines = "\n".join(
+                    f"  - {item.product_type}：{item.quantity}枚"
+                    for item in order_data.items
+                )
+                product_summary = f"{len(order_data.items)}点の商品\n{items_lines}"
+                quantity_summary = None
+            else:
+                product_summary = order_data.product_type or "（明細なし）"
+                quantity_summary = None
+
             self.email_service.send_order_confirmation_to_clinic(
                 order_id=created_order.id,
                 clinic_name=created_order.clinic_name,
                 email=created_order.email,
                 product_type=product_summary,
-                quantity=None,
+                quantity=quantity_summary,
                 estimated_price=created_order.estimated_price,
             )
 
@@ -237,7 +243,7 @@ class PrintOrderService:
                 clinic_name=created_order.clinic_name,
                 clinic_email=created_order.email,
                 product_type=product_summary,
-                quantity=None,
+                quantity=quantity_summary,
                 pattern=created_order.pattern,
                 notes=created_order.notes,
             )

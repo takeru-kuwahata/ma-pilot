@@ -121,8 +121,17 @@ class EmailService:
         notes: Optional[str],
     ) -> None:
         """京葉広告スタッフへの受注通知メール送信"""
-        subject = f'【新規注文】{clinic_name} 様から印刷物のご注文'
-        body = f"""新規注文が入りました。
+        if pattern == 'reorder':
+            pattern_label = '再注文'
+            subject_prefix = '再注文'
+        elif pattern == 'consultation':
+            pattern_label = '相談フォーム'
+            subject_prefix = '相談'
+        else:
+            pattern_label = '新規注文'
+            subject_prefix = '新規注文'
+        subject = f'【{subject_prefix}】{clinic_name} 様から印刷物のご注文'
+        body = f"""{pattern_label}が入りました。
 
 ■注文情報
 注文番号: {order_id}
@@ -133,9 +142,9 @@ class EmailService:
 メールアドレス: {clinic_email}
 
 ■注文内容
-注文パターン: {'再注文' if pattern == 'reorder' else '相談フォーム'}
-商品種類: {product_type or '未定'}
-数量: {quantity or '未定'}
+注文パターン: {pattern_label}
+商品種類: {product_type or '（明細参照）'}
+数量: {quantity if quantity is not None else '（明細参照）'}
 備考: {notes or 'なし'}
 
 早急にお見積りをご連絡ください。

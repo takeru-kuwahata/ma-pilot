@@ -92,7 +92,8 @@ class ReportService:
         operating_profit = total_revenue - total_cost
         profit_margin = (operating_profit / total_revenue * 100) if total_revenue > 0 else 0
 
-        revenue_per_patient = (total_revenue / current_month['total_patients']) if current_month['total_patients'] > 0 else 0
+        total_patients = current_month.get('total_patients') or 0
+        revenue_per_patient = (total_revenue / total_patients) if total_patients > 0 else 0
 
         # Calculate month-over-month changes
         revenue_change = None
@@ -105,7 +106,8 @@ class ReportService:
 
             revenue_change = ((total_revenue - prev_revenue) / prev_revenue * 100) if prev_revenue > 0 else 0
             profit_change = ((operating_profit - prev_profit) / prev_profit * 100) if prev_profit != 0 else 0
-            patient_change = ((current_month['total_patients'] - previous_month['total_patients']) / previous_month['total_patients'] * 100) if previous_month['total_patients'] > 0 else 0
+            prev_patients = previous_month.get('total_patients') or 0
+            patient_change = ((total_patients - prev_patients) / prev_patients * 100) if prev_patients > 0 else 0
 
         # Generate PDF
         pdf_bytes = self.pdf_service.generate_monthly_report_pdf(
@@ -114,7 +116,7 @@ class ReportService:
             total_revenue=total_revenue,
             operating_profit=int(operating_profit),
             profit_margin=profit_margin,
-            total_patients=current_month['total_patients'],
+            total_patients=total_patients,
             new_patients=current_month.get('new_patients', 0),
             revenue_per_patient=int(revenue_per_patient),
             insurance_revenue=current_month.get('insurance_revenue', 0),
@@ -149,26 +151,29 @@ class ReportService:
 
         clinic_name = clinic_response.data['name'] if clinic_response.data else 'クリニック'
 
-        # Extract simulation data
-        target_revenue = simulation['target_revenue']
-        target_profit = simulation['target_profit']
-        profit_margin = (target_profit / target_revenue * 100) if target_revenue > 0 else 0
+        # Extract simulation data from nested input/result fields
+        sim_input = simulation.get('input', {})
+        sim_result = simulation.get('result', {})
 
-        current_revenue = simulation['current_revenue']
-        current_profit = simulation['current_profit']
+        target_revenue = sim_result.get('estimated_revenue', sim_input.get('target_revenue', 0))
+        target_profit = sim_result.get('estimated_profit', sim_input.get('target_profit', 0))
+        profit_margin = sim_result.get('profit_margin', 0)
+
+        # current values not stored directly; use 0 as fallback
+        current_revenue = 0
+        current_profit = 0
 
         revenue_change_amount = target_revenue - current_revenue
-        revenue_change_rate = ((target_revenue - current_revenue) / current_revenue * 100) if current_revenue > 0 else 0
+        revenue_change_rate = 0
 
         profit_change_amount = target_profit - current_profit
-        profit_change_rate = ((target_profit - current_profit) / current_profit * 100) if current_profit != 0 else 0
+        profit_change_rate = 0
 
-        # Get parameters
-        params = simulation.get('parameters', {})
-        avg_revenue_per_patient = params.get('avg_revenue_per_patient', 0)
-        personnel_cost_rate = params.get('personnel_cost_rate', 0)
-        material_cost_rate = params.get('material_cost_rate', 0)
-        fixed_cost = params.get('fixed_cost', 0)
+        # Get parameters from input field
+        avg_revenue_per_patient = sim_input.get('assumed_average_revenue_per_patient', 0)
+        personnel_cost_rate = sim_input.get('assumed_personnel_cost_rate', 0)
+        material_cost_rate = sim_input.get('assumed_material_cost_rate', 0)
+        fixed_cost = sim_input.get('assumed_fixed_cost', 0)
 
         # Generate PDF
         pdf_bytes = self.pdf_service.generate_simulation_report_pdf(
