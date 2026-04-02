@@ -222,28 +222,29 @@ class PrintOrderService:
                     f"  - {item.product_type}：{item.quantity}枚"
                     for item in order_data.items
                 )
-                product_summary = f"{len(order_data.items)}点の商品\n{items_lines}"
-                quantity_summary = None
+                items_text = f"■商品明細\n{items_lines}"
+                product_summary = items_text
             else:
+                items_text = None
                 product_summary = order_data.product_type or "（明細なし）"
-                quantity_summary = None
 
             self.email_service.send_order_confirmation_to_clinic(
                 order_id=created_order.id,
                 clinic_name=created_order.clinic_name,
                 email=created_order.email,
                 product_type=product_summary,
-                quantity=quantity_summary,
+                quantity=None,
                 estimated_price=created_order.estimated_price,
+                items_text=items_text,
             )
 
-            # 京葉広告スタッフ宛受注通知メール
+            # スタッフ宛受注通知メール
             self.email_service.send_order_notification_to_staff(
                 order_id=created_order.id,
                 clinic_name=created_order.clinic_name,
                 clinic_email=created_order.email,
                 product_type=product_summary,
-                quantity=quantity_summary,
+                quantity=None,
                 pattern=created_order.pattern,
                 notes=created_order.notes,
             )

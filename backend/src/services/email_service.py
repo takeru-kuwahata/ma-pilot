@@ -85,18 +85,18 @@ class EmailService:
         product_type: Optional[str],
         quantity: Optional[int],
         estimated_price: Optional[int],
+        items_text: Optional[str] = None,
     ) -> None:
         """クリニックへの注文受付メール送信"""
         subject = '【MA-Pilot】印刷物ご注文を受け付けました'
+        items_section = f"\n{items_text}" if items_text else ''
         body = f"""{clinic_name} 様
 
 この度は、印刷物のご注文をいただきありがとうございます。
 以下の内容で受付いたしました。
 
 ■ご注文内容
-注文番号: {order_id}
-商品種類: {product_type or '未定'}
-数量: {quantity or '未定'}
+注文番号: {order_id}{items_section}
 見積金額: {f'¥{estimated_price:,}' if estimated_price else '未算出'}
 
 担当者より正式なお見積りをメールにてご連絡させていただきます。
@@ -105,7 +105,7 @@ class EmailService:
 何かご不明点がございましたら、お気軽にお問い合わせください。
 
 ---
-株式会社京葉広告
+株式会社メディカルアドバンス
 ---
 """
         _send_email(email, subject, body)
@@ -144,8 +144,7 @@ class EmailService:
 
 ■注文内容
 注文パターン: {pattern_label}
-商品種類: {product_type or '（明細参照）'}
-数量: {quantity if quantity is not None else '（明細参照）'}
+{product_type or '（商品明細なし）'}
 備考: {notes or 'なし'}
 
 早急にお見積りをご連絡ください。
