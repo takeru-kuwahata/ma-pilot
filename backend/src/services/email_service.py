@@ -121,15 +121,16 @@ class EmailService:
         notes: Optional[str],
     ) -> None:
         """京葉広告スタッフへの受注通知メール送信"""
-        if pattern == 'reorder':
+        pattern_str = pattern.value if hasattr(pattern, 'value') else str(pattern)
+        if pattern_str == 'reorder':
             pattern_label = '再注文'
             subject_prefix = '再注文'
-        elif pattern == 'consultation':
+        elif pattern_str == 'consultation':
             pattern_label = '相談フォーム'
-            subject_prefix = '相談'
+            subject_prefix = '相談フォーム'
         else:
-            pattern_label = '新規注文'
-            subject_prefix = '新規注文'
+            pattern_label = pattern_str
+            subject_prefix = pattern_str
         subject = f'【{subject_prefix}】{clinic_name} 様から印刷物のご注文'
         body = f"""{pattern_label}が入りました。
 
