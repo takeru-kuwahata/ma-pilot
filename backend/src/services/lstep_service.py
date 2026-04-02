@@ -53,7 +53,15 @@ class LstepService:
         Returns:
             処理結果（success, message, ma_pilot_created, wordpress_created, email_sent）
         """
-        form_type = payload.get('form_type', '')
+        # form_typeが未設定の場合、フォームIDから自動判別
+        FORM_ID_TO_TYPE = {
+            '816114': 'dental_show',
+            '710762': 'doctor_other',
+            '710696': 'doctor_openhouse',
+            '710319': 'staff',
+        }
+        form_id = str(payload.get('form_id', ''))
+        form_type = payload.get('form_type', '') or FORM_ID_TO_TYPE.get(form_id, '')
         email = payload.get('email', '')
         full_name = payload.get('full_name', '')
         clinic_name = payload.get('clinic_name', '')
