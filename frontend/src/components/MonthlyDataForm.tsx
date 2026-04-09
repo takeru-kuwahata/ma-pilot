@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, memo } from 'react';
+import { useState, useMemo, useCallback, useEffect, memo } from 'react';
 import {
   Box,
   TextField,
@@ -36,32 +36,48 @@ const formatNumber = (num: number): string => {
   return num.toLocaleString('ja-JP');
 };
 
-export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: MonthlyDataFormProps) => {
-  const [formData, setFormData] = useState<MonthlyDataFormData>(
-    initialData || {
-      year_month: '',
-      total_revenue: 0,
-      insurance_revenue: 0,
-      self_pay_revenue: 0,
-      retail_revenue: 0,
-      variable_cost: 0,
-      fixed_cost: 0,
-      new_patients: 0,
-      returning_patients: 0,
-      total_patients: 0,
-    }
-  );
+type NumberField = 'insurance_revenue' | 'self_pay_revenue' | 'retail_revenue' | 'variable_cost' | 'fixed_cost' | 'first_visit_patients' | 're_first_visit_patients' | 'returning_patients' | 'other_patients';
 
-  // 表示用の文字列状態（フォーカス時：カンマなし、非フォーカス時：カンマあり）
-  const [displayValues, setDisplayValues] = useState({
-    insurance_revenue: '',
-    self_pay_revenue: '',
-    retail_revenue: '',
-    variable_cost: '',
-    fixed_cost: '',
-    new_patients: '',
-    returning_patients: '',
-  });
+export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: MonthlyDataFormProps) => {
+  const defaultValues: MonthlyDataFormData = {
+    year_month: '',
+    total_revenue: 0,
+    insurance_revenue: 0,
+    self_pay_revenue: 0,
+    retail_revenue: 0,
+    variable_cost: 0,
+    fixed_cost: 0,
+    first_visit_patients: 0,
+    re_first_visit_patients: 0,
+    returning_patients: 0,
+    other_patients: 0,
+    total_patients: 0,
+  };
+
+  const [formData, setFormData] = useState<MonthlyDataFormData>(initialData || defaultValues);
+
+  // 表示用の文字列状態（initialDataがある場合はその値でフォーマットして初期化）
+  const initDisplay = useCallback((data?: MonthlyDataFormData) => ({
+    insurance_revenue: data?.insurance_revenue ? formatNumber(data.insurance_revenue) : '',
+    self_pay_revenue: data?.self_pay_revenue ? formatNumber(data.self_pay_revenue) : '',
+    retail_revenue: data?.retail_revenue ? formatNumber(data.retail_revenue) : '',
+    variable_cost: data?.variable_cost ? formatNumber(data.variable_cost) : '',
+    fixed_cost: data?.fixed_cost ? formatNumber(data.fixed_cost) : '',
+    first_visit_patients: data?.first_visit_patients ? formatNumber(data.first_visit_patients) : '',
+    re_first_visit_patients: data?.re_first_visit_patients ? formatNumber(data.re_first_visit_patients) : '',
+    returning_patients: data?.returning_patients ? formatNumber(data.returning_patients) : '',
+    other_patients: data?.other_patients ? formatNumber(data.other_patients) : '',
+  }), []);
+
+  const [displayValues, setDisplayValues] = useState<Record<NumberField, string>>(() => initDisplay(initialData));
+
+  // initialDataが変わったとき（編集ダイアログを開き直した場合）に同期
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+      setDisplayValues(initDisplay(initialData));
+    }
+  }, [initialData, initDisplay]);
 
   // メモ化: 総売上と総患者数を計算（派生値として扱う）
   const totalRevenue = useMemo(
@@ -70,15 +86,15 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
   );
 
   const totalPatients = useMemo(
-    () => formData.new_patients + formData.returning_patients,
-    [formData.new_patients, formData.returning_patients]
+    () => formData.first_visit_patients + formData.re_first_visit_patients + formData.returning_patients + formData.other_patients,
+    [formData.first_visit_patients, formData.re_first_visit_patients, formData.returning_patients, formData.other_patients]
   );
 
   const handleYearMonthChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, year_month: e.target.value }));
   }, []);
 
-  const handleNumberChange = useCallback((field: keyof typeof displayValues) => (
+  const handleNumberChange = useCallback((field: NumberField) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.value;
@@ -87,16 +103,14 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
     setFormData((prev) => ({ ...prev, [field]: numValue }));
   }, []);
 
-  const handleFocus = useCallback((field: keyof typeof displayValues) => () => {
-    // フォーカス時：カンマを除去した数値を表示
+  const handleFocus = useCallback((field: NumberField) => () => {
     setDisplayValues((prev) => ({
       ...prev,
       [field]: formData[field] > 0 ? formData[field].toString() : ''
     }));
   }, [formData]);
 
-  const handleBlur = useCallback((field: keyof typeof displayValues) => () => {
-    // ブラー時：カンマ区切りでフォーマット
+  const handleBlur = useCallback((field: NumberField) => () => {
     setDisplayValues((prev) => ({
       ...prev,
       [field]: formData[field] > 0 ? formatNumber(formData[field]) : ''
@@ -240,43 +254,75 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
           {/* 患者数関連 */}
           <Grid item xs={12}>
             <Typography variant="subtitle1" color="primary" gutterBottom>
-              患者数関連（2項目入力 + 1自動計算）
+              患者数関連（4項目入力 + 1自動計算）
             </Typography>
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={2.4}>
             <TextField
               fullWidth
-              label="新患数"
+              label="初診"
               type="text"
-              value={displayValues.new_patients}
-              onChange={handleNumberChange('new_patients')}
-              onFocus={handleFocus('new_patients')}
-              onBlur={handleBlur('new_patients')}
-              helperText="数字を入力（カンマ可）"
+              value={displayValues.first_visit_patients}
+              onChange={handleNumberChange('first_visit_patients')}
+              onFocus={handleFocus('first_visit_patients')}
+              onBlur={handleBlur('first_visit_patients')}
+              helperText="初めての来院"
               InputProps={{
                 endAdornment: <InputAdornment position="end">人</InputAdornment>,
               }}
             />
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={2.4}>
             <TextField
               fullWidth
-              label="再診患者数"
+              label="再初診"
+              type="text"
+              value={displayValues.re_first_visit_patients}
+              onChange={handleNumberChange('re_first_visit_patients')}
+              onFocus={handleFocus('re_first_visit_patients')}
+              onBlur={handleBlur('re_first_visit_patients')}
+              helperText="再度初診扱い"
+              InputProps={{
+                endAdornment: <InputAdornment position="end">人</InputAdornment>,
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={2.4}>
+            <TextField
+              fullWidth
+              label="再診"
               type="text"
               value={displayValues.returning_patients}
               onChange={handleNumberChange('returning_patients')}
               onFocus={handleFocus('returning_patients')}
               onBlur={handleBlur('returning_patients')}
-              helperText="数字を入力（カンマ可）"
+              helperText="継続来院"
               InputProps={{
                 endAdornment: <InputAdornment position="end">人</InputAdornment>,
               }}
             />
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={2.4}>
+            <TextField
+              fullWidth
+              label="他"
+              type="text"
+              value={displayValues.other_patients}
+              onChange={handleNumberChange('other_patients')}
+              onFocus={handleFocus('other_patients')}
+              onBlur={handleBlur('other_patients')}
+              helperText="その他"
+              InputProps={{
+                endAdornment: <InputAdornment position="end">人</InputAdornment>,
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={2.4}>
             <TextField
               fullWidth
               label="総患者数"

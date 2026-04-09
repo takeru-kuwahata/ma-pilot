@@ -21,8 +21,10 @@ class MonthlyData(BaseModel):
     other_cost: float
 
     # Patients
-    new_patients: int
-    returning_patients: int
+    first_visit_patients: int       # 初診
+    re_first_visit_patients: int    # 再初診
+    returning_patients: int         # 再診
+    other_patients: int             # 他
     total_patients: int
 
     # Treatments
@@ -46,8 +48,10 @@ class MonthlyDataCreate(BaseModel):
     fixed_cost: float
     other_cost: float = 0
 
-    new_patients: int
-    returning_patients: int
+    first_visit_patients: int       # 初診
+    re_first_visit_patients: int    # 再初診
+    returning_patients: int         # 再診
+    other_patients: int             # 他
 
     treatment_count: int
 
@@ -62,8 +66,10 @@ class MonthlyDataUpdate(BaseModel):
     fixed_cost: Optional[float] = None
     other_cost: Optional[float] = None
 
-    new_patients: Optional[int] = None
-    returning_patients: Optional[int] = None
+    first_visit_patients: Optional[int] = None      # 初診
+    re_first_visit_patients: Optional[int] = None   # 再初診
+    returning_patients: Optional[int] = None        # 再診
+    other_patients: Optional[int] = None            # 他
 
     treatment_count: Optional[int] = None
 

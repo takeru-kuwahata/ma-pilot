@@ -34,6 +34,10 @@ interface MonthlyDataRow {
   year_month: string;
   total_revenue: number;
   operating_profit: number;
+  first_visit_patients: number;
+  re_first_visit_patients: number;
+  returning_patients: number;
+  other_patients: number;
   total_patients: number;
   dataSource: '手動入力' | 'CSV取込';
 }
@@ -86,6 +90,10 @@ export const DataManagement = () => {
         year_month: item.year_month,
         total_revenue: item.total_revenue,
         operating_profit: item.total_revenue - (item.personnel_cost + item.material_cost + item.fixed_cost + item.other_cost),
+        first_visit_patients: item.first_visit_patients,
+        re_first_visit_patients: item.re_first_visit_patients,
+        returning_patients: item.returning_patients,
+        other_patients: item.other_patients,
         total_patients: item.total_patients,
         dataSource: '手動入力'
       }));
@@ -204,8 +212,10 @@ export const DataManagement = () => {
         retail_revenue: 0,
         variable_cost: raw.personnel_cost,
         fixed_cost: raw.fixed_cost,
-        new_patients: raw.new_patients,
+        first_visit_patients: raw.first_visit_patients,
+        re_first_visit_patients: raw.re_first_visit_patients,
         returning_patients: raw.returning_patients,
+        other_patients: raw.other_patients,
         total_patients: raw.total_patients,
       }
     });
@@ -492,26 +502,22 @@ export const DataManagement = () => {
                 >
                   営業利益
                 </TableCell>
-                <TableCell
-                  sx={{
-                    padding: '12px',
-                    fontWeight: 600,
-                    fontSize: '14px',
-                    color: '#616161',
-                    borderBottom: '1px solid #e0e0e0',
-                  }}
-                >
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
+                  初診
+                </TableCell>
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
+                  再初診
+                </TableCell>
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
+                  再診
+                </TableCell>
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
+                  他
+                </TableCell>
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
                   総患者数
                 </TableCell>
-                <TableCell
-                  sx={{
-                    padding: '12px',
-                    fontWeight: 600,
-                    fontSize: '14px',
-                    color: '#616161',
-                    borderBottom: '1px solid #e0e0e0',
-                  }}
-                >
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
                   データソース
                 </TableCell>
                 <TableCell
@@ -530,13 +536,13 @@ export const DataManagement = () => {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={6} sx={{ textAlign: 'center', padding: '24px' }}>
+                  <TableCell colSpan={9} sx={{ textAlign: 'center', padding: '24px' }}>
                     読み込み中...
                   </TableCell>
                 </TableRow>
               ) : monthlyData.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} sx={{ textAlign: 'center', padding: '24px' }}>
+                  <TableCell colSpan={9} sx={{ textAlign: 'center', padding: '24px' }}>
                     データがありません
                   </TableCell>
                 </TableRow>
@@ -570,22 +576,22 @@ export const DataManagement = () => {
                     >
                       {formatCurrency(row.operating_profit)}
                     </TableCell>
-                    <TableCell
-                      sx={{
-                        padding: '12px',
-                        fontSize: '14px',
-                        borderBottom: '1px solid #e0e0e0',
-                      }}
-                    >
+                    <TableCell sx={{ padding: '12px', fontSize: '14px', borderBottom: '1px solid #e0e0e0' }}>
+                      {row.first_visit_patients}人
+                    </TableCell>
+                    <TableCell sx={{ padding: '12px', fontSize: '14px', borderBottom: '1px solid #e0e0e0' }}>
+                      {row.re_first_visit_patients}人
+                    </TableCell>
+                    <TableCell sx={{ padding: '12px', fontSize: '14px', borderBottom: '1px solid #e0e0e0' }}>
+                      {row.returning_patients}人
+                    </TableCell>
+                    <TableCell sx={{ padding: '12px', fontSize: '14px', borderBottom: '1px solid #e0e0e0' }}>
+                      {row.other_patients}人
+                    </TableCell>
+                    <TableCell sx={{ padding: '12px', fontSize: '14px', borderBottom: '1px solid #e0e0e0' }}>
                       {row.total_patients}人
                     </TableCell>
-                    <TableCell
-                      sx={{
-                        padding: '12px',
-                        fontSize: '14px',
-                        borderBottom: '1px solid #e0e0e0',
-                      }}
-                    >
+                    <TableCell sx={{ padding: '12px', fontSize: '14px', borderBottom: '1px solid #e0e0e0' }}>
                       {row.dataSource}
                     </TableCell>
                     <TableCell

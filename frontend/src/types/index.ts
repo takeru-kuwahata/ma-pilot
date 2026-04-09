@@ -57,8 +57,10 @@ export interface MonthlyData {
   other_cost: number;
 
   // 患者数
-  new_patients: number;
-  returning_patients: number;
+  first_visit_patients: number;      // 初診
+  re_first_visit_patients: number;   // 再初診
+  returning_patients: number;        // 再診
+  other_patients: number;            // 他
   total_patients: number;
 
   // 診療関連
@@ -175,15 +177,17 @@ export interface PasswordResetFormData {
 
 export interface MonthlyDataFormData {
   year_month: string;
-  total_revenue: number;           // 自動計算
+  total_revenue: number;              // 自動計算
   insurance_revenue: number;
   self_pay_revenue: number;
   retail_revenue: number;
   variable_cost: number;
   fixed_cost: number;
-  new_patients: number;
-  returning_patients: number;
-  total_patients: number;          // 自動計算
+  first_visit_patients: number;       // 初診
+  re_first_visit_patients: number;    // 再初診
+  returning_patients: number;         // 再診
+  other_patients: number;             // 他
+  total_patients: number;             // 自動計算
 }
 
 export interface ClinicFormData {

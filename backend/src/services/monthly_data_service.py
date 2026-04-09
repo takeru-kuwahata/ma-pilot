@@ -14,7 +14,12 @@ class MonthlyDataService:
     def _calculate_totals(self, data: dict) -> dict:
         '''Calculate total revenue and total patients'''
         data['total_revenue'] = data.get('insurance_revenue', 0) + data.get('self_pay_revenue', 0)
-        data['total_patients'] = data.get('new_patients', 0) + data.get('returning_patients', 0)
+        data['total_patients'] = (
+            data.get('first_visit_patients', 0) +
+            data.get('re_first_visit_patients', 0) +
+            data.get('returning_patients', 0) +
+            data.get('other_patients', 0)
+        )
 
         # Calculate average revenue per patient
         if data['total_patients'] > 0:
@@ -65,7 +70,7 @@ class MonthlyDataService:
                 raise ValueError('No data to update')
 
             # Recalculate totals if revenue or patient fields are updated
-            if any(k in update_data for k in ['insurance_revenue', 'self_pay_revenue', 'new_patients', 'returning_patients']):
+            if any(k in update_data for k in ['insurance_revenue', 'self_pay_revenue', 'first_visit_patients', 're_first_visit_patients', 'returning_patients', 'other_patients']):
                 # Get current data
                 current = self.supabase.table('monthly_data').select('*').eq('id', data_id).single().execute()
                 if current.data:
@@ -124,8 +129,10 @@ class MonthlyDataService:
                         material_cost=float(row.get('material_cost', 0)),
                         fixed_cost=float(row.get('fixed_cost', 0)),
                         other_cost=float(row.get('other_cost', 0)),
-                        new_patients=int(row.get('new_patients', 0)),
+                        first_visit_patients=int(row.get('first_visit_patients', 0)),
+                        re_first_visit_patients=int(row.get('re_first_visit_patients', 0)),
                         returning_patients=int(row.get('returning_patients', 0)),
+                        other_patients=int(row.get('other_patients', 0)),
                         treatment_count=int(row.get('treatment_count', 0))
                     )
 

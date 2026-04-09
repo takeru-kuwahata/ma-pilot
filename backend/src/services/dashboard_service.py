@@ -150,13 +150,13 @@ class DashboardService:
             )
         ))
 
-        # New Patients (新患数)
-        current_new_patients = current.get('new_patients', 0)
-        prev_new_patients = previous.get('new_patients', 0) if previous else 0
+        # New Patients (初診数)
+        current_new_patients = current.get('first_visit_patients', 0)
+        prev_new_patients = previous.get('first_visit_patients', 0) if previous else 0
 
         kpis.append(DashboardKpi(
             id=str(uuid.uuid4()),
-            label='新患数',
+            label='初診数',
             value=current_new_patients,
             unit='人',
             comparison=KpiComparison(
@@ -219,7 +219,7 @@ class DashboardService:
                 year_month=data['year_month'],
                 total_revenue=total_revenue,
                 operating_profit=operating_profit,
-                new_patients=data['new_patients'],
+                new_patients=data.get('first_visit_patients', 0),
                 returning_patients=data['returning_patients'],
                 unit_utilization=unit_utilization,
                 self_pay_rate=self_pay_rate
