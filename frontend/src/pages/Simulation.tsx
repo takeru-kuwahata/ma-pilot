@@ -215,9 +215,9 @@ export const Simulation = () => {
       const currentProfitRate = currentRevenue > 0 ? (currentProfit / currentRevenue * 100) : 0;
 
       setResult({
-        projectedRevenue: simulation.result.estimated_revenue,
-        projectedProfit: simulation.result.estimated_profit,
-        projectedProfitRate: simulation.result.profit_margin,
+        projectedRevenue: Math.round(simulation.result.estimated_revenue),
+        projectedProfit: Math.round(simulation.result.estimated_profit),
+        projectedProfitRate: Math.round(simulation.result.profit_margin * 10) / 10,
         revenueChange: Math.round(simulation.result.estimated_revenue - currentRevenue),
         profitChange: Math.round(simulation.result.estimated_profit - currentProfit),
         profitRateChange: Math.round((simulation.result.profit_margin - currentProfitRate) * 10) / 10,
