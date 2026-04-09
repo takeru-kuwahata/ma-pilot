@@ -68,8 +68,12 @@ class SimulationService:
     async def create_simulation(self, data: SimulationCreate) -> Simulation:
         '''Create new simulation'''
         try:
-            # Calculate result
-            result = self._calculate_simulation(data.input)
+            # フロントエンドから計算済み結果が渡された場合はそのまま使用
+            # 渡されない場合のみバックエンドで再計算（後方互換）
+            if data.result is not None:
+                result = data.result
+            else:
+                result = self._calculate_simulation(data.input)
 
             # Prepare data for database
             simulation_data = {

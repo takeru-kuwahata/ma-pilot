@@ -14,13 +14,21 @@ class SimulationInput(BaseModel):
 
 
 class SimulationResult(BaseModel):
-    '''Simulation result'''
+    '''Simulation result (calculated on frontend, stored as-is)'''
     required_patients: int
     required_treatments: int
     estimated_revenue: float
     estimated_profit: float
     profit_margin: float
     strategies: List[str]
+
+
+class SimulationCreateWithResult(BaseModel):
+    '''Create simulation request with pre-calculated result'''
+    clinic_id: str
+    title: str
+    input: SimulationInput
+    result: SimulationResult
 
 
 class Simulation(BaseModel):
@@ -39,6 +47,7 @@ class SimulationCreate(BaseModel):
     clinic_id: str
     title: str
     input: SimulationInput
+    result: Optional[SimulationResult] = None  # フロントエンドで計算済みの場合はそのまま使用
 
 
 class SimulationResponse(BaseModel):

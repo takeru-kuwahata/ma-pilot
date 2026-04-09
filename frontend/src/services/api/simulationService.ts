@@ -1,5 +1,5 @@
 import { API_BASE_URL, handleResponse, getAuthHeaders } from './config';
-import type { Simulation, SimulationInput } from '../../types';
+import type { Simulation, SimulationInput, SimulationResult } from '../../types';
 
 interface SimulationResponse {
   data: Simulation;
@@ -15,7 +15,8 @@ export const simulationService = {
   async createSimulation(
     clinicId: string,
     title: string,
-    input: SimulationInput
+    input: SimulationInput,
+    result: SimulationResult
   ): Promise<Simulation> {
     const response = await fetch(`${API_BASE_URL}/api/simulations`, {
       method: 'POST',
@@ -23,11 +24,12 @@ export const simulationService = {
       body: JSON.stringify({
         clinic_id: clinicId,
         title,
-        input
+        input,
+        result
       })
     });
-    const result = await handleResponse<SimulationResponse>(response);
-    return result.data;
+    const res = await handleResponse<SimulationResponse>(response);
+    return res.data;
   },
 
   async getSimulations(clinicId: string): Promise<Simulation[]> {

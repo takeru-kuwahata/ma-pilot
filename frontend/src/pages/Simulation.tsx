@@ -136,73 +136,91 @@ export const Simulation = () => {
         return;
       }
 
-      // 現在の値を基に変動率を適用
-      const currentRevenue = latestData.total_revenue;
-      const currentInsuranceRevenue = latestData.insurance_revenue;
-      const currentSelfPayRevenue = latestData.self_pay_revenue;
+      // 現在値
+      const currentRevenue = latestData.total_revenue || 0;
+      const currentInsuranceRevenue = latestData.insurance_revenue || 0;
+      const currentSelfPayRevenue = latestData.self_pay_revenue || 0;
       const currentPersonnelCost = latestData.personnel_cost || 0;
       const currentMaterialCost = latestData.material_cost || 0;
       const currentFixedCost = latestData.fixed_cost || 0;
+      const currentTotalPatients = latestData.total_patients || 0;
 
-      // 変動率を適用して目標値を計算
+      if (currentRevenue <= 0) {
+        setSnackbarMessage('月次データに売上が入力されていません。基礎データ管理から入力してください。');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+        return;
+      }
+
+      // 変動率を適用して目標値を計算（フロントエンドで完結）
       const targetInsuranceRevenue = currentInsuranceRevenue * (1 + params.insuranceRevenueChange / 100);
       const targetSelfPayRevenue = currentSelfPayRevenue * (1 + params.selfPayRevenueChange / 100);
-      const targetRetailRevenue = 0; // 物販収入は現在未対応
-      const targetRevenue = targetInsuranceRevenue + targetSelfPayRevenue + targetRetailRevenue;
+      const targetRevenue = targetInsuranceRevenue + targetSelfPayRevenue;
 
       const targetVariableCost = (currentPersonnelCost + currentMaterialCost) * (1 + params.variableCostChange / 100);
       const targetFixedCost = currentFixedCost * (1 + params.fixedCostChange / 100);
-      const targetProfit = targetRevenue - targetVariableCost - targetFixedCost;
+      const targetTotalCost = targetVariableCost + targetFixedCost;
+      const targetProfit = targetRevenue - targetTotalCost;
+      const targetProfitMargin = targetRevenue > 0 ? (targetProfit / targetRevenue * 100) : 0;
+
+      // 患者数（total_patientsベースで計算。4区分の合計が0の場合はtotal_patientsを使用）
+      const baseTotalPatients = (
+        (latestData.first_visit_patients || 0) +
+        (latestData.re_first_visit_patients || 0) +
+        (latestData.returning_patients || 0) +
+        (latestData.other_patients || 0)
+      ) || currentTotalPatients;
 
       const targetNewPatients = (latestData.first_visit_patients || 0) * (1 + params.newPatientChange / 100);
       const targetReturningPatients = (latestData.returning_patients || 0) * (1 + params.returningPatientChange / 100);
-      const targetTotalPatients = targetNewPatients + targetReturningPatients;
+      const targetTotalPatients = baseTotalPatients > 0
+        ? Math.ceil(baseTotalPatients * (targetRevenue / (currentRevenue || 1)))
+        : 0;
 
-      const targetAverageRevenuePerPatient = targetTotalPatients > 0 ? targetRevenue / targetTotalPatients : 0;
+      const targetAverageRevenuePerPatient = targetTotalPatients > 0
+        ? targetRevenue / targetTotalPatients
+        : (currentRevenue > 0 && currentTotalPatients > 0 ? currentRevenue / currentTotalPatients : 0);
+
       const targetPersonnelCostRate = targetRevenue > 0 ? (currentPersonnelCost * (1 + params.variableCostChange / 100)) / targetRevenue * 100 : 0;
       const targetMaterialCostRate = targetRevenue > 0 ? (currentMaterialCost * (1 + params.variableCostChange / 100)) / targetRevenue * 100 : 0;
 
-      if (targetRevenue <= 0) {
-        setSnackbarMessage('目標売上が0円です。月次データに売上を入力してください。');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-        return;
-      }
+      // フロントエンドで計算した結果をそのままバックエンドに渡す
+      const simulationInput = {
+        target_revenue: Math.round(targetRevenue),
+        target_profit: Math.round(targetProfit),
+        assumed_average_revenue_per_patient: Math.round(targetAverageRevenuePerPatient),
+        assumed_personnel_cost_rate: Math.round(targetPersonnelCostRate * 10) / 10,
+        assumed_material_cost_rate: Math.round(targetMaterialCostRate * 10) / 10,
+        assumed_fixed_cost: Math.round(targetFixedCost),
+      };
 
-      if (targetAverageRevenuePerPatient <= 0) {
-        setSnackbarMessage('患者単価が計算できません。月次データに患者数を入力してください。');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-        return;
-      }
+      const simulationResult = {
+        required_patients: Math.ceil(targetNewPatients + targetReturningPatients) || targetTotalPatients,
+        required_treatments: Math.ceil((Math.ceil(targetNewPatients + targetReturningPatients) || targetTotalPatients) * 1.2),
+        estimated_revenue: Math.round(targetRevenue),
+        estimated_profit: Math.round(targetProfit),
+        profit_margin: Math.round(targetProfitMargin * 10) / 10,
+        strategies: [],
+      };
 
       const simulation = await simulationService.createSimulation(
         clinic.id,
         `${params.period}ヶ月後のシミュレーション`,
-        {
-          target_revenue: Math.round(targetRevenue),
-          target_profit: Math.round(targetProfit),
-          assumed_average_revenue_per_patient: Math.round(targetAverageRevenuePerPatient),
-          assumed_personnel_cost_rate: Math.round(targetPersonnelCostRate * 10) / 10,
-          assumed_material_cost_rate: Math.round(targetMaterialCostRate * 10) / 10,
-          assumed_fixed_cost: Math.round(targetFixedCost)
-        }
+        simulationInput,
+        simulationResult
       );
 
       // 現在値との変動額を計算
-      const revenueChange = simulation.result.estimated_revenue - currentRevenue;
       const currentProfit = currentRevenue - (currentPersonnelCost + currentMaterialCost + currentFixedCost);
-      const profitChange = simulation.result.estimated_profit - currentProfit;
       const currentProfitRate = currentRevenue > 0 ? (currentProfit / currentRevenue * 100) : 0;
-      const profitRateChange = simulation.result.profit_margin - currentProfitRate;
 
       setResult({
         projectedRevenue: simulation.result.estimated_revenue,
         projectedProfit: simulation.result.estimated_profit,
         projectedProfitRate: simulation.result.profit_margin,
-        revenueChange: Math.round(revenueChange),
-        profitChange: Math.round(profitChange),
-        profitRateChange: Math.round(profitRateChange * 10) / 10
+        revenueChange: Math.round(simulation.result.estimated_revenue - currentRevenue),
+        profitChange: Math.round(simulation.result.estimated_profit - currentProfit),
+        profitRateChange: Math.round((simulation.result.profit_margin - currentProfitRate) * 10) / 10,
       });
 
       setSnackbarMessage('シミュレーションが完了しました');
@@ -221,7 +239,7 @@ export const Simulation = () => {
   };
 
   const formatCurrency = (value: number): string => {
-    return `¥${value.toLocaleString()}`;
+    return `¥${Math.round(value).toLocaleString()}`;
   };
 
   const formatChange = (value: number): string => {
