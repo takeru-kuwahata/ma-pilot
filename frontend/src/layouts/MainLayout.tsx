@@ -118,7 +118,7 @@ export const MainLayout = () => {
               <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
               <ListItemText
                 primary={item.label}
-                primaryTypographyProps={{ fontSize: 14, fontWeight: 500 }}
+                primaryTypographyProps={{ fontSize: 14, fontWeight: 500, whiteSpace: 'nowrap' }}
               />
             </ListItemButton>
           </ListItem>
