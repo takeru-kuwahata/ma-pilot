@@ -81,12 +81,12 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
 
   // メモ化: 総売上と総患者数を計算（派生値として扱う）
   const totalRevenue = useMemo(
-    () => formData.insurance_revenue + formData.self_pay_revenue + formData.retail_revenue,
+    () => (Number(formData.insurance_revenue) || 0) + (Number(formData.self_pay_revenue) || 0) + (Number(formData.retail_revenue) || 0),
     [formData.insurance_revenue, formData.self_pay_revenue, formData.retail_revenue]
   );
 
   const totalPatients = useMemo(
-    () => formData.first_visit_patients + formData.re_first_visit_patients + formData.returning_patients + formData.other_patients,
+    () => (Number(formData.first_visit_patients) || 0) + (Number(formData.re_first_visit_patients) || 0) + (Number(formData.returning_patients) || 0) + (Number(formData.other_patients) || 0),
     [formData.first_visit_patients, formData.re_first_visit_patients, formData.returning_patients, formData.other_patients]
   );
 
