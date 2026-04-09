@@ -154,7 +154,7 @@ export const Simulation = () => {
       const targetFixedCost = currentFixedCost * (1 + params.fixedCostChange / 100);
       const targetProfit = targetRevenue - targetVariableCost - targetFixedCost;
 
-      const targetNewPatients = (latestData.new_patients || 0) * (1 + params.newPatientChange / 100);
+      const targetNewPatients = (latestData.first_visit_patients || 0) * (1 + params.newPatientChange / 100);
       const targetReturningPatients = (latestData.returning_patients || 0) * (1 + params.returningPatientChange / 100);
       const targetTotalPatients = targetNewPatients + targetReturningPatients;
 

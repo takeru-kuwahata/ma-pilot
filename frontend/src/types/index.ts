@@ -260,7 +260,7 @@ export interface MonthlyTrendData {
   year_month: string;       // YYYY-MM形式
   total_revenue: number;
   operating_profit: number;
-  new_patients: number;
+  new_patients: number;     // 後方互換（first_visit_patientsのエイリアス）
   returning_patients: number;
   unit_utilization: number; // ユニット稼働率（%）
   self_pay_rate: number;     // 自費率（%）

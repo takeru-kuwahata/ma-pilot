@@ -40,8 +40,10 @@ export const monthlyDataService = {
         material_cost: 0,
         fixed_cost: data.fixed_cost,
         other_cost: 0,
-        new_patients: data.new_patients,
+        first_visit_patients: data.first_visit_patients,
+        re_first_visit_patients: data.re_first_visit_patients,
         returning_patients: data.returning_patients,
+        other_patients: data.other_patients,
         total_patients: data.total_patients,
         treatment_count: 0,
         average_revenue_per_patient: data.total_patients > 0 ? data.total_revenue / data.total_patients : 0
@@ -62,8 +64,10 @@ export const monthlyDataService = {
         self_pay_revenue: data.self_pay_revenue,
         personnel_cost: data.variable_cost,
         fixed_cost: data.fixed_cost,
-        new_patients: data.new_patients,
+        first_visit_patients: data.first_visit_patients,
+        re_first_visit_patients: data.re_first_visit_patients,
         returning_patients: data.returning_patients,
+        other_patients: data.other_patients,
         total_patients: data.total_patients
       })
     });

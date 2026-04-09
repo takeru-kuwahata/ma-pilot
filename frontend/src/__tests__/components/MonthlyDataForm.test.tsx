@@ -107,15 +107,17 @@ describe('MonthlyDataForm', () => {
       retail_revenue: 0,
       variable_cost: 1000000,
       fixed_cost: 1500000,
-      new_patients: 25,
+      first_visit_patients: 25,
+      re_first_visit_patients: 5,
       returning_patients: 100,
-      total_patients: 125,
+      other_patients: 0,
+      total_patients: 130,
     };
 
     render(<MonthlyDataForm {...defaultProps} initialData={initialData} />);
 
     expect(screen.getByLabelText(/対象年月/i)).toHaveValue('2025-01');
     expect(screen.getByLabelText(/総売上/i)).toHaveValue('5,000,000');
-    expect(screen.getByLabelText(/新患数/i)).toHaveValue('25');
+    expect(screen.getByLabelText(/初診/i)).toHaveValue('25');
   });
 });
