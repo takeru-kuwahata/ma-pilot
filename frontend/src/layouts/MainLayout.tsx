@@ -296,6 +296,8 @@ export const MainLayout = () => {
             width: drawerWidth,
             top: '64px',
             height: 'calc(100vh - 64px)',
+            overflowX: 'hidden',
+            overflowY: 'auto',
           },
         }}
       >
@@ -314,6 +316,8 @@ export const MainLayout = () => {
             height: 'calc(100vh - 64px)',
             position: 'fixed',
             borderRight: '1px solid #e0e0e0',
+            overflowX: 'hidden',
+            overflowY: 'auto',
           },
         }}
         open

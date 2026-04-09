@@ -14,7 +14,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 export const clinicMenuItems: MenuItemConfig[] = [
   {
     path: '/clinic/dashboard',
-    label: 'ダッシュボード',
+    label: '経営ダッシュボード',
     icon: <DashboardIcon />,
     // roles未指定 = 全ロール
   },
