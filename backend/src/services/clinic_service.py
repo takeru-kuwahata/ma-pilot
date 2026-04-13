@@ -1,3 +1,5 @@
+import httpx
+import urllib.parse
 from supabase import Client
 from typing import Optional
 from ..models.clinic import Clinic, ClinicCreate, ClinicUpdate
@@ -8,6 +10,28 @@ class ClinicService:
 
     def __init__(self, supabase: Client):
         self.supabase = supabase
+
+    async def _geocode_address(self, address: str) -> Optional[tuple[float, float]]:
+        '''住所から緯度経度を取得（Community Geocoder）'''
+        try:
+            encoded = urllib.parse.quote(address)
+            url = f'https://geocoder.csis.u-tokyo.ac.jp/cgi-bin/simple_geocode.cgi?charset=UTF-8&addr={encoded}'
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                resp = await client.get(url)
+                text = resp.text
+                # XMLから緯度経度を抽出
+                import re
+                lat_match = re.search(r'<latitude>([\d.]+)</latitude>', text)
+                lng_match = re.search(r'<longitude>([\d.]+)</longitude>', text)
+                if lat_match and lng_match:
+                    lat = float(lat_match.group(1))
+                    lng = float(lng_match.group(1))
+                    # 日本の範囲チェック
+                    if 24 <= lat <= 46 and 122 <= lng <= 154:
+                        return lat, lng
+        except Exception:
+            pass
+        return None
 
     async def get_clinic(self, clinic_id: str) -> Clinic:
         '''Get clinic by ID or slug'''
@@ -31,6 +55,11 @@ class ClinicService:
         '''Create new clinic'''
         try:
             data = {k: v for k, v in clinic_data.model_dump().items() if v is not None}
+            # 住所からジオコーディングして座標を設定
+            if clinic_data.address:
+                coords = await self._geocode_address(clinic_data.address)
+                if coords:
+                    data['latitude'], data['longitude'] = coords
             response = self.supabase.table('clinics').insert(data).execute()
 
             if not response.data or len(response.data) == 0:
@@ -49,6 +78,12 @@ class ClinicService:
 
             if not update_data:
                 raise ValueError('No data to update')
+
+            # 住所が更新される場合はジオコーディングで座標も更新
+            if 'address' in update_data:
+                coords = await self._geocode_address(update_data['address'])
+                if coords:
+                    update_data['latitude'], update_data['longitude'] = coords
 
             self.supabase.table('clinics').update(update_data).eq('id', clinic_id).execute()
 

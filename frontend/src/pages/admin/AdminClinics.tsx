@@ -85,8 +85,8 @@ export const AdminClinics = () => {
     address: '',
     phone_number: '',
     owner_id: '',
-    latitude: 35.6762,
-    longitude: 139.6503,
+    latitude: 35.6812,
+    longitude: 139.7671,
   });
 
   // 編集ダイアログ
