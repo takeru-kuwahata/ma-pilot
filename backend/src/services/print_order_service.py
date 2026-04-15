@@ -226,7 +226,12 @@ class PrintOrderService:
                 product_summary = items_text
             else:
                 items_text = None
-                product_summary = order_data.product_type or "（明細なし）"
+                if order_data.product_type and order_data.quantity:
+                    product_summary = f"■商品情報\n  - {order_data.product_type}：{order_data.quantity}枚（参考）"
+                elif order_data.product_type:
+                    product_summary = f"■商品情報\n  - {order_data.product_type}（数量未定）"
+                else:
+                    product_summary = "（商品・数量は担当者と相談）"
 
             self.email_service.send_order_confirmation_to_clinic(
                 order_id=created_order.id,
@@ -235,7 +240,7 @@ class PrintOrderService:
                 product_type=product_summary,
                 quantity=None,
                 estimated_price=created_order.estimated_price,
-                items_text=items_text,
+                items_text=items_text if items_text else product_summary,
             )
 
             # スタッフ宛受注通知メール
