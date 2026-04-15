@@ -35,17 +35,17 @@ import { useCurrentClinic } from '../hooks/useCurrentClinic';
 
 const STATUS_LABELS: Record<string, string> = {
   submitted: '受付済',
-  approved: '承認済',
+  confirmed: '承認済',
+  in_production: '制作中',
   shipped: '発送済',
-  completed: '完了',
   cancelled: 'キャンセル',
 };
 
 const STATUS_COLORS: Record<string, 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'> = {
   submitted: 'info',
-  approved: 'primary',
+  confirmed: 'primary',
+  in_production: 'warning',
   shipped: 'secondary',
-  completed: 'success',
   cancelled: 'error',
 };
 
@@ -143,9 +143,9 @@ export default function PrintOrderHistory() {
                 >
                   <MenuItem value="all">すべて</MenuItem>
                   <MenuItem value="submitted">受付済</MenuItem>
-                  <MenuItem value="approved">承認済</MenuItem>
+                  <MenuItem value="confirmed">承認済</MenuItem>
+                  <MenuItem value="in_production">制作中</MenuItem>
                   <MenuItem value="shipped">発送済</MenuItem>
-                  <MenuItem value="completed">完了</MenuItem>
                 </Select>
               </FormControl>
             </Grid>

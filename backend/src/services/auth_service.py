@@ -124,8 +124,9 @@ class AuthService:
                 raise ValueError('パスワードは必須です')
 
             # Supabase Admin REST APIで直接ユーザー作成（email_confirm=True）
+            # SUPABASE_SERVICE_ROLE_KEY が未設定の場合は SUPABASE_KEY にフォールバック
             supabase_url = os.environ.get('SUPABASE_URL', '')
-            service_role_key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
+            service_role_key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '') or os.environ.get('SUPABASE_KEY', '')
 
             async with httpx.AsyncClient() as client:
                 resp = await client.post(
