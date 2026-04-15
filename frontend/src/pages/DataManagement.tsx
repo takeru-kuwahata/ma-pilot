@@ -23,8 +23,8 @@ import {
   Add as AddIcon,
   UploadFile as UploadFileIcon,
   Close as CloseIcon,
+  Download as DownloadIcon,
 } from '@mui/icons-material';
-import Papa from 'papaparse';
 import { monthlyDataService, clinicService } from '../services/api';
 import { MonthlyDataForm } from '../components/MonthlyDataForm';
 import type { MonthlyData, MonthlyDataFormData, Clinic } from '../types';
@@ -158,39 +158,14 @@ export const DataManagement = () => {
     }
 
     try {
-
-      // PapaParseでCSVをパース
-      Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        complete: async (results) => {
-          try {
-            // CSVデータをバックエンドに送信
-            const response = await monthlyDataService.importCsv(clinic.id, results.data);
-
-            setSnackbarMessage(`${response.success}件のデータを取り込みました（失敗: ${response.failed}件）`);
-            setSnackbarSeverity(response.failed > 0 ? 'error' : 'success');
-            setSnackbarOpen(true);
-
-            // データを再読み込み
-            await loadMonthlyData();
-          } catch (error) {
-            console.error('CSV import failed:', error);
-            setSnackbarMessage('CSV取込に失敗しました');
-            setSnackbarSeverity('error');
-            setSnackbarOpen(true);
-          }
-        },
-        error: (error) => {
-          console.error('CSV parse error:', error);
-          setSnackbarMessage('CSVファイルの読み込みに失敗しました');
-          setSnackbarSeverity('error');
-          setSnackbarOpen(true);
-        }
-      });
+      const response = await monthlyDataService.importCsvFile(clinic.id, file);
+      setSnackbarMessage(`${response.success}件のデータを取り込みました（失敗: ${response.failed}件）`);
+      setSnackbarSeverity(response.failed > 0 ? 'error' : 'success');
+      setSnackbarOpen(true);
+      await loadMonthlyData();
     } catch (error) {
-      console.error('File handling error:', error);
-      setSnackbarMessage('ファイル処理中にエラーが発生しました');
+      console.error('CSV import failed:', error);
+      setSnackbarMessage('CSV取込に失敗しました');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
     }
@@ -226,18 +201,76 @@ export const DataManagement = () => {
     setSnackbarOpen(false);
   };
 
-  // CSVテンプレートダウンロード
-  const handleDownloadTemplate = () => {
-    // CSVヘッダー（フォームの順番に合わせる）
+  // CSVエクスポート
+  const handleCsvExport = () => {
+    if (rawMonthlyData.length === 0) {
+      setSnackbarMessage('エクスポートするデータがありません');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
+
     const headers = [
       '対象年月',
+      '総売上',
       '保険診療収入',
       '自由診療収入',
-      '物販（その他）',
-      '変動費',
+      '人件費',
+      '材料費',
       '固定費',
-      '新患数',
-      '再診患者数'
+      'その他費用',
+      '初診患者数',
+      '再初診患者数',
+      '再診患者数',
+      'その他患者数',
+      '総患者数',
+    ];
+
+    const rows = rawMonthlyData.map((item) => [
+      item.year_month,
+      item.total_revenue,
+      item.insurance_revenue,
+      item.self_pay_revenue,
+      item.personnel_cost,
+      item.material_cost,
+      item.fixed_cost,
+      item.other_cost,
+      item.first_visit_patients,
+      item.re_first_visit_patients,
+      item.returning_patients,
+      item.other_patients,
+      item.total_patients,
+    ]);
+
+    const csvContent = [headers, ...rows].map((row) => row.join(',')).join('\n');
+    const bom = '\uFEFF';
+    const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    const clinicName = clinic?.name || 'clinic';
+    link.setAttribute('href', url);
+    link.setAttribute('download', `月次データ_${clinicName}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // CSVテンプレートダウンロード
+  const handleDownloadTemplate = () => {
+    // CSVヘッダー（バックエンドのカラム名と一致させる）
+    const headers = [
+      'year_month',
+      'insurance_revenue',
+      'self_pay_revenue',
+      'personnel_cost',
+      'material_cost',
+      'fixed_cost',
+      'other_cost',
+      'first_visit_patients',
+      're_first_visit_patients',
+      'returning_patients',
+      'other_patients',
     ];
 
     // サンプル行（1行だけ）
@@ -245,11 +278,14 @@ export const DataManagement = () => {
       '2026-01',
       '2500000',
       '1500000',
-      '300000',
       '800000',
-      '2000000',
+      '200000',
+      '1500000',
+      '100000',
       '45',
-      '380'
+      '10',
+      '380',
+      '5',
     ];
 
     // CSV形式に変換（UTF-8 BOM付き）
@@ -455,16 +491,26 @@ export const DataManagement = () => {
           boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
         }}
       >
-        <Typography
-          variant="h6"
-          sx={{
-            fontSize: '18px',
-            fontWeight: 600,
-            marginBottom: '16px',
-          }}
-        >
-          登録済みデータ一覧
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontSize: '18px',
+              fontWeight: 600,
+            }}
+          >
+            登録済みデータ一覧
+          </Typography>
+          <Button
+            variant="outlined"
+            onClick={handleCsvExport}
+            disabled={rawMonthlyData.length === 0}
+            startIcon={<DownloadIcon />}
+            sx={{ fontSize: '14px' }}
+          >
+            CSVエクスポート
+          </Button>
+        </Box>
         <TableContainer>
           <Table>
             <TableHead>

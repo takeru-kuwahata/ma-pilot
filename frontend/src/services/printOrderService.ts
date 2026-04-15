@@ -175,6 +175,35 @@ export const approvePrintOrder = async (
 };
 
 /**
+ * 注文への添付ファイルアップロード
+ */
+export const uploadOrderAttachment = async (
+  orderId: string,
+  file: File
+): Promise<{ url: string; filename: string }> => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/print-orders/${orderId}/attachment`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(
+      errorData?.detail || `ファイルのアップロードに失敗しました: ${response.statusText}`
+    );
+  }
+
+  const result = await response.json();
+  return result.data;
+};
+
+/**
  * 見積もりPDFダウンロード
  */
 export const downloadEstimatePdf = async (orderId: string): Promise<Blob> => {

@@ -52,8 +52,8 @@ const getPhoneNumber = (clinic: Clinic): string => clinic.phone_number || '';
 const getCreatedAt = (clinic: Clinic): string => clinic.created_at || '';
 
 const OPENHOUSE_STATUS_LABELS: Record<OpenhouseStatus, string> = {
-  none: '検討中',
-  scheduled: '申し込み済み',
+  none: 'なし',
+  scheduled: '今後予定',
   completed: '完了',
 };
 
@@ -522,8 +522,8 @@ export const AdminClinics = () => {
               sx={{ fontSize: '14px' }}
             >
               <MenuItem value="all" sx={{ fontSize: '14px' }}>すべて</MenuItem>
-              <MenuItem value="none" sx={{ fontSize: '14px' }}>検討中</MenuItem>
-              <MenuItem value="scheduled" sx={{ fontSize: '14px' }}>申し込み済み</MenuItem>
+              <MenuItem value="none" sx={{ fontSize: '14px' }}>なし</MenuItem>
+              <MenuItem value="scheduled" sx={{ fontSize: '14px' }}>今後予定</MenuItem>
               <MenuItem value="completed" sx={{ fontSize: '14px' }}>完了</MenuItem>
             </Select>
           </FormControl>
@@ -620,16 +620,16 @@ export const AdminClinics = () => {
                           value={clinic.openhouse_status}
                           onChange={(e) => handleOpenhouseStatusChange(clinic.id, e.target.value as OpenhouseStatus)}
                           size="small"
-                          sx={{ fontSize: '12px', height: '28px', minWidth: '110px' }}
+                          sx={{ fontSize: '12px', minWidth: '110px' }}
                           renderValue={(val) => (
                             <Chip
                               label={OPENHOUSE_STATUS_LABELS[val as OpenhouseStatus]}
-                              sx={{ ...OPENHOUSE_STATUS_COLORS[val as OpenhouseStatus], fontSize: '11px', fontWeight: 600, height: '20px' }}
+                              sx={{ ...OPENHOUSE_STATUS_COLORS[val as OpenhouseStatus], fontSize: '11px', fontWeight: 600, height: '24px' }}
                             />
                           )}
                         >
-                          <MenuItem value="none" sx={{ fontSize: '13px' }}>検討中</MenuItem>
-                          <MenuItem value="scheduled" sx={{ fontSize: '13px' }}>申し込み済み</MenuItem>
+                          <MenuItem value="none" sx={{ fontSize: '13px' }}>なし</MenuItem>
+                          <MenuItem value="scheduled" sx={{ fontSize: '13px' }}>今後予定</MenuItem>
                           <MenuItem value="completed" sx={{ fontSize: '13px' }}>完了</MenuItem>
                         </Select>
                       </Tooltip>

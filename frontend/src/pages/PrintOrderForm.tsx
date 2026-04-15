@@ -65,6 +65,7 @@ export default function PrintOrderFormPhase2() {
   const [clinicData, setClinicData] = useState<Clinic | null>(null);
   const [isAddressEditable, setIsAddressEditable] = useState(false);
   const [isPhoneEditable, setIsPhoneEditable] = useState(false);
+  const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
 
   const {
     control,
@@ -300,6 +301,16 @@ export default function PrintOrderFormPhase2() {
       };
 
       const result = await printOrderService.createPrintOrder(orderData);
+
+      // 添付ファイルがあればアップロード
+      if (attachmentFile) {
+        try {
+          await printOrderService.uploadOrderAttachment(result.id, attachmentFile);
+        } catch {
+          // 添付失敗してもフォーム送信は成功扱い
+        }
+        setAttachmentFile(null);
+      }
 
       setSubmittedOrderId(result.id);
       setSuccessModalOpen(true);
@@ -896,6 +907,46 @@ export default function PrintOrderFormPhase2() {
                   />
                 )}
               />
+            </Grid>
+
+            {/* ファイル添付 */}
+            <Grid item xs={12}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                ファイル添付（任意）
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                PDF・JPG・PNG形式のファイルを添付できます（例：現在お使いの印刷物のデータ）
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  size="small"
+                >
+                  ファイルを選択
+                  <input
+                    type="file"
+                    hidden
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setAttachmentFile(file);
+                    }}
+                  />
+                </Button>
+                {attachmentFile && (
+                  <Typography variant="body2">
+                    {attachmentFile.name}
+                    <Button
+                      size="small"
+                      sx={{ ml: 1 }}
+                      onClick={() => setAttachmentFile(null)}
+                    >
+                      削除
+                    </Button>
+                  </Typography>
+                )}
+              </Box>
             </Grid>
           </Grid>
 

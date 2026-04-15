@@ -21,5 +21,15 @@ services:
         value: 0.0.0.0
       - key: FRONTEND_URL
         sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false
     healthCheckPath: /health
     autoDeploy: true

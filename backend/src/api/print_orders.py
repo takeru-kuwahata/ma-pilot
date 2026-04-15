@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Query, Depends
+from fastapi import APIRouter, HTTPException, Query, Depends, UploadFile, File
 from fastapi.responses import Response
 from typing import List, Optional
+import os
 from ..core import get_supabase_client
 from ..services import PrintOrderService
 from ..services.pdf_service import PdfService
@@ -204,6 +205,48 @@ async def download_estimate_pdf(
             headers={
                 "Content-Disposition": f'attachment; filename="estimate_{order_id}.pdf"'
             },
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/print-orders/{order_id}/attachment", response_model=ApiResponse)
+async def upload_order_attachment(
+    order_id: str,
+    file: UploadFile = File(...),
+    service: PrintOrderService = Depends(get_print_order_service),
+):
+    """注文に添付ファイルをアップロード（Supabase Storage）"""
+    try:
+        order = service.get_order_by_id(order_id)
+        if not order:
+            raise HTTPException(status_code=404, detail="注文が見つかりません")
+
+        allowed_types = {"application/pdf", "image/jpeg", "image/png"}
+        if file.content_type not in allowed_types:
+            raise HTTPException(status_code=400, detail="PDF・JPG・PNGのみアップロード可能です")
+
+        file_bytes = await file.read()
+        storage_path = f"print_order_attachments/{order_id}/{file.filename}"
+
+        supabase = get_supabase_client()
+        supabase.storage.from_("attachments").upload(
+            storage_path,
+            file_bytes,
+            {"content-type": file.content_type, "upsert": "true"},
+        )
+
+        public_url = supabase.storage.from_("attachments").get_public_url(storage_path)
+
+        current_notes = order.notes or ""
+        attachment_note = f"\n[添付ファイル] {file.filename}: {public_url}"
+        supabase.table("print_orders").update({"notes": current_notes + attachment_note}).eq("id", order_id).execute()
+
+        return ApiResponse(
+            data={"url": public_url, "filename": file.filename},
+            message="ファイルをアップロードしました",
         )
     except HTTPException:
         raise
