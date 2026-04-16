@@ -74,6 +74,17 @@ class PriceTableCreate(BaseModel):
     delivery_days: int = Field(default=14, gt=0)
 
 
+class PriceTableUpdate(BaseModel):
+    """価格マスタ更新"""
+    product_type: Optional[str] = None
+    quantity: Optional[int] = Field(default=None, gt=0)
+    price: Optional[int] = Field(default=None, ge=0)
+    design_fee: Optional[int] = Field(default=None, ge=0)
+    design_fee_included: Optional[bool] = None
+    specifications: Optional[str] = None
+    delivery_days: Optional[int] = Field(default=None, gt=0)
+
+
 # ============================================
 # 見積もり関連モデル
 # ============================================

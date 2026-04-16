@@ -4,6 +4,16 @@ import type {
   PrintOrderFormData,
   PriceEstimateResponse,
 } from '../types';
+
+export interface PriceTableFormData {
+  product_type: string;
+  quantity: number;
+  price: number;
+  design_fee: number;
+  design_fee_included: boolean;
+  delivery_days: number;
+  specifications?: string;
+}
 import { supabase } from '../lib/supabase';
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8432';
@@ -23,6 +33,51 @@ export const getPriceTables = async (): Promise<PriceTable[]> => {
   }
 
   return data || [];
+};
+
+/**
+ * 価格マスタ新規作成
+ */
+export const createPriceTable = async (data: PriceTableFormData): Promise<PriceTable> => {
+  const response = await fetch(`${API_BASE_URL}/api/price-tables`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => null);
+    throw new Error(err?.detail || `作成に失敗しました: ${response.statusText}`);
+  }
+  return response.json();
+};
+
+/**
+ * 価格マスタ更新
+ */
+export const updatePriceTable = async (id: string, data: Partial<PriceTableFormData>): Promise<PriceTable> => {
+  const response = await fetch(`${API_BASE_URL}/api/price-tables/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => null);
+    throw new Error(err?.detail || `更新に失敗しました: ${response.statusText}`);
+  }
+  return response.json();
+};
+
+/**
+ * 価格マスタ削除
+ */
+export const deletePriceTable = async (id: string): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL}/api/price-tables/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => null);
+    throw new Error(err?.detail || `削除に失敗しました: ${response.statusText}`);
+  }
 };
 
 /**

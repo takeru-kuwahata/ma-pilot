@@ -3,6 +3,8 @@ import json
 from supabase import Client
 from ..models import (
     PriceTable,
+    PriceTableCreate,
+    PriceTableUpdate,
     PriceEstimateRequest,
     PriceEstimateResponse,
     PriceEstimateBreakdown,
@@ -50,6 +52,30 @@ class PrintOrderService:
     ) -> Optional[PriceTable]:
         """商品種類と数量で価格表を取得（エイリアス）"""
         return self.find_matching_price_table(product_type, quantity)
+
+    def create_price_table(self, data: PriceTableCreate) -> PriceTable:
+        """価格表を新規作成"""
+        payload = data.model_dump(exclude_none=True)
+        response = self.supabase.table("price_tables").insert(payload).execute()
+        return PriceTable(**response.data[0])
+
+    def update_price_table(self, price_table_id: str, data: PriceTableUpdate) -> Optional[PriceTable]:
+        """価格表を更新"""
+        payload = data.model_dump(exclude_none=True)
+        if not payload:
+            return self.get_price_table_by_id(price_table_id)
+        response = (
+            self.supabase.table("price_tables")
+            .update(payload)
+            .eq("id", price_table_id)
+            .execute()
+        )
+        return PriceTable(**response.data[0]) if response.data else None
+
+    def delete_price_table(self, price_table_id: str) -> bool:
+        """価格表を削除"""
+        self.supabase.table("price_tables").delete().eq("id", price_table_id).execute()
+        return True
 
     def find_matching_price_table(
         self, product_type: str, quantity: int, specifications: Optional[str] = None

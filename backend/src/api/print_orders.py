@@ -7,6 +7,8 @@ from ..services import PrintOrderService
 from ..services.pdf_service import PdfService
 from ..models import (
     PriceTable,
+    PriceTableCreate,
+    PriceTableUpdate,
     PriceEstimateRequest,
     PriceEstimateResponse,
     PrintOrder,
@@ -41,6 +43,18 @@ async def get_price_tables(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/price-tables", response_model=PriceTable)
+async def create_price_table(
+    data: PriceTableCreate,
+    service: PrintOrderService = Depends(get_print_order_service),
+):
+    """価格表を新規作成"""
+    try:
+        return service.create_price_table(data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get("/price-tables/{price_table_id}", response_model=PriceTable)
 async def get_price_table(
     price_table_id: str,
@@ -54,6 +68,37 @@ async def get_price_table(
         return price_table
     except HTTPException:
         raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/price-tables/{price_table_id}", response_model=PriceTable)
+async def update_price_table(
+    price_table_id: str,
+    data: PriceTableUpdate,
+    service: PrintOrderService = Depends(get_print_order_service),
+):
+    """価格表を更新"""
+    try:
+        result = service.update_price_table(price_table_id, data)
+        if not result:
+            raise HTTPException(status_code=404, detail="価格表が見つかりません")
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/price-tables/{price_table_id}", response_model=ApiResponse)
+async def delete_price_table(
+    price_table_id: str,
+    service: PrintOrderService = Depends(get_print_order_service),
+):
+    """価格表を削除"""
+    try:
+        service.delete_price_table(price_table_id)
+        return ApiResponse(message="価格表を削除しました")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
