@@ -298,7 +298,7 @@ export interface PriceTable {
   price: number;                // 価格（円）
   design_fee: number;           // デザイン費（円）
   design_fee_included: boolean; // デザイン費込みかどうか
-  specifications?: string;      // 仕様詳細（JSON形式文字列）
+  specifications?: string | PriceTableSpecifications; // Supabaseから直接取得時はobject、バックエンド経由は文字列
   delivery_days: number;        // 納期（日数）
   created_at: string;
   updated_at: string;

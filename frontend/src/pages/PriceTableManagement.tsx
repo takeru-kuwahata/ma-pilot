@@ -289,7 +289,9 @@ export default function PriceTableManagement() {
                       <TableCell>{priceTable.design_fee_included ? '込み' : '別途'}</TableCell>
                       <TableCell>
                         <Typography variant="body2" sx={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {priceTable.specifications || '-'}
+                          {typeof priceTable.specifications === 'object' && priceTable.specifications !== null
+                            ? JSON.stringify(priceTable.specifications)
+                            : priceTable.specifications || '-'}
                         </Typography>
                       </TableCell>
                       <TableCell align="right">{priceTable.delivery_days}日</TableCell>

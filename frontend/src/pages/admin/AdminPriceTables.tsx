@@ -147,7 +147,9 @@ export default function AdminPriceTables() {
       design_fee: row.design_fee,
       design_fee_included: row.design_fee_included,
       delivery_days: row.delivery_days,
-      specifications: typeof row.specifications === 'string' ? row.specifications : '',
+      specifications: typeof row.specifications === 'object' && row.specifications !== null
+        ? JSON.stringify(row.specifications)
+        : (row.specifications || ''),
     });
     setEditDialog(true);
   };
@@ -289,7 +291,9 @@ export default function AdminPriceTables() {
                       <TableCell align="right">{row.delivery_days}営業日後</TableCell>
                       <TableCell>
                         <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 240, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {row.specifications || '—'}
+                          {typeof row.specifications === 'object' && row.specifications !== null
+                            ? JSON.stringify(row.specifications)
+                            : row.specifications || '—'}
                         </Typography>
                       </TableCell>
                       <TableCell align="center">
