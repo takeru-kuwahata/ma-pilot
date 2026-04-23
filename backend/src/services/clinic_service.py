@@ -51,10 +51,21 @@ class ClinicService:
         except Exception as e:
             raise ValueError(f'Failed to get clinic: {str(e)}')
 
+    async def _check_slug_unique(self, slug: str, exclude_clinic_id: Optional[str] = None) -> None:
+        '''slugの重複チェック。重複していればValueErrorを発生させる'''
+        query = self.supabase.table('clinics').select('id').eq('slug', slug)
+        if exclude_clinic_id:
+            query = query.neq('id', exclude_clinic_id)
+        existing = query.execute()
+        if existing.data:
+            raise ValueError('既に使用されているslugです。別の文字を入力してください。')
+
     async def create_clinic(self, clinic_data: ClinicCreate) -> Clinic:
         '''Create new clinic'''
         try:
             data = {k: v for k, v in clinic_data.model_dump().items() if v is not None}
+            if clinic_data.slug:
+                await self._check_slug_unique(clinic_data.slug)
             # 住所からジオコーディングして座標を設定
             if clinic_data.address:
                 coords = await self._geocode_address(clinic_data.address)
@@ -67,6 +78,8 @@ class ClinicService:
 
             return Clinic(**response.data[0])
 
+        except ValueError:
+            raise
         except Exception as e:
             raise ValueError(f'Failed to create clinic: {str(e)}')
 
@@ -78,6 +91,9 @@ class ClinicService:
 
             if not update_data:
                 raise ValueError('No data to update')
+
+            if 'slug' in update_data:
+                await self._check_slug_unique(update_data['slug'], exclude_clinic_id=clinic_id)
 
             # 住所が更新される場合はジオコーディングで座標も更新
             if 'address' in update_data:

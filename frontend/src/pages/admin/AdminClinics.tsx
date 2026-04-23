@@ -923,16 +923,16 @@ export const AdminClinics = () => {
               inputProps={{ maxLength: 13 }}
             />
             <TextField
-              label="オーナーID（UUID）※任意"
+              label="オーナーID（UUID）※通常は空白のままでOK"
               value={newClinic.owner_id}
               onChange={(e) => setNewClinic((prev) => ({ ...prev, owner_id: e.target.value }))}
-              placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              placeholder="空白のまま登録すると、現在ログイン中の管理者がオーナーになります"
               fullWidth
               error={newClinic.owner_id.length > 0 && !isValidUuid(newClinic.owner_id)}
               helperText={
                 newClinic.owner_id.length > 0 && !isValidUuid(newClinic.owner_id)
                   ? 'UUID形式で入力してください'
-                  : '空白の場合は現在ログイン中のアカウントがオーナーになります'
+                  : '⚠ 通常は空白のままにしてください。既存ユーザーをオーナーにする場合のみUUIDを入力します。'
               }
             />
           </Box>
