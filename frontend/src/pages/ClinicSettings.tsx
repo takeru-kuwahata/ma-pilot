@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Paper, Button, TextField, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { Save as SaveIcon } from '@mui/icons-material';
 import { clinicService } from '../services/api';
@@ -49,6 +49,7 @@ const formatPhoneNumber = (value: string) => {
 
 export const ClinicSettings = () => {
   const { clinicId } = useParams<{ clinicId: string }>();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [loadingAddress, setLoadingAddress] = useState(false);
@@ -151,6 +152,13 @@ export const ClinicSettings = () => {
         message: '基本情報を保存しました',
         severity: 'success'
       });
+
+      // slug変更時はURLを新しいslugに更新
+      if (basicInfo.slug && basicInfo.slug !== clinicId) {
+        setTimeout(() => {
+          navigate(`/clinic/${basicInfo.slug}/settings`, { replace: true });
+        }, 1000);
+      }
     } catch (error) {
       console.error('Failed to save basic info:', error);
       setSnackbar({

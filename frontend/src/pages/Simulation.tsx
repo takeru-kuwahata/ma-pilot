@@ -17,13 +17,13 @@ import type { Simulation as SimulationType, MonthlyData, Clinic } from '../types
 
 interface SimulationParams {
   period: string;
-  insuranceRevenueChange: number;
-  selfPayRevenueChange: number;
-  retailRevenueChange: number;
-  variableCostChange: number;
-  fixedCostChange: number;
-  newPatientChange: number;
-  returningPatientChange: number;
+  insuranceRevenueChange: string;
+  selfPayRevenueChange: string;
+  retailRevenueChange: string;
+  variableCostChange: string;
+  fixedCostChange: string;
+  newPatientChange: string;
+  returningPatientChange: string;
 }
 
 interface SimulationResultDisplay {
@@ -47,13 +47,13 @@ export const Simulation = () => {
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [params, setParams] = useState<SimulationParams>({
     period: '6',
-    insuranceRevenueChange: 0,
-    selfPayRevenueChange: 0,
-    retailRevenueChange: 0,
-    variableCostChange: 0,
-    fixedCostChange: 0,
-    newPatientChange: 0,
-    returningPatientChange: 0,
+    insuranceRevenueChange: '',
+    selfPayRevenueChange: '',
+    retailRevenueChange: '',
+    variableCostChange: '',
+    fixedCostChange: '',
+    newPatientChange: '',
+    returningPatientChange: '',
   });
 
   const [result, setResult] = useState<SimulationResultDisplay | null>(null);
@@ -111,11 +111,16 @@ export const Simulation = () => {
     }
   };
 
-  const handleParamChange = (field: keyof SimulationParams, value: string | number) => {
+  const handleParamChange = (field: keyof SimulationParams, value: string) => {
     setParams((prev) => ({
       ...prev,
       [field]: value,
     }));
+  };
+
+  const getNumericParam = (value: string): number => {
+    const n = parseFloat(value);
+    return isNaN(n) ? 0 : n;
   };
 
   const handleSimulate = async () => {
@@ -153,12 +158,19 @@ export const Simulation = () => {
       }
 
       // 変動率を適用して目標値を計算（フロントエンドで完結）
-      const targetInsuranceRevenue = currentInsuranceRevenue * (1 + params.insuranceRevenueChange / 100);
-      const targetSelfPayRevenue = currentSelfPayRevenue * (1 + params.selfPayRevenueChange / 100);
+      const insuranceChange = getNumericParam(params.insuranceRevenueChange);
+      const selfPayChange = getNumericParam(params.selfPayRevenueChange);
+      const variableCostChange = getNumericParam(params.variableCostChange);
+      const fixedCostChange = getNumericParam(params.fixedCostChange);
+      const newPatientChange = getNumericParam(params.newPatientChange);
+      const returningPatientChange = getNumericParam(params.returningPatientChange);
+
+      const targetInsuranceRevenue = currentInsuranceRevenue * (1 + insuranceChange / 100);
+      const targetSelfPayRevenue = currentSelfPayRevenue * (1 + selfPayChange / 100);
       const targetRevenue = targetInsuranceRevenue + targetSelfPayRevenue;
 
-      const targetVariableCost = (currentPersonnelCost + currentMaterialCost) * (1 + params.variableCostChange / 100);
-      const targetFixedCost = currentFixedCost * (1 + params.fixedCostChange / 100);
+      const targetVariableCost = (currentPersonnelCost + currentMaterialCost) * (1 + variableCostChange / 100);
+      const targetFixedCost = currentFixedCost * (1 + fixedCostChange / 100);
       const targetTotalCost = targetVariableCost + targetFixedCost;
       const targetProfit = targetRevenue - targetTotalCost;
       const targetProfitMargin = targetRevenue > 0 ? (targetProfit / targetRevenue * 100) : 0;
@@ -171,8 +183,8 @@ export const Simulation = () => {
         (latestData.other_patients || 0)
       ) || currentTotalPatients;
 
-      const targetNewPatients = (latestData.first_visit_patients || 0) * (1 + params.newPatientChange / 100);
-      const targetReturningPatients = (latestData.returning_patients || 0) * (1 + params.returningPatientChange / 100);
+      const targetNewPatients = (latestData.first_visit_patients || 0) * (1 + newPatientChange / 100);
+      const targetReturningPatients = (latestData.returning_patients || 0) * (1 + returningPatientChange / 100);
       const targetTotalPatients = baseTotalPatients > 0
         ? Math.ceil(baseTotalPatients * (targetRevenue / (currentRevenue || 1)))
         : 0;
@@ -181,8 +193,8 @@ export const Simulation = () => {
         ? targetRevenue / targetTotalPatients
         : (currentRevenue > 0 && currentTotalPatients > 0 ? currentRevenue / currentTotalPatients : 0);
 
-      const targetPersonnelCostRate = targetRevenue > 0 ? (currentPersonnelCost * (1 + params.variableCostChange / 100)) / targetRevenue * 100 : 0;
-      const targetMaterialCostRate = targetRevenue > 0 ? (currentMaterialCost * (1 + params.variableCostChange / 100)) / targetRevenue * 100 : 0;
+      const targetPersonnelCostRate = targetRevenue > 0 ? (currentPersonnelCost * (1 + variableCostChange / 100)) / targetRevenue * 100 : 0;
+      const targetMaterialCostRate = targetRevenue > 0 ? (currentMaterialCost * (1 + variableCostChange / 100)) / targetRevenue * 100 : 0;
 
       // フロントエンドで計算した結果をそのままバックエンドに渡す
       const simulationInput = {
@@ -353,7 +365,7 @@ export const Simulation = () => {
                 fullWidth
                 value={params.insuranceRevenueChange}
                 onChange={(e) =>
-                  handleParamChange('insuranceRevenueChange', Number(e.target.value))
+                  handleParamChange('insuranceRevenueChange', e.target.value)
                 }
                 placeholder="例: +10 または -5"
                 inputProps={{ step: 1, min: -50, max: 50 }}
@@ -383,7 +395,7 @@ export const Simulation = () => {
                 fullWidth
                 value={params.selfPayRevenueChange}
                 onChange={(e) =>
-                  handleParamChange('selfPayRevenueChange', Number(e.target.value))
+                  handleParamChange('selfPayRevenueChange', e.target.value)
                 }
                 placeholder="例: +20 または -10"
                 inputProps={{ step: 1, min: -50, max: 100 }}
@@ -413,7 +425,7 @@ export const Simulation = () => {
                 fullWidth
                 value={params.retailRevenueChange}
                 onChange={(e) =>
-                  handleParamChange('retailRevenueChange', Number(e.target.value))
+                  handleParamChange('retailRevenueChange', e.target.value)
                 }
                 placeholder="例: +5 または -3"
                 inputProps={{ step: 1, min: -50, max: 50 }}
@@ -446,7 +458,7 @@ export const Simulation = () => {
                 fullWidth
                 value={params.variableCostChange}
                 onChange={(e) =>
-                  handleParamChange('variableCostChange', Number(e.target.value))
+                  handleParamChange('variableCostChange', e.target.value)
                 }
                 placeholder="例: +8 または -2"
                 inputProps={{ step: 1, min: -50, max: 50 }}
@@ -476,7 +488,7 @@ export const Simulation = () => {
                 fullWidth
                 value={params.fixedCostChange}
                 onChange={(e) =>
-                  handleParamChange('fixedCostChange', Number(e.target.value))
+                  handleParamChange('fixedCostChange', e.target.value)
                 }
                 placeholder="例: +5 または -5"
                 inputProps={{ step: 1, min: -50, max: 50 }}
@@ -506,7 +518,7 @@ export const Simulation = () => {
                 fullWidth
                 value={params.newPatientChange}
                 onChange={(e) =>
-                  handleParamChange('newPatientChange', Number(e.target.value))
+                  handleParamChange('newPatientChange', e.target.value)
                 }
                 placeholder="例: +15 または -10"
                 inputProps={{ step: 1, min: -50, max: 100 }}
@@ -536,7 +548,7 @@ export const Simulation = () => {
                 fullWidth
                 value={params.returningPatientChange}
                 onChange={(e) =>
-                  handleParamChange('returningPatientChange', Number(e.target.value))
+                  handleParamChange('returningPatientChange', e.target.value)
                 }
                 placeholder="例: +10 または -5"
                 inputProps={{ step: 1, min: -50, max: 50 }}
