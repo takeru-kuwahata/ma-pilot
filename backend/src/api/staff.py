@@ -5,6 +5,8 @@ from ..services.clinic_service import ClinicService
 from ..core.database import get_supabase_client
 from supabase import Client
 from typing import List
+import httpx
+import os
 
 router = APIRouter(prefix='/api/staff', tags=['Staff Management'])
 
@@ -37,19 +39,31 @@ async def get_staff(
         # Get all users for clinic
         response = supabase.table('user_metadata').select('*').eq('clinic_id', actual_clinic_id).execute()
 
+        supabase_url = os.environ.get('SUPABASE_URL', '')
+        service_role_key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '') or os.environ.get('SUPABASE_KEY', '')
+
         staff_list = []
-        for metadata in response.data:
-            # Get user email from auth
-            user_response = supabase.auth.admin.get_user_by_id(metadata['user_id'])
-            if user_response.user:
-                staff_list.append(User(
-                    id=metadata['user_id'],
-                    email=user_response.user.email,
-                    role=metadata['role'],
-                    clinic_id=metadata['clinic_id'],
-                    created_at=metadata['created_at'],
-                    updated_at=metadata['updated_at']
-                ))
+        async with httpx.AsyncClient() as client:
+            for metadata in response.data:
+                # Get user email via Admin REST API (requires service_role key)
+                user_resp = await client.get(
+                    f'{supabase_url}/auth/v1/admin/users/{metadata["user_id"]}',
+                    headers={
+                        'apikey': service_role_key,
+                        'Authorization': f'Bearer {service_role_key}',
+                    },
+                    timeout=10,
+                )
+                if user_resp.status_code == 200:
+                    user_data = user_resp.json()
+                    staff_list.append(User(
+                        id=metadata['user_id'],
+                        email=user_data.get('email', ''),
+                        role=metadata['role'],
+                        clinic_id=metadata['clinic_id'],
+                        created_at=metadata['created_at'],
+                        updated_at=metadata['updated_at']
+                    ))
 
         return staff_list
     except Exception as e:

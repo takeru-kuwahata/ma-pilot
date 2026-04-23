@@ -179,12 +179,24 @@ class AuthService:
 
     async def delete_user(self, user_id: str) -> dict:
         '''Delete user'''
+        import httpx
+        import os
         try:
             # Delete user metadata first
             self.supabase.table('user_metadata').delete().eq('user_id', user_id).execute()
 
-            # Delete user from auth
-            self.supabase.auth.admin.delete_user(user_id)
+            # Delete user from auth via Admin REST API (requires service_role key)
+            supabase_url = os.environ.get('SUPABASE_URL', '')
+            service_role_key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '') or os.environ.get('SUPABASE_KEY', '')
+            async with httpx.AsyncClient() as client:
+                await client.delete(
+                    f'{supabase_url}/auth/v1/admin/users/{user_id}',
+                    headers={
+                        'apikey': service_role_key,
+                        'Authorization': f'Bearer {service_role_key}',
+                    },
+                    timeout=10,
+                )
 
             return {'message': 'User deleted successfully'}
 
