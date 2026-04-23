@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Box,
   Paper,
@@ -20,6 +20,7 @@ type TabType = 'login' | 'signup' | 'reset';
 
 export const LoginPage = () => {
   const { login, signup, resetPassword, loading, error, successMessage, clearMessages } = useAuth();
+  const passwordSaveFormRef = useRef<HTMLFormElement>(null);
 
   const [activeTab, setActiveTab] = useState<TabType>('login');
 
@@ -81,7 +82,11 @@ export const LoginPage = () => {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(loginData);
+    const success = await login(loginData);
+    // ログイン成功時、ブラウザのパスワードマネージャーに保存を促す
+    if (success && passwordSaveFormRef.current) {
+      passwordSaveFormRef.current.requestSubmit();
+    }
   };
 
   const handleSignupSubmit = async (e: React.FormEvent) => {
@@ -456,6 +461,18 @@ export const LoginPage = () => {
             </Box>
           )}
         </Paper>
+
+      {/* ブラウザのパスワードマネージャーに保存を促す非表示フォーム */}
+      <form
+        ref={passwordSaveFormRef}
+        method="post"
+        action="#"
+        style={{ display: 'none' }}
+        onSubmit={(e) => e.preventDefault()}
+      >
+        <input type="email" name="email" autoComplete="email" value={loginData.email} readOnly />
+        <input type="password" name="password" autoComplete="current-password" value={loginData.password} readOnly />
+      </form>
     </Box>
   );
 };

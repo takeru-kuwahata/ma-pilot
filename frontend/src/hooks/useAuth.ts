@@ -26,7 +26,7 @@ export const useAuth = () => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const login = async (data: LoginFormData) => {
+  const login = async (data: LoginFormData): Promise<boolean> => {
     try {
       setLoading(true);
       setError(null);
@@ -50,9 +50,11 @@ export const useAuth = () => {
       } else {
         navigate('/clinic/dashboard');
       }
+      return true;
     } catch (err) {
       console.error('[useAuth] Login error:', err);
       setError(err instanceof Error ? err.message : 'ログインに失敗しました');
+      return false;
     } finally {
       setLoading(false);
     }
