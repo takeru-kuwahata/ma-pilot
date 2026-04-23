@@ -112,6 +112,21 @@ class MonthlyDataService:
         failed_count = 0
         errors = []
 
+        # 日本語ヘッダー → 英語カラム名マッピング
+        HEADER_MAP = {
+            '年月(YYYY-MM)': 'year_month',
+            '保険診療収入': 'insurance_revenue',
+            '自費診療収入': 'self_pay_revenue',
+            '人件費': 'personnel_cost',
+            '材料費': 'material_cost',
+            '固定費': 'fixed_cost',
+            'その他費用': 'other_cost',
+            '初診患者数': 'first_visit_patients',
+            '再初診患者数': 're_first_visit_patients',
+            '再診患者数': 'returning_patients',
+            'その他患者数': 'other_patients',
+        }
+
         try:
             # Parse CSV
             csv_file = StringIO(csv_content)
@@ -119,28 +134,30 @@ class MonthlyDataService:
 
             for row_num, row in enumerate(reader, start=2):  # Start at 2 because row 1 is header
                 try:
+                    # 日本語ヘッダーを英語キーに正規化
+                    normalized = {HEADER_MAP.get(k, k): v for k, v in row.items()}
                     # Validate and parse row
                     monthly_data = MonthlyDataCreate(
                         clinic_id=clinic_id,
-                        year_month=row['year_month'],
-                        insurance_revenue=float(row.get('insurance_revenue', 0)),
-                        self_pay_revenue=float(row.get('self_pay_revenue', 0)),
-                        personnel_cost=float(row.get('personnel_cost', 0)),
-                        material_cost=float(row.get('material_cost', 0)),
-                        fixed_cost=float(row.get('fixed_cost', 0)),
-                        other_cost=float(row.get('other_cost', 0)),
-                        first_visit_patients=int(row.get('first_visit_patients', 0)),
-                        re_first_visit_patients=int(row.get('re_first_visit_patients', 0)),
-                        returning_patients=int(row.get('returning_patients', 0)),
-                        other_patients=int(row.get('other_patients', 0)),
-                        treatment_count=int(row.get('treatment_count', 0))
+                        year_month=normalized['year_month'],
+                        insurance_revenue=float(normalized.get('insurance_revenue', 0)),
+                        self_pay_revenue=float(normalized.get('self_pay_revenue', 0)),
+                        personnel_cost=float(normalized.get('personnel_cost', 0)),
+                        material_cost=float(normalized.get('material_cost', 0)),
+                        fixed_cost=float(normalized.get('fixed_cost', 0)),
+                        other_cost=float(normalized.get('other_cost', 0)),
+                        first_visit_patients=int(normalized.get('first_visit_patients', 0)),
+                        re_first_visit_patients=int(normalized.get('re_first_visit_patients', 0)),
+                        returning_patients=int(normalized.get('returning_patients', 0)),
+                        other_patients=int(normalized.get('other_patients', 0)),
+                        treatment_count=int(normalized.get('treatment_count', 0))
                     )
 
                     # Try to create or update
                     data_dict = self._calculate_totals(monthly_data.model_dump())
 
                     # Check if record exists
-                    existing = self.supabase.table('monthly_data').select('id').eq('clinic_id', clinic_id).eq('year_month', row['year_month']).execute()
+                    existing = self.supabase.table('monthly_data').select('id').eq('clinic_id', clinic_id).eq('year_month', normalized['year_month']).execute()
 
                     if existing.data and len(existing.data) > 0:
                         # Update existing

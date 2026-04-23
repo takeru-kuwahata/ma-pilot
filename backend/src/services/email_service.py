@@ -27,10 +27,13 @@ def _send_email(to_email: str, subject: str, body: str) -> None:
         return
 
     from_addr = smtp_from or smtp_user
+    from email.header import Header
+    from email.utils import formataddr
+    display_from = formataddr((str(Header('株式会社メディカルアドバンス', 'utf-8')), from_addr))
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = subject
-    msg['From'] = from_addr
+    msg['From'] = display_from
     msg['To'] = to_email
     msg.attach(MIMEText(body, 'plain', 'utf-8'))
 

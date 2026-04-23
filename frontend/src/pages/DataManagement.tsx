@@ -258,19 +258,19 @@ export const DataManagement = () => {
 
   // CSVテンプレートダウンロード
   const handleDownloadTemplate = () => {
-    // CSVヘッダー（バックエンドのカラム名と一致させる）
+    // CSVヘッダー（日本語表示用とバックエンドのカラム名のマッピング）
     const headers = [
-      'year_month',
-      'insurance_revenue',
-      'self_pay_revenue',
-      'personnel_cost',
-      'material_cost',
-      'fixed_cost',
-      'other_cost',
-      'first_visit_patients',
-      're_first_visit_patients',
-      'returning_patients',
-      'other_patients',
+      '年月(YYYY-MM)',
+      '保険診療収入',
+      '自費診療収入',
+      '人件費',
+      '材料費',
+      '固定費',
+      'その他費用',
+      '初診患者数',
+      '再初診患者数',
+      '再診患者数',
+      'その他患者数',
     ];
 
     // サンプル行（1行だけ）
