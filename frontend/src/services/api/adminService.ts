@@ -16,6 +16,7 @@ interface ClinicResponse {
 
 interface CreateClinicRequest {
   name: string;
+  slug?: string;
   postal_code: string;
   address: string;
   phone_number: string;
@@ -63,6 +64,9 @@ export const adminService = {
       longitude: request.longitude ?? 139.7671,
       owner_id: ownerId,
     };
+    if (request.slug && request.slug.trim() !== '') {
+      body.slug = request.slug.trim();
+    }
     const response = await fetch(`${API_BASE_URL}/api/admin/clinics`, {
       method: 'POST',
       headers: getAuthHeaders(),
