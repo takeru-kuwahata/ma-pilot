@@ -1,0 +1,70 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: MA
+        - heading "MA-Pilot" [level=6] [ref=e8]
+        - generic [ref=e10]: 管理者
+      - paragraph [ref=e11]: 桑畑 健
+  - generic [ref=e12]:
+    - generic [ref=e13]: 管理機能
+    - list [ref=e14]:
+      - listitem [ref=e15]:
+        - button "管理ダッシュボード" [ref=e16] [cursor=pointer]:
+          - img [ref=e18]
+          - generic [ref=e21]: 管理ダッシュボード
+      - listitem [ref=e22]:
+        - button "運営者アカウント管理" [ref=e23] [cursor=pointer]:
+          - img [ref=e25]
+          - generic [ref=e28]: 運営者アカウント管理
+      - listitem [ref=e29]:
+        - button "医院アカウント管理" [ref=e30] [cursor=pointer]:
+          - img [ref=e32]
+          - generic [ref=e35]: 医院アカウント管理
+      - listitem [ref=e36]:
+        - button "システム設定" [ref=e37] [cursor=pointer]:
+          - img [ref=e39]
+          - generic [ref=e43]: システム設定
+      - listitem [ref=e44]:
+        - button "価格表管理" [ref=e45] [cursor=pointer]:
+          - img [ref=e47]
+          - generic [ref=e50]: 価格表管理
+      - listitem [ref=e51]:
+        - button "印刷物発注管理" [ref=e52] [cursor=pointer]:
+          - img [ref=e54]
+          - generic [ref=e57]: 印刷物発注管理
+    - separator [ref=e58]
+    - list [ref=e59]:
+      - listitem [ref=e60]:
+        - button "マイページ設定" [ref=e61] [cursor=pointer]:
+          - img [ref=e63]
+          - generic [ref=e66]: マイページ設定
+      - listitem [ref=e67]:
+        - button "ログアウト" [ref=e68] [cursor=pointer]:
+          - img [ref=e70]
+          - generic [ref=e73]: ログアウト
+  - main [ref=e74]:
+    - generic [ref=e76]:
+      - heading "印刷物注文履歴" [level=1] [ref=e77]
+      - generic [ref=e79]:
+        - generic [ref=e81]:
+          - generic [ref=e82]: ステータス
+          - generic [ref=e83]:
+            - combobox [ref=e84] [cursor=pointer]: すべて
+            - textbox: all
+            - img
+            - group:
+              - generic: ステータス
+        - button "検索" [ref=e86] [cursor=pointer]
+      - table [ref=e88]:
+        - rowgroup [ref=e89]:
+          - row "注文日 商品種類 数量 見積金額 ステータス 操作" [ref=e90]:
+            - columnheader "注文日" [ref=e91]
+            - columnheader "商品種類" [ref=e92]
+            - columnheader "数量" [ref=e93]
+            - columnheader "見積金額" [ref=e94]
+            - columnheader "ステータス" [ref=e95]
+            - columnheader "操作" [ref=e96]
+        - rowgroup [ref=e97]:
+          - row "注文履歴がありません" [ref=e98]:
+            - cell "注文履歴がありません" [ref=e99]

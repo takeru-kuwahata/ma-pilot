@@ -1,0 +1,107 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e289]:
+    - banner [ref=e290]:
+      - generic [ref=e291]:
+        - generic [ref=e292]:
+          - generic [ref=e293]: MA
+          - heading "MA-Pilot" [level=6] [ref=e294]
+          - paragraph [ref=e295]: （テスト）ウエダ歯科
+        - button "運営者モードへ" [ref=e296] [cursor=pointer]:
+          - img [ref=e298]
+          - text: 運営者モードへ
+        - generic [ref=e300]:
+          - generic [ref=e301]: 桑
+          - paragraph [ref=e302]: 桑畑 健
+    - generic [ref=e303]:
+      - list [ref=e304]:
+        - listitem [ref=e305]:
+          - button "経営ダッシュボード" [ref=e306] [cursor=pointer]:
+            - img [ref=e308]
+            - generic [ref=e311]: 経営ダッシュボード
+        - listitem [ref=e312]:
+          - button "基礎データ管理" [ref=e313] [cursor=pointer]:
+            - img [ref=e315]
+            - generic [ref=e318]: 基礎データ管理
+        - listitem [ref=e319]:
+          - button "診療圏分析" [ref=e320] [cursor=pointer]:
+            - img [ref=e322]
+            - generic [ref=e325]: 診療圏分析
+        - listitem [ref=e326]:
+          - button "経営シミュレーション" [ref=e327] [cursor=pointer]:
+            - img [ref=e329]
+            - generic [ref=e332]: 経営シミュレーション
+        - listitem [ref=e333]:
+          - button "レポート管理" [ref=e334] [cursor=pointer]:
+            - img [ref=e336]
+            - generic [ref=e339]: レポート管理
+        - listitem [ref=e340]:
+          - button "印刷物発注" [ref=e341] [cursor=pointer]:
+            - img [ref=e343]
+            - generic [ref=e346]: 印刷物発注
+        - listitem [ref=e347]:
+          - button "印刷物発注履歴" [ref=e348] [cursor=pointer]:
+            - img [ref=e350]
+            - generic [ref=e353]: 印刷物発注履歴
+        - listitem [ref=e354]:
+          - button "医院設定" [ref=e355] [cursor=pointer]:
+            - img [ref=e357]
+            - generic [ref=e360]: 医院設定
+        - listitem [ref=e361]:
+          - button "スタッフ管理" [ref=e362] [cursor=pointer]:
+            - img [ref=e364]
+            - generic [ref=e367]: スタッフ管理
+      - separator [ref=e368]
+      - list [ref=e369]:
+        - listitem [ref=e370]:
+          - button "マイページ設定" [ref=e371] [cursor=pointer]:
+            - img [ref=e373]
+            - generic [ref=e376]: マイページ設定
+        - listitem [ref=e377]:
+          - button "ログアウト" [ref=e378] [cursor=pointer]:
+            - img [ref=e380]
+            - generic [ref=e383]: ログアウト
+    - main [ref=e384]:
+      - generic [ref=e385]:
+        - heading "経営ダッシュボード" [level=4] [ref=e386]
+        - paragraph [ref=e387]: "2026-04-23T12:02:16.331704 のデータ（データソース: データなし）"
+      - generic [ref=e388]:
+        - generic [ref=e390]:
+          - heading "売上・利益推移（直近6ヶ月）" [level=6] [ref=e391]
+          - generic [ref=e393]:
+            - img [ref=e394]
+            - list [ref=e399]:
+              - listitem [ref=e400]:
+                - img [ref=e401]
+                - text: 総売上（万円）
+              - listitem [ref=e403]:
+                - img [ref=e404]
+                - text: 営業利益（万円）
+        - generic [ref=e407]:
+          - heading "患者数推移（直近6ヶ月）" [level=6] [ref=e408]
+          - generic [ref=e410]:
+            - img [ref=e411]
+            - list [ref=e416]:
+              - listitem [ref=e417]:
+                - img [ref=e418]
+                - text: 新患（人）
+              - listitem [ref=e420]:
+                - img [ref=e421]
+                - text: 既存患者（人）
+      - generic [ref=e423]:
+        - generic [ref=e425]:
+          - heading "ユニット稼働率推移（直近6ヶ月）" [level=6] [ref=e426]
+          - generic [ref=e428]:
+            - img [ref=e429]
+            - list [ref=e434]:
+              - listitem [ref=e435]:
+                - img [ref=e436]
+                - text: 稼働率（%）
+        - generic [ref=e439]:
+          - heading "自費率推移（直近6ヶ月）" [level=6] [ref=e440]
+          - generic [ref=e442]:
+            - img [ref=e443]
+            - list [ref=e448]:
+              - listitem [ref=e449]:
+                - img [ref=e450]
+                - text: 自費率（%）
+  - generic [ref=e288]: "12"

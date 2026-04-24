@@ -1,0 +1,312 @@
+- generic [active] [ref=e1]:
+  - status
+  - generic:
+    - generic:
+      - banner [ref=e2]:
+        - generic [ref=e3]:
+          - button "keyboard_double_arrow_left" [ref=e4] [cursor=pointer]:
+            - generic [ref=e5]: keyboard_double_arrow_left
+          - link "Lステップ" [ref=e6] [cursor=pointer]:
+            - /url: /
+            - img "Lステップ" [ref=e7]
+        - navigation [ref=e8]:
+          - list [ref=e9]:
+            - listitem [ref=e10]:
+              - button "help サポート expand_more" [ref=e12] [cursor=pointer]:
+                - generic [ref=e13]: help
+                - generic [ref=e14]: サポート
+                - generic [ref=e15]: expand_more
+            - listitem [ref=e16]:
+              - link "メッセージ送信数を見る" [ref=e17] [cursor=pointer]:
+                - /url: /line/analytics/send
+                - generic [ref=e18]: equalizer
+                - generic [ref=e19]: 送信数
+            - listitem [ref=e20]:
+              - button "person 桑畑 健 (副管理者) プロフィール画像 メディカルアドバンス［シカレッジ］ expand_more" [ref=e22] [cursor=pointer]:
+                - generic [ref=e23]:
+                  - generic [ref=e24]: person
+                  - text: 桑畑 健
+                  - generic [ref=e25]: (副管理者)
+                - img "プロフィール画像" [ref=e26]
+                - text: メディカルアドバンス［シカレッジ］
+                - generic [ref=e27]: expand_more
+      - complementary [ref=e28]:
+        - list [ref=e29]:
+          - listitem [ref=e30]:
+            - link "トップ" [ref=e31] [cursor=pointer]:
+              - /url: /
+              - generic [ref=e33]: トップ
+        - list [ref=e34]:
+          - listitem [ref=e35]:
+            - generic [ref=e37]: star
+            - text: 1対1トーク
+          - listitem [ref=e38]:
+            - link "友だちリスト" [ref=e39] [cursor=pointer]:
+              - /url: /line/show
+              - generic [ref=e41]: 友だちリスト
+          - listitem [ref=e42]:
+            - link "トーク一覧" [ref=e43] [cursor=pointer]:
+              - /url: /line/timeline
+              - generic [ref=e45]: トーク一覧
+          - listitem [ref=e46]:
+            - link "個別トーク" [ref=e47] [cursor=pointer]:
+              - /url: /line/visual
+              - generic [ref=e49]: 個別トーク
+        - list [ref=e50]:
+          - listitem [ref=e51]:
+            - generic [ref=e53]: campaign
+            - text: メッセージ
+          - listitem [ref=e54]:
+            - link "シナリオ配信" [ref=e55] [cursor=pointer]:
+              - /url: /line/content/group
+              - generic [ref=e57]: シナリオ配信
+          - listitem [ref=e58]:
+            - link "一斉配信" [ref=e59] [cursor=pointer]:
+              - /url: /line/magazine
+              - generic [ref=e61]: 一斉配信
+          - listitem [ref=e62]:
+            - link "自動応答" [ref=e63] [cursor=pointer]:
+              - /url: /line/reaction
+              - generic [ref=e65]: 自動応答
+          - listitem [ref=e66]:
+            - link "テンプレート" [ref=e67] [cursor=pointer]:
+              - /url: /line/template
+              - generic [ref=e69]: テンプレート
+          - listitem [ref=e70]:
+            - group [ref=e71]:
+              - generic "予約管理 expand_more" [ref=e72] [cursor=pointer]:
+                - text: 予約管理
+                - generic [ref=e73]: expand_more
+          - listitem [ref=e74]:
+            - link "回答フォーム" [ref=e75] [cursor=pointer]:
+              - /url: /line/form
+              - generic [ref=e77]: 回答フォーム
+          - listitem [ref=e78]:
+            - link "リマインダ配信" [ref=e79] [cursor=pointer]:
+              - /url: /line/episode
+              - generic [ref=e81]: リマインダ配信
+          - listitem [ref=e82]:
+            - link "友だち追加時設定" [ref=e83] [cursor=pointer]:
+              - /url: /line/setting/follow
+              - generic [ref=e85]: 友だち追加時設定
+          - listitem [ref=e86]:
+            - link "アクション管理" [ref=e87] [cursor=pointer]:
+              - /url: /line/action
+              - generic [ref=e89]: アクション管理
+        - list [ref=e90]:
+          - listitem [ref=e91]:
+            - generic [ref=e93]: filter_alt
+            - text: 友だち属性
+          - listitem [ref=e94]:
+            - link "タグ管理" [ref=e95] [cursor=pointer]:
+              - /url: /line/tag
+              - generic [ref=e97]: タグ管理
+          - listitem [ref=e98]:
+            - link "友だち情報欄管理" [ref=e99] [cursor=pointer]:
+              - /url: /line/var
+              - generic [ref=e101]: 友だち情報欄管理
+          - listitem [ref=e102]:
+            - link "カスタム検索管理" [ref=e103] [cursor=pointer]:
+              - /url: /line/funnel
+              - generic [ref=e105]: カスタム検索管理
+          - listitem [ref=e106]:
+            - link "対応マーク管理" [ref=e107] [cursor=pointer]:
+              - /url: /line/setting/notify
+              - generic [ref=e109]: 対応マーク管理
+        - list [ref=e110]:
+          - listitem [ref=e111]:
+            - generic [ref=e113]: flag
+            - text: 統計情報
+          - listitem [ref=e114]:
+            - link "URLクリック測定" [ref=e115] [cursor=pointer]:
+              - /url: /line/site
+              - generic [ref=e117]: URLクリック測定
+          - listitem [ref=e118]:
+            - 'link "コンバージョン管理 (旧: フェーズ管理)" [ref=e119] [cursor=pointer]':
+              - /url: /line/journey-tag
+              - generic [ref=e121]:
+                - text: コンバージョン管理
+                - text: "(旧: フェーズ管理)"
+          - listitem [ref=e122]:
+            - link "(廃止予定) コンバージョン" [ref=e123] [cursor=pointer]:
+              - /url: /line/tracker
+              - generic [ref=e125]: (廃止予定) コンバージョン
+          - listitem [ref=e126]:
+            - link "サイトスクリプト" [ref=e127] [cursor=pointer]:
+              - /url: /line/script
+              - generic [ref=e129]: サイトスクリプト
+          - listitem [ref=e130]:
+            - link "ファネル分析" [ref=e131] [cursor=pointer]:
+              - /url: /line/journey
+              - generic [ref=e133]: ファネル分析
+          - listitem [ref=e134]:
+            - link "広告連携 NEW" [ref=e135] [cursor=pointer]:
+              - /url: /line/ad-connect
+              - generic [ref=e136]:
+                - generic [ref=e137]: 広告連携
+                - generic [ref=e139]: NEW
+          - listitem [ref=e140]:
+            - link "クロス分析" [ref=e141] [cursor=pointer]:
+              - /url: /line/board
+              - generic [ref=e143]: クロス分析
+          - listitem [ref=e144]:
+            - link "流入経路分析" [ref=e145] [cursor=pointer]:
+              - /url: /line/landing
+              - generic [ref=e147]: 流入経路分析
+        - list [ref=e148]:
+          - listitem [ref=e149]:
+            - generic [ref=e151]: folder_open
+            - text: コンテンツ
+          - listitem [ref=e152]:
+            - link "共通情報" [ref=e153] [cursor=pointer]:
+              - /url: /line/common_var
+              - generic [ref=e155]: 共通情報
+          - listitem [ref=e156]:
+            - link "登録メディア一覧" [ref=e157] [cursor=pointer]:
+              - /url: /line/media
+              - generic [ref=e159]: 登録メディア一覧
+          - listitem [ref=e160]:
+            - link "リッチメニュー" [ref=e161] [cursor=pointer]:
+              - /url: /line/richmenu
+              - generic [ref=e163]: リッチメニュー
+        - list [ref=e164]:
+          - listitem [ref=e165]:
+            - generic [ref=e167]: settings
+            - text: 設定
+          - listitem [ref=e168]:
+            - link "LINE公式アカウント設定 open_in_new" [ref=e169] [cursor=pointer]:
+              - /url: https://manager.line.biz/
+              - generic [ref=e170]:
+                - generic [ref=e171]: LINE公式アカウント設定
+                - generic [ref=e172]: open_in_new
+          - listitem [ref=e173]:
+            - link "アカウント設定" [ref=e174] [cursor=pointer]:
+              - /url: /line/account
+              - generic [ref=e176]: アカウント設定
+          - listitem [ref=e177]:
+            - link "スタッフ設定" [ref=e178] [cursor=pointer]:
+              - /url: /line/role
+              - generic [ref=e180]: スタッフ設定
+          - listitem [ref=e181]:
+            - link "データ移行 β版" [ref=e182] [cursor=pointer]:
+              - /url: /line/forger
+              - generic [ref=e183]:
+                - generic [ref=e184]: データ移行
+                - generic [ref=e186]: β版
+        - list [ref=e187]:
+          - listitem [ref=e188]:
+            - link "マイページ" [ref=e189] [cursor=pointer]:
+              - /url: /account
+              - generic [ref=e191]: マイページ
+          - listitem [ref=e192]:
+            - link "通知機能" [ref=e193] [cursor=pointer]:
+              - /url: /line/notifications
+              - generic [ref=e195]: 通知機能
+          - listitem [ref=e196]:
+            - link "新規アカウント発行" [ref=e197] [cursor=pointer]:
+              - /url: /account/newuser
+              - generic [ref=e199]: 新規アカウント発行
+          - listitem [ref=e200]:
+            - group [ref=e201]:
+              - generic "オプション機能申し込み expand_more" [ref=e202] [cursor=pointer]:
+                - text: オプション機能申し込み
+                - generic [ref=e203]: expand_more
+        - list [ref=e204]:
+          - listitem [ref=e205]:
+            - generic [ref=e207]: help
+            - text: サポート
+          - listitem [ref=e208]:
+            - link "講座・勉強会 open_in_new" [ref=e209] [cursor=pointer]:
+              - /url: https://lstep-pro.com/tutorial/purchaser_eventcal/?utm_source=lstep_ms&utm_medium=referral&utm_campaign=sidemenu
+              - generic [ref=e210]:
+                - generic [ref=e211]: 講座・勉強会
+                - generic [ref=e212]: open_in_new
+          - listitem [ref=e213]:
+            - link "使い方動画ガイド open_in_new" [ref=e214] [cursor=pointer]:
+              - /url: https://lstep-pro.com/tutorial/?utm_source=lstep_ms&utm_medium=referral&utm_campaign=sidemenu
+              - generic [ref=e215]:
+                - generic [ref=e216]: 使い方動画ガイド
+                - generic [ref=e217]: open_in_new
+          - listitem [ref=e218]:
+            - link "ご利用マニュアル open_in_new" [ref=e219] [cursor=pointer]:
+              - /url: https://manual.linestep.net/
+              - generic [ref=e220]:
+                - generic [ref=e221]: ご利用マニュアル
+                - generic [ref=e222]: open_in_new
+          - listitem [ref=e223]:
+            - link "Zoom個別相談 open_in_new" [ref=e224] [cursor=pointer]:
+              - /url: https://linestep.jp/spot_con/?utm_source=lstep_ms&utm_medium=referral&utm_campaign=sidemenu
+              - generic [ref=e225]:
+                - generic [ref=e226]: Zoom個別相談
+                - generic [ref=e227]: open_in_new
+  - generic [ref=e234]:
+    - heading "アカウント設定  マニュアル" [level=1] [ref=e235]:
+      - text: アカウント設定
+      - link " マニュアル" [ref=e236] [cursor=pointer]:
+        - /url: https://manual.linestep.net/account-setting
+        - generic [ref=e237]: 
+        - text: マニュアル
+    - paragraph [ref=e238]: アカウントの設定を確認することができます。
+    - separator [ref=e239]
+    - generic [ref=e240]:
+      - tablist [ref=e241]:
+        - tab "アカウント情報" [ref=e242]
+        - tab "アカウント名編集" [ref=e243] [cursor=pointer]
+        - tab "LINE公式アカウントチャンネル設定" [ref=e244] [cursor=pointer]
+        - tab "LINEログインチャネル設定" [ref=e245] [cursor=pointer]
+        - tab "利用プラン" [ref=e246] [cursor=pointer]
+        - tab "メッセージ設定" [ref=e247] [cursor=pointer]
+        - tab "未確認メッセージ設定" [ref=e248] [cursor=pointer]
+        - tab "テスト送信設定" [ref=e249] [cursor=pointer]
+        - tab "管理画面設定" [ref=e250] [cursor=pointer]
+        - tab "セキュリティ設定" [ref=e251] [cursor=pointer]
+        - tab "外部連携設定" [ref=e252] [cursor=pointer]
+      - generic [ref=e254]:
+        - tabpanel [ref=e255]:
+          - table [ref=e256]:
+            - rowgroup [ref=e257]:
+              - row "項目" [ref=e258]:
+                - columnheader "項目" [ref=e259]
+                - cell [ref=e260]
+            - rowgroup [ref=e261]:
+              - row "アカウント名 メディカルアドバンス［シカレッジ］" [ref=e262]:
+                - rowheader "アカウント名" [ref=e263]
+                - cell "メディカルアドバンス［シカレッジ］" [ref=e264]
+              - row "LINE公式アカウントID @085bpfpf" [ref=e265]:
+                - rowheader "LINE公式アカウントID" [ref=e266]
+                - cell "@085bpfpf" [ref=e267]
+              - row "LINE公式アカウントプレミアムID 未設定" [ref=e268]:
+                - rowheader "LINE公式アカウントプレミアムID" [ref=e269]
+                - cell "未設定" [ref=e270]
+              - row "Channel ID 1657175508" [ref=e271]:
+                - rowheader "Channel ID" [ref=e272]
+                - cell "1657175508" [ref=e273]
+              - row "Channel Secret 登録済" [ref=e274]:
+                - rowheader "Channel Secret" [ref=e275]
+                - cell "登録済" [ref=e276]
+              - row "Lステップ Webhook URL https://rcv.linestep.net/v3/call/1657175508 " [ref=e277]:
+                - rowheader "Lステップ Webhook URL" [ref=e278]
+                - cell "https://rcv.linestep.net/v3/call/1657175508 " [ref=e279]:
+                  - generic [ref=e280]:
+                    - textbox [ref=e281]: https://rcv.linestep.net/v3/call/1657175508
+                    - button "" [ref=e283] [cursor=pointer]:
+                      - generic [ref=e284]: 
+              - row "LINE公式アカウントに設定中のWebhook URL https://rcv.linestep.net/v2/1657175508" [ref=e285]:
+                - rowheader "LINE公式アカウントに設定中のWebhook URL" [ref=e286]
+                - cell "https://rcv.linestep.net/v2/1657175508" [ref=e287]:
+                  - textbox [ref=e288]: https://rcv.linestep.net/v2/1657175508
+              - row "友だち追加URL https://line.me/ti/p/%40085bpfpf " [ref=e289]:
+                - rowheader "友だち追加URL" [ref=e290]
+                - cell "https://line.me/ti/p/%40085bpfpf " [ref=e291]:
+                  - generic [ref=e292]:
+                    - textbox [ref=e293]: https://line.me/ti/p/%40085bpfpf
+                    - button "" [ref=e295] [cursor=pointer]:
+                      - generic [ref=e296]: 
+              - row "設定 LINE Developers LINE公式アカウントマネージャー" [ref=e297]:
+                - rowheader "設定" [ref=e298]
+                - cell "LINE Developers LINE公式アカウントマネージャー" [ref=e299]:
+                  - link "LINE Developers" [ref=e300] [cursor=pointer]:
+                    - /url: https://developers.line.biz/console/channel/1657175508
+                  - link "LINE公式アカウントマネージャー" [ref=e301] [cursor=pointer]:
+                    - /url: https://manager.line.biz/account/@085bpfpf
+        - text: 

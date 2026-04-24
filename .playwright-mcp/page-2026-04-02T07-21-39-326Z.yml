@@ -1,0 +1,689 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - banner [ref=e4]:
+        - generic [ref=e5]:
+          - link "Render" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - img "Render" [ref=e8]
+          - button "M My Workspace" [ref=e12] [cursor=pointer]:
+            - generic [ref=e13]:
+              - generic [ref=e14]: M
+              - generic "My Workspace" [ref=e15]
+              - img [ref=e16]
+        - generic [ref=e20]:
+          - navigation [ref=e21]:
+            - list [ref=e22]:
+              - listitem [ref=e23]:
+                - link "My project" [ref=e24] [cursor=pointer]:
+                  - /url: /project/prj-d4ij450gjchc73emmtfg
+                  - img [ref=e25]
+                  - generic [ref=e29]: My project
+                - button [ref=e32] [cursor=pointer]:
+                  - img [ref=e33]
+                - text: /
+              - listitem [ref=e35]:
+                - link "Production" [ref=e36] [cursor=pointer]:
+                  - /url: /project/prj-d4ij450gjchc73emmtfg/environment/evm-d4ij450gjchc73emmtg0
+                  - img [ref=e37]
+                  - generic [ref=e50]: Production
+                - button [ref=e53] [cursor=pointer]:
+                  - img [ref=e54]
+                - text: /
+              - listitem [ref=e56]:
+                - link "ma-pilot" [ref=e57] [cursor=pointer]:
+                  - /url: /web/srv-d5oof0vgi27c73fje3j0
+                  - img [ref=e58]
+                  - generic [ref=e60]: ma-pilot
+                - button [ref=e63] [cursor=pointer]:
+                  - img [ref=e64]
+          - button "Search Command + K" [ref=e67] [cursor=pointer]:
+            - img [ref=e69]
+            - text: Search
+            - generic [ref=e71]:
+              - img [ref=e72]
+              - generic [ref=e74]: Command
+              - generic [ref=e75]: +
+              - generic [ref=e76]: K
+              - generic [ref=e77]: K
+        - generic [ref=e78]:
+          - button "New" [ref=e80] [cursor=pointer]:
+            - generic [ref=e81]:
+              - img [ref=e82]
+              - generic [ref=e84]: New
+          - button "Upgrade" [ref=e86] [cursor=pointer]:
+            - generic [ref=e87]:
+              - img [ref=e88]
+              - generic [ref=e90]: Upgrade
+          - button "Help" [ref=e92] [cursor=pointer]:
+            - img "Help" [ref=e93]
+          - button "k" [ref=e98] [cursor=pointer]:
+            - generic [ref=e100]: k
+      - generic [ref=e101]:
+        - navigation [ref=e102]:
+          - separator [ref=e103]
+          - generic [ref=e104]:
+            - generic [ref=e105]:
+              - link "Environment" [ref=e106] [cursor=pointer]:
+                - /url: /project/prj-d4ij450gjchc73emmtfg/environment/evm-d4ij450gjchc73emmtg0
+                - img [ref=e107]
+                - generic [ref=e109]: Environment
+              - generic [ref=e110]:
+                - img [ref=e111]
+                - generic [ref=e113]: ma-pilot
+            - generic [ref=e114]:
+              - list [ref=e115]:
+                - listitem [ref=e116]:
+                  - link "Events" [ref=e117] [cursor=pointer]:
+                    - /url: /web/srv-d5oof0vgi27c73fje3j0/events
+                    - img [ref=e118]
+                    - generic [ref=e125]: Events
+                - listitem [ref=e126]:
+                  - link "Settings" [ref=e127] [cursor=pointer]:
+                    - /url: /web/srv-d5oof0vgi27c73fje3j0/settings
+                    - img [ref=e128]
+                    - generic [ref=e131]: Settings
+              - generic [ref=e132]:
+                - generic [ref=e133]: Monitor
+                - list "Monitor" [ref=e134]:
+                  - listitem [ref=e135]:
+                    - link "Logs" [ref=e136] [cursor=pointer]:
+                      - /url: /web/srv-d5oof0vgi27c73fje3j0/logs
+                      - img [ref=e137]
+                      - generic [ref=e142]: Logs
+                  - listitem [ref=e143]:
+                    - link "Metrics" [ref=e144] [cursor=pointer]:
+                      - /url: /web/srv-d5oof0vgi27c73fje3j0/metrics
+                      - img [ref=e145]
+                      - generic [ref=e147]: Metrics
+              - generic [ref=e148]:
+                - generic [ref=e149]: Manage
+                - list "Manage" [ref=e150]:
+                  - listitem [ref=e151]:
+                    - link "Environment" [ref=e152] [cursor=pointer]:
+                      - /url: /web/srv-d5oof0vgi27c73fje3j0/env
+                      - img [ref=e153]
+                      - generic [ref=e157]: Environment
+                  - listitem [ref=e158]:
+                    - link "Shell" [ref=e159] [cursor=pointer]:
+                      - /url: /web/srv-d5oof0vgi27c73fje3j0/shell
+                      - img [ref=e160]
+                      - generic [ref=e164]:
+                        - generic [ref=e165]: Shell
+                        - status [ref=e168]:
+                          - img [ref=e169]
+                  - listitem [ref=e171]:
+                    - link "Scaling" [ref=e172] [cursor=pointer]:
+                      - /url: /web/srv-d5oof0vgi27c73fje3j0/scaling
+                      - img [ref=e173]
+                      - generic [ref=e178]:
+                        - generic [ref=e179]: Scaling
+                        - status [ref=e182]:
+                          - img [ref=e183]
+                  - listitem [ref=e185]:
+                    - link "Previews" [ref=e186] [cursor=pointer]:
+                      - /url: /web/srv-d5oof0vgi27c73fje3j0/previews
+                      - img [ref=e187]
+                      - generic [ref=e191]: Previews
+                  - listitem [ref=e192]:
+                    - link "Disk" [ref=e193] [cursor=pointer]:
+                      - /url: /web/srv-d5oof0vgi27c73fje3j0/disks
+                      - img [ref=e194]
+                      - generic [ref=e199]:
+                        - generic [ref=e200]: Disk
+                        - status [ref=e203]:
+                          - img [ref=e204]
+                  - listitem [ref=e206]:
+                    - link "Jobs" [ref=e207] [cursor=pointer]:
+                      - /url: /web/srv-d5oof0vgi27c73fje3j0/jobs
+                      - img [ref=e208]
+                      - generic [ref=e212]:
+                        - generic [ref=e213]: Jobs
+                        - status [ref=e216]:
+                          - img [ref=e217]
+          - generic [ref=e219]:
+            - alert [ref=e220]:
+              - img [ref=e222]
+              - generic [ref=e226]:
+                - generic [ref=e227]:
+                  - generic [ref=e228]: "Workflows: Now in beta"
+                  - generic [ref=e229]:
+                    - text: Orchestrate your agents and background jobs with automatic retries and scale-to-zero.
+                    - link "Learn more" [ref=e230] [cursor=pointer]:
+                      - /url: https://render.com/docs/workflows
+                - link "Create Workflow" [ref=e232] [cursor=pointer]:
+                  - /url: /workflow/new
+              - button "Close notification" [ref=e233] [cursor=pointer]:
+                - img [ref=e234]
+            - generic [ref=e236]:
+              - button "Collapse items" [expanded] [ref=e237] [cursor=pointer]:
+                - img [ref=e238]
+              - list "Footer navigation" [ref=e240]:
+                - listitem [ref=e241]:
+                  - link "Changelog" [ref=e242] [cursor=pointer]:
+                    - /url: https://render.com/changelog
+                    - img [ref=e243]
+                    - generic [ref=e248]: Changelog
+                - listitem [ref=e249]:
+                  - link "Invite a friend" [ref=e250] [cursor=pointer]:
+                    - /url: /invites
+                    - img [ref=e251]
+                    - generic [ref=e253]: Invite a friend
+                - listitem [ref=e254]:
+                  - button "Contact support" [ref=e255] [cursor=pointer]:
+                    - img [ref=e256]
+                    - generic [ref=e260]: Contact support
+              - link "Render Status" [ref=e262] [cursor=pointer]:
+                - /url: https://status.render.com
+                - img [ref=e263]
+                - generic [ref=e265]: Render Status
+        - main [ref=e268]:
+          - generic [ref=e271]:
+            - alert [ref=e272]:
+              - generic [ref=e274]:
+                - img [ref=e276]
+                - generic [ref=e280]:
+                  - generic [ref=e282]: Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more.
+                  - link "Upgrade now" [ref=e284] [cursor=pointer]:
+                    - /url: /web/srv-d5oof0vgi27c73fje3j0/plan
+            - generic [ref=e286]:
+              - button "All logs" [ref=e289] [cursor=pointer]:
+                - generic [ref=e290]:
+                  - generic [ref=e291]: All logs
+                  - img [ref=e292]
+              - generic [ref=e295]:
+                - generic [ref=e296]: Search
+                - generic [ref=e298]:
+                  - img [ref=e299]
+                  - searchbox "Search" [ref=e301]
+              - button "Last 4 hours" [ref=e304] [cursor=pointer]:
+                - generic [ref=e307]:
+                  - img [ref=e308]
+                  - generic [ref=e311]: Last 4 hours
+                  - img [ref=e312]
+              - button "Maximize" [ref=e318] [cursor=pointer]:
+                - img "Maximize" [ref=e319]
+              - button "Options" [ref=e324] [cursor=pointer]:
+                - img "Options" [ref=e325]
+            - generic:
+              - button "Return to Bottom":
+                - img
+            - listbox [ref=e329]:
+              - generic [ref=e334]: Apr 2
+              - option "04:11:48 PM [ht62l] 2026-04-02 07:11:48,278 - src.middleware.performance - INFO - POST /api/auth/login [200] 0.678s" [ref=e335]:
+                - generic [ref=e336]:
+                  - generic [ref=e337]:
+                    - img [ref=e339]
+                    - time [ref=e343]: 04:11:48 PM
+                  - generic [ref=e347] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e349]: 2026-04-02 07:11:48,278 - src.middleware.performance - INFO - POST /api/auth/login [200] 0.678s
+              - 'option "04:11:57 PM [ht62l] 2026-04-02 07:11:57,408 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user \"HTTP/2 200 OK\"" [ref=e350]':
+                - generic [ref=e351]:
+                  - generic [ref=e352]:
+                    - img [ref=e354]
+                    - time [ref=e358]: 04:11:57 PM
+                  - generic [ref=e362] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e365]:
+                  - text: "2026-04-02 07:11:57,408 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user" [ref=e366] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:11:57 PM [ht62l] 2026-04-02 07:11:57,520 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b \"HTTP/2 200 OK\"" [ref=e367]':
+                - generic [ref=e368]:
+                  - generic [ref=e369]:
+                    - img [ref=e371]
+                    - time [ref=e375]: 04:11:57 PM
+                  - generic [ref=e379] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e382]:
+                  - text: "2026-04-02 07:11:57,520 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b" [ref=e383] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:11:57 PM [ht62l] 2026-04-02 07:11:57,616 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c \"HTTP/2 200 OK\"" [ref=e384]':
+                - generic [ref=e385]:
+                  - generic [ref=e386]:
+                    - img [ref=e388]
+                    - time [ref=e392]: 04:11:57 PM
+                  - generic [ref=e396] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e399]:
+                  - text: "2026-04-02 07:11:57,616 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c" [ref=e400] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c
+                  - text: "\"HTTP/2 200 OK\""
+              - option "04:11:57 PM [ht62l] 2026-04-02 07:11:57,616 - src.middleware.performance - INFO - GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c [200] 0.326s" [ref=e401]:
+                - generic [ref=e402]:
+                  - generic [ref=e403]:
+                    - img [ref=e405]
+                    - time [ref=e409]: 04:11:57 PM
+                  - generic [ref=e413] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e415]: 2026-04-02 07:11:57,616 - src.middleware.performance - INFO - GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c [200] 0.326s
+              - 'option "04:11:57 PM [ht62l] INFO: 60.155.229.45:0 - \"GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK" [ref=e416]':
+                - generic [ref=e417]:
+                  - generic [ref=e418]:
+                    - img [ref=e420]
+                    - time [ref=e424]: 04:11:57 PM
+                  - generic [ref=e428] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e430]: "INFO: 60.155.229.45:0 - \"GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK"
+              - 'option "04:11:58 PM [ht62l] 2026-04-02 07:11:58,067 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user \"HTTP/2 200 OK\"" [ref=e431]':
+                - generic [ref=e432]:
+                  - generic [ref=e433]:
+                    - img [ref=e435]
+                    - time [ref=e439]: 04:11:58 PM
+                  - generic [ref=e443] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e446]:
+                  - text: "2026-04-02 07:11:58,067 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user" [ref=e447] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:11:58 PM [ht62l] 2026-04-02 07:11:58,155 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b \"HTTP/2 200 OK\"" [ref=e448]':
+                - generic [ref=e449]:
+                  - generic [ref=e450]:
+                    - img [ref=e452]
+                    - time [ref=e456]: 04:11:58 PM
+                  - generic [ref=e460] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e463]:
+                  - text: "2026-04-02 07:11:58,155 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b" [ref=e464] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:11:58 PM [ht62l] 2026-04-02 07:11:58,243 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c \"HTTP/2 200 OK\"" [ref=e465]':
+                - generic [ref=e466]:
+                  - generic [ref=e467]:
+                    - img [ref=e469]
+                    - time [ref=e473]: 04:11:58 PM
+                  - generic [ref=e477] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e480]:
+                  - text: "2026-04-02 07:11:58,243 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c" [ref=e481] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c
+                  - text: "\"HTTP/2 200 OK\""
+              - option "04:11:58 PM [ht62l] 2026-04-02 07:11:58,245 - src.middleware.performance - INFO - GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c [200] 0.263s" [ref=e482]:
+                - generic [ref=e483]:
+                  - generic [ref=e484]:
+                    - img [ref=e486]
+                    - time [ref=e490]: 04:11:58 PM
+                  - generic [ref=e494] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e496]: 2026-04-02 07:11:58,245 - src.middleware.performance - INFO - GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c [200] 0.263s
+              - 'option "04:11:58 PM [ht62l] INFO: 60.155.229.45:0 - \"GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK" [ref=e497]':
+                - generic [ref=e498]:
+                  - generic [ref=e499]:
+                    - img [ref=e501]
+                    - time [ref=e505]: 04:11:58 PM
+                  - generic [ref=e509] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e511]: "INFO: 60.155.229.45:0 - \"GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK"
+              - 'option "04:12:28 PM [ht62l] 2026-04-02 07:12:28,441 - src.api.auth - INFO - Login attempt - email: kuwahata@idw-japan.net" [ref=e512]':
+                - generic [ref=e513]:
+                  - generic [ref=e514]:
+                    - img [ref=e516]
+                    - time [ref=e520]: 04:12:28 PM
+                  - generic [ref=e524] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e526]: "2026-04-02 07:12:28,441 - src.api.auth - INFO - Login attempt - email: kuwahata@idw-japan.net"
+              - 'option "04:12:28 PM [ht62l] 2026-04-02 07:12:28,441 - src.api.auth - INFO - Request content-type: application/json" [ref=e527]':
+                - generic [ref=e528]:
+                  - generic [ref=e529]:
+                    - img [ref=e531]
+                    - time [ref=e535]: 04:12:28 PM
+                  - generic [ref=e539] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e541]: "2026-04-02 07:12:28,441 - src.api.auth - INFO - Request content-type: application/json"
+              - 'option "04:12:28 PM [ht62l] 2026-04-02 07:12:28,976 - httpx - INFO - HTTP Request: POST https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/token?grant_type=password \"HTTP/2 200 OK\"" [ref=e542]':
+                - generic [ref=e543]:
+                  - generic [ref=e544]:
+                    - img [ref=e546]
+                    - time [ref=e550]: 04:12:28 PM
+                  - generic [ref=e554] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e557]:
+                  - text: "2026-04-02 07:12:28,976 - httpx - INFO - HTTP Request: POST"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/token?grant_type=password" [ref=e558] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/token?grant_type=password
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:12:29 PM [ht62l] 2026-04-02 07:12:29,591 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=%2A&user_id=eq.588325b3-b5c5-4dc1-8ab7-58827df63d46 \"HTTP/2 200 OK\"" [ref=e559]':
+                - generic [ref=e560]:
+                  - generic [ref=e561]:
+                    - img [ref=e563]
+                    - time [ref=e567]: 04:12:29 PM
+                  - generic [ref=e571] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e574]:
+                  - text: "2026-04-02 07:12:29,591 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=%2A&user_id=eq.588325b3-b5c5-4dc1-8ab7-58827df63d46" [ref=e575] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=%2A&user_id=eq.588325b3-b5c5-4dc1-8ab7-58827df63d46
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:12:29 PM [ht62l] 2026-04-02 07:12:29,592 - src.middleware.performance - WARNING - SLOW REQUEST: POST /api/auth/login took 1.153s (threshold: 1.0s)" [ref=e576]':
+                - generic [ref=e577]:
+                  - generic [ref=e578]:
+                    - img [ref=e580]
+                    - time [ref=e585]: 04:12:29 PM
+                  - generic [ref=e589] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e591]: "2026-04-02 07:12:29,592 - src.middleware.performance - WARNING - SLOW REQUEST: POST /api/auth/login took 1.153s (threshold: 1.0s)"
+              - 'option "04:12:29 PM [ht62l] INFO: 103.5.140.181:0 - \"POST /api/auth/login HTTP/1.1\" 200 OK" [ref=e592]':
+                - generic [ref=e593]:
+                  - generic [ref=e594]:
+                    - img [ref=e596]
+                    - time [ref=e600]: 04:12:29 PM
+                  - generic [ref=e604] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e606]: "INFO: 103.5.140.181:0 - \"POST /api/auth/login HTTP/1.1\" 200 OK"
+              - 'option "04:12:29 PM [ht62l] INFO: 103.5.140.181:0 - \"OPTIONS /api/admin/dashboard HTTP/1.1\" 200 OK" [ref=e607]':
+                - generic [ref=e608]:
+                  - generic [ref=e609]:
+                    - img [ref=e611]
+                    - time [ref=e615]: 04:12:29 PM
+                  - generic [ref=e619] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e621]: "INFO: 103.5.140.181:0 - \"OPTIONS /api/admin/dashboard HTTP/1.1\" 200 OK"
+              - 'option "04:12:30 PM [ht62l] 2026-04-02 07:12:30,043 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A \"HTTP/2 200 OK\"" [ref=e622]':
+                - generic [ref=e623]:
+                  - generic [ref=e624]:
+                    - img [ref=e626]
+                    - time [ref=e630]: 04:12:30 PM
+                  - generic [ref=e634] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e637]:
+                  - text: "2026-04-02 07:12:30,043 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A" [ref=e638] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:12:30 PM [ht62l] 2026-04-02 07:12:30,180 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=%2A \"HTTP/2 200 OK\"" [ref=e639]':
+                - generic [ref=e640]:
+                  - generic [ref=e641]:
+                    - img [ref=e643]
+                    - time [ref=e647]: 04:12:30 PM
+                  - generic [ref=e651] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e654]:
+                  - text: "2026-04-02 07:12:30,180 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=%2A" [ref=e655] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=%2A
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:12:30 PM [ht62l] 2026-04-02 07:12:30,363 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/monthly_data?select=%2A&order=created_at.desc&limit=10 \"HTTP/2 200 OK\"" [ref=e656]':
+                - generic [ref=e657]:
+                  - generic [ref=e658]:
+                    - img [ref=e660]
+                    - time [ref=e664]: 04:12:30 PM
+                  - generic [ref=e668] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e671]:
+                  - text: "2026-04-02 07:12:30,363 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/monthly_data?select=%2A&order=created_at.desc&limit=10" [ref=e672] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/monthly_data?select=%2A&order=created_at.desc&limit=10
+                  - text: "\"HTTP/2 200 OK\""
+              - option "04:12:30 PM [ht62l] 2026-04-02 07:12:30,365 - src.middleware.performance - INFO - GET /api/admin/dashboard [200] 0.497s" [ref=e673]:
+                - generic [ref=e674]:
+                  - generic [ref=e675]:
+                    - img [ref=e677]
+                    - time [ref=e681]: 04:12:30 PM
+                  - generic [ref=e685] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e687]: 2026-04-02 07:12:30,365 - src.middleware.performance - INFO - GET /api/admin/dashboard [200] 0.497s
+              - 'option "04:12:30 PM [ht62l] INFO: 103.5.140.181:0 - \"OPTIONS /api/admin/clinics HTTP/1.1\" 200 OK" [ref=e688]':
+                - generic [ref=e689]:
+                  - generic [ref=e690]:
+                    - img [ref=e692]
+                    - time [ref=e696]: 04:12:30 PM
+                  - generic [ref=e700] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e702]: "INFO: 103.5.140.181:0 - \"OPTIONS /api/admin/clinics HTTP/1.1\" 200 OK"
+              - 'option "04:12:30 PM [ht62l] INFO: 103.5.140.181:0 - \"GET /api/admin/dashboard HTTP/1.1\" 200 OK" [ref=e703]':
+                - generic [ref=e704]:
+                  - generic [ref=e705]:
+                    - img [ref=e707]
+                    - time [ref=e711]: 04:12:30 PM
+                  - generic [ref=e715] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e717]: "INFO: 103.5.140.181:0 - \"GET /api/admin/dashboard HTTP/1.1\" 200 OK"
+              - 'option "04:12:30 PM [ht62l] 2026-04-02 07:12:30,641 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A \"HTTP/2 200 OK\"" [ref=e718]':
+                - generic [ref=e719]:
+                  - generic [ref=e720]:
+                    - img [ref=e722]
+                    - time [ref=e726]: 04:12:30 PM
+                  - generic [ref=e730] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e733]:
+                  - text: "2026-04-02 07:12:30,641 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A" [ref=e734] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A
+                  - text: "\"HTTP/2 200 OK\""
+              - option "04:12:30 PM [ht62l] 2026-04-02 07:12:30,642 - src.middleware.performance - INFO - GET /api/admin/clinics [200] 0.126s" [ref=e735]:
+                - generic [ref=e736]:
+                  - generic [ref=e737]:
+                    - img [ref=e739]
+                    - time [ref=e743]: 04:12:30 PM
+                  - generic [ref=e747] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e749]: 2026-04-02 07:12:30,642 - src.middleware.performance - INFO - GET /api/admin/clinics [200] 0.126s
+              - 'option "04:12:30 PM [ht62l] INFO: 103.5.140.181:0 - \"GET /api/admin/clinics HTTP/1.1\" 200 OK" [ref=e750]':
+                - generic [ref=e751]:
+                  - generic [ref=e752]:
+                    - img [ref=e754]
+                    - time [ref=e758]: 04:12:30 PM
+                  - generic [ref=e762] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e764]: "INFO: 103.5.140.181:0 - \"GET /api/admin/clinics HTTP/1.1\" 200 OK"
+              - 'option "04:13:46 PM [ht62l] 2026-04-02 07:13:46,468 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user \"HTTP/2 200 OK\"" [ref=e765]':
+                - generic [ref=e766]:
+                  - generic [ref=e767]:
+                    - img [ref=e769]
+                    - time [ref=e773]: 04:13:46 PM
+                  - generic [ref=e777] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e780]:
+                  - text: "2026-04-02 07:13:46,468 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user" [ref=e781] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:13:46 PM [ht62l] 2026-04-02 07:13:46,716 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b \"HTTP/2 200 OK\"" [ref=e782]':
+                - generic [ref=e783]:
+                  - generic [ref=e784]:
+                    - img [ref=e786]
+                    - time [ref=e790]: 04:13:46 PM
+                  - generic [ref=e794] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e797]:
+                  - text: "2026-04-02 07:13:46,716 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b" [ref=e798] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:13:46 PM [ht62l] 2026-04-02 07:13:46,911 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c \"HTTP/2 200 OK\"" [ref=e799]':
+                - generic [ref=e800]:
+                  - generic [ref=e801]:
+                    - img [ref=e803]
+                    - time [ref=e807]: 04:13:46 PM
+                  - generic [ref=e811] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e814]:
+                  - text: "2026-04-02 07:13:46,911 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c" [ref=e815] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c
+                  - text: "\"HTTP/2 200 OK\""
+              - option "04:13:46 PM [ht62l] 2026-04-02 07:13:46,911 - src.middleware.performance - INFO - GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c [200] 0.778s" [ref=e816]:
+                - generic [ref=e817]:
+                  - generic [ref=e818]:
+                    - img [ref=e820]
+                    - time [ref=e824]: 04:13:46 PM
+                  - generic [ref=e828] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e830]: 2026-04-02 07:13:46,911 - src.middleware.performance - INFO - GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c [200] 0.778s
+              - 'option "04:13:46 PM [ht62l] INFO: 60.155.229.45:0 - \"GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK" [ref=e831]':
+                - generic [ref=e832]:
+                  - generic [ref=e833]:
+                    - img [ref=e835]
+                    - time [ref=e839]: 04:13:46 PM
+                  - generic [ref=e843] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e845]: "INFO: 60.155.229.45:0 - \"GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK"
+              - 'option "04:13:47 PM [ht62l] 2026-04-02 07:13:47,230 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_orders?select=%2A&clinic_id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c&order=created_at.desc \"HTTP/2 200 OK\"" [ref=e846]':
+                - generic [ref=e847]:
+                  - generic [ref=e848]:
+                    - img [ref=e850]
+                    - time [ref=e854]: 04:13:47 PM
+                  - generic [ref=e858] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e861]:
+                  - text: "2026-04-02 07:13:47,230 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_orders?select=%2A&clinic_id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c&order=created_at.desc" [ref=e862] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_orders?select=%2A&clinic_id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c&order=created_at.desc
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:13:47 PM [ht62l] 2026-04-02 07:13:47,403 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.c62c18d0-b272-4c62-9c50-6b9c32983cee \"HTTP/2 200 OK\"" [ref=e863]':
+                - generic [ref=e864]:
+                  - generic [ref=e865]:
+                    - img [ref=e867]
+                    - time [ref=e871]: 04:13:47 PM
+                  - generic [ref=e875] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e878]:
+                  - text: "2026-04-02 07:13:47,403 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.c62c18d0-b272-4c62-9c50-6b9c32983cee" [ref=e879] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.c62c18d0-b272-4c62-9c50-6b9c32983cee
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:13:47 PM [ht62l] 2026-04-02 07:13:47,572 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.ffdb4b9f-3cbb-4cac-bd83-6c51ece39532 \"HTTP/2 200 OK\"" [ref=e880]':
+                - generic [ref=e881]:
+                  - generic [ref=e882]:
+                    - img [ref=e884]
+                    - time [ref=e888]: 04:13:47 PM
+                  - generic [ref=e892] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e895]:
+                  - text: "2026-04-02 07:13:47,572 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.ffdb4b9f-3cbb-4cac-bd83-6c51ece39532" [ref=e896] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.ffdb4b9f-3cbb-4cac-bd83-6c51ece39532
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:13:47 PM [ht62l] 2026-04-02 07:13:47,725 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.706e3de9-80a0-4ec6-9710-6eafa9fae656 \"HTTP/2 200 OK\"" [ref=e897]':
+                - generic [ref=e898]:
+                  - generic [ref=e899]:
+                    - img [ref=e901]
+                    - time [ref=e905]: 04:13:47 PM
+                  - generic [ref=e909] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e912]:
+                  - text: "2026-04-02 07:13:47,725 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.706e3de9-80a0-4ec6-9710-6eafa9fae656" [ref=e913] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.706e3de9-80a0-4ec6-9710-6eafa9fae656
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:13:47 PM [ht62l] 2026-04-02 07:13:47,902 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.e207db9e-8347-4c11-be7b-835a441ef872 \"HTTP/2 200 OK\"" [ref=e914]':
+                - generic [ref=e915]:
+                  - generic [ref=e916]:
+                    - img [ref=e918]
+                    - time [ref=e922]: 04:13:47 PM
+                  - generic [ref=e926] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e929]:
+                  - text: "2026-04-02 07:13:47,902 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.e207db9e-8347-4c11-be7b-835a441ef872" [ref=e930] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.e207db9e-8347-4c11-be7b-835a441ef872
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:13:48 PM [ht62l] 2026-04-02 07:13:48,050 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.72f56007-a342-4910-a13f-207371dfb50c \"HTTP/2 200 OK\"" [ref=e931]':
+                - generic [ref=e932]:
+                  - generic [ref=e933]:
+                    - img [ref=e935]
+                    - time [ref=e939]: 04:13:48 PM
+                  - generic [ref=e943] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e946]:
+                  - text: "2026-04-02 07:13:48,050 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.72f56007-a342-4910-a13f-207371dfb50c" [ref=e947] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/print_order_items?select=%2A&order_id=eq.72f56007-a342-4910-a13f-207371dfb50c
+                  - text: "\"HTTP/2 200 OK\""
+              - option "04:13:48 PM [ht62l] 2026-04-02 07:13:48,052 - src.middleware.performance - INFO - GET /api/print-orders [200] 0.989s" [ref=e948]:
+                - generic [ref=e949]:
+                  - generic [ref=e950]:
+                    - img [ref=e952]
+                    - time [ref=e956]: 04:13:48 PM
+                  - generic [ref=e960] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e962]: 2026-04-02 07:13:48,052 - src.middleware.performance - INFO - GET /api/print-orders [200] 0.989s
+              - 'option "04:13:48 PM [ht62l] INFO: 60.155.229.45:0 - \"GET /api/print-orders?clinic_id=b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK" [ref=e963]':
+                - generic [ref=e964]:
+                  - generic [ref=e965]:
+                    - img [ref=e967]
+                    - time [ref=e971]: 04:13:48 PM
+                  - generic [ref=e975] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e977]: "INFO: 60.155.229.45:0 - \"GET /api/print-orders?clinic_id=b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK"
+              - 'option "04:14:40 PM [ht62l] 2026-04-02 07:14:40,112 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user \"HTTP/2 200 OK\"" [ref=e978]':
+                - generic [ref=e979]:
+                  - generic [ref=e980]:
+                    - img [ref=e982]
+                    - time [ref=e986]: 04:14:40 PM
+                  - generic [ref=e990] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e993]:
+                  - text: "2026-04-02 07:14:40,112 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user" [ref=e994] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:14:40 PM [ht62l] 2026-04-02 07:14:40,304 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b \"HTTP/2 200 OK\"" [ref=e995]':
+                - generic [ref=e996]:
+                  - generic [ref=e997]:
+                    - img [ref=e999]
+                    - time [ref=e1003]: 04:14:40 PM
+                  - generic [ref=e1007] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e1010]:
+                  - text: "2026-04-02 07:14:40,304 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b" [ref=e1011] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:14:40 PM [ht62l] 2026-04-02 07:14:40,400 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c \"HTTP/2 200 OK\"" [ref=e1012]':
+                - generic [ref=e1013]:
+                  - generic [ref=e1014]:
+                    - img [ref=e1016]
+                    - time [ref=e1020]: 04:14:40 PM
+                  - generic [ref=e1024] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e1027]:
+                  - text: "2026-04-02 07:14:40,400 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c" [ref=e1028] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c
+                  - text: "\"HTTP/2 200 OK\""
+              - option "04:14:40 PM [ht62l] 2026-04-02 07:14:40,401 - src.middleware.performance - INFO - GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c [200] 0.441s" [ref=e1029]:
+                - generic [ref=e1030]:
+                  - generic [ref=e1031]:
+                    - img [ref=e1033]
+                    - time [ref=e1037]: 04:14:40 PM
+                  - generic [ref=e1041] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e1043]: 2026-04-02 07:14:40,401 - src.middleware.performance - INFO - GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c [200] 0.441s
+              - 'option "04:14:40 PM [ht62l] INFO: 60.155.229.45:0 - \"GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK" [ref=e1044]':
+                - generic [ref=e1045]:
+                  - generic [ref=e1046]:
+                    - img [ref=e1048]
+                    - time [ref=e1052]: 04:14:40 PM
+                  - generic [ref=e1056] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e1058]: "INFO: 60.155.229.45:0 - \"GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK"
+              - 'option "04:14:40 PM [ht62l] 2026-04-02 07:14:40,896 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user \"HTTP/2 200 OK\"" [ref=e1059]':
+                - generic [ref=e1060]:
+                  - generic [ref=e1061]:
+                    - img [ref=e1063]
+                    - time [ref=e1067]: 04:14:40 PM
+                  - generic [ref=e1071] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e1074]:
+                  - text: "2026-04-02 07:14:40,896 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user" [ref=e1075] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/auth/v1/user
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:14:40 PM [ht62l] 2026-04-02 07:14:40,992 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b \"HTTP/2 200 OK\"" [ref=e1076]':
+                - generic [ref=e1077]:
+                  - generic [ref=e1078]:
+                    - img [ref=e1080]
+                    - time [ref=e1084]: 04:14:40 PM
+                  - generic [ref=e1088] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e1091]:
+                  - text: "2026-04-02 07:14:40,992 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b" [ref=e1092] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/user_metadata?select=role%2Cclinic_id&user_id=eq.3862686c-2487-4dc0-bab7-e625c7b93e3b
+                  - text: "\"HTTP/2 200 OK\""
+              - 'option "04:14:41 PM [ht62l] 2026-04-02 07:14:41,087 - httpx - INFO - HTTP Request: GET https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c \"HTTP/2 200 OK\"" [ref=e1093]':
+                - generic [ref=e1094]:
+                  - generic [ref=e1095]:
+                    - img [ref=e1097]
+                    - time [ref=e1101]: 04:14:41 PM
+                  - generic [ref=e1105] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e1108]:
+                  - text: "2026-04-02 07:14:41,087 - httpx - INFO - HTTP Request: GET"
+                  - link "https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c" [ref=e1109] [cursor=pointer]:
+                    - /url: https://ecdzttcnpykmqikdlkai.supabase.co/rest/v1/clinics?select=%2A&id=eq.b2356e5f-f51b-45ec-b42c-372fb4690e2c
+                  - text: "\"HTTP/2 200 OK\""
+              - option "04:14:41 PM [ht62l] 2026-04-02 07:14:41,088 - src.middleware.performance - INFO - GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c [200] 0.301s" [ref=e1110]:
+                - generic [ref=e1111]:
+                  - generic [ref=e1112]:
+                    - img [ref=e1114]
+                    - time [ref=e1118]: 04:14:41 PM
+                  - generic [ref=e1122] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e1124]: 2026-04-02 07:14:41,088 - src.middleware.performance - INFO - GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c [200] 0.301s
+              - 'option "04:14:41 PM [ht62l] INFO: 60.155.229.45:0 - \"GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK" [ref=e1125]':
+                - generic [ref=e1126]:
+                  - generic [ref=e1127]:
+                    - img [ref=e1129]
+                    - time [ref=e1133]: 04:14:41 PM
+                  - generic [ref=e1137] [cursor=pointer]: "[ht62l]"
+                - generic [ref=e1139]: "INFO: 60.155.229.45:0 - \"GET /api/clinics/b2356e5f-f51b-45ec-b42c-372fb4690e2c HTTP/1.1\" 200 OK"
+    - generic:
+      - generic:
+        - generic: "0 services selected:"
+        - generic:
+          - generic:
+            - generic:
+              - button:
+                - generic:
+                  - img
+                - generic: Move
+                - img
+      - generic:
+        - separator
+        - generic:
+          - generic:
+            - button:
+              - img
+  - iframe [ref=e1140]:
+    

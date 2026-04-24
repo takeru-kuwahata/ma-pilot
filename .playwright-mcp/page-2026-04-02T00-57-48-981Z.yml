@@ -1,0 +1,592 @@
+- generic [active] [ref=e1]:
+  - status
+  - generic:
+    - generic:
+      - banner [ref=e2]:
+        - generic [ref=e3]:
+          - button "keyboard_double_arrow_left" [ref=e4] [cursor=pointer]:
+            - generic [ref=e5]: keyboard_double_arrow_left
+          - link "Lステップ" [ref=e6] [cursor=pointer]:
+            - /url: /
+            - img "Lステップ" [ref=e7]
+        - navigation [ref=e8]:
+          - list [ref=e9]:
+            - listitem [ref=e10]:
+              - button "help サポート expand_more" [ref=e12] [cursor=pointer]:
+                - generic [ref=e13]: help
+                - generic [ref=e14]: サポート
+                - generic [ref=e15]: expand_more
+            - listitem [ref=e16]:
+              - link "メッセージ送信数を見る" [ref=e17] [cursor=pointer]:
+                - /url: /line/analytics/send
+                - generic [ref=e18]: equalizer
+                - generic [ref=e19]: 送信数
+            - listitem [ref=e20]:
+              - button "person 桑畑 健 (副管理者) プロフィール画像 メディカルアドバンス［シカレッジ］ expand_more" [ref=e22] [cursor=pointer]:
+                - generic [ref=e23]:
+                  - generic [ref=e24]: person
+                  - text: 桑畑 健
+                  - generic [ref=e25]: (副管理者)
+                - img "プロフィール画像" [ref=e26]
+                - text: メディカルアドバンス［シカレッジ］
+                - generic [ref=e27]: expand_more
+      - complementary [ref=e28]:
+        - list [ref=e29]:
+          - listitem [ref=e30]:
+            - link "トップ" [ref=e31] [cursor=pointer]:
+              - /url: /
+              - generic [ref=e33]: トップ
+        - list [ref=e34]:
+          - listitem [ref=e35]:
+            - generic [ref=e37]: star
+            - text: 1対1トーク
+          - listitem [ref=e38]:
+            - link "友だちリスト" [ref=e39] [cursor=pointer]:
+              - /url: /line/show
+              - generic [ref=e41]: 友だちリスト
+          - listitem [ref=e42]:
+            - link "トーク一覧" [ref=e43] [cursor=pointer]:
+              - /url: /line/timeline
+              - generic [ref=e45]: トーク一覧
+          - listitem [ref=e46]:
+            - link "個別トーク" [ref=e47] [cursor=pointer]:
+              - /url: /line/visual
+              - generic [ref=e49]: 個別トーク
+        - list [ref=e50]:
+          - listitem [ref=e51]:
+            - generic [ref=e53]: campaign
+            - text: メッセージ
+          - listitem [ref=e54]:
+            - link "シナリオ配信" [ref=e55] [cursor=pointer]:
+              - /url: /line/content/group
+              - generic [ref=e57]: シナリオ配信
+          - listitem [ref=e58]:
+            - link "一斉配信" [ref=e59] [cursor=pointer]:
+              - /url: /line/magazine
+              - generic [ref=e61]: 一斉配信
+          - listitem [ref=e62]:
+            - link "自動応答" [ref=e63] [cursor=pointer]:
+              - /url: /line/reaction
+              - generic [ref=e65]: 自動応答
+          - listitem [ref=e66]:
+            - link "テンプレート" [ref=e67] [cursor=pointer]:
+              - /url: /line/template
+              - generic [ref=e69]: テンプレート
+          - listitem [ref=e70]:
+            - group [ref=e71]:
+              - generic "予約管理 expand_more" [ref=e72] [cursor=pointer]:
+                - text: 予約管理
+                - generic [ref=e73]: expand_more
+          - listitem [ref=e74]:
+            - link "回答フォーム" [ref=e75] [cursor=pointer]:
+              - /url: /line/form
+              - generic [ref=e77]: 回答フォーム
+          - listitem [ref=e78]:
+            - link "リマインダ配信" [ref=e79] [cursor=pointer]:
+              - /url: /line/episode
+              - generic [ref=e81]: リマインダ配信
+          - listitem [ref=e82]:
+            - link "友だち追加時設定" [ref=e83] [cursor=pointer]:
+              - /url: /line/setting/follow
+              - generic [ref=e85]: 友だち追加時設定
+          - listitem [ref=e86]:
+            - link "アクション管理" [ref=e87] [cursor=pointer]:
+              - /url: /line/action
+              - generic [ref=e89]: アクション管理
+        - list [ref=e90]:
+          - listitem [ref=e91]:
+            - generic [ref=e93]: filter_alt
+            - text: 友だち属性
+          - listitem [ref=e94]:
+            - link "タグ管理" [ref=e95] [cursor=pointer]:
+              - /url: /line/tag
+              - generic [ref=e97]: タグ管理
+          - listitem [ref=e98]:
+            - link "友だち情報欄管理" [ref=e99] [cursor=pointer]:
+              - /url: /line/var
+              - generic [ref=e101]: 友だち情報欄管理
+          - listitem [ref=e102]:
+            - link "カスタム検索管理" [ref=e103] [cursor=pointer]:
+              - /url: /line/funnel
+              - generic [ref=e105]: カスタム検索管理
+          - listitem [ref=e106]:
+            - link "対応マーク管理" [ref=e107] [cursor=pointer]:
+              - /url: /line/setting/notify
+              - generic [ref=e109]: 対応マーク管理
+        - list [ref=e110]:
+          - listitem [ref=e111]:
+            - generic [ref=e113]: flag
+            - text: 統計情報
+          - listitem [ref=e114]:
+            - link "URLクリック測定" [ref=e115] [cursor=pointer]:
+              - /url: /line/site
+              - generic [ref=e117]: URLクリック測定
+          - listitem [ref=e118]:
+            - 'link "コンバージョン管理 (旧: フェーズ管理)" [ref=e119] [cursor=pointer]':
+              - /url: /line/journey-tag
+              - generic [ref=e121]:
+                - text: コンバージョン管理
+                - text: "(旧: フェーズ管理)"
+          - listitem [ref=e122]:
+            - link "(廃止予定) コンバージョン" [ref=e123] [cursor=pointer]:
+              - /url: /line/tracker
+              - generic [ref=e125]: (廃止予定) コンバージョン
+          - listitem [ref=e126]:
+            - link "サイトスクリプト" [ref=e127] [cursor=pointer]:
+              - /url: /line/script
+              - generic [ref=e129]: サイトスクリプト
+          - listitem [ref=e130]:
+            - link "ファネル分析" [ref=e131] [cursor=pointer]:
+              - /url: /line/journey
+              - generic [ref=e133]: ファネル分析
+          - listitem [ref=e134]:
+            - link "広告連携 NEW" [ref=e135] [cursor=pointer]:
+              - /url: /line/ad-connect
+              - generic [ref=e136]:
+                - generic [ref=e137]: 広告連携
+                - generic [ref=e139]: NEW
+          - listitem [ref=e140]:
+            - link "クロス分析" [ref=e141] [cursor=pointer]:
+              - /url: /line/board
+              - generic [ref=e143]: クロス分析
+          - listitem [ref=e144]:
+            - link "流入経路分析" [ref=e145] [cursor=pointer]:
+              - /url: /line/landing
+              - generic [ref=e147]: 流入経路分析
+        - list [ref=e148]:
+          - listitem [ref=e149]:
+            - generic [ref=e151]: folder_open
+            - text: コンテンツ
+          - listitem [ref=e152]:
+            - link "共通情報" [ref=e153] [cursor=pointer]:
+              - /url: /line/common_var
+              - generic [ref=e155]: 共通情報
+          - listitem [ref=e156]:
+            - link "登録メディア一覧" [ref=e157] [cursor=pointer]:
+              - /url: /line/media
+              - generic [ref=e159]: 登録メディア一覧
+          - listitem [ref=e160]:
+            - link "リッチメニュー" [ref=e161] [cursor=pointer]:
+              - /url: /line/richmenu
+              - generic [ref=e163]: リッチメニュー
+        - list [ref=e164]:
+          - listitem [ref=e165]:
+            - generic [ref=e167]: settings
+            - text: 設定
+          - listitem [ref=e168]:
+            - link "LINE公式アカウント設定 open_in_new" [ref=e169] [cursor=pointer]:
+              - /url: https://manager.line.biz/
+              - generic [ref=e170]:
+                - generic [ref=e171]: LINE公式アカウント設定
+                - generic [ref=e172]: open_in_new
+          - listitem [ref=e173]:
+            - link "アカウント設定" [ref=e174] [cursor=pointer]:
+              - /url: /line/account
+              - generic [ref=e176]: アカウント設定
+          - listitem [ref=e177]:
+            - link "スタッフ設定" [ref=e178] [cursor=pointer]:
+              - /url: /line/role
+              - generic [ref=e180]: スタッフ設定
+          - listitem [ref=e181]:
+            - link "データ移行 β版" [ref=e182] [cursor=pointer]:
+              - /url: /line/forger
+              - generic [ref=e183]:
+                - generic [ref=e184]: データ移行
+                - generic [ref=e186]: β版
+        - list [ref=e187]:
+          - listitem [ref=e188]:
+            - link "マイページ" [ref=e189] [cursor=pointer]:
+              - /url: /account
+              - generic [ref=e191]: マイページ
+          - listitem [ref=e192]:
+            - link "通知機能" [ref=e193] [cursor=pointer]:
+              - /url: /line/notifications
+              - generic [ref=e195]: 通知機能
+          - listitem [ref=e196]:
+            - link "新規アカウント発行" [ref=e197] [cursor=pointer]:
+              - /url: /account/newuser
+              - generic [ref=e199]: 新規アカウント発行
+          - listitem [ref=e200]:
+            - group [ref=e201]:
+              - generic "オプション機能申し込み expand_more" [ref=e202] [cursor=pointer]:
+                - text: オプション機能申し込み
+                - generic [ref=e203]: expand_more
+        - list [ref=e204]:
+          - listitem [ref=e205]:
+            - generic [ref=e207]: help
+            - text: サポート
+          - listitem [ref=e208]:
+            - link "講座・勉強会 open_in_new" [ref=e209] [cursor=pointer]:
+              - /url: https://lstep-pro.com/tutorial/purchaser_eventcal/?utm_source=lstep_ms&utm_medium=referral&utm_campaign=sidemenu
+              - generic [ref=e210]:
+                - generic [ref=e211]: 講座・勉強会
+                - generic [ref=e212]: open_in_new
+          - listitem [ref=e213]:
+            - link "使い方動画ガイド open_in_new" [ref=e214] [cursor=pointer]:
+              - /url: https://lstep-pro.com/tutorial/?utm_source=lstep_ms&utm_medium=referral&utm_campaign=sidemenu
+              - generic [ref=e215]:
+                - generic [ref=e216]: 使い方動画ガイド
+                - generic [ref=e217]: open_in_new
+          - listitem [ref=e218]:
+            - link "ご利用マニュアル open_in_new" [ref=e219] [cursor=pointer]:
+              - /url: https://manual.linestep.net/
+              - generic [ref=e220]:
+                - generic [ref=e221]: ご利用マニュアル
+                - generic [ref=e222]: open_in_new
+          - listitem [ref=e223]:
+            - link "Zoom個別相談 open_in_new" [ref=e224] [cursor=pointer]:
+              - /url: https://linestep.jp/spot_con/?utm_source=lstep_ms&utm_medium=referral&utm_campaign=sidemenu
+              - generic [ref=e225]:
+                - generic [ref=e226]: Zoom個別相談
+                - generic [ref=e227]: open_in_new
+  - generic [ref=e234]:
+    - heading "回答フォーム登録  マニュアル" [level=2] [ref=e235]:
+      - text: 回答フォーム登録
+      - link " マニュアル" [ref=e236] [cursor=pointer]:
+        - /url: https://manual.linestep.net/answerform
+        - generic [ref=e237]: 
+        - text: マニュアル
+    - generic [ref=e241]:
+      - generic [ref=e242]:
+        - generic [ref=e243]:
+          - generic [ref=e244]:
+            - generic [ref=e245]: 必須
+            - text: フォーム名(管理用)
+          - textbox "必須 フォーム名(管理用)" [ref=e247]: デンタルショーにてご登録いただいた方へ
+        - generic [ref=e248]:
+          - generic [ref=e249]: フォルダ
+          - combobox "フォルダ" [ref=e251]:
+            - option "未分類"
+            - option "内覧会関係"
+            - option "印刷物_新規作成"
+            - option "印刷物_増刷"
+            - option "1.登録時アンケート" [selected]
+            - option "2.配信"
+            - option "3.レコメンド"
+            - option "4.ポイント"
+            - option "5.レセシミュ着地"
+            - option "6.誕生日クーポン"
+            - option "7.お問い合わせ"
+            - option "使用NG_読んで学ぶ"
+            - option "使用NG_見て学ぶ・アンケート"
+      - generic [ref=e253]:
+        - generic [ref=e254]:
+          - generic [ref=e255]:
+            - generic [ref=e256]: タイトル
+            - textbox "タイトル" [ref=e258]: プロフィール登録
+          - generic [ref=e259]:
+            - generic [ref=e260]: 説明
+            - textbox "説明" [ref=e262]
+          - generic [ref=e263]:
+            - generic [ref=e264]:
+              - text: Googleスプレッドシート連携
+              - generic [ref=e265]: β版
+            - checkbox "Googleスプレッドシート連携 β版" [ref=e267]
+        - generic [ref=e268]:
+          - separator [ref=e269]
+          - generic [ref=e270]:
+            - generic [ref=e271]:
+              - button " セクション複製" [ref=e272] [cursor=pointer]:
+                - generic [ref=e273]: 
+                - text: セクション複製
+              - button " 上へ移動" [disabled] [ref=e274]:
+                - generic [ref=e275]: 
+                - text: 上へ移動
+              - button " 下へ移動" [disabled] [ref=e276]:
+                - generic [ref=e277]: 
+                - text: 下へ移動
+              - button " セクション削除" [disabled] [ref=e278]:
+                - generic [ref=e279]: 
+                - text: セクション削除
+            - heading "セクション1" [level=4] [ref=e280]
+          - generic [ref=e283]:
+            - generic [ref=e284]:
+              - generic [ref=e285]:
+                - generic [ref=e287] [cursor=pointer]:
+                  - heading "会員 利用規約に同意しますか？ ラジオボタン 必須" [level=4] [ref=e288]:
+                    - generic [ref=e289]:
+                      - text: 会員 利用規約に同意しますか？ ラジオボタン
+                      - generic [ref=e290]: 必須
+                  - generic [ref=e291]:
+                    - generic [ref=e292]: ✏
+                    - text: 編集
+                - generic [ref=e293]:
+                  - generic [ref=e294] [cursor=pointer]:
+                    - generic [ref=e295]: 
+                    - text: 複製
+                  - generic [ref=e296]:
+                    - generic [ref=e297]: 
+                    - text: 移動
+                  - generic [ref=e298] [cursor=pointer]:
+                    - generic [ref=e299]: 
+                    - text: 削除
+              - text:    expand_more + +
+            - generic [ref=e300]:
+              - generic [ref=e301]:
+                - generic [ref=e303] [cursor=pointer]:
+                  - heading "お名前 記述式(テキストボックス) 必須" [level=4] [ref=e304]:
+                    - generic [ref=e305]:
+                      - text: お名前 記述式(テキストボックス)
+                      - generic [ref=e306]: 必須
+                  - generic [ref=e307]:
+                    - generic [ref=e308]: ✏
+                    - text: 編集
+                - generic [ref=e309]:
+                  - generic [ref=e310] [cursor=pointer]:
+                    - generic [ref=e311]: 
+                    - text: 複製
+                  - generic [ref=e312]:
+                    - generic [ref=e313]: 
+                    - text: 移動
+                  - generic [ref=e314] [cursor=pointer]:
+                    - generic [ref=e315]: 
+                    - text: 削除
+              - text:  expand_more  + + + +
+            - generic [ref=e316]:
+              - generic [ref=e317]:
+                - generic [ref=e319] [cursor=pointer]:
+                  - heading "フリガナ 記述式(テキストボックス) 必須" [level=4] [ref=e320]:
+                    - generic [ref=e321]:
+                      - text: フリガナ 記述式(テキストボックス)
+                      - generic [ref=e322]: 必須
+                  - generic [ref=e323]:
+                    - generic [ref=e324]: ✏
+                    - text: 編集
+                - generic [ref=e325]:
+                  - generic [ref=e326] [cursor=pointer]:
+                    - generic [ref=e327]: 
+                    - text: 複製
+                  - generic [ref=e328]:
+                    - generic [ref=e329]: 
+                    - text: 移動
+                  - generic [ref=e330] [cursor=pointer]:
+                    - generic [ref=e331]: 
+                    - text: 削除
+              - text: + + + +
+            - generic [ref=e332]:
+              - generic [ref=e333]:
+                - generic [ref=e335] [cursor=pointer]:
+                  - heading "メールアドレス 記述式(テキストボックス)" [level=4] [ref=e336]:
+                    - generic [ref=e337]: メールアドレス 記述式(テキストボックス)
+                  - generic [ref=e338]:
+                    - generic [ref=e339]: ✏
+                    - text: 編集
+                - generic [ref=e340]:
+                  - generic [ref=e341] [cursor=pointer]:
+                    - generic [ref=e342]: 
+                    - text: 複製
+                  - generic [ref=e343]:
+                    - generic [ref=e344]: 
+                    - text: 移動
+                  - generic [ref=e345] [cursor=pointer]:
+                    - generic [ref=e346]: 
+                    - text: 削除
+              - text: + + + +
+            - generic [ref=e347]:
+              - generic [ref=e348]:
+                - generic [ref=e350] [cursor=pointer]:
+                  - heading "お電話番号（携帯） 記述式(テキストボックス) 必須" [level=4] [ref=e351]:
+                    - generic [ref=e352]:
+                      - text: お電話番号（携帯） 記述式(テキストボックス)
+                      - generic [ref=e353]: 必須
+                  - generic [ref=e354]:
+                    - generic [ref=e355]: ✏
+                    - text: 編集
+                - generic [ref=e356]:
+                  - generic [ref=e357] [cursor=pointer]:
+                    - generic [ref=e358]: 
+                    - text: 複製
+                  - generic [ref=e359]:
+                    - generic [ref=e360]: 
+                    - text: 移動
+                  - generic [ref=e361] [cursor=pointer]:
+                    - generic [ref=e362]: 
+                    - text: 削除
+              - text: expand_more  + + + +
+            - generic [ref=e363]:
+              - generic [ref=e364]:
+                - generic [ref=e366] [cursor=pointer]:
+                  - heading "職種 ラジオボタン 必須" [level=4] [ref=e367]:
+                    - generic [ref=e368]:
+                      - text: 職種 ラジオボタン
+                      - generic [ref=e369]: 必須
+                  - generic [ref=e370]:
+                    - generic [ref=e371]: ✏
+                    - text: 編集
+                - generic [ref=e372]:
+                  - generic [ref=e373] [cursor=pointer]:
+                    - generic [ref=e374]: 
+                    - text: 複製
+                  - generic [ref=e375]:
+                    - generic [ref=e376]: 
+                    - text: 移動
+                  - generic [ref=e377] [cursor=pointer]:
+                    - generic [ref=e378]: 
+                    - text: 削除
+              - text:                         + +
+            - generic [ref=e379]:
+              - generic [ref=e380]:
+                - generic [ref=e382] [cursor=pointer]:
+                  - heading "現勤務先のクリニック名 記述式(テキストボックス) 必須" [level=4] [ref=e383]:
+                    - generic [ref=e384]:
+                      - text: 現勤務先のクリニック名 記述式(テキストボックス)
+                      - generic [ref=e385]: 必須
+                  - generic [ref=e386]:
+                    - generic [ref=e387]: ✏
+                    - text: 編集
+                - generic [ref=e388]:
+                  - generic [ref=e389] [cursor=pointer]:
+                    - generic [ref=e390]: 
+                    - text: 複製
+                  - generic [ref=e391]:
+                    - generic [ref=e392]: 
+                    - text: 移動
+                  - generic [ref=e393] [cursor=pointer]:
+                    - generic [ref=e394]: 
+                    - text: 削除
+              - text: + + + +
+            - generic [ref=e395]:
+              - generic [ref=e396]:
+                - generic [ref=e398] [cursor=pointer]:
+                  - heading "現勤務先のクリニック所在地（市町村） 記述式(テキストボックス) 必須" [level=4] [ref=e399]:
+                    - generic [ref=e400]:
+                      - text: 現勤務先のクリニック所在地（市町村） 記述式(テキストボックス)
+                      - generic [ref=e401]: 必須
+                  - generic [ref=e402]:
+                    - generic [ref=e403]: ✏
+                    - text: 編集
+                - generic [ref=e404]:
+                  - generic [ref=e405] [cursor=pointer]:
+                    - generic [ref=e406]: 
+                    - text: 複製
+                  - generic [ref=e407]:
+                    - generic [ref=e408]: 
+                    - text: 移動
+                  - generic [ref=e409] [cursor=pointer]:
+                    - generic [ref=e410]: 
+                    - text: 削除
+              - text: + + + +
+          - generic [ref=e412]:
+            - generic [ref=e413]: フォームに追加する要素を選んでください
+            - generic [ref=e414] [cursor=pointer]:
+              - generic [ref=e415]: +
+              - text: 小見出し
+            - generic [ref=e416] [cursor=pointer]:
+              - generic [ref=e417]: +
+              - text: 中見出し
+            - generic [ref=e418] [cursor=pointer]:
+              - generic [ref=e419]: +
+              - text: 記述式(テキストボックス)
+            - generic [ref=e420] [cursor=pointer]:
+              - generic [ref=e421]: +
+              - text: 段落(テキストエリア)
+            - generic [ref=e422] [cursor=pointer]:
+              - generic [ref=e423]: +
+              - text: チェックボックス
+            - generic [ref=e424] [cursor=pointer]:
+              - generic [ref=e425]: +
+              - text: ラジオボタン
+            - generic [ref=e426] [cursor=pointer]:
+              - generic [ref=e427]: +
+              - text: プルダウン
+            - generic [ref=e428] [cursor=pointer]:
+              - generic [ref=e429]: +
+              - text: ファイル添付
+            - generic [ref=e430] [cursor=pointer]:
+              - generic [ref=e431]: +
+              - text: 都道府県
+            - generic [ref=e432] [cursor=pointer]:
+              - generic [ref=e433]: +
+              - text: 日付
+        - separator [ref=e434]
+        - generic [ref=e435] [cursor=pointer]:
+          - generic [ref=e436]: +
+          - text: セクションを追加
+      - generic [ref=e437]:
+        - generic [ref=e438] [cursor=pointer]: オプション
+        - generic [ref=e439] [cursor=pointer]: カラー/デザイン設定
+        - generic [ref=e440] [cursor=pointer]: 自動入力設定
+      - generic [ref=e444]:
+        - generic [ref=e445]:
+          - generic [ref=e446]: 進むボタンテキスト
+          - textbox "進むボタンテキスト" [ref=e448]:
+            - /placeholder: 進む
+        - generic [ref=e449]:
+          - generic [ref=e450]: 送信ボタンテキスト
+          - textbox "送信ボタンテキスト" [ref=e452]:
+            - /placeholder: 送信
+            - text: プロフィール登録をする
+        - separator [ref=e453]
+        - generic [ref=e454]:
+          - generic [ref=e455]: 送信確認ダイアログ
+          - generic [ref=e458] [cursor=pointer]:
+            - checkbox "表示する" [checked] [ref=e459]
+            - text: 表示する
+        - generic [ref=e460]:
+          - generic [ref=e461]:
+            - generic [ref=e462]: 確認テキスト
+            - textbox "確認テキスト" [ref=e464]:
+              - /placeholder: 送信してよろしいですか？
+          - generic [ref=e465]:
+            - generic [ref=e466]: ダイアログ送信ボタン
+            - textbox "ダイアログ送信ボタン" [ref=e468]:
+              - /placeholder: 送信
+          - generic [ref=e469]:
+            - generic [ref=e470]: ダイアログキャンセルボタン
+            - textbox "ダイアログキャンセルボタン" [ref=e472]:
+              - /placeholder: キャンセル
+        - separator [ref=e473]
+        - generic [ref=e474]:
+          - generic [ref=e475]: 回答期限
+          - generic [ref=e478] [cursor=pointer]:
+            - checkbox "設定する" [ref=e479]
+            - text: 設定する
+        - generic [ref=e480]:
+          - generic [ref=e481]: 先着数制限
+          - generic [ref=e484] [cursor=pointer]:
+            - checkbox "制限する" [ref=e485]
+            - text: 制限する
+        - generic [ref=e487]:
+          - generic [ref=e488]: 1人が回答できる回数
+          - combobox "回答期限 先着数制限 1人が回答できる回数" [ref=e490]:
+            - option "何度でも可能" [selected]
+            - option "1度のみ可能"
+        - separator [ref=e491]
+        - generic [ref=e492]:
+          - generic [ref=e493]: サンクスページURL
+          - textbox [ref=e495]
+        - generic [ref=e496]:
+          - generic [ref=e497]: 回答後の文章
+          - generic [ref=e498]:
+            - textbox [ref=e499]
+            - generic [ref=e500]: サンクスページURLを設定しない場合の文章を設定します
+        - generic [ref=e501]:
+          - generic [ref=e502]: 回答後アクション
+          - generic [ref=e504]:
+            - generic [ref=e505]:
+              - generic [ref=e507] [cursor=pointer]:
+                - generic [ref=e508]: 
+                - text: アクション設定
+              - generic [ref=e510] [cursor=pointer]: 設定解除
+            - generic [ref=e511]: タグ[フォーム回答なしのた...]を解除
+            - generic [ref=e512]: 【内覧会前】会員_ドクターメニューに変更
+        - separator [ref=e513]
+        - generic [ref=e514]:
+          - generic [ref=e515]: 回答復元
+          - generic [ref=e516]:
+            - generic [ref=e518] [cursor=pointer]:
+              - checkbox "2回目以降の回答時に前回の回答を復元する(初期値は無視されます)" [ref=e519]
+              - text: 2回目以降の回答時に前回の回答を復元する(初期値は無視されます)
+            - generic [ref=e520]: 別のフォームの回答や、回答した端末が異なる場合、時間が経過した場合は復元できません
+      - generic [ref=e521]:
+        - generic [ref=e523]:
+          - generic [ref=e524]: 呼び出しタグ
+          - generic [ref=e525]:
+            - textbox [ref=e526]: "[FORM_SwbM4P]"
+            - link "プレビュー" [ref=e528] [cursor=pointer]:
+              - /url: https://myfm.jp/SwbM4P?mode=example
+        - generic [ref=e529]:
+          - generic [ref=e530] [cursor=pointer]: 保存
+          - generic [ref=e531] [cursor=pointer]: 保存してプレビュー
+    - link "回答フォーム一覧に戻る" [ref=e532] [cursor=pointer]:
+      - /url: /line/form?group=61768

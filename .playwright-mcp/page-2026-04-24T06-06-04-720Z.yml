@@ -1,0 +1,105 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: MA
+        - heading "MA-Pilot" [level=6] [ref=e219]
+        - paragraph [ref=e9]: 神田駅そば総合歯科
+      - button "運営者モードへ" [ref=e220] [cursor=pointer]:
+        - img [ref=e12]
+        - text: 運営者モードへ
+      - generic [ref=e14]:
+        - generic [ref=e15]: 桑
+        - paragraph [ref=e16]: 桑畑 健
+  - generic [ref=e17]:
+    - list [ref=e18]:
+      - listitem [ref=e19]:
+        - button "経営ダッシュボード" [ref=e221] [cursor=pointer]:
+          - img [ref=e22]
+          - generic [ref=e25]: 経営ダッシュボード
+      - listitem [ref=e26]:
+        - button "基礎データ管理" [ref=e222] [cursor=pointer]:
+          - img [ref=e29]
+          - generic [ref=e32]: 基礎データ管理
+      - listitem [ref=e33]:
+        - button "診療圏分析" [ref=e223] [cursor=pointer]:
+          - img [ref=e36]
+          - generic [ref=e39]: 診療圏分析
+      - listitem [ref=e40]:
+        - button "経営シミュレーション" [ref=e224] [cursor=pointer]:
+          - img [ref=e43]
+          - generic [ref=e46]: 経営シミュレーション
+      - listitem [ref=e47]:
+        - button "レポート管理" [ref=e225] [cursor=pointer]:
+          - img [ref=e50]
+          - generic [ref=e53]: レポート管理
+      - listitem [ref=e54]:
+        - button "印刷物発注" [ref=e226] [cursor=pointer]:
+          - img [ref=e57]
+          - generic [ref=e60]: 印刷物発注
+      - listitem [ref=e61]:
+        - button "印刷物発注履歴" [ref=e227] [cursor=pointer]:
+          - img [ref=e64]
+          - generic [ref=e67]: 印刷物発注履歴
+      - listitem [ref=e68]:
+        - button "医院設定" [ref=e228] [cursor=pointer]:
+          - img [ref=e71]
+          - generic [ref=e74]: 医院設定
+      - listitem [ref=e75]:
+        - button "スタッフ管理" [ref=e229] [cursor=pointer]:
+          - img [ref=e78]
+          - generic [ref=e81]: スタッフ管理
+    - separator [ref=e82]
+    - list [ref=e83]:
+      - listitem [ref=e84]:
+        - button "マイページ設定" [ref=e230] [cursor=pointer]:
+          - img [ref=e87]
+          - generic [ref=e90]: マイページ設定
+      - listitem [ref=e91]:
+        - button "ログアウト" [ref=e231] [cursor=pointer]:
+          - img [ref=e94]
+          - generic [ref=e97]: ログアウト
+  - main [ref=e98]:
+    - generic [ref=e99]:
+      - heading "スタッフ管理" [level=4] [ref=e232]
+      - paragraph [ref=e233]: スタッフアカウントの招待・権限管理
+    - alert [ref=e234]:
+      - img [ref=e236]
+      - paragraph [ref=e239]: スタッフを招待すると、登録したメールアドレスに招待リンクが送信されます。 権限は、オーナー（全権限）、編集者（閲覧・編集）、閲覧者（閲覧のみ）の3種類です。
+    - generic [ref=e240]:
+      - generic [ref=e241]:
+        - heading "登録スタッフ一覧" [level=6] [ref=e242]
+        - button "スタッフを招待" [ref=e243] [cursor=pointer]:
+          - img [ref=e245]
+          - text: スタッフを招待
+      - table [ref=e248]:
+        - rowgroup [ref=e249]:
+          - row "名前 メールアドレス 権限 登録日 操作" [ref=e250]:
+            - columnheader "名前" [ref=e251]
+            - columnheader "メールアドレス" [ref=e252]
+            - columnheader "権限" [ref=e253]
+            - columnheader "登録日" [ref=e254]
+            - columnheader "操作" [ref=e255]
+        - rowgroup [ref=e256]:
+          - row "test-staff-b04 test-staff-b04@example.com 閲覧者 2026/4/16" [ref=e257]:
+            - cell "test-staff-b04" [ref=e258]
+            - cell "test-staff-b04@example.com" [ref=e259]
+            - cell "閲覧者" [ref=e260]:
+              - generic [ref=e262]: 閲覧者
+            - cell "2026/4/16" [ref=e263]
+            - cell [ref=e264]:
+              - button [ref=e265] [cursor=pointer]:
+                - img [ref=e266]
+              - button [ref=e268] [cursor=pointer]:
+                - img [ref=e269]
+          - row "takerutic takerutic@gmail.com 閲覧者 2026/4/24" [ref=e271]:
+            - cell "takerutic" [ref=e272]
+            - cell "takerutic@gmail.com" [ref=e273]
+            - cell "閲覧者" [ref=e274]:
+              - generic [ref=e276]: 閲覧者
+            - cell "2026/4/24" [ref=e277]
+            - cell [ref=e278]:
+              - button [ref=e279] [cursor=pointer]:
+                - img [ref=e280]
+              - button [ref=e282] [cursor=pointer]:
+                - img [ref=e283]

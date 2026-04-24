@@ -1,0 +1,755 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]: MA
+          - heading [level=6] [ref=e857]: MA-Pilot
+          - generic [ref=e10]: 管理者
+        - paragraph [ref=e11]: 桑畑 健
+    - generic [ref=e12]:
+      - generic [ref=e13]: 管理機能
+      - list [ref=e14]:
+        - listitem [ref=e15]:
+          - button [ref=e858] [cursor=pointer]:
+            - img [ref=e18]
+            - generic [ref=e21]: 管理ダッシュボード
+        - listitem [ref=e22]:
+          - button [ref=e859] [cursor=pointer]:
+            - img [ref=e25]
+            - generic [ref=e28]: 運営者アカウント管理
+        - listitem [ref=e29]:
+          - button [ref=e860] [cursor=pointer]:
+            - img [ref=e32]
+            - generic [ref=e35]: 医院アカウント管理
+        - listitem [ref=e36]:
+          - button [ref=e861] [cursor=pointer]:
+            - img [ref=e39]
+            - generic [ref=e43]: システム設定
+        - listitem [ref=e44]:
+          - button [ref=e862] [cursor=pointer]:
+            - img [ref=e47]
+            - generic [ref=e50]: 価格表管理
+        - listitem [ref=e51]:
+          - button [ref=e863] [cursor=pointer]:
+            - img [ref=e54]
+            - generic [ref=e57]: 印刷物発注管理
+      - separator [ref=e58]
+      - list [ref=e59]:
+        - listitem [ref=e60]:
+          - button [ref=e864] [cursor=pointer]:
+            - img [ref=e63]
+            - generic [ref=e66]: マイページ設定
+        - listitem [ref=e67]:
+          - button [ref=e865] [cursor=pointer]:
+            - img [ref=e70]
+            - generic [ref=e73]: ログアウト
+    - main [ref=e74]:
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - generic [ref=e77]:
+            - heading [level=5] [ref=e866]: 価格マスタ管理
+            - paragraph [ref=e79]: 印刷物の価格・納期・校正回数を管理します。変更は即座に発注フォームに反映されます。
+          - generic [ref=e80]:
+            - button [ref=e867] [cursor=pointer]:
+              - img [ref=e90]
+            - button [ref=e868] [cursor=pointer]:
+              - img [ref=e83]
+              - text: 新規追加
+        - generic [ref=e92]:
+          - generic [ref=e93]:
+            - heading [level=6] [ref=e869]: ネームプレート
+            - generic [ref=e96]: 10件
+          - table [ref=e98]:
+            - rowgroup [ref=e99]:
+              - row [ref=e870]:
+                - columnheader [ref=e871]: 数量（枚）
+                - columnheader [ref=e872]: 価格（税抜）
+                - columnheader [ref=e873]: デザイン費
+                - columnheader [ref=e874]: デザイン費
+                - columnheader [ref=e875]: 納期
+                - columnheader [ref=e876]: 仕様メモ
+                - columnheader [ref=e877]: 操作
+            - rowgroup [ref=e108]:
+              - row [ref=e878]:
+                - cell [ref=e879]: 1枚
+                - cell [ref=e880]: ¥3,550
+                - cell [ref=e881]: ¥850
+                - cell [ref=e882]:
+                  - generic [ref=e115]: 別途
+                - cell [ref=e883]: 7営業日後
+                - cell [ref=e884]:
+                  - paragraph [ref=e118]: "{\"type\":\"1名\",\"material\":\"アクリル\"}"
+                - cell [ref=e885]:
+                  - button [ref=e886] [cursor=pointer]:
+                    - img [ref=e121]
+                  - button [ref=e887] [cursor=pointer]:
+                    - img [ref=e124]
+              - row [ref=e888]:
+                - cell [ref=e889]: 2枚
+                - cell [ref=e890]: ¥4,400
+                - cell [ref=e891]: ¥1,700
+                - cell [ref=e892]:
+                  - generic [ref=e132]: 別途
+                - cell [ref=e893]: 7営業日後
+                - cell [ref=e894]:
+                  - paragraph [ref=e135]: "{\"type\":\"2名\",\"material\":\"アクリル\"}"
+                - cell [ref=e895]:
+                  - button [ref=e896] [cursor=pointer]:
+                    - img [ref=e138]
+                  - button [ref=e897] [cursor=pointer]:
+                    - img [ref=e141]
+              - row [ref=e898]:
+                - cell [ref=e899]: 3枚
+                - cell [ref=e900]: ¥5,250
+                - cell [ref=e901]: ¥2,550
+                - cell [ref=e902]:
+                  - generic [ref=e149]: 別途
+                - cell [ref=e903]: 7営業日後
+                - cell [ref=e904]:
+                  - paragraph [ref=e152]: "{\"type\":\"3名\",\"material\":\"アクリル\"}"
+                - cell [ref=e905]:
+                  - button [ref=e906] [cursor=pointer]:
+                    - img [ref=e155]
+                  - button [ref=e907] [cursor=pointer]:
+                    - img [ref=e158]
+              - row [ref=e908]:
+                - cell [ref=e909]: 4枚
+                - cell [ref=e910]: ¥6,100
+                - cell [ref=e911]: ¥3,400
+                - cell [ref=e912]:
+                  - generic [ref=e166]: 別途
+                - cell [ref=e913]: 7営業日後
+                - cell [ref=e914]:
+                  - paragraph [ref=e169]: "{\"type\":\"4名\",\"material\":\"アクリル\"}"
+                - cell [ref=e915]:
+                  - button [ref=e916] [cursor=pointer]:
+                    - img [ref=e172]
+                  - button [ref=e917] [cursor=pointer]:
+                    - img [ref=e175]
+              - row [ref=e918]:
+                - cell [ref=e919]: 5枚
+                - cell [ref=e920]: ¥7,750
+                - cell [ref=e921]: ¥4,250
+                - cell [ref=e922]:
+                  - generic [ref=e183]: 別途
+                - cell [ref=e923]: 7営業日後
+                - cell [ref=e924]:
+                  - paragraph [ref=e186]: "{\"type\":\"5名\",\"material\":\"アクリル\"}"
+                - cell [ref=e925]:
+                  - button [ref=e926] [cursor=pointer]:
+                    - img [ref=e189]
+                  - button [ref=e927] [cursor=pointer]:
+                    - img [ref=e192]
+              - row [ref=e928]:
+                - cell [ref=e929]: 6枚
+                - cell [ref=e930]: ¥8,950
+                - cell [ref=e931]: ¥5,100
+                - cell [ref=e932]:
+                  - generic [ref=e200]: 別途
+                - cell [ref=e933]: 7営業日後
+                - cell [ref=e934]:
+                  - paragraph [ref=e203]: "{\"type\":\"6名\",\"material\":\"アクリル\"}"
+                - cell [ref=e935]:
+                  - button [ref=e936] [cursor=pointer]:
+                    - img [ref=e206]
+                  - button [ref=e937] [cursor=pointer]:
+                    - img [ref=e209]
+              - row [ref=e938]:
+                - cell [ref=e939]: 7枚
+                - cell [ref=e940]: ¥10,150
+                - cell [ref=e941]: ¥5,950
+                - cell [ref=e942]:
+                  - generic [ref=e217]: 別途
+                - cell [ref=e943]: 7営業日後
+                - cell [ref=e944]:
+                  - paragraph [ref=e220]: "{\"type\":\"7名\",\"material\":\"アクリル\"}"
+                - cell [ref=e945]:
+                  - button [ref=e946] [cursor=pointer]:
+                    - img [ref=e223]
+                  - button [ref=e947] [cursor=pointer]:
+                    - img [ref=e226]
+              - row [ref=e948]:
+                - cell [ref=e949]: 8枚
+                - cell [ref=e950]: ¥11,350
+                - cell [ref=e951]: ¥6,800
+                - cell [ref=e952]:
+                  - generic [ref=e234]: 別途
+                - cell [ref=e953]: 7営業日後
+                - cell [ref=e954]:
+                  - paragraph [ref=e237]: "{\"type\":\"8名\",\"material\":\"アクリル\"}"
+                - cell [ref=e955]:
+                  - button [ref=e956] [cursor=pointer]:
+                    - img [ref=e240]
+                  - button [ref=e957] [cursor=pointer]:
+                    - img [ref=e243]
+              - row [ref=e958]:
+                - cell [ref=e959]: 9枚
+                - cell [ref=e960]: ¥12,700
+                - cell [ref=e961]: ¥7,650
+                - cell [ref=e962]:
+                  - generic [ref=e251]: 別途
+                - cell [ref=e963]: 7営業日後
+                - cell [ref=e964]:
+                  - paragraph [ref=e254]: "{\"type\":\"9名\",\"material\":\"アクリル\"}"
+                - cell [ref=e965]:
+                  - button [ref=e966] [cursor=pointer]:
+                    - img [ref=e257]
+                  - button [ref=e967] [cursor=pointer]:
+                    - img [ref=e260]
+              - row [ref=e968]:
+                - cell [ref=e969]: 10枚
+                - cell [ref=e970]: ¥14,000
+                - cell [ref=e971]: ¥8,500
+                - cell [ref=e972]:
+                  - generic [ref=e268]: 別途
+                - cell [ref=e973]: 7営業日後
+                - cell [ref=e974]:
+                  - paragraph [ref=e271]: "{\"type\":\"10名\",\"material\":\"アクリル\"}"
+                - cell [ref=e975]:
+                  - button [ref=e976] [cursor=pointer]:
+                    - img [ref=e274]
+                  - button [ref=e977] [cursor=pointer]:
+                    - img [ref=e277]
+        - generic [ref=e279]:
+          - generic [ref=e280]:
+            - heading [level=6] [ref=e978]: 名刺（片面・カラー）
+            - generic [ref=e283]: 3件
+          - table [ref=e285]:
+            - rowgroup [ref=e286]:
+              - row [ref=e979]:
+                - columnheader [ref=e980]: 数量（枚）
+                - columnheader [ref=e981]: 価格（税抜）
+                - columnheader [ref=e982]: デザイン費
+                - columnheader [ref=e983]: デザイン費
+                - columnheader [ref=e984]: 納期
+                - columnheader [ref=e985]: 仕様メモ
+                - columnheader [ref=e986]: 操作
+            - rowgroup [ref=e295]:
+              - row [ref=e987]:
+                - cell [ref=e988]: 100枚
+                - cell [ref=e989]: ¥2,500
+                - cell [ref=e990]: —
+                - cell [ref=e991]:
+                  - generic [ref=e302]: 別途
+                - cell [ref=e992]: 7営業日後
+                - cell [ref=e993]:
+                  - paragraph [ref=e305]: —
+                - cell [ref=e994]:
+                  - button [ref=e995] [cursor=pointer]:
+                    - img [ref=e308]
+                  - button [ref=e996] [cursor=pointer]:
+                    - img [ref=e311]
+              - row [ref=e997]:
+                - cell [ref=e998]: 200枚
+                - cell [ref=e999]: ¥4,000
+                - cell [ref=e1000]: —
+                - cell [ref=e1001]:
+                  - generic [ref=e319]: 別途
+                - cell [ref=e1002]: 7営業日後
+                - cell [ref=e1003]:
+                  - paragraph [ref=e322]: —
+                - cell [ref=e1004]:
+                  - button [ref=e1005] [cursor=pointer]:
+                    - img [ref=e325]
+                  - button [ref=e1006] [cursor=pointer]:
+                    - img [ref=e328]
+              - row [ref=e1007]:
+                - cell [ref=e1008]: 300枚
+                - cell [ref=e1009]: ¥6,000
+                - cell [ref=e1010]: —
+                - cell [ref=e1011]:
+                  - generic [ref=e336]: 別途
+                - cell [ref=e1012]: 7営業日後
+                - cell [ref=e1013]:
+                  - paragraph [ref=e339]: —
+                - cell [ref=e1014]:
+                  - button [ref=e1015] [cursor=pointer]:
+                    - img [ref=e342]
+                  - button [ref=e1016] [cursor=pointer]:
+                    - img [ref=e345]
+        - generic [ref=e347]:
+          - generic [ref=e348]:
+            - heading [level=6] [ref=e1017]: 名刺（片面・モノクロ）
+            - generic [ref=e351]: 3件
+          - table [ref=e353]:
+            - rowgroup [ref=e354]:
+              - row [ref=e1018]:
+                - columnheader [ref=e1019]: 数量（枚）
+                - columnheader [ref=e1020]: 価格（税抜）
+                - columnheader [ref=e1021]: デザイン費
+                - columnheader [ref=e1022]: デザイン費
+                - columnheader [ref=e1023]: 納期
+                - columnheader [ref=e1024]: 仕様メモ
+                - columnheader [ref=e1025]: 操作
+            - rowgroup [ref=e363]:
+              - row [ref=e1026]:
+                - cell [ref=e1027]: 100枚
+                - cell [ref=e1028]: ¥2,000
+                - cell [ref=e1029]: —
+                - cell [ref=e1030]:
+                  - generic [ref=e370]: 別途
+                - cell [ref=e1031]: 7営業日後
+                - cell [ref=e1032]:
+                  - paragraph [ref=e373]: —
+                - cell [ref=e1033]:
+                  - button [ref=e1034] [cursor=pointer]:
+                    - img [ref=e376]
+                  - button [ref=e1035] [cursor=pointer]:
+                    - img [ref=e379]
+              - row [ref=e1036]:
+                - cell [ref=e1037]: 200枚
+                - cell [ref=e1038]: ¥3,200
+                - cell [ref=e1039]: —
+                - cell [ref=e1040]:
+                  - generic [ref=e387]: 別途
+                - cell [ref=e1041]: 7営業日後
+                - cell [ref=e1042]:
+                  - paragraph [ref=e390]: —
+                - cell [ref=e1043]:
+                  - button [ref=e1044] [cursor=pointer]:
+                    - img [ref=e393]
+                  - button [ref=e1045] [cursor=pointer]:
+                    - img [ref=e396]
+              - row [ref=e1046]:
+                - cell [ref=e1047]: 300枚
+                - cell [ref=e1048]: ¥4,800
+                - cell [ref=e1049]: —
+                - cell [ref=e1050]:
+                  - generic [ref=e404]: 別途
+                - cell [ref=e1051]: 7営業日後
+                - cell [ref=e1052]:
+                  - paragraph [ref=e407]: —
+                - cell [ref=e1053]:
+                  - button [ref=e1054] [cursor=pointer]:
+                    - img [ref=e410]
+                  - button [ref=e1055] [cursor=pointer]:
+                    - img [ref=e413]
+        - generic [ref=e415]:
+          - generic [ref=e416]:
+            - heading [level=6] [ref=e1056]: 名刺（両面・カラー）
+            - generic [ref=e419]: 3件
+          - table [ref=e421]:
+            - rowgroup [ref=e422]:
+              - row [ref=e1057]:
+                - columnheader [ref=e1058]: 数量（枚）
+                - columnheader [ref=e1059]: 価格（税抜）
+                - columnheader [ref=e1060]: デザイン費
+                - columnheader [ref=e1061]: デザイン費
+                - columnheader [ref=e1062]: 納期
+                - columnheader [ref=e1063]: 仕様メモ
+                - columnheader [ref=e1064]: 操作
+            - rowgroup [ref=e431]:
+              - row [ref=e1065]:
+                - cell [ref=e1066]: 100枚
+                - cell [ref=e1067]: ¥3,500
+                - cell [ref=e1068]: —
+                - cell [ref=e1069]:
+                  - generic [ref=e438]: 別途
+                - cell [ref=e1070]: 7営業日後
+                - cell [ref=e1071]:
+                  - paragraph [ref=e441]: —
+                - cell [ref=e1072]:
+                  - button [ref=e1073] [cursor=pointer]:
+                    - img [ref=e444]
+                  - button [ref=e1074] [cursor=pointer]:
+                    - img [ref=e447]
+              - row [ref=e1075]:
+                - cell [ref=e1076]: 200枚
+                - cell [ref=e1077]: ¥5,600
+                - cell [ref=e1078]: —
+                - cell [ref=e1079]:
+                  - generic [ref=e455]: 別途
+                - cell [ref=e1080]: 7営業日後
+                - cell [ref=e1081]:
+                  - paragraph [ref=e458]: —
+                - cell [ref=e1082]:
+                  - button [ref=e1083] [cursor=pointer]:
+                    - img [ref=e461]
+                  - button [ref=e1084] [cursor=pointer]:
+                    - img [ref=e464]
+              - row [ref=e1085]:
+                - cell [ref=e1086]: 300枚
+                - cell [ref=e1087]: ¥8,400
+                - cell [ref=e1088]: —
+                - cell [ref=e1089]:
+                  - generic [ref=e472]: 別途
+                - cell [ref=e1090]: 7営業日後
+                - cell [ref=e1091]:
+                  - paragraph [ref=e475]: —
+                - cell [ref=e1092]:
+                  - button [ref=e1093] [cursor=pointer]:
+                    - img [ref=e478]
+                  - button [ref=e1094] [cursor=pointer]:
+                    - img [ref=e481]
+        - generic [ref=e483]:
+          - generic [ref=e484]:
+            - heading [level=6] [ref=e1095]: 名刺（両面・モノクロ）
+            - generic [ref=e487]: 3件
+          - table [ref=e489]:
+            - rowgroup [ref=e490]:
+              - row [ref=e1096]:
+                - columnheader [ref=e1097]: 数量（枚）
+                - columnheader [ref=e1098]: 価格（税抜）
+                - columnheader [ref=e1099]: デザイン費
+                - columnheader [ref=e1100]: デザイン費
+                - columnheader [ref=e1101]: 納期
+                - columnheader [ref=e1102]: 仕様メモ
+                - columnheader [ref=e1103]: 操作
+            - rowgroup [ref=e499]:
+              - row [ref=e1104]:
+                - cell [ref=e1105]: 100枚
+                - cell [ref=e1106]: ¥2,800
+                - cell [ref=e1107]: —
+                - cell [ref=e1108]:
+                  - generic [ref=e506]: 別途
+                - cell [ref=e1109]: 7営業日後
+                - cell [ref=e1110]:
+                  - paragraph [ref=e509]: —
+                - cell [ref=e1111]:
+                  - button [ref=e1112] [cursor=pointer]:
+                    - img [ref=e512]
+                  - button [ref=e1113] [cursor=pointer]:
+                    - img [ref=e515]
+              - row [ref=e1114]:
+                - cell [ref=e1115]: 200枚
+                - cell [ref=e1116]: ¥4,480
+                - cell [ref=e1117]: —
+                - cell [ref=e1118]:
+                  - generic [ref=e523]: 別途
+                - cell [ref=e1119]: 7営業日後
+                - cell [ref=e1120]:
+                  - paragraph [ref=e526]: —
+                - cell [ref=e1121]:
+                  - button [ref=e1122] [cursor=pointer]:
+                    - img [ref=e529]
+                  - button [ref=e1123] [cursor=pointer]:
+                    - img [ref=e532]
+              - row [ref=e1124]:
+                - cell [ref=e1125]: 300枚
+                - cell [ref=e1126]: ¥6,720
+                - cell [ref=e1127]: —
+                - cell [ref=e1128]:
+                  - generic [ref=e540]: 別途
+                - cell [ref=e1129]: 7営業日後
+                - cell [ref=e1130]:
+                  - paragraph [ref=e543]: —
+                - cell [ref=e1131]:
+                  - button [ref=e1132] [cursor=pointer]:
+                    - img [ref=e546]
+                  - button [ref=e1133] [cursor=pointer]:
+                    - img [ref=e549]
+        - generic [ref=e551]:
+          - generic [ref=e552]:
+            - heading [level=6] [ref=e1134]: リコールハガキ（ポストカード）
+            - generic [ref=e555]: 3件
+          - table [ref=e557]:
+            - rowgroup [ref=e558]:
+              - row [ref=e1135]:
+                - columnheader [ref=e1136]: 数量（枚）
+                - columnheader [ref=e1137]: 価格（税抜）
+                - columnheader [ref=e1138]: デザイン費
+                - columnheader [ref=e1139]: デザイン費
+                - columnheader [ref=e1140]: 納期
+                - columnheader [ref=e1141]: 仕様メモ
+                - columnheader [ref=e1142]: 操作
+            - rowgroup [ref=e567]:
+              - row [ref=e1143]:
+                - cell [ref=e1144]: 100枚
+                - cell [ref=e1145]: ¥8,000
+                - cell [ref=e1146]: —
+                - cell [ref=e1147]:
+                  - generic [ref=e574]: 別途
+                - cell [ref=e1148]: 7営業日後
+                - cell [ref=e1149]:
+                  - paragraph [ref=e577]: —
+                - cell [ref=e1150]:
+                  - button [ref=e1151] [cursor=pointer]:
+                    - img [ref=e580]
+                  - button [ref=e1152] [cursor=pointer]:
+                    - img [ref=e583]
+              - row [ref=e1153]:
+                - cell [ref=e1154]: 200枚
+                - cell [ref=e1155]: ¥12,800
+                - cell [ref=e1156]: —
+                - cell [ref=e1157]:
+                  - generic [ref=e591]: 別途
+                - cell [ref=e1158]: 7営業日後
+                - cell [ref=e1159]:
+                  - paragraph [ref=e594]: —
+                - cell [ref=e1160]:
+                  - button [ref=e1161] [cursor=pointer]:
+                    - img [ref=e597]
+                  - button [ref=e1162] [cursor=pointer]:
+                    - img [ref=e600]
+              - row [ref=e1163]:
+                - cell [ref=e1164]: 300枚
+                - cell [ref=e1165]: ¥17,600
+                - cell [ref=e1166]: —
+                - cell [ref=e1167]:
+                  - generic [ref=e608]: 別途
+                - cell [ref=e1168]: 7営業日後
+                - cell [ref=e1169]:
+                  - paragraph [ref=e611]: —
+                - cell [ref=e1170]:
+                  - button [ref=e1171] [cursor=pointer]:
+                    - img [ref=e614]
+                  - button [ref=e1172] [cursor=pointer]:
+                    - img [ref=e617]
+        - generic [ref=e619]:
+          - generic [ref=e620]:
+            - heading [level=6] [ref=e1173]: リコールハガキ（官製はがき）
+            - generic [ref=e623]: 3件
+          - table [ref=e625]:
+            - rowgroup [ref=e626]:
+              - row [ref=e1174]:
+                - columnheader [ref=e1175]: 数量（枚）
+                - columnheader [ref=e1176]: 価格（税抜）
+                - columnheader [ref=e1177]: デザイン費
+                - columnheader [ref=e1178]: デザイン費
+                - columnheader [ref=e1179]: 納期
+                - columnheader [ref=e1180]: 仕様メモ
+                - columnheader [ref=e1181]: 操作
+            - rowgroup [ref=e635]:
+              - row [ref=e1182]:
+                - cell [ref=e1183]: 100枚
+                - cell [ref=e1184]: ¥7,500
+                - cell [ref=e1185]: —
+                - cell [ref=e1186]:
+                  - generic [ref=e642]: 別途
+                - cell [ref=e1187]: 7営業日後
+                - cell [ref=e1188]:
+                  - paragraph [ref=e645]: —
+                - cell [ref=e1189]:
+                  - button [ref=e1190] [cursor=pointer]:
+                    - img [ref=e648]
+                  - button [ref=e1191] [cursor=pointer]:
+                    - img [ref=e651]
+              - row [ref=e1192]:
+                - cell [ref=e1193]: 200枚
+                - cell [ref=e1194]: ¥12,000
+                - cell [ref=e1195]: —
+                - cell [ref=e1196]:
+                  - generic [ref=e659]: 別途
+                - cell [ref=e1197]: 7営業日後
+                - cell [ref=e1198]:
+                  - paragraph [ref=e662]: —
+                - cell [ref=e1199]:
+                  - button [ref=e1200] [cursor=pointer]:
+                    - img [ref=e665]
+                  - button [ref=e1201] [cursor=pointer]:
+                    - img [ref=e668]
+              - row [ref=e1202]:
+                - cell [ref=e1203]: 300枚
+                - cell [ref=e1204]: ¥16,500
+                - cell [ref=e1205]: —
+                - cell [ref=e1206]:
+                  - generic [ref=e676]: 別途
+                - cell [ref=e1207]: 7営業日後
+                - cell [ref=e1208]:
+                  - paragraph [ref=e679]: —
+                - cell [ref=e1209]:
+                  - button [ref=e1210] [cursor=pointer]:
+                    - img [ref=e682]
+                  - button [ref=e1211] [cursor=pointer]:
+                    - img [ref=e685]
+        - generic [ref=e687]:
+          - generic [ref=e688]:
+            - heading [level=6] [ref=e1212]: A4三つ折りリーフレット
+            - generic [ref=e691]: 3件
+          - table [ref=e693]:
+            - rowgroup [ref=e694]:
+              - row [ref=e1213]:
+                - columnheader [ref=e1214]: 数量（枚）
+                - columnheader [ref=e1215]: 価格（税抜）
+                - columnheader [ref=e1216]: デザイン費
+                - columnheader [ref=e1217]: デザイン費
+                - columnheader [ref=e1218]: 納期
+                - columnheader [ref=e1219]: 仕様メモ
+                - columnheader [ref=e1220]: 操作
+            - rowgroup [ref=e703]:
+              - row [ref=e1221]:
+                - cell [ref=e1222]: 300枚
+                - cell [ref=e1223]: ¥27,000
+                - cell [ref=e1224]: —
+                - cell [ref=e1225]:
+                  - generic [ref=e710]: 込み
+                - cell [ref=e1226]: 14営業日後
+                - cell [ref=e1227]:
+                  - paragraph [ref=e713]: "{\"coating\":\"マット加工\"}"
+                - cell [ref=e1228]:
+                  - button [ref=e1229] [cursor=pointer]:
+                    - img [ref=e716]
+                  - button [ref=e1230] [cursor=pointer]:
+                    - img [ref=e719]
+              - row [ref=e1231]:
+                - cell [ref=e1232]: 500枚
+                - cell [ref=e1233]: ¥35,000
+                - cell [ref=e1234]: —
+                - cell [ref=e1235]:
+                  - generic [ref=e727]: 込み
+                - cell [ref=e1236]: 14営業日後
+                - cell [ref=e1237]:
+                  - paragraph [ref=e730]: "{\"coating\":\"マット加工\"}"
+                - cell [ref=e1238]:
+                  - button [ref=e1239] [cursor=pointer]:
+                    - img [ref=e733]
+                  - button [ref=e1240] [cursor=pointer]:
+                    - img [ref=e736]
+              - row [ref=e1241]:
+                - cell [ref=e1242]: 1,000枚
+                - cell [ref=e1243]: ¥50,000
+                - cell [ref=e1244]: —
+                - cell [ref=e1245]:
+                  - generic [ref=e744]: 込み
+                - cell [ref=e1246]: 14営業日後
+                - cell [ref=e1247]:
+                  - paragraph [ref=e747]: "{\"coating\":\"マット加工\"}"
+                - cell [ref=e1248]:
+                  - button [ref=e1249] [cursor=pointer]:
+                    - img [ref=e750]
+                  - button [ref=e1250] [cursor=pointer]:
+                    - img [ref=e753]
+        - generic [ref=e755]:
+          - generic [ref=e756]:
+            - heading [level=6] [ref=e1251]: 診察券
+            - generic [ref=e759]: 5件
+          - table [ref=e761]:
+            - rowgroup [ref=e762]:
+              - row [ref=e1252]:
+                - columnheader [ref=e1253]: 数量（枚）
+                - columnheader [ref=e1254]: 価格（税抜）
+                - columnheader [ref=e1255]: デザイン費
+                - columnheader [ref=e1256]: デザイン費
+                - columnheader [ref=e1257]: 納期
+                - columnheader [ref=e1258]: 仕様メモ
+                - columnheader [ref=e1259]: 操作
+            - rowgroup [ref=e771]:
+              - row [ref=e1260]:
+                - cell [ref=e1261]: 500枚
+                - cell [ref=e1262]: ¥19,500
+                - cell [ref=e1263]: —
+                - cell [ref=e1264]:
+                  - generic [ref=e778]: 込み
+                - cell [ref=e1265]: 14営業日後
+                - cell [ref=e1266]:
+                  - paragraph [ref=e781]: "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}"
+                - cell [ref=e1267]:
+                  - button [ref=e1268] [cursor=pointer]:
+                    - img [ref=e784]
+                  - button [ref=e1269] [cursor=pointer]:
+                    - img [ref=e787]
+              - row [ref=e1270]:
+                - cell [ref=e1271]: 1,000枚
+                - cell [ref=e1272]: ¥25,500
+                - cell [ref=e1273]: —
+                - cell [ref=e1274]:
+                  - generic [ref=e795]: 込み
+                - cell [ref=e1275]: 14営業日後
+                - cell [ref=e1276]:
+                  - paragraph [ref=e798]: "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}"
+                - cell [ref=e1277]:
+                  - button [ref=e1278] [cursor=pointer]:
+                    - img [ref=e801]
+                  - button [ref=e1279] [cursor=pointer]:
+                    - img [ref=e804]
+              - row [ref=e1280]:
+                - cell [ref=e1281]: 2,000枚
+                - cell [ref=e1282]: ¥34,500
+                - cell [ref=e1283]: —
+                - cell [ref=e1284]:
+                  - generic [ref=e812]: 込み
+                - cell [ref=e1285]: 14営業日後
+                - cell [ref=e1286]:
+                  - paragraph [ref=e815]: "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}"
+                - cell [ref=e1287]:
+                  - button [ref=e1288] [cursor=pointer]:
+                    - img [ref=e818]
+                  - button [ref=e1289] [cursor=pointer]:
+                    - img [ref=e821]
+              - row [ref=e1290]:
+                - cell [ref=e1291]: 3,000枚
+                - cell [ref=e1292]: ¥43,500
+                - cell [ref=e1293]: —
+                - cell [ref=e1294]:
+                  - generic [ref=e829]: 込み
+                - cell [ref=e1295]: 14営業日後
+                - cell [ref=e1296]:
+                  - paragraph [ref=e832]: "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}"
+                - cell [ref=e1297]:
+                  - button [ref=e1298] [cursor=pointer]:
+                    - img [ref=e835]
+                  - button [ref=e1299] [cursor=pointer]:
+                    - img [ref=e838]
+              - row [ref=e1300]:
+                - cell [ref=e1301]: 5,000枚
+                - cell [ref=e1302]: ¥56,500
+                - cell [ref=e1303]: —
+                - cell [ref=e1304]:
+                  - generic [ref=e846]: 込み
+                - cell [ref=e1305]: 14営業日後
+                - cell [ref=e1306]:
+                  - paragraph [ref=e849]: "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}"
+                - cell [ref=e1307]:
+                  - button [ref=e1308] [cursor=pointer]:
+                    - img [ref=e852]
+                  - button [ref=e1309] [cursor=pointer]:
+                    - img [ref=e855]
+  - dialog "価格マスタを編集" [ref=e1312]:
+    - heading "価格マスタを編集" [level=2] [ref=e1313]
+    - generic [ref=e1315]:
+      - generic [ref=e1316]:
+        - generic [ref=e1317]:
+          - text: 商品種類
+          - generic [ref=e1318]: "*"
+        - generic [ref=e1319]:
+          - combobox [ref=e1320] [cursor=pointer]: 名刺（片面・カラー）
+          - textbox: 名刺（片面・カラー）
+          - img
+          - group:
+            - generic: 商品種類 *
+      - generic [ref=e1321]:
+        - generic [ref=e1322]:
+          - generic [ref=e1323]:
+            - text: 数量（枚）
+            - generic [ref=e1324]: "*"
+          - generic [ref=e1325]:
+            - spinbutton "数量（枚）" [ref=e1326]: "100"
+            - group:
+              - generic: 数量（枚） *
+        - generic [ref=e1327]:
+          - generic [ref=e1328]:
+            - text: 納期（営業日後）
+            - generic [ref=e1329]: "*"
+          - generic [ref=e1330]:
+            - spinbutton "納期（営業日後）" [ref=e1331]: "7"
+            - group:
+              - generic: 納期（営業日後） *
+      - generic [ref=e1332]:
+        - generic [ref=e1333]:
+          - generic [ref=e1334]:
+            - text: 価格（税抜・円）
+            - generic [ref=e1335]: "*"
+          - generic [ref=e1336]:
+            - spinbutton "価格（税抜・円）" [ref=e1337]: "2500"
+            - group:
+              - generic: 価格（税抜・円） *
+        - generic [ref=e1338]:
+          - generic [ref=e1339]: デザイン費（円）
+          - generic [ref=e1340]:
+            - spinbutton "デザイン費（円）" [ref=e1341]: "0"
+            - group:
+              - generic: デザイン費（円）
+      - generic [ref=e1342] [cursor=pointer]:
+        - checkbox "デザイン費別途（価格にデザイン費を含まない）" [ref=e1345]
+        - generic [ref=e1348]: デザイン費別途（価格にデザイン費を含まない）
+      - generic [ref=e1349]:
+        - generic: 仕様メモ（任意）
+        - generic [ref=e1350]:
+          - textbox "仕様メモ（任意）" [ref=e1351]:
+            - /placeholder: "例: 角丸あり、マットPP加工 など"
+          - group:
+            - generic: 仕様メモ（任意）
+    - generic [ref=e1352]:
+      - button "キャンセル" [ref=e1353] [cursor=pointer]
+      - button "保存" [ref=e1354] [cursor=pointer]

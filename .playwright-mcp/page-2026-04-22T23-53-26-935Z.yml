@@ -1,0 +1,696 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: MA
+        - heading "MA-Pilot" [level=6] [ref=e1355]
+        - generic [ref=e10]: 管理者
+      - paragraph [ref=e11]: 桑畑 健
+  - generic [ref=e12]:
+    - generic [ref=e13]: 管理機能
+    - list [ref=e14]:
+      - listitem [ref=e15]:
+        - button "管理ダッシュボード" [ref=e1356] [cursor=pointer]:
+          - img [ref=e18]
+          - generic [ref=e21]: 管理ダッシュボード
+      - listitem [ref=e22]:
+        - button "運営者アカウント管理" [ref=e1357] [cursor=pointer]:
+          - img [ref=e25]
+          - generic [ref=e28]: 運営者アカウント管理
+      - listitem [ref=e29]:
+        - button "医院アカウント管理" [ref=e1358] [cursor=pointer]:
+          - img [ref=e32]
+          - generic [ref=e35]: 医院アカウント管理
+      - listitem [ref=e36]:
+        - button "システム設定" [ref=e1359] [cursor=pointer]:
+          - img [ref=e39]
+          - generic [ref=e43]: システム設定
+      - listitem [ref=e44]:
+        - button "価格表管理" [ref=e1360] [cursor=pointer]:
+          - img [ref=e47]
+          - generic [ref=e50]: 価格表管理
+      - listitem [ref=e51]:
+        - button "印刷物発注管理" [ref=e1361] [cursor=pointer]:
+          - img [ref=e54]
+          - generic [ref=e57]: 印刷物発注管理
+    - separator [ref=e58]
+    - list [ref=e59]:
+      - listitem [ref=e60]:
+        - button "マイページ設定" [ref=e1362] [cursor=pointer]:
+          - img [ref=e63]
+          - generic [ref=e66]: マイページ設定
+      - listitem [ref=e67]:
+        - button "ログアウト" [ref=e1363] [cursor=pointer]:
+          - img [ref=e70]
+          - generic [ref=e73]: ログアウト
+  - main [ref=e74]:
+    - generic [ref=e75]:
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - heading "価格マスタ管理" [level=5] [ref=e1364]
+          - paragraph [ref=e79]: 印刷物の価格・納期・校正回数を管理します。変更は即座に発注フォームに反映されます。
+        - generic [ref=e80]:
+          - button "再読み込み" [ref=e1365] [cursor=pointer]:
+            - img [ref=e90]
+          - button "新規追加" [ref=e1366] [cursor=pointer]:
+            - img [ref=e83]
+            - text: 新規追加
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - heading "ネームプレート" [level=6] [ref=e1367]
+          - generic [ref=e96]: 10件
+        - table [ref=e98]:
+          - rowgroup [ref=e99]:
+            - row "数量（枚） 価格（税抜） デザイン費 デザイン費 納期 仕様メモ 操作" [ref=e1368]:
+              - columnheader "数量（枚）" [ref=e1369]
+              - columnheader "価格（税抜）" [ref=e1370]
+              - columnheader "デザイン費" [ref=e1371]
+              - columnheader "デザイン費" [ref=e1372]
+              - columnheader "納期" [ref=e1373]
+              - columnheader "仕様メモ" [ref=e1374]
+              - columnheader "操作" [ref=e1375]
+          - rowgroup [ref=e108]:
+            - 'row "1枚 ¥3,550 ¥850 別途 7営業日後 {\"type\":\"1名\",\"material\":\"アクリル\"} 編集 削除" [ref=e1376]':
+              - cell "1枚" [ref=e1377]
+              - cell "¥3,550" [ref=e1378]
+              - cell "¥850" [ref=e1379]
+              - cell "別途" [ref=e1380]:
+                - generic [ref=e115]: 別途
+              - cell "7営業日後" [ref=e1381]
+              - 'cell "{\"type\":\"1名\",\"material\":\"アクリル\"}" [ref=e1382]':
+                - paragraph [ref=e118]: "{\"type\":\"1名\",\"material\":\"アクリル\"}"
+              - cell "編集 削除" [ref=e1383]:
+                - button "編集" [ref=e1384] [cursor=pointer]:
+                  - img [ref=e121]
+                - button "削除" [ref=e1385] [cursor=pointer]:
+                  - img [ref=e124]
+            - 'row "2枚 ¥4,400 ¥1,700 別途 7営業日後 {\"type\":\"2名\",\"material\":\"アクリル\"} 編集 削除" [ref=e1386]':
+              - cell "2枚" [ref=e1387]
+              - cell "¥4,400" [ref=e1388]
+              - cell "¥1,700" [ref=e1389]
+              - cell "別途" [ref=e1390]:
+                - generic [ref=e132]: 別途
+              - cell "7営業日後" [ref=e1391]
+              - 'cell "{\"type\":\"2名\",\"material\":\"アクリル\"}" [ref=e1392]':
+                - paragraph [ref=e135]: "{\"type\":\"2名\",\"material\":\"アクリル\"}"
+              - cell "編集 削除" [ref=e1393]:
+                - button "編集" [ref=e1394] [cursor=pointer]:
+                  - img [ref=e138]
+                - button "削除" [ref=e1395] [cursor=pointer]:
+                  - img [ref=e141]
+            - 'row "3枚 ¥5,250 ¥2,550 別途 7営業日後 {\"type\":\"3名\",\"material\":\"アクリル\"} 編集 削除" [ref=e1396]':
+              - cell "3枚" [ref=e1397]
+              - cell "¥5,250" [ref=e1398]
+              - cell "¥2,550" [ref=e1399]
+              - cell "別途" [ref=e1400]:
+                - generic [ref=e149]: 別途
+              - cell "7営業日後" [ref=e1401]
+              - 'cell "{\"type\":\"3名\",\"material\":\"アクリル\"}" [ref=e1402]':
+                - paragraph [ref=e152]: "{\"type\":\"3名\",\"material\":\"アクリル\"}"
+              - cell "編集 削除" [ref=e1403]:
+                - button "編集" [ref=e1404] [cursor=pointer]:
+                  - img [ref=e155]
+                - button "削除" [ref=e1405] [cursor=pointer]:
+                  - img [ref=e158]
+            - 'row "4枚 ¥6,100 ¥3,400 別途 7営業日後 {\"type\":\"4名\",\"material\":\"アクリル\"} 編集 削除" [ref=e1406]':
+              - cell "4枚" [ref=e1407]
+              - cell "¥6,100" [ref=e1408]
+              - cell "¥3,400" [ref=e1409]
+              - cell "別途" [ref=e1410]:
+                - generic [ref=e166]: 別途
+              - cell "7営業日後" [ref=e1411]
+              - 'cell "{\"type\":\"4名\",\"material\":\"アクリル\"}" [ref=e1412]':
+                - paragraph [ref=e169]: "{\"type\":\"4名\",\"material\":\"アクリル\"}"
+              - cell "編集 削除" [ref=e1413]:
+                - button "編集" [ref=e1414] [cursor=pointer]:
+                  - img [ref=e172]
+                - button "削除" [ref=e1415] [cursor=pointer]:
+                  - img [ref=e175]
+            - 'row "5枚 ¥7,750 ¥4,250 別途 7営業日後 {\"type\":\"5名\",\"material\":\"アクリル\"} 編集 削除" [ref=e1416]':
+              - cell "5枚" [ref=e1417]
+              - cell "¥7,750" [ref=e1418]
+              - cell "¥4,250" [ref=e1419]
+              - cell "別途" [ref=e1420]:
+                - generic [ref=e183]: 別途
+              - cell "7営業日後" [ref=e1421]
+              - 'cell "{\"type\":\"5名\",\"material\":\"アクリル\"}" [ref=e1422]':
+                - paragraph [ref=e186]: "{\"type\":\"5名\",\"material\":\"アクリル\"}"
+              - cell "編集 削除" [ref=e1423]:
+                - button "編集" [ref=e1424] [cursor=pointer]:
+                  - img [ref=e189]
+                - button "削除" [ref=e1425] [cursor=pointer]:
+                  - img [ref=e192]
+            - 'row "6枚 ¥8,950 ¥5,100 別途 7営業日後 {\"type\":\"6名\",\"material\":\"アクリル\"} 編集 削除" [ref=e1426]':
+              - cell "6枚" [ref=e1427]
+              - cell "¥8,950" [ref=e1428]
+              - cell "¥5,100" [ref=e1429]
+              - cell "別途" [ref=e1430]:
+                - generic [ref=e200]: 別途
+              - cell "7営業日後" [ref=e1431]
+              - 'cell "{\"type\":\"6名\",\"material\":\"アクリル\"}" [ref=e1432]':
+                - paragraph [ref=e203]: "{\"type\":\"6名\",\"material\":\"アクリル\"}"
+              - cell "編集 削除" [ref=e1433]:
+                - button "編集" [ref=e1434] [cursor=pointer]:
+                  - img [ref=e206]
+                - button "削除" [ref=e1435] [cursor=pointer]:
+                  - img [ref=e209]
+            - 'row "7枚 ¥10,150 ¥5,950 別途 7営業日後 {\"type\":\"7名\",\"material\":\"アクリル\"} 編集 削除" [ref=e1436]':
+              - cell "7枚" [ref=e1437]
+              - cell "¥10,150" [ref=e1438]
+              - cell "¥5,950" [ref=e1439]
+              - cell "別途" [ref=e1440]:
+                - generic [ref=e217]: 別途
+              - cell "7営業日後" [ref=e1441]
+              - 'cell "{\"type\":\"7名\",\"material\":\"アクリル\"}" [ref=e1442]':
+                - paragraph [ref=e220]: "{\"type\":\"7名\",\"material\":\"アクリル\"}"
+              - cell "編集 削除" [ref=e1443]:
+                - button "編集" [ref=e1444] [cursor=pointer]:
+                  - img [ref=e223]
+                - button "削除" [ref=e1445] [cursor=pointer]:
+                  - img [ref=e226]
+            - 'row "8枚 ¥11,350 ¥6,800 別途 7営業日後 {\"type\":\"8名\",\"material\":\"アクリル\"} 編集 削除" [ref=e1446]':
+              - cell "8枚" [ref=e1447]
+              - cell "¥11,350" [ref=e1448]
+              - cell "¥6,800" [ref=e1449]
+              - cell "別途" [ref=e1450]:
+                - generic [ref=e234]: 別途
+              - cell "7営業日後" [ref=e1451]
+              - 'cell "{\"type\":\"8名\",\"material\":\"アクリル\"}" [ref=e1452]':
+                - paragraph [ref=e237]: "{\"type\":\"8名\",\"material\":\"アクリル\"}"
+              - cell "編集 削除" [ref=e1453]:
+                - button "編集" [ref=e1454] [cursor=pointer]:
+                  - img [ref=e240]
+                - button "削除" [ref=e1455] [cursor=pointer]:
+                  - img [ref=e243]
+            - 'row "9枚 ¥12,700 ¥7,650 別途 7営業日後 {\"type\":\"9名\",\"material\":\"アクリル\"} 編集 削除" [ref=e1456]':
+              - cell "9枚" [ref=e1457]
+              - cell "¥12,700" [ref=e1458]
+              - cell "¥7,650" [ref=e1459]
+              - cell "別途" [ref=e1460]:
+                - generic [ref=e251]: 別途
+              - cell "7営業日後" [ref=e1461]
+              - 'cell "{\"type\":\"9名\",\"material\":\"アクリル\"}" [ref=e1462]':
+                - paragraph [ref=e254]: "{\"type\":\"9名\",\"material\":\"アクリル\"}"
+              - cell "編集 削除" [ref=e1463]:
+                - button "編集" [ref=e1464] [cursor=pointer]:
+                  - img [ref=e257]
+                - button "削除" [ref=e1465] [cursor=pointer]:
+                  - img [ref=e260]
+            - 'row "10枚 ¥14,000 ¥8,500 別途 7営業日後 {\"type\":\"10名\",\"material\":\"アクリル\"} 編集 削除" [ref=e1466]':
+              - cell "10枚" [ref=e1467]
+              - cell "¥14,000" [ref=e1468]
+              - cell "¥8,500" [ref=e1469]
+              - cell "別途" [ref=e1470]:
+                - generic [ref=e268]: 別途
+              - cell "7営業日後" [ref=e1471]
+              - 'cell "{\"type\":\"10名\",\"material\":\"アクリル\"}" [ref=e1472]':
+                - paragraph [ref=e271]: "{\"type\":\"10名\",\"material\":\"アクリル\"}"
+              - cell "編集 削除" [ref=e1473]:
+                - button "編集" [ref=e1474] [cursor=pointer]:
+                  - img [ref=e274]
+                - button "削除" [ref=e1475] [cursor=pointer]:
+                  - img [ref=e277]
+      - generic [ref=e279]:
+        - generic [ref=e280]:
+          - heading "名刺（片面・カラー）" [level=6] [ref=e1476]
+          - generic [ref=e283]: 3件
+        - table [ref=e285]:
+          - rowgroup [ref=e286]:
+            - row "数量（枚） 価格（税抜） デザイン費 デザイン費 納期 仕様メモ 操作" [ref=e1477]:
+              - columnheader "数量（枚）" [ref=e1478]
+              - columnheader "価格（税抜）" [ref=e1479]
+              - columnheader "デザイン費" [ref=e1480]
+              - columnheader "デザイン費" [ref=e1481]
+              - columnheader "納期" [ref=e1482]
+              - columnheader "仕様メモ" [ref=e1483]
+              - columnheader "操作" [ref=e1484]
+          - rowgroup [ref=e295]:
+            - row "100枚 ¥2,500 — 別途 7営業日後 — 編集 削除" [ref=e1485]:
+              - cell "100枚" [ref=e1486]
+              - cell "¥2,500" [ref=e1487]
+              - cell "—" [ref=e1488]
+              - cell "別途" [ref=e1489]:
+                - generic [ref=e302]: 別途
+              - cell "7営業日後" [ref=e1490]
+              - cell "—" [ref=e1491]:
+                - paragraph [ref=e305]: —
+              - cell "編集 削除" [ref=e1492]:
+                - button "編集" [active] [ref=e1493] [cursor=pointer]:
+                  - img [ref=e308]
+                - button "削除" [ref=e1494] [cursor=pointer]:
+                  - img [ref=e311]
+            - row "200枚 ¥4,000 — 別途 7営業日後 — 編集 削除" [ref=e1495]:
+              - cell "200枚" [ref=e1496]
+              - cell "¥4,000" [ref=e1497]
+              - cell "—" [ref=e1498]
+              - cell "別途" [ref=e1499]:
+                - generic [ref=e319]: 別途
+              - cell "7営業日後" [ref=e1500]
+              - cell "—" [ref=e1501]:
+                - paragraph [ref=e322]: —
+              - cell "編集 削除" [ref=e1502]:
+                - button "編集" [ref=e1503] [cursor=pointer]:
+                  - img [ref=e325]
+                - button "削除" [ref=e1504] [cursor=pointer]:
+                  - img [ref=e328]
+            - row "300枚 ¥6,000 — 別途 7営業日後 — 編集 削除" [ref=e1505]:
+              - cell "300枚" [ref=e1506]
+              - cell "¥6,000" [ref=e1507]
+              - cell "—" [ref=e1508]
+              - cell "別途" [ref=e1509]:
+                - generic [ref=e336]: 別途
+              - cell "7営業日後" [ref=e1510]
+              - cell "—" [ref=e1511]:
+                - paragraph [ref=e339]: —
+              - cell "編集 削除" [ref=e1512]:
+                - button "編集" [ref=e1513] [cursor=pointer]:
+                  - img [ref=e342]
+                - button "削除" [ref=e1514] [cursor=pointer]:
+                  - img [ref=e345]
+      - generic [ref=e347]:
+        - generic [ref=e348]:
+          - heading "名刺（片面・モノクロ）" [level=6] [ref=e1515]
+          - generic [ref=e351]: 3件
+        - table [ref=e353]:
+          - rowgroup [ref=e354]:
+            - row "数量（枚） 価格（税抜） デザイン費 デザイン費 納期 仕様メモ 操作" [ref=e1516]:
+              - columnheader "数量（枚）" [ref=e1517]
+              - columnheader "価格（税抜）" [ref=e1518]
+              - columnheader "デザイン費" [ref=e1519]
+              - columnheader "デザイン費" [ref=e1520]
+              - columnheader "納期" [ref=e1521]
+              - columnheader "仕様メモ" [ref=e1522]
+              - columnheader "操作" [ref=e1523]
+          - rowgroup [ref=e363]:
+            - row "100枚 ¥2,000 — 別途 7営業日後 — 編集 削除" [ref=e1524]:
+              - cell "100枚" [ref=e1525]
+              - cell "¥2,000" [ref=e1526]
+              - cell "—" [ref=e1527]
+              - cell "別途" [ref=e1528]:
+                - generic [ref=e370]: 別途
+              - cell "7営業日後" [ref=e1529]
+              - cell "—" [ref=e1530]:
+                - paragraph [ref=e373]: —
+              - cell "編集 削除" [ref=e1531]:
+                - button "編集" [ref=e1532] [cursor=pointer]:
+                  - img [ref=e376]
+                - button "削除" [ref=e1533] [cursor=pointer]:
+                  - img [ref=e379]
+            - row "200枚 ¥3,200 — 別途 7営業日後 — 編集 削除" [ref=e1534]:
+              - cell "200枚" [ref=e1535]
+              - cell "¥3,200" [ref=e1536]
+              - cell "—" [ref=e1537]
+              - cell "別途" [ref=e1538]:
+                - generic [ref=e387]: 別途
+              - cell "7営業日後" [ref=e1539]
+              - cell "—" [ref=e1540]:
+                - paragraph [ref=e390]: —
+              - cell "編集 削除" [ref=e1541]:
+                - button "編集" [ref=e1542] [cursor=pointer]:
+                  - img [ref=e393]
+                - button "削除" [ref=e1543] [cursor=pointer]:
+                  - img [ref=e396]
+            - row "300枚 ¥4,800 — 別途 7営業日後 — 編集 削除" [ref=e1544]:
+              - cell "300枚" [ref=e1545]
+              - cell "¥4,800" [ref=e1546]
+              - cell "—" [ref=e1547]
+              - cell "別途" [ref=e1548]:
+                - generic [ref=e404]: 別途
+              - cell "7営業日後" [ref=e1549]
+              - cell "—" [ref=e1550]:
+                - paragraph [ref=e407]: —
+              - cell "編集 削除" [ref=e1551]:
+                - button "編集" [ref=e1552] [cursor=pointer]:
+                  - img [ref=e410]
+                - button "削除" [ref=e1553] [cursor=pointer]:
+                  - img [ref=e413]
+      - generic [ref=e415]:
+        - generic [ref=e416]:
+          - heading "名刺（両面・カラー）" [level=6] [ref=e1554]
+          - generic [ref=e419]: 3件
+        - table [ref=e421]:
+          - rowgroup [ref=e422]:
+            - row "数量（枚） 価格（税抜） デザイン費 デザイン費 納期 仕様メモ 操作" [ref=e1555]:
+              - columnheader "数量（枚）" [ref=e1556]
+              - columnheader "価格（税抜）" [ref=e1557]
+              - columnheader "デザイン費" [ref=e1558]
+              - columnheader "デザイン費" [ref=e1559]
+              - columnheader "納期" [ref=e1560]
+              - columnheader "仕様メモ" [ref=e1561]
+              - columnheader "操作" [ref=e1562]
+          - rowgroup [ref=e431]:
+            - row "100枚 ¥3,500 — 別途 7営業日後 — 編集 削除" [ref=e1563]:
+              - cell "100枚" [ref=e1564]
+              - cell "¥3,500" [ref=e1565]
+              - cell "—" [ref=e1566]
+              - cell "別途" [ref=e1567]:
+                - generic [ref=e438]: 別途
+              - cell "7営業日後" [ref=e1568]
+              - cell "—" [ref=e1569]:
+                - paragraph [ref=e441]: —
+              - cell "編集 削除" [ref=e1570]:
+                - button "編集" [ref=e1571] [cursor=pointer]:
+                  - img [ref=e444]
+                - button "削除" [ref=e1572] [cursor=pointer]:
+                  - img [ref=e447]
+            - row "200枚 ¥5,600 — 別途 7営業日後 — 編集 削除" [ref=e1573]:
+              - cell "200枚" [ref=e1574]
+              - cell "¥5,600" [ref=e1575]
+              - cell "—" [ref=e1576]
+              - cell "別途" [ref=e1577]:
+                - generic [ref=e455]: 別途
+              - cell "7営業日後" [ref=e1578]
+              - cell "—" [ref=e1579]:
+                - paragraph [ref=e458]: —
+              - cell "編集 削除" [ref=e1580]:
+                - button "編集" [ref=e1581] [cursor=pointer]:
+                  - img [ref=e461]
+                - button "削除" [ref=e1582] [cursor=pointer]:
+                  - img [ref=e464]
+            - row "300枚 ¥8,400 — 別途 7営業日後 — 編集 削除" [ref=e1583]:
+              - cell "300枚" [ref=e1584]
+              - cell "¥8,400" [ref=e1585]
+              - cell "—" [ref=e1586]
+              - cell "別途" [ref=e1587]:
+                - generic [ref=e472]: 別途
+              - cell "7営業日後" [ref=e1588]
+              - cell "—" [ref=e1589]:
+                - paragraph [ref=e475]: —
+              - cell "編集 削除" [ref=e1590]:
+                - button "編集" [ref=e1591] [cursor=pointer]:
+                  - img [ref=e478]
+                - button "削除" [ref=e1592] [cursor=pointer]:
+                  - img [ref=e481]
+      - generic [ref=e483]:
+        - generic [ref=e484]:
+          - heading "名刺（両面・モノクロ）" [level=6] [ref=e1593]
+          - generic [ref=e487]: 3件
+        - table [ref=e489]:
+          - rowgroup [ref=e490]:
+            - row "数量（枚） 価格（税抜） デザイン費 デザイン費 納期 仕様メモ 操作" [ref=e1594]:
+              - columnheader "数量（枚）" [ref=e1595]
+              - columnheader "価格（税抜）" [ref=e1596]
+              - columnheader "デザイン費" [ref=e1597]
+              - columnheader "デザイン費" [ref=e1598]
+              - columnheader "納期" [ref=e1599]
+              - columnheader "仕様メモ" [ref=e1600]
+              - columnheader "操作" [ref=e1601]
+          - rowgroup [ref=e499]:
+            - row "100枚 ¥2,800 — 別途 7営業日後 — 編集 削除" [ref=e1602]:
+              - cell "100枚" [ref=e1603]
+              - cell "¥2,800" [ref=e1604]
+              - cell "—" [ref=e1605]
+              - cell "別途" [ref=e1606]:
+                - generic [ref=e506]: 別途
+              - cell "7営業日後" [ref=e1607]
+              - cell "—" [ref=e1608]:
+                - paragraph [ref=e509]: —
+              - cell "編集 削除" [ref=e1609]:
+                - button "編集" [ref=e1610] [cursor=pointer]:
+                  - img [ref=e512]
+                - button "削除" [ref=e1611] [cursor=pointer]:
+                  - img [ref=e515]
+            - row "200枚 ¥4,480 — 別途 7営業日後 — 編集 削除" [ref=e1612]:
+              - cell "200枚" [ref=e1613]
+              - cell "¥4,480" [ref=e1614]
+              - cell "—" [ref=e1615]
+              - cell "別途" [ref=e1616]:
+                - generic [ref=e523]: 別途
+              - cell "7営業日後" [ref=e1617]
+              - cell "—" [ref=e1618]:
+                - paragraph [ref=e526]: —
+              - cell "編集 削除" [ref=e1619]:
+                - button "編集" [ref=e1620] [cursor=pointer]:
+                  - img [ref=e529]
+                - button "削除" [ref=e1621] [cursor=pointer]:
+                  - img [ref=e532]
+            - row "300枚 ¥6,720 — 別途 7営業日後 — 編集 削除" [ref=e1622]:
+              - cell "300枚" [ref=e1623]
+              - cell "¥6,720" [ref=e1624]
+              - cell "—" [ref=e1625]
+              - cell "別途" [ref=e1626]:
+                - generic [ref=e540]: 別途
+              - cell "7営業日後" [ref=e1627]
+              - cell "—" [ref=e1628]:
+                - paragraph [ref=e543]: —
+              - cell "編集 削除" [ref=e1629]:
+                - button "編集" [ref=e1630] [cursor=pointer]:
+                  - img [ref=e546]
+                - button "削除" [ref=e1631] [cursor=pointer]:
+                  - img [ref=e549]
+      - generic [ref=e551]:
+        - generic [ref=e552]:
+          - heading "リコールハガキ（ポストカード）" [level=6] [ref=e1632]
+          - generic [ref=e555]: 3件
+        - table [ref=e557]:
+          - rowgroup [ref=e558]:
+            - row "数量（枚） 価格（税抜） デザイン費 デザイン費 納期 仕様メモ 操作" [ref=e1633]:
+              - columnheader "数量（枚）" [ref=e1634]
+              - columnheader "価格（税抜）" [ref=e1635]
+              - columnheader "デザイン費" [ref=e1636]
+              - columnheader "デザイン費" [ref=e1637]
+              - columnheader "納期" [ref=e1638]
+              - columnheader "仕様メモ" [ref=e1639]
+              - columnheader "操作" [ref=e1640]
+          - rowgroup [ref=e567]:
+            - row "100枚 ¥8,000 — 別途 7営業日後 — 編集 削除" [ref=e1641]:
+              - cell "100枚" [ref=e1642]
+              - cell "¥8,000" [ref=e1643]
+              - cell "—" [ref=e1644]
+              - cell "別途" [ref=e1645]:
+                - generic [ref=e574]: 別途
+              - cell "7営業日後" [ref=e1646]
+              - cell "—" [ref=e1647]:
+                - paragraph [ref=e577]: —
+              - cell "編集 削除" [ref=e1648]:
+                - button "編集" [ref=e1649] [cursor=pointer]:
+                  - img [ref=e580]
+                - button "削除" [ref=e1650] [cursor=pointer]:
+                  - img [ref=e583]
+            - row "200枚 ¥12,800 — 別途 7営業日後 — 編集 削除" [ref=e1651]:
+              - cell "200枚" [ref=e1652]
+              - cell "¥12,800" [ref=e1653]
+              - cell "—" [ref=e1654]
+              - cell "別途" [ref=e1655]:
+                - generic [ref=e591]: 別途
+              - cell "7営業日後" [ref=e1656]
+              - cell "—" [ref=e1657]:
+                - paragraph [ref=e594]: —
+              - cell "編集 削除" [ref=e1658]:
+                - button "編集" [ref=e1659] [cursor=pointer]:
+                  - img [ref=e597]
+                - button "削除" [ref=e1660] [cursor=pointer]:
+                  - img [ref=e600]
+            - row "300枚 ¥17,600 — 別途 7営業日後 — 編集 削除" [ref=e1661]:
+              - cell "300枚" [ref=e1662]
+              - cell "¥17,600" [ref=e1663]
+              - cell "—" [ref=e1664]
+              - cell "別途" [ref=e1665]:
+                - generic [ref=e608]: 別途
+              - cell "7営業日後" [ref=e1666]
+              - cell "—" [ref=e1667]:
+                - paragraph [ref=e611]: —
+              - cell "編集 削除" [ref=e1668]:
+                - button "編集" [ref=e1669] [cursor=pointer]:
+                  - img [ref=e614]
+                - button "削除" [ref=e1670] [cursor=pointer]:
+                  - img [ref=e617]
+      - generic [ref=e619]:
+        - generic [ref=e620]:
+          - heading "リコールハガキ（官製はがき）" [level=6] [ref=e1671]
+          - generic [ref=e623]: 3件
+        - table [ref=e625]:
+          - rowgroup [ref=e626]:
+            - row "数量（枚） 価格（税抜） デザイン費 デザイン費 納期 仕様メモ 操作" [ref=e1672]:
+              - columnheader "数量（枚）" [ref=e1673]
+              - columnheader "価格（税抜）" [ref=e1674]
+              - columnheader "デザイン費" [ref=e1675]
+              - columnheader "デザイン費" [ref=e1676]
+              - columnheader "納期" [ref=e1677]
+              - columnheader "仕様メモ" [ref=e1678]
+              - columnheader "操作" [ref=e1679]
+          - rowgroup [ref=e635]:
+            - row "100枚 ¥7,500 — 別途 7営業日後 — 編集 削除" [ref=e1680]:
+              - cell "100枚" [ref=e1681]
+              - cell "¥7,500" [ref=e1682]
+              - cell "—" [ref=e1683]
+              - cell "別途" [ref=e1684]:
+                - generic [ref=e642]: 別途
+              - cell "7営業日後" [ref=e1685]
+              - cell "—" [ref=e1686]:
+                - paragraph [ref=e645]: —
+              - cell "編集 削除" [ref=e1687]:
+                - button "編集" [ref=e1688] [cursor=pointer]:
+                  - img [ref=e648]
+                - button "削除" [ref=e1689] [cursor=pointer]:
+                  - img [ref=e651]
+            - row "200枚 ¥12,000 — 別途 7営業日後 — 編集 削除" [ref=e1690]:
+              - cell "200枚" [ref=e1691]
+              - cell "¥12,000" [ref=e1692]
+              - cell "—" [ref=e1693]
+              - cell "別途" [ref=e1694]:
+                - generic [ref=e659]: 別途
+              - cell "7営業日後" [ref=e1695]
+              - cell "—" [ref=e1696]:
+                - paragraph [ref=e662]: —
+              - cell "編集 削除" [ref=e1697]:
+                - button "編集" [ref=e1698] [cursor=pointer]:
+                  - img [ref=e665]
+                - button "削除" [ref=e1699] [cursor=pointer]:
+                  - img [ref=e668]
+            - row "300枚 ¥16,500 — 別途 7営業日後 — 編集 削除" [ref=e1700]:
+              - cell "300枚" [ref=e1701]
+              - cell "¥16,500" [ref=e1702]
+              - cell "—" [ref=e1703]
+              - cell "別途" [ref=e1704]:
+                - generic [ref=e676]: 別途
+              - cell "7営業日後" [ref=e1705]
+              - cell "—" [ref=e1706]:
+                - paragraph [ref=e679]: —
+              - cell "編集 削除" [ref=e1707]:
+                - button "編集" [ref=e1708] [cursor=pointer]:
+                  - img [ref=e682]
+                - button "削除" [ref=e1709] [cursor=pointer]:
+                  - img [ref=e685]
+      - generic [ref=e687]:
+        - generic [ref=e688]:
+          - heading "A4三つ折りリーフレット" [level=6] [ref=e1710]
+          - generic [ref=e691]: 3件
+        - table [ref=e693]:
+          - rowgroup [ref=e694]:
+            - row "数量（枚） 価格（税抜） デザイン費 デザイン費 納期 仕様メモ 操作" [ref=e1711]:
+              - columnheader "数量（枚）" [ref=e1712]
+              - columnheader "価格（税抜）" [ref=e1713]
+              - columnheader "デザイン費" [ref=e1714]
+              - columnheader "デザイン費" [ref=e1715]
+              - columnheader "納期" [ref=e1716]
+              - columnheader "仕様メモ" [ref=e1717]
+              - columnheader "操作" [ref=e1718]
+          - rowgroup [ref=e703]:
+            - 'row "300枚 ¥27,000 — 込み 14営業日後 {\"coating\":\"マット加工\"} 編集 削除" [ref=e1719]':
+              - cell "300枚" [ref=e1720]
+              - cell "¥27,000" [ref=e1721]
+              - cell "—" [ref=e1722]
+              - cell "込み" [ref=e1723]:
+                - generic [ref=e710]: 込み
+              - cell "14営業日後" [ref=e1724]
+              - 'cell "{\"coating\":\"マット加工\"}" [ref=e1725]':
+                - paragraph [ref=e713]: "{\"coating\":\"マット加工\"}"
+              - cell "編集 削除" [ref=e1726]:
+                - button "編集" [ref=e1727] [cursor=pointer]:
+                  - img [ref=e716]
+                - button "削除" [ref=e1728] [cursor=pointer]:
+                  - img [ref=e719]
+            - 'row "500枚 ¥35,000 — 込み 14営業日後 {\"coating\":\"マット加工\"} 編集 削除" [ref=e1729]':
+              - cell "500枚" [ref=e1730]
+              - cell "¥35,000" [ref=e1731]
+              - cell "—" [ref=e1732]
+              - cell "込み" [ref=e1733]:
+                - generic [ref=e727]: 込み
+              - cell "14営業日後" [ref=e1734]
+              - 'cell "{\"coating\":\"マット加工\"}" [ref=e1735]':
+                - paragraph [ref=e730]: "{\"coating\":\"マット加工\"}"
+              - cell "編集 削除" [ref=e1736]:
+                - button "編集" [ref=e1737] [cursor=pointer]:
+                  - img [ref=e733]
+                - button "削除" [ref=e1738] [cursor=pointer]:
+                  - img [ref=e736]
+            - 'row "1,000枚 ¥50,000 — 込み 14営業日後 {\"coating\":\"マット加工\"} 編集 削除" [ref=e1739]':
+              - cell "1,000枚" [ref=e1740]
+              - cell "¥50,000" [ref=e1741]
+              - cell "—" [ref=e1742]
+              - cell "込み" [ref=e1743]:
+                - generic [ref=e744]: 込み
+              - cell "14営業日後" [ref=e1744]
+              - 'cell "{\"coating\":\"マット加工\"}" [ref=e1745]':
+                - paragraph [ref=e747]: "{\"coating\":\"マット加工\"}"
+              - cell "編集 削除" [ref=e1746]:
+                - button "編集" [ref=e1747] [cursor=pointer]:
+                  - img [ref=e750]
+                - button "削除" [ref=e1748] [cursor=pointer]:
+                  - img [ref=e753]
+      - generic [ref=e755]:
+        - generic [ref=e756]:
+          - heading "診察券" [level=6] [ref=e1749]
+          - generic [ref=e759]: 5件
+        - table [ref=e761]:
+          - rowgroup [ref=e762]:
+            - row "数量（枚） 価格（税抜） デザイン費 デザイン費 納期 仕様メモ 操作" [ref=e1750]:
+              - columnheader "数量（枚）" [ref=e1751]
+              - columnheader "価格（税抜）" [ref=e1752]
+              - columnheader "デザイン費" [ref=e1753]
+              - columnheader "デザイン費" [ref=e1754]
+              - columnheader "納期" [ref=e1755]
+              - columnheader "仕様メモ" [ref=e1756]
+              - columnheader "操作" [ref=e1757]
+          - rowgroup [ref=e771]:
+            - 'row "500枚 ¥19,500 — 込み 14営業日後 {\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"} 編集 削除" [ref=e1758]':
+              - cell "500枚" [ref=e1759]
+              - cell "¥19,500" [ref=e1760]
+              - cell "—" [ref=e1761]
+              - cell "込み" [ref=e1762]:
+                - generic [ref=e778]: 込み
+              - cell "14営業日後" [ref=e1763]
+              - 'cell "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}" [ref=e1764]':
+                - paragraph [ref=e781]: "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}"
+              - cell "編集 削除" [ref=e1765]:
+                - button "編集" [ref=e1766] [cursor=pointer]:
+                  - img [ref=e784]
+                - button "削除" [ref=e1767] [cursor=pointer]:
+                  - img [ref=e787]
+            - 'row "1,000枚 ¥25,500 — 込み 14営業日後 {\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"} 編集 削除" [ref=e1768]':
+              - cell "1,000枚" [ref=e1769]
+              - cell "¥25,500" [ref=e1770]
+              - cell "—" [ref=e1771]
+              - cell "込み" [ref=e1772]:
+                - generic [ref=e795]: 込み
+              - cell "14営業日後" [ref=e1773]
+              - 'cell "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}" [ref=e1774]':
+                - paragraph [ref=e798]: "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}"
+              - cell "編集 削除" [ref=e1775]:
+                - button "編集" [ref=e1776] [cursor=pointer]:
+                  - img [ref=e801]
+                - button "削除" [ref=e1777] [cursor=pointer]:
+                  - img [ref=e804]
+            - 'row "2,000枚 ¥34,500 — 込み 14営業日後 {\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"} 編集 削除" [ref=e1778]':
+              - cell "2,000枚" [ref=e1779]
+              - cell "¥34,500" [ref=e1780]
+              - cell "—" [ref=e1781]
+              - cell "込み" [ref=e1782]:
+                - generic [ref=e812]: 込み
+              - cell "14営業日後" [ref=e1783]
+              - 'cell "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}" [ref=e1784]':
+                - paragraph [ref=e815]: "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}"
+              - cell "編集 削除" [ref=e1785]:
+                - button "編集" [ref=e1786] [cursor=pointer]:
+                  - img [ref=e818]
+                - button "削除" [ref=e1787] [cursor=pointer]:
+                  - img [ref=e821]
+            - 'row "3,000枚 ¥43,500 — 込み 14営業日後 {\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"} 編集 削除" [ref=e1788]':
+              - cell "3,000枚" [ref=e1789]
+              - cell "¥43,500" [ref=e1790]
+              - cell "—" [ref=e1791]
+              - cell "込み" [ref=e1792]:
+                - generic [ref=e829]: 込み
+              - cell "14営業日後" [ref=e1793]
+              - 'cell "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}" [ref=e1794]':
+                - paragraph [ref=e832]: "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}"
+              - cell "編集 削除" [ref=e1795]:
+                - button "編集" [ref=e1796] [cursor=pointer]:
+                  - img [ref=e835]
+                - button "削除" [ref=e1797] [cursor=pointer]:
+                  - img [ref=e838]
+            - 'row "5,000枚 ¥56,500 — 込み 14営業日後 {\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"} 編集 削除" [ref=e1798]':
+              - cell "5,000枚" [ref=e1799]
+              - cell "¥56,500" [ref=e1800]
+              - cell "—" [ref=e1801]
+              - cell "込み" [ref=e1802]:
+                - generic [ref=e846]: 込み
+              - cell "14営業日後" [ref=e1803]
+              - 'cell "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}" [ref=e1804]':
+                - paragraph [ref=e849]: "{\"coating\":\"なし\",\"corner_radius\":\"角丸なし\"}"
+              - cell "編集 削除" [ref=e1805]:
+                - button "編集" [ref=e1806] [cursor=pointer]:
+                  - img [ref=e852]
+                - button "削除" [ref=e1807] [cursor=pointer]:
+                  - img [ref=e855]

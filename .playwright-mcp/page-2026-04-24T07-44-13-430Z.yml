@@ -1,0 +1,216 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: MA
+        - heading "MA-Pilot" [level=6] [ref=e8]
+        - paragraph [ref=e215]: 神田駅そば総合歯科
+      - button "運営者モードへ" [ref=e9] [cursor=pointer]:
+        - img [ref=e11]
+        - text: 運営者モードへ
+      - generic [ref=e13]:
+        - generic [ref=e14]: 桑
+        - paragraph [ref=e15]: 桑畑 健
+  - generic [ref=e16]:
+    - list [ref=e17]:
+      - listitem [ref=e18]:
+        - button "経営ダッシュボード" [ref=e19] [cursor=pointer]:
+          - img [ref=e21]
+          - generic [ref=e24]: 経営ダッシュボード
+      - listitem [ref=e25]:
+        - button "基礎データ管理" [ref=e26] [cursor=pointer]:
+          - img [ref=e28]
+          - generic [ref=e31]: 基礎データ管理
+      - listitem [ref=e32]:
+        - button "診療圏分析" [ref=e33] [cursor=pointer]:
+          - img [ref=e35]
+          - generic [ref=e38]: 診療圏分析
+      - listitem [ref=e39]:
+        - button "経営シミュレーション" [ref=e40] [cursor=pointer]:
+          - img [ref=e42]
+          - generic [ref=e45]: 経営シミュレーション
+      - listitem [ref=e46]:
+        - button "レポート管理" [active] [ref=e47] [cursor=pointer]:
+          - img [ref=e49]
+          - generic [ref=e52]: レポート管理
+      - listitem [ref=e53]:
+        - button "印刷物発注" [ref=e54] [cursor=pointer]:
+          - img [ref=e56]
+          - generic [ref=e59]: 印刷物発注
+      - listitem [ref=e60]:
+        - button "印刷物発注履歴" [ref=e61] [cursor=pointer]:
+          - img [ref=e63]
+          - generic [ref=e66]: 印刷物発注履歴
+      - listitem [ref=e67]:
+        - button "医院設定" [ref=e68] [cursor=pointer]:
+          - img [ref=e70]
+          - generic [ref=e73]: 医院設定
+      - listitem [ref=e74]:
+        - button "スタッフ管理" [ref=e75] [cursor=pointer]:
+          - img [ref=e77]
+          - generic [ref=e80]: スタッフ管理
+    - separator [ref=e81]
+    - list [ref=e82]:
+      - listitem [ref=e83]:
+        - button "マイページ設定" [ref=e84] [cursor=pointer]:
+          - img [ref=e86]
+          - generic [ref=e89]: マイページ設定
+      - listitem [ref=e90]:
+        - button "ログアウト" [ref=e91] [cursor=pointer]:
+          - img [ref=e93]
+          - generic [ref=e96]: ログアウト
+  - main [ref=e97]:
+    - generic [ref=e232]:
+      - heading "レポート管理" [level=4] [ref=e233]
+      - paragraph [ref=e234]: 経営レポートの作成・ダウンロード・履歴管理
+    - generic [ref=e235]:
+      - heading "レポートテンプレート" [level=6] [ref=e236]
+      - button "カスタムレポート作成" [ref=e237] [cursor=pointer]:
+        - img [ref=e238]
+        - text: カスタムレポート作成
+    - generic [ref=e240]:
+      - generic [ref=e241] [cursor=pointer]:
+        - img [ref=e243]
+        - paragraph [ref=e245]: 月次経営レポート
+        - paragraph [ref=e246]: 売上、利益、患者数などの月次データを包括的にまとめたレポート
+        - generic [ref=e247]:
+          - paragraph [ref=e248]: PDF形式
+          - button [ref=e249]:
+            - img [ref=e250]
+      - generic [ref=e252] [cursor=pointer]:
+        - img [ref=e254]
+        - paragraph [ref=e256]: 診療圏分析レポート
+        - paragraph [ref=e257]: 診療圏内の人口統計、競合分析、市場ポテンシャル評価
+        - generic [ref=e258]:
+          - paragraph [ref=e259]: PDF形式
+          - button [ref=e260]:
+            - img [ref=e261]
+      - generic [ref=e263] [cursor=pointer]:
+        - img [ref=e265]
+        - paragraph [ref=e267]: シミュレーション結果レポート
+        - paragraph [ref=e268]: 経営シミュレーションの結果と推移予測グラフ
+        - generic [ref=e269]:
+          - paragraph [ref=e270]: PDF形式
+          - button [ref=e271]:
+            - img [ref=e272]
+    - generic [ref=e274]:
+      - heading "レポート生成履歴" [level=6] [ref=e275]
+      - table [ref=e277]:
+        - rowgroup [ref=e278]:
+          - row "レポート名 生成日時 対象期間 ステータス 操作" [ref=e279]:
+            - columnheader "レポート名" [ref=e280]
+            - columnheader "生成日時" [ref=e281]
+            - columnheader "対象期間" [ref=e282]
+            - columnheader "ステータス" [ref=e283]
+            - columnheader "操作" [ref=e284]
+        - rowgroup [ref=e285]:
+          - row "月次経営レポート 2026/4/24 16:16:49 月次 完了" [ref=e286]:
+            - cell "月次経営レポート" [ref=e287]
+            - cell "2026/4/24 16:16:49" [ref=e288]
+            - cell "月次" [ref=e289]
+            - cell "完了" [ref=e290]:
+              - generic [ref=e292]: 完了
+            - cell [ref=e293]:
+              - button [ref=e294] [cursor=pointer]:
+                - img [ref=e295]
+              - button [ref=e297] [cursor=pointer]:
+                - img [ref=e298]
+          - row "月次経営レポート 2026/4/24 16:11:19 月次 完了" [ref=e300]:
+            - cell "月次経営レポート" [ref=e301]
+            - cell "2026/4/24 16:11:19" [ref=e302]
+            - cell "月次" [ref=e303]
+            - cell "完了" [ref=e304]:
+              - generic [ref=e306]: 完了
+            - cell [ref=e307]:
+              - button [ref=e308] [cursor=pointer]:
+                - img [ref=e309]
+              - button [ref=e311] [cursor=pointer]:
+                - img [ref=e312]
+          - row "月次経営レポート 2026/4/24 15:59:44 月次 完了" [ref=e314]:
+            - cell "月次経営レポート" [ref=e315]
+            - cell "2026/4/24 15:59:44" [ref=e316]
+            - cell "月次" [ref=e317]
+            - cell "完了" [ref=e318]:
+              - generic [ref=e320]: 完了
+            - cell [ref=e321]:
+              - button [ref=e322] [cursor=pointer]:
+                - img [ref=e323]
+              - button [ref=e325] [cursor=pointer]:
+                - img [ref=e326]
+          - row "月次経営レポート 2026/4/24 15:56:41 月次 完了" [ref=e328]:
+            - cell "月次経営レポート" [ref=e329]
+            - cell "2026/4/24 15:56:41" [ref=e330]
+            - cell "月次" [ref=e331]
+            - cell "完了" [ref=e332]:
+              - generic [ref=e334]: 完了
+            - cell [ref=e335]:
+              - button [ref=e336] [cursor=pointer]:
+                - img [ref=e337]
+              - button [ref=e339] [cursor=pointer]:
+                - img [ref=e340]
+          - row "月次経営レポート 2026/4/24 9:40:35 月次 完了" [ref=e342]:
+            - cell "月次経営レポート" [ref=e343]
+            - cell "2026/4/24 9:40:35" [ref=e344]
+            - cell "月次" [ref=e345]
+            - cell "完了" [ref=e346]:
+              - generic [ref=e348]: 完了
+            - cell [ref=e349]:
+              - button [ref=e350] [cursor=pointer]:
+                - img [ref=e351]
+              - button [ref=e353] [cursor=pointer]:
+                - img [ref=e354]
+          - row "月次経営レポート 2026/4/24 8:44:20 月次 完了" [ref=e356]:
+            - cell "月次経営レポート" [ref=e357]
+            - cell "2026/4/24 8:44:20" [ref=e358]
+            - cell "月次" [ref=e359]
+            - cell "完了" [ref=e360]:
+              - generic [ref=e362]: 完了
+            - cell [ref=e363]:
+              - button [ref=e364] [cursor=pointer]:
+                - img [ref=e365]
+              - button [ref=e367] [cursor=pointer]:
+                - img [ref=e368]
+          - row "月次経営レポート 2026/4/16 8:42:43 月次 完了" [ref=e370]:
+            - cell "月次経営レポート" [ref=e371]
+            - cell "2026/4/16 8:42:43" [ref=e372]
+            - cell "月次" [ref=e373]
+            - cell "完了" [ref=e374]:
+              - generic [ref=e376]: 完了
+            - cell [ref=e377]:
+              - button [ref=e378] [cursor=pointer]:
+                - img [ref=e379]
+              - button [ref=e381] [cursor=pointer]:
+                - img [ref=e382]
+          - row "月次経営レポート 2026/3/12 10:17:45 月次 完了" [ref=e384]:
+            - cell "月次経営レポート" [ref=e385]
+            - cell "2026/3/12 10:17:45" [ref=e386]
+            - cell "月次" [ref=e387]
+            - cell "完了" [ref=e388]:
+              - generic [ref=e390]: 完了
+            - cell [ref=e391]:
+              - button [ref=e392] [cursor=pointer]:
+                - img [ref=e393]
+              - button [ref=e395] [cursor=pointer]:
+                - img [ref=e396]
+          - row "シミュレーション結果レポート 2026/3/12 9:48:30 シミュレーション 完了" [ref=e398]:
+            - cell "シミュレーション結果レポート" [ref=e399]
+            - cell "2026/3/12 9:48:30" [ref=e400]
+            - cell "シミュレーション" [ref=e401]
+            - cell "完了" [ref=e402]:
+              - generic [ref=e404]: 完了
+            - cell [ref=e405]:
+              - button [ref=e406] [cursor=pointer]:
+                - img [ref=e407]
+              - button [ref=e409] [cursor=pointer]:
+                - img [ref=e410]
+          - row "月次経営レポート 2026/3/12 9:48:16 月次 完了" [ref=e412]:
+            - cell "月次経営レポート" [ref=e413]
+            - cell "2026/3/12 9:48:16" [ref=e414]
+            - cell "月次" [ref=e415]
+            - cell "完了" [ref=e416]:
+              - generic [ref=e418]: 完了
+            - cell [ref=e419]:
+              - button [ref=e420] [cursor=pointer]:
+                - img [ref=e421]
+              - button [ref=e423] [cursor=pointer]:
+                - img [ref=e424]

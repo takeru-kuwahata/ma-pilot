@@ -1,0 +1,38 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - generic [ref=e10]:
+              - generic [ref=e11]: ユーザーID
+              - textbox "ユーザーID" [ref=e12]
+            - generic [ref=e13]:
+              - generic [ref=e14]: パスワード
+              - textbox "パスワード" [ref=e15]
+            - iframe [ref=e20]:
+              - generic [ref=f106e2]:
+                - generic [ref=f106e3]:
+                  - checkbox "私はロボットではありません" [ref=f106e7]
+                  - generic [ref=f106e11]: 私はロボットではありません
+                - generic [ref=f106e12]:
+                  - generic [ref=f106e15]: reCAPTCHA
+                  - generic [ref=f106e16]:
+                    - link "プライバシー" [ref=f106e17] [cursor=pointer]:
+                      - /url: https://www.google.com/intl/ja/policies/privacy/
+                    - text: "-"
+                    - link "利用規約" [ref=f106e18] [cursor=pointer]:
+                      - /url: https://www.google.com/intl/ja/policies/terms/
+            - button "ログイン" [disabled] [ref=e22]
+          - link "ユーザーID・ログインパスワードをお忘れの方はこちら" [ref=e24] [cursor=pointer]:
+            - /url: /auth/password/email
+        - generic [ref=e26]:
+          - link "各種お問い合わせはこちら" [ref=e28] [cursor=pointer]:
+            - /url: https://manual.linestep.net/contact
+          - generic [ref=e29]:
+            - text: 本システムは株式会社マネクルが提供するメッセージ配信スタンドであり、 LINEヤフー株式会社が提供するサービスではございません。
+            - text: また、LINE公式アカウント・Messaging APIとの連携はお客様の責任のもと行うものとし、当社は一切関知いたしません。
+      - link "【Zoom個別相談】1対1でLステップのお悩みを解決するならこちら" [ref=e32] [cursor=pointer]:
+        - /url: https://linestep.jp/zoom_1on1_consulting/?utm_source=lstep_login&utm_medium=referral&utm_campaign=guide_bannar
+        - img "【Zoom個別相談】1対1でLステップのお悩みを解決するならこちら" [ref=e33]
+  - application "ChatPlus" [ref=e35]

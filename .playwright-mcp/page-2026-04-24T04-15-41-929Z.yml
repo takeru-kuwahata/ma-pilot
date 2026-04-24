@@ -1,0 +1,130 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]: MA
+          - heading [level=6] [ref=e139]: MA-Pilot
+          - paragraph [ref=e9]: 神田駅そば総合歯科
+        - button [ref=e140] [cursor=pointer]:
+          - img [ref=e12]
+          - text: 運営者モードへ
+        - generic [ref=e14]:
+          - generic [ref=e15]: 桑
+          - paragraph [ref=e16]: 桑畑 健
+    - generic [ref=e17]:
+      - list [ref=e18]:
+        - listitem [ref=e19]:
+          - button [ref=e141] [cursor=pointer]:
+            - img [ref=e22]
+            - generic [ref=e25]: 経営ダッシュボード
+        - listitem [ref=e26]:
+          - button [ref=e142] [cursor=pointer]:
+            - img [ref=e29]
+            - generic [ref=e32]: 基礎データ管理
+        - listitem [ref=e33]:
+          - button [ref=e143] [cursor=pointer]:
+            - img [ref=e36]
+            - generic [ref=e39]: 診療圏分析
+        - listitem [ref=e40]:
+          - button [ref=e144] [cursor=pointer]:
+            - img [ref=e43]
+            - generic [ref=e46]: 経営シミュレーション
+        - listitem [ref=e47]:
+          - button [ref=e145] [cursor=pointer]:
+            - img [ref=e50]
+            - generic [ref=e53]: レポート管理
+        - listitem [ref=e54]:
+          - button [ref=e146] [cursor=pointer]:
+            - img [ref=e57]
+            - generic [ref=e60]: 印刷物発注
+        - listitem [ref=e61]:
+          - button [ref=e147] [cursor=pointer]:
+            - img [ref=e64]
+            - generic [ref=e67]: 印刷物発注履歴
+        - listitem [ref=e68]:
+          - button [ref=e148] [cursor=pointer]:
+            - img [ref=e71]
+            - generic [ref=e74]: 医院設定
+        - listitem [ref=e75]:
+          - button [ref=e149] [cursor=pointer]:
+            - img [ref=e78]
+            - generic [ref=e81]: スタッフ管理
+      - separator [ref=e82]
+      - list [ref=e83]:
+        - listitem [ref=e84]:
+          - button [ref=e150] [cursor=pointer]:
+            - img [ref=e87]
+            - generic [ref=e90]: マイページ設定
+        - listitem [ref=e91]:
+          - button [ref=e151] [cursor=pointer]:
+            - img [ref=e94]
+            - generic [ref=e97]: ログアウト
+    - main [ref=e98]:
+      - generic [ref=e99]:
+        - heading [level=4] [ref=e152]: スタッフ管理
+        - paragraph [ref=e101]: スタッフアカウントの招待・権限管理
+      - alert [ref=e102]:
+        - img [ref=e104]
+        - paragraph [ref=e107]: スタッフを招待すると、登録したメールアドレスに招待リンクが送信されます。 権限は、オーナー（全権限）、編集者（閲覧・編集）、閲覧者（閲覧のみ）の3種類です。
+      - generic [ref=e108]:
+        - generic [ref=e109]:
+          - heading [level=6] [ref=e153]: 登録スタッフ一覧
+          - button [ref=e154] [cursor=pointer]:
+            - img [ref=e113]
+            - text: スタッフを招待
+        - table [ref=e116]:
+          - rowgroup [ref=e117]:
+            - row [ref=e155]:
+              - columnheader [ref=e156]: 名前
+              - columnheader [ref=e157]: メールアドレス
+              - columnheader [ref=e158]: 権限
+              - columnheader [ref=e159]: 登録日
+              - columnheader [ref=e160]: 操作
+          - rowgroup [ref=e124]:
+            - row [ref=e161]:
+              - cell [ref=e162]: test-staff-b04
+              - cell [ref=e163]: test-staff-b04@example.com
+              - cell [ref=e164]:
+                - generic [ref=e130]: 閲覧者
+              - cell [ref=e165]: 2026/4/16
+              - cell [ref=e132]:
+                - button [ref=e133] [cursor=pointer]:
+                  - img [ref=e134]
+                - button [ref=e136] [cursor=pointer]:
+                  - img [ref=e137]
+      - alert [ref=e192]:
+        - img [ref=e194]
+        - generic [ref=e196]: "招待メール送信失敗: 404 page not found"
+        - button [ref=e198] [cursor=pointer]:
+          - img [ref=e199]
+  - dialog "スタッフを追加" [ref=e168]:
+    - heading "スタッフを追加" [level=2] [ref=e169]:
+      - paragraph [ref=e170]: スタッフを追加
+    - generic [ref=e172]:
+      - generic [ref=e173]:
+        - generic [ref=e189]:
+          - text: メールアドレス
+          - generic [ref=e190]: "*"
+        - generic [ref=e174]:
+          - textbox "メールアドレス" [ref=e175]:
+            - /placeholder: example@clinic.jp
+            - text: takerutic@gmail.com
+          - group:
+            - generic: メールアドレス *
+      - generic [ref=e176]:
+        - generic [ref=e177]:
+          - text: 権限
+          - generic [ref=e178]: "*"
+        - generic [ref=e179]:
+          - combobox [ref=e180] [cursor=pointer]: 医院閲覧者
+          - textbox: clinic_viewer
+          - img
+          - group:
+            - generic: 権限 *
+      - alert [ref=e181]:
+        - img [ref=e183]
+        - paragraph [ref=e186]: 入力したメールアドレスに招待メールが送信されます。スタッフはメール内のリンクからパスワードを設定してログインできます。
+    - generic [ref=e187]:
+      - button "キャンセル" [ref=e188] [cursor=pointer]
+      - button "招待メールを送信" [ref=e191] [cursor=pointer]: 招待メールを送信

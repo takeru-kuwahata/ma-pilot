@@ -1,0 +1,129 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e28]:
+    - banner [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]: MA
+          - heading "MA-Pilot" [level=6] [ref=e33]
+          - generic [ref=e35]: 管理者
+        - paragraph [ref=e36]: 桑畑 健
+    - generic [ref=e37]:
+      - generic [ref=e38]: 管理機能
+      - list [ref=e39]:
+        - listitem [ref=e40]:
+          - button "管理ダッシュボード" [ref=e41] [cursor=pointer]:
+            - img [ref=e43]
+            - generic [ref=e46]: 管理ダッシュボード
+        - listitem [ref=e47]:
+          - button "運営者アカウント管理" [ref=e48] [cursor=pointer]:
+            - img [ref=e50]
+            - generic [ref=e53]: 運営者アカウント管理
+        - listitem [ref=e54]:
+          - button "医院アカウント管理" [ref=e55] [cursor=pointer]:
+            - img [ref=e57]
+            - generic [ref=e60]: 医院アカウント管理
+        - listitem [ref=e61]:
+          - button "システム設定" [ref=e62] [cursor=pointer]:
+            - img [ref=e64]
+            - generic [ref=e68]: システム設定
+        - listitem [ref=e69]:
+          - button "価格表管理" [ref=e70] [cursor=pointer]:
+            - img [ref=e72]
+            - generic [ref=e75]: 価格表管理
+        - listitem [ref=e76]:
+          - button "印刷物発注管理" [ref=e77] [cursor=pointer]:
+            - img [ref=e79]
+            - generic [ref=e82]: 印刷物発注管理
+      - separator [ref=e83]
+      - list [ref=e84]:
+        - listitem [ref=e85]:
+          - button "マイページ設定" [ref=e86] [cursor=pointer]:
+            - img [ref=e88]
+            - generic [ref=e91]: マイページ設定
+        - listitem [ref=e92]:
+          - button "ログアウト" [ref=e93] [cursor=pointer]:
+            - img [ref=e95]
+            - generic [ref=e98]: ログアウト
+    - main [ref=e99]:
+      - generic [ref=e100]:
+        - heading "管理ダッシュボード" [level=4] [ref=e101]
+        - paragraph [ref=e102]: システム全体の利用状況とパフォーマンス
+      - generic [ref=e103]:
+        - generic [ref=e104]:
+          - generic [ref=e105]:
+            - img [ref=e106]
+            - paragraph [ref=e108]: 登録医院数
+          - paragraph [ref=e109]: "0"
+        - generic [ref=e110]:
+          - generic [ref=e111]:
+            - img [ref=e112]
+            - paragraph [ref=e114]: アクティブ医院数
+          - generic [ref=e115]:
+            - paragraph [ref=e116]: "0"
+            - paragraph [ref=e117]: / 0
+          - paragraph [ref=e118]: "稼働率: 0%"
+        - generic [ref=e119]:
+          - generic [ref=e120]:
+            - img [ref=e121]
+            - paragraph [ref=e123]: 月間アクティブユーザー
+          - paragraph [ref=e124]: "0"
+        - generic [ref=e125]:
+          - generic [ref=e126]:
+            - img [ref=e127]
+            - paragraph [ref=e129]: 月間レポート生成数
+          - paragraph [ref=e130]: "0"
+      - generic [ref=e131]:
+        - generic [ref=e132]:
+          - heading "登録医院数推移" [level=6] [ref=e133]
+          - generic [ref=e135]:
+            - img [ref=e136]:
+              - generic [ref=e141]:
+                - generic [ref=e143]: 11月
+                - generic [ref=e145]: 12月
+                - generic [ref=e147]: 1月
+                - generic [ref=e149]: 2月
+                - generic [ref=e151]: 3月
+                - generic [ref=e153]: 4月
+              - generic [ref=e155]:
+                - generic [ref=e157]: "0"
+                - generic [ref=e159]: "1"
+                - generic [ref=e161]: "2"
+                - generic [ref=e163]: "3"
+                - generic [ref=e165]: "4"
+            - list [ref=e167]:
+              - listitem [ref=e168]:
+                - img [ref=e169]
+                - text: 登録医院数
+        - generic [ref=e171]:
+          - heading "月間アクティブユーザー推移" [level=6] [ref=e172]
+          - generic [ref=e174]:
+            - img [ref=e175]:
+              - generic [ref=e180]:
+                - generic [ref=e182]: 11月
+                - generic [ref=e184]: 12月
+                - generic [ref=e186]: 1月
+                - generic [ref=e188]: 2月
+                - generic [ref=e190]: 3月
+                - generic [ref=e192]: 4月
+              - generic [ref=e194]:
+                - generic [ref=e196]: "0"
+                - generic [ref=e198]: "1"
+                - generic [ref=e200]: "2"
+                - generic [ref=e202]: "3"
+                - generic [ref=e204]: "4"
+            - list [ref=e206]:
+              - listitem [ref=e207]:
+                - img [ref=e208]
+                - text: アクティブユーザー数
+      - generic [ref=e210]:
+        - heading "最近の登録医院" [level=6] [ref=e211]
+        - table [ref=e213]:
+          - rowgroup [ref=e214]:
+            - row "医院名 登録日 プラン ステータス 操作" [ref=e215]:
+              - columnheader "医院名" [ref=e216]
+              - columnheader "登録日" [ref=e217]
+              - columnheader "プラン" [ref=e218]
+              - columnheader "ステータス" [ref=e219]
+              - columnheader "操作" [ref=e220]
+          - rowgroup
+  - generic [ref=e221]: "0"

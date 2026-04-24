@@ -1,0 +1,121 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]: MA
+          - heading [level=6] [ref=e127]: MA-Pilot
+          - paragraph [ref=e102]: 神田駅そば総合歯科
+        - button [ref=e128] [cursor=pointer]:
+          - img [ref=e11]
+          - text: 運営者モードへ
+        - generic [ref=e13]:
+          - generic [ref=e14]: 桑
+          - paragraph [ref=e15]: 桑畑 健
+    - generic [ref=e16]:
+      - list [ref=e17]:
+        - listitem [ref=e18]:
+          - button [ref=e129] [cursor=pointer]:
+            - img [ref=e21]
+            - generic [ref=e24]: 経営ダッシュボード
+        - listitem [ref=e25]:
+          - button [ref=e130] [cursor=pointer]:
+            - img [ref=e28]
+            - generic [ref=e31]: 基礎データ管理
+        - listitem [ref=e32]:
+          - button [ref=e131] [cursor=pointer]:
+            - img [ref=e35]
+            - generic [ref=e38]: 診療圏分析
+        - listitem [ref=e39]:
+          - button [ref=e132] [cursor=pointer]:
+            - img [ref=e42]
+            - generic [ref=e45]: 経営シミュレーション
+        - listitem [ref=e46]:
+          - button [ref=e133] [cursor=pointer]:
+            - img [ref=e49]
+            - generic [ref=e52]: レポート管理
+        - listitem [ref=e53]:
+          - button [ref=e134] [cursor=pointer]:
+            - img [ref=e56]
+            - generic [ref=e59]: 印刷物発注
+        - listitem [ref=e60]:
+          - button [ref=e135] [cursor=pointer]:
+            - img [ref=e63]
+            - generic [ref=e66]: 印刷物発注履歴
+        - listitem [ref=e67]:
+          - button [ref=e136] [cursor=pointer]:
+            - img [ref=e70]
+            - generic [ref=e73]: 医院設定
+        - listitem [ref=e74]:
+          - button [ref=e137] [cursor=pointer]:
+            - img [ref=e77]
+            - generic [ref=e80]: スタッフ管理
+      - separator [ref=e81]
+      - list [ref=e82]:
+        - listitem [ref=e83]:
+          - button [ref=e138] [cursor=pointer]:
+            - img [ref=e86]
+            - generic [ref=e89]: マイページ設定
+        - listitem [ref=e90]:
+          - button [ref=e139] [cursor=pointer]:
+            - img [ref=e93]
+            - generic [ref=e96]: ログアウト
+    - main [ref=e97]:
+      - generic [ref=e98]:
+        - heading [level=4] [ref=e140]: スタッフ管理
+        - paragraph [ref=e104]: スタッフアカウントの招待・権限管理
+      - alert [ref=e105]:
+        - img [ref=e107]
+        - paragraph [ref=e110]: スタッフを招待すると、登録したメールアドレスに招待リンクが送信されます。 権限は、オーナー（全権限）、編集者（閲覧・編集）、閲覧者（閲覧のみ）の3種類です。
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - heading [level=6] [ref=e141]: 登録スタッフ一覧
+          - button [ref=e142] [cursor=pointer]:
+            - img [ref=e116]
+            - text: スタッフを招待
+        - table [ref=e119]:
+          - rowgroup [ref=e120]:
+            - row [ref=e143]:
+              - columnheader [ref=e144]: 名前
+              - columnheader [ref=e145]: メールアドレス
+              - columnheader [ref=e146]: 権限
+              - columnheader [ref=e147]: 登録日
+              - columnheader [ref=e148]: 操作
+  - dialog "スタッフを追加" [ref=e151]:
+    - heading "スタッフを追加" [level=2] [ref=e152]:
+      - paragraph [ref=e153]: スタッフを追加
+    - generic [ref=e155]:
+      - generic [ref=e156]:
+        - generic:
+          - text: メールアドレス
+          - generic: "*"
+        - generic [ref=e157]:
+          - textbox "メールアドレス" [ref=e158]:
+            - /placeholder: example@clinic.jp
+          - group:
+            - generic: メールアドレス *
+      - generic [ref=e159]:
+        - generic:
+          - text: 初期パスワード
+          - generic: "*"
+        - generic [ref=e160]:
+          - textbox "初期パスワード" [ref=e161]:
+            - /placeholder: 8文字以上
+          - group:
+            - generic: 初期パスワード *
+      - generic [ref=e162]:
+        - generic [ref=e163]:
+          - text: 権限
+          - generic [ref=e164]: "*"
+        - generic [ref=e165]:
+          - combobox [ref=e166] [cursor=pointer]: 医院閲覧者
+          - textbox: clinic_viewer
+          - img
+          - group:
+            - generic: 権限 *
+      - alert [ref=e167]:
+        - img [ref=e169]
+        - paragraph [ref=e172]: メールアドレスと初期パスワードを設定してスタッフアカウントを作成します。ログイン後にパスワードを変更するよう案内してください。
+    - generic [ref=e173]:
+      - button "キャンセル" [ref=e174] [cursor=pointer]
+      - button "アカウントを作成" [disabled]

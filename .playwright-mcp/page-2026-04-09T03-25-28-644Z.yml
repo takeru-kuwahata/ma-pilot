@@ -1,0 +1,195 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: MA
+        - heading "MA-Pilot" [level=6] [ref=e334]
+        - generic [ref=e10]: 管理者
+      - paragraph [ref=e11]: 桑畑 健
+  - generic [ref=e12]:
+    - generic [ref=e13]: 管理機能
+    - list [ref=e14]:
+      - listitem [ref=e15]:
+        - button "管理ダッシュボード" [ref=e335] [cursor=pointer]:
+          - img [ref=e18]
+          - generic [ref=e21]: 管理ダッシュボード
+      - listitem [ref=e22]:
+        - button "運営者アカウント管理" [ref=e336] [cursor=pointer]:
+          - img [ref=e25]
+          - generic [ref=e28]: 運営者アカウント管理
+      - listitem [ref=e29]:
+        - button "医院アカウント管理" [ref=e337] [cursor=pointer]:
+          - img [ref=e32]
+          - generic [ref=e35]: 医院アカウント管理
+      - listitem [ref=e36]:
+        - button "システム設定" [ref=e338] [cursor=pointer]:
+          - img [ref=e39]
+          - generic [ref=e43]: システム設定
+      - listitem [ref=e44]:
+        - button "価格表管理" [ref=e339] [cursor=pointer]:
+          - img [ref=e47]
+          - generic [ref=e50]: 価格表管理
+      - listitem [ref=e51]:
+        - button "印刷物発注管理" [ref=e340] [cursor=pointer]:
+          - img [ref=e54]
+          - generic [ref=e57]: 印刷物発注管理
+    - separator [ref=e58]
+    - list [ref=e59]:
+      - listitem [ref=e60]:
+        - button "マイページ設定" [ref=e341] [cursor=pointer]:
+          - img [ref=e63]
+          - generic [ref=e66]: マイページ設定
+      - listitem [ref=e67]:
+        - button "ログアウト" [ref=e342] [cursor=pointer]:
+          - img [ref=e70]
+          - generic [ref=e73]: ログアウト
+  - main [ref=e74]:
+    - generic [ref=e75]:
+      - heading "医院アカウント管理" [level=4] [ref=e343]
+      - paragraph [ref=e77]: 登録医院の閲覧・編集・ステータス管理
+    - generic [ref=e78]:
+      - generic [ref=e79]:
+        - generic [ref=e81]:
+          - img [ref=e83]
+          - textbox "医院名、住所、電話番号で検索" [ref=e344]
+          - group
+        - generic [ref=e86]:
+          - button "すべて" [ref=e345] [cursor=pointer]
+          - button "アクティブ" [ref=e346] [cursor=pointer]
+          - button "停止中" [ref=e347] [cursor=pointer]
+        - generic [ref=e90]:
+          - generic [ref=e91]: 内覧会
+          - generic [ref=e92]:
+            - combobox [ref=e93] [cursor=pointer]: すべて
+            - textbox: all
+            - img
+            - group:
+              - generic: 内覧会
+      - generic [ref=e94]:
+        - button "CSVインポート" [ref=e348] [cursor=pointer]:
+          - img [ref=e96]
+          - text: CSVインポート
+        - button "新規医院を登録" [ref=e349] [cursor=pointer]:
+          - img [ref=e99]
+          - text: 新規医院を登録
+    - generic [ref=e101]:
+      - table [ref=e103]:
+        - rowgroup [ref=e104]:
+          - row "医院名 住所 登録日 プラン ステータス 内覧会 操作" [ref=e350]:
+            - columnheader "医院名" [ref=e351]:
+              - button "医院名" [ref=e352] [cursor=pointer]:
+                - text: 医院名
+                - img [ref=e108]
+            - columnheader "住所" [ref=e353]
+            - columnheader "登録日" [ref=e354]:
+              - button "登録日" [ref=e355] [cursor=pointer]:
+                - text: 登録日
+                - img [ref=e113]
+            - columnheader "プラン" [ref=e356]
+            - columnheader "ステータス" [ref=e357]:
+              - button "ステータス" [ref=e358] [cursor=pointer]:
+                - text: ステータス
+                - img [ref=e118]
+            - columnheader "内覧会" [ref=e359]:
+              - button "内覧会" [ref=e360] [cursor=pointer]:
+                - text: 内覧会
+                - img [ref=e122]
+            - columnheader "操作" [ref=e361]
+        - rowgroup [ref=e135]:
+          - row "テスト歯科クリニック 東京都千代田区千代田2-2 2026/4/2 無料プラン アクティブ クリックで変更" [ref=e362]:
+            - cell "テスト歯科クリニック" [ref=e363]
+            - cell "東京都千代田区千代田2-2" [ref=e364]
+            - cell "2026/4/2" [ref=e365]
+            - cell "無料プラン" [ref=e366]:
+              - generic [ref=e142]: 無料プラン
+            - cell "アクティブ" [ref=e367]:
+              - generic [ref=e145]: アクティブ
+            - cell "クリックで変更" [ref=e368]:
+              - generic "クリックで変更" [ref=e369]:
+                - combobox [ref=e148] [cursor=pointer]:
+                  - generic [ref=e150]: 検討中
+                - textbox: none
+                - img
+                - group
+            - cell [ref=e151]:
+              - button "この医院として操作する" [ref=e370] [cursor=pointer]:
+                - img [ref=e153]
+              - button "編集" [ref=e371] [cursor=pointer]:
+                - img [ref=e156]
+              - button "停止" [ref=e372] [cursor=pointer]:
+                - img [ref=e159]
+              - button "パスワード変更" [ref=e373] [cursor=pointer]:
+                - img [ref=e162]
+              - button "削除" [ref=e374] [cursor=pointer]:
+                - img [ref=e165]
+          - row "（テスト）ウエダ歯科 大阪府大阪市北区梅田1-1-3 2026/3/12 無料プラン アクティブ クリックで変更" [ref=e375]:
+            - cell "（テスト）ウエダ歯科" [ref=e376]
+            - cell "大阪府大阪市北区梅田1-1-3" [ref=e377]
+            - cell "2026/3/12" [ref=e378]
+            - cell "無料プラン" [ref=e379]:
+              - generic [ref=e173]: 無料プラン
+            - cell "アクティブ" [ref=e380]:
+              - generic [ref=e176]: アクティブ
+            - cell "クリックで変更" [ref=e381]:
+              - generic "クリックで変更" [ref=e382]:
+                - combobox [ref=e179] [cursor=pointer]:
+                  - generic [ref=e181]: 完了
+                - textbox: completed
+                - img
+                - group
+            - cell [ref=e182]:
+              - button "この医院として操作する" [ref=e383] [cursor=pointer]:
+                - img [ref=e184]
+              - button "編集" [ref=e384] [cursor=pointer]:
+                - img [ref=e187]
+              - button "停止" [ref=e385] [cursor=pointer]:
+                - img [ref=e190]
+              - button "パスワード変更" [ref=e386] [cursor=pointer]:
+                - img [ref=e193]
+              - button "削除" [ref=e387] [cursor=pointer]:
+                - img [ref=e196]
+          - row "神田駅そば総合歯科 東京都千代田区内神田３丁目２０−１ 2F 2026/2/19 無料プラン アクティブ クリックで変更" [ref=e388]:
+            - cell "神田駅そば総合歯科" [ref=e389]
+            - cell "東京都千代田区内神田３丁目２０−１ 2F" [ref=e390]
+            - cell "2026/2/19" [ref=e391]
+            - cell "無料プラン" [ref=e392]:
+              - generic [ref=e204]: 無料プラン
+            - cell "アクティブ" [ref=e393]:
+              - generic [ref=e207]: アクティブ
+            - cell "クリックで変更" [ref=e394]:
+              - generic "クリックで変更" [ref=e395]:
+                - combobox [ref=e210] [cursor=pointer]:
+                  - generic [ref=e212]: 完了
+                - textbox: completed
+                - img
+                - group
+            - cell [ref=e213]:
+              - button "この医院として操作する" [ref=e396] [cursor=pointer]:
+                - img [ref=e215]
+              - button "編集" [active] [ref=e397] [cursor=pointer]:
+                - img [ref=e218]
+              - button "停止" [ref=e398] [cursor=pointer]:
+                - img [ref=e221]
+              - button "パスワード変更" [ref=e399] [cursor=pointer]:
+                - img [ref=e224]
+              - button "削除" [ref=e400] [cursor=pointer]:
+                - img [ref=e227]
+      - generic [ref=e125]:
+        - generic [ref=e126]:
+          - paragraph [ref=e127]: 表示件数：
+          - generic [ref=e128]:
+            - combobox [ref=e129] [cursor=pointer]: 10件
+            - textbox: "10"
+            - img
+            - group
+          - paragraph [ref=e130]: 全3件
+        - navigation "pagination navigation" [ref=e401]:
+          - list [ref=e132]:
+            - listitem [ref=e133]:
+              - button "Go to previous page" [disabled]:
+                - img
+            - listitem [ref=e134]:
+              - button "page 1" [ref=e402] [cursor=pointer]: "1"
+            - listitem [ref=e230]:
+              - button "Go to next page" [disabled]:
+                - img

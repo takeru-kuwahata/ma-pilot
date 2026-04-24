@@ -1,0 +1,145 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: MA
+        - heading "MA-Pilot" [level=6] [ref=e8]
+        - paragraph [ref=e9]: 神田駅そば総合歯科
+      - button "運営者モードへ" [ref=e10] [cursor=pointer]:
+        - img [ref=e12]
+        - text: 運営者モードへ
+      - generic [ref=e14]:
+        - generic [ref=e15]: 桑
+        - paragraph [ref=e16]: 桑畑 健
+  - generic [ref=e17]:
+    - list [ref=e18]:
+      - listitem [ref=e19]:
+        - button "経営ダッシュボード" [ref=e20] [cursor=pointer]:
+          - img [ref=e22]
+          - generic [ref=e25]: 経営ダッシュボード
+      - listitem [ref=e26]:
+        - button "基礎データ管理" [ref=e27] [cursor=pointer]:
+          - img [ref=e29]
+          - generic [ref=e32]: 基礎データ管理
+      - listitem [ref=e33]:
+        - button "診療圏分析" [ref=e34] [cursor=pointer]:
+          - img [ref=e36]
+          - generic [ref=e39]: 診療圏分析
+      - listitem [ref=e40]:
+        - button "経営シミュレーション" [ref=e41] [cursor=pointer]:
+          - img [ref=e43]
+          - generic [ref=e46]: 経営シミュレーション
+      - listitem [ref=e47]:
+        - button "レポート管理" [ref=e48] [cursor=pointer]:
+          - img [ref=e50]
+          - generic [ref=e53]: レポート管理
+      - listitem [ref=e54]:
+        - button "印刷物発注" [ref=e55] [cursor=pointer]:
+          - img [ref=e57]
+          - generic [ref=e60]: 印刷物発注
+      - listitem [ref=e61]:
+        - button "印刷物発注履歴" [ref=e62] [cursor=pointer]:
+          - img [ref=e64]
+          - generic [ref=e67]: 印刷物発注履歴
+      - listitem [ref=e68]:
+        - button "医院設定" [ref=e69] [cursor=pointer]:
+          - img [ref=e71]
+          - generic [ref=e74]: 医院設定
+      - listitem [ref=e75]:
+        - button "スタッフ管理" [ref=e76] [cursor=pointer]:
+          - img [ref=e78]
+          - generic [ref=e81]: スタッフ管理
+    - separator [ref=e82]
+    - list [ref=e83]:
+      - listitem [ref=e84]:
+        - button "マイページ設定" [ref=e85] [cursor=pointer]:
+          - img [ref=e87]
+          - generic [ref=e90]: マイページ設定
+      - listitem [ref=e91]:
+        - button "ログアウト" [ref=e92] [cursor=pointer]:
+          - img [ref=e94]
+          - generic [ref=e97]: ログアウト
+  - main [ref=e98]:
+    - generic [ref=e100]:
+      - heading "診療圏分析" [level=4] [ref=e101]
+      - paragraph [ref=e102]: 人口統計、競合分析、市場ポテンシャル
+    - generic [ref=e103]:
+      - generic [ref=e104]:
+        - paragraph [ref=e105]: 診療圏人口 (半径2km)
+        - paragraph [ref=e106]: 65,433人
+      - generic [ref=e107]:
+        - paragraph [ref=e108]: 高齢化率
+        - paragraph [ref=e109]: 27.0%
+      - generic [ref=e110]:
+        - paragraph [ref=e111]: 競合歯科数 (半径2km)
+        - paragraph [ref=e112]: 5院
+      - generic [ref=e113]:
+        - paragraph [ref=e114]: 市場ポテンシャル
+        - paragraph [ref=e115]: 1667点
+    - generic [ref=e116]:
+      - heading "診療圏マップ" [level=6] [ref=e117]
+      - generic [ref=e119]:
+        - generic:
+          - button "キーボード ショートカット"
+        - region "マップ" [ref=e120]
+        - generic [ref=e121]:
+          - generic [ref=e175]:
+            - generic:
+              - generic:
+                - img "Competitor Clinic 3" [ref=e177] [cursor=pointer]
+                - img "Competitor Clinic 2" [ref=e178] [cursor=pointer]
+                - img "Competitor Clinic 5" [ref=e179] [cursor=pointer]
+                - img "Competitor Clinic 4" [ref=e180] [cursor=pointer]
+                - img "Competitor Clinic 1" [ref=e181] [cursor=pointer]
+                - img "神田駅そば総合歯科" [ref=e182] [cursor=pointer]
+          - iframe [ref=e183]:
+            
+          - button "全画面ビューを切り替えます" [ref=e184] [cursor=pointer]
+          - generic:
+            - generic:
+              - button "地図のカメラ コントロール" [ref=e186] [cursor=pointer]
+              - generic [ref=e188] [cursor=pointer]:
+                - button "ズームイン" [ref=e189]
+                - button "ズームアウト" [ref=e191]
+          - link "Google マップでこの地域を開きます（新しいウィンドウが開きます）" [ref=e193] [cursor=pointer]:
+            - /url: https://maps.google.com/maps?ll=35.6932,139.7703&z=14&t=m&hl=ja&gl=US&mapclient=apiv3
+            - img "Google" [ref=e195]
+          - generic [ref=e196]:
+            - button "キーボード ショートカット" [ref=e202] [cursor=pointer]
+            - generic [ref=e207]: 地図データ ©2026 Google
+            - link "利用規約（新しいタブで開きます）" [ref=e212] [cursor=pointer]:
+              - /url: https://www.google.com/intl/ja_US/help/terms_maps.html
+              - text: 利用規約
+            - link "地図の誤りを報告する" [ref=e217] [cursor=pointer]:
+              - /url: https://www.google.com/maps/@35.6932,139.7703,14z/data=!10m1!1e1!12b1?source=apiv3&rapsrc=apiv3
+    - generic [ref=e218]:
+      - generic [ref=e219]:
+        - heading "周辺競合歯科医院" [level=6] [ref=e220]
+        - generic [ref=e221]:
+          - generic [ref=e222]:
+            - paragraph [ref=e223]: Competitor Clinic 3
+            - paragraph [ref=e224]: 0.6km
+          - generic [ref=e225]:
+            - paragraph [ref=e226]: Competitor Clinic 2
+            - paragraph [ref=e227]: 0.6km
+          - generic [ref=e228]:
+            - paragraph [ref=e229]: Competitor Clinic 5
+            - paragraph [ref=e230]: 0.7km
+          - generic [ref=e231]:
+            - paragraph [ref=e232]: Competitor Clinic 4
+            - paragraph [ref=e233]: 1.3km
+          - generic [ref=e234]:
+            - paragraph [ref=e235]: Competitor Clinic 1
+            - paragraph [ref=e236]: 1.6km
+      - generic [ref=e237]:
+        - heading "診療圏内人口統計" [level=6] [ref=e238]
+        - generic [ref=e239]:
+          - generic [ref=e240]:
+            - paragraph [ref=e241]: 0-14歳
+            - paragraph [ref=e242]: 8,506人 (13.0%)
+          - generic [ref=e243]:
+            - paragraph [ref=e244]: 15-64歳
+            - paragraph [ref=e245]: 39,259人 (60.0%)
+          - generic [ref=e246]:
+            - paragraph [ref=e247]: 65歳以上
+            - paragraph [ref=e248]: 17,666人 (27.0%)

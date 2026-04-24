@@ -1,0 +1,47 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - button "サービスに戻る" [ref=e6] [cursor=pointer]:
+      - generic [ref=e7]: サービスに戻る
+    - generic [ref=e8]:
+      - generic [ref=e11]: 言語を変更
+      - generic [ref=e12]:
+        - combobox "言語を変更" [ref=e13]:
+          - option "English"
+          - option "日本語" [selected]
+          - option "한국어"
+          - option "ภาษาไทย"
+          - option "Bahasa Indonesia"
+          - option "繁體中文"
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - img
+  - generic [ref=e14]:
+    - heading "LINEヤフーBusiness ID" [level=1] [ref=e15]:
+      - generic [ref=e17]: LINEヤフーBusiness ID
+    - generic [ref=e18]:
+      - paragraph [ref=e19]:
+        - generic [ref=e20]: 設定済みのログイン方法でログインしてください。
+      - button "LINEアカウント" [ref=e24] [cursor=pointer]:
+        - generic [ref=e25]: LINEアカウント
+      - button "ビジネスアカウント" [ref=e27] [cursor=pointer]:
+        - generic [ref=e28]: ビジネスアカウント
+      - link "Yahoo! JAPAN ID" [ref=e31] [cursor=pointer]:
+        - /url: /login/yahoo
+        - generic [ref=e32]: Yahoo! JAPAN ID
+      - separator [ref=e34]
+      - link "アカウントを作成" [ref=e37] [cursor=pointer]:
+        - /url: /signup
+        - generic [ref=e38]: アカウントを作成
+      - button "SSOでログイン" [ref=e39] [cursor=pointer]:
+        - generic [ref=e40]: SSOでログイン
+    - generic [ref=e41]:
+      - paragraph [ref=e42]: © LY Corporation
+      - generic [ref=e43]:
+        - link "ヘルプ" [ref=e44] [cursor=pointer]:
+          - /url: https://help2.line.me/business_id/web?lang=ja
+          - generic [ref=e45]: ヘルプ
+        - link "利用規約" [ref=e46] [cursor=pointer]:
+          - /url: https://help2.line.me/business_id/web/?contentId=200001358&lang=ja
+          - generic [ref=e47]: 利用規約

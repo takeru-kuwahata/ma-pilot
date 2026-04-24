@@ -1,0 +1,236 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]: MA
+          - heading [level=6] [ref=e387]: MA-Pilot
+          - paragraph [ref=e139]: 神田駅そば総合歯科
+        - button [ref=e388] [cursor=pointer]:
+          - img [ref=e11]
+          - text: 運営者モードへ
+        - generic [ref=e13]:
+          - generic [ref=e14]: 桑
+          - paragraph [ref=e15]: 桑畑 健
+    - generic [ref=e16]:
+      - list [ref=e17]:
+        - listitem [ref=e18]:
+          - button [ref=e389] [cursor=pointer]:
+            - img [ref=e21]
+            - generic [ref=e24]: 経営ダッシュボード
+        - listitem [ref=e25]:
+          - button [ref=e390] [cursor=pointer]:
+            - img [ref=e28]
+            - generic [ref=e31]: 基礎データ管理
+        - listitem [ref=e32]:
+          - button [ref=e391] [cursor=pointer]:
+            - img [ref=e35]
+            - generic [ref=e38]: 診療圏分析
+        - listitem [ref=e39]:
+          - button [ref=e392] [cursor=pointer]:
+            - img [ref=e42]
+            - generic [ref=e45]: 経営シミュレーション
+        - listitem [ref=e46]:
+          - button [ref=e393] [cursor=pointer]:
+            - img [ref=e49]
+            - generic [ref=e52]: レポート管理
+        - listitem [ref=e53]:
+          - button [ref=e394] [cursor=pointer]:
+            - img [ref=e56]
+            - generic [ref=e59]: 印刷物発注
+        - listitem [ref=e60]:
+          - button [ref=e395] [cursor=pointer]:
+            - img [ref=e63]
+            - generic [ref=e66]: 印刷物発注履歴
+        - listitem [ref=e67]:
+          - button [ref=e396] [cursor=pointer]:
+            - img [ref=e70]
+            - generic [ref=e73]: 医院設定
+        - listitem [ref=e74]:
+          - button [ref=e397] [cursor=pointer]:
+            - img [ref=e77]
+            - generic [ref=e80]: スタッフ管理
+      - separator [ref=e81]
+      - list [ref=e82]:
+        - listitem [ref=e83]:
+          - button [ref=e398] [cursor=pointer]:
+            - img [ref=e86]
+            - generic [ref=e89]: マイページ設定
+        - listitem [ref=e90]:
+          - button [ref=e399] [cursor=pointer]:
+            - img [ref=e93]
+            - generic [ref=e96]: ログアウト
+    - main [ref=e97]:
+      - generic [ref=e98]:
+        - heading [level=4] [ref=e400]: 基礎データ管理
+        - paragraph [ref=e100]: 月次データの入力・編集、CSVインポート
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - img [ref=e103]
+          - heading [level=6] [ref=e401]: 月次データ入力
+          - paragraph [ref=e106]: 売上、コスト、患者数などの月次データを手動で入力
+          - button [ref=e402] [cursor=pointer]:
+            - img [ref=e108]
+            - text: 新規データ入力
+        - generic [ref=e110]:
+          - img [ref=e111]
+          - heading [level=6] [ref=e403]: CSV一括取込
+          - paragraph [ref=e114]: Lステップなどから出力したCSVファイルを一括取込
+          - button [ref=e404] [cursor=pointer]:
+            - img [ref=e116]
+            - text: CSVファイル選択
+          - button [ref=e405] [cursor=pointer]: 📄 CSVテンプレートをダウンロード
+      - generic [ref=e120]:
+        - heading [level=6] [ref=e406]: 登録済みデータ一覧
+        - table [ref=e123]:
+          - rowgroup [ref=e124]:
+            - row [ref=e407]:
+              - columnheader [ref=e408]: 年月
+              - columnheader [ref=e409]: 総売上
+              - columnheader [ref=e410]: 営業利益
+              - columnheader [ref=e411]: 初診
+              - columnheader [ref=e412]: 再初診
+              - columnheader [ref=e413]: 再診
+              - columnheader [ref=e414]: 他
+              - columnheader [ref=e415]: 総患者数
+              - columnheader [ref=e416]: データソース
+              - columnheader [ref=e417]: 操作
+          - rowgroup [ref=e136]:
+            - row [ref=e418]:
+              - cell [ref=e419]: 2026-02
+              - cell [ref=e420]: ¥5,630,320
+              - cell [ref=e421]: ¥-916,680
+              - cell [ref=e422]: 人
+              - cell [ref=e423]: 人
+              - cell [ref=e424]: 465人
+              - cell [ref=e425]: 人
+              - cell [ref=e426]: 510人
+              - cell [ref=e427]: 手動入力
+              - cell [ref=e428]:
+                - button [ref=e429] [cursor=pointer]: 編集
+            - row [ref=e430]:
+              - cell [ref=e431]: 2026-01
+              - cell [ref=e432]: ¥4,593,800
+              - cell [ref=e433]: ¥-356,200
+              - cell [ref=e434]: 人
+              - cell [ref=e435]: 人
+              - cell [ref=e436]: 472人
+              - cell [ref=e437]: 人
+              - cell [ref=e438]: 532人
+              - cell [ref=e439]: 手動入力
+              - cell [ref=e440]:
+                - button [ref=e441] [cursor=pointer]: 編集
+  - dialog "月次データ編集" [ref=e444]:
+    - heading "月次データ編集" [level=2] [ref=e445]:
+      - text: 月次データ編集
+      - button [ref=e446] [cursor=pointer]:
+        - img [ref=e447]
+    - generic [ref=e450]:
+      - heading "月次データ入力フォーム" [level=6] [ref=e451]
+      - generic [ref=e453]:
+        - generic [ref=e455]:
+          - generic [ref=e456]:
+            - text: 対象年月
+            - generic [ref=e457]: "*"
+          - generic [ref=e458]:
+            - textbox "対象年月" [ref=e459]: 2026-02
+            - group:
+              - generic: 対象年月 *
+        - heading "収益関連（3項目入力 + 1自動計算）" [level=6] [ref=e461]
+        - generic [ref=e463]:
+          - generic [ref=e464]: 保険診療収入
+          - generic [ref=e465]:
+            - textbox "保険診療収入" [ref=e466]: 2,658,030
+            - paragraph [ref=e468]: 円
+            - group:
+              - generic: 保険診療収入
+          - paragraph [ref=e469]: 数字を入力（カンマ可）
+        - generic [ref=e471]:
+          - generic [ref=e472]: 自由診療収入
+          - generic [ref=e473]:
+            - textbox "自由診療収入" [ref=e474]: 2,972,290
+            - paragraph [ref=e476]: 円
+            - group:
+              - generic: 自由診療収入
+          - paragraph [ref=e477]: 数字を入力（カンマ可）
+        - generic [ref=e479]:
+          - generic: 物販（その他）
+          - generic [ref=e480]:
+            - textbox "物販（その他）" [ref=e481]
+            - paragraph [ref=e483]: 円
+            - group:
+              - generic: 物販（その他）
+          - paragraph [ref=e484]: 数字を入力（カンマ可）
+        - generic [ref=e486]:
+          - generic [ref=e487]: 総売上
+          - generic [ref=e488]:
+            - textbox "総売上" [disabled] [ref=e489]: 5,630,320
+            - paragraph [ref=e491]: 円
+            - group:
+              - generic: 総売上
+          - paragraph [ref=e492]: 自動計算
+        - heading "コスト関連（2項目）" [level=6] [ref=e494]
+        - generic [ref=e496]:
+          - generic [ref=e497]: 変動費
+          - generic [ref=e498]:
+            - textbox "変動費" [ref=e499]: 900,000
+            - paragraph [ref=e501]: 円
+            - group:
+              - generic: 変動費
+          - paragraph [ref=e502]: 材料費、技工料など（カンマ可）
+        - generic [ref=e504]:
+          - generic [ref=e505]: 固定費
+          - generic [ref=e506]:
+            - textbox "固定費" [ref=e507]: 5,647,000
+            - paragraph [ref=e509]: 円
+            - group:
+              - generic: 固定費
+          - paragraph [ref=e510]: 人件費、家賃、光熱費など（カンマ可）
+        - heading "患者数関連（4項目入力 + 1自動計算）" [level=6] [ref=e512]
+        - generic [ref=e514]:
+          - generic: 初診
+          - generic [ref=e515]:
+            - textbox "初診" [ref=e516]
+            - paragraph [ref=e518]: 人
+            - group:
+              - generic: 初診
+          - paragraph [ref=e519]: 初めての来院
+        - generic [ref=e521]:
+          - generic: 再初診
+          - generic [ref=e522]:
+            - textbox "再初診" [ref=e523]
+            - paragraph [ref=e525]: 人
+            - group:
+              - generic: 再初診
+          - paragraph [ref=e526]: 再度初診扱い
+        - generic [ref=e528]:
+          - generic [ref=e529]: 再診
+          - generic [ref=e530]:
+            - textbox "再診" [ref=e531]: "465"
+            - paragraph [ref=e533]: 人
+            - group:
+              - generic: 再診
+          - paragraph [ref=e534]: 継続来院
+        - generic [ref=e536]:
+          - generic: 他
+          - generic [ref=e537]:
+            - textbox "他" [ref=e538]
+            - paragraph [ref=e540]: 人
+            - group:
+              - generic: 他
+          - paragraph [ref=e541]: その他
+        - generic [ref=e543]:
+          - generic [ref=e544]: 総患者数
+          - generic [ref=e545]:
+            - textbox "総患者数" [disabled] [ref=e546]: NaN
+            - paragraph [ref=e548]: 人
+            - group:
+              - generic: 総患者数
+          - paragraph [ref=e549]: 自動計算
+        - generic [ref=e551]:
+          - button "キャンセル" [ref=e552] [cursor=pointer]:
+            - img [ref=e554]
+            - text: キャンセル
+          - button "保存" [ref=e556] [cursor=pointer]:
+            - img [ref=e558]
+            - text: 保存

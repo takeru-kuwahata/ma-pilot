@@ -1,0 +1,122 @@
+- generic [ref=e1]:
+  - generic [ref=e262]:
+    - banner [ref=e263]:
+      - generic [ref=e264]:
+        - generic [ref=e265]:
+          - generic [ref=e266]: MA
+          - heading "MA-Pilot" [level=6] [ref=e267]
+          - paragraph [ref=e268]: 神田駅そば総合歯科
+        - button "運営者モードへ" [ref=e269] [cursor=pointer]:
+          - img [ref=e271]
+          - text: 運営者モードへ
+        - generic [ref=e273]:
+          - generic [ref=e274]: 桑
+          - paragraph [ref=e275]: 桑畑 健
+    - generic [ref=e276]:
+      - list [ref=e277]:
+        - listitem [ref=e278]:
+          - button "経営ダッシュボード" [ref=e279] [cursor=pointer]:
+            - img [ref=e281]
+            - generic [ref=e284]: 経営ダッシュボード
+        - listitem [ref=e285]:
+          - button "基礎データ管理" [ref=e286] [cursor=pointer]:
+            - img [ref=e288]
+            - generic [ref=e291]: 基礎データ管理
+        - listitem [ref=e292]:
+          - button "診療圏分析" [ref=e293] [cursor=pointer]:
+            - img [ref=e295]
+            - generic [ref=e298]: 診療圏分析
+        - listitem [ref=e299]:
+          - button "経営シミュレーション" [active] [ref=e300] [cursor=pointer]:
+            - img [ref=e302]
+            - generic [ref=e305]: 経営シミュレーション
+        - listitem [ref=e306]:
+          - button "レポート管理" [ref=e307] [cursor=pointer]:
+            - img [ref=e309]
+            - generic [ref=e312]: レポート管理
+        - listitem [ref=e313]:
+          - button "印刷物発注" [ref=e314] [cursor=pointer]:
+            - img [ref=e316]
+            - generic [ref=e319]: 印刷物発注
+        - listitem [ref=e320]:
+          - button "印刷物発注履歴" [ref=e321] [cursor=pointer]:
+            - img [ref=e323]
+            - generic [ref=e326]: 印刷物発注履歴
+        - listitem [ref=e327]:
+          - button "医院設定" [ref=e328] [cursor=pointer]:
+            - img [ref=e330]
+            - generic [ref=e333]: 医院設定
+        - listitem [ref=e334]:
+          - button "スタッフ管理" [ref=e335] [cursor=pointer]:
+            - img [ref=e337]
+            - generic [ref=e340]: スタッフ管理
+      - separator [ref=e341]
+      - list [ref=e342]:
+        - listitem [ref=e343]:
+          - button "マイページ設定" [ref=e344] [cursor=pointer]:
+            - img [ref=e346]
+            - generic [ref=e349]: マイページ設定
+        - listitem [ref=e350]:
+          - button "ログアウト" [ref=e351] [cursor=pointer]:
+            - img [ref=e353]
+            - generic [ref=e356]: ログアウト
+    - main [ref=e357]:
+      - generic [ref=e683]:
+        - heading "経営シミュレーション" [level=4] [ref=e684]
+        - paragraph [ref=e685]: 売上・コスト・患者数の変動をシミュレーション
+      - generic [ref=e686]:
+        - heading "シミュレーション条件設定" [level=6] [ref=e687]
+        - generic [ref=e688]:
+          - generic [ref=e689]:
+            - generic [ref=e690]:
+              - generic [ref=e691]: シミュレーション期間
+              - generic [ref=e693]:
+                - combobox "6ヶ月後" [ref=e694] [cursor=pointer]
+                - textbox: "6"
+                - img
+                - group
+            - generic [ref=e695]:
+              - generic [ref=e696]: 保険診療収入の変動 (%)
+              - generic [ref=e698]:
+                - spinbutton [ref=e699]
+                - group
+            - generic [ref=e700]:
+              - generic [ref=e701]: 自費診療収入の変動 (%)
+              - generic [ref=e703]:
+                - spinbutton [ref=e704]
+                - group
+            - generic [ref=e705]:
+              - generic [ref=e706]: 物販収入の変動 (%)
+              - generic [ref=e708]:
+                - spinbutton [ref=e709]
+                - group
+          - generic [ref=e710]:
+            - generic [ref=e711]:
+              - generic [ref=e712]: 変動費の変動 (%)
+              - generic [ref=e714]:
+                - spinbutton [ref=e715]
+                - group
+            - generic [ref=e716]:
+              - generic [ref=e717]: 固定費の変動 (%)
+              - generic [ref=e719]:
+                - spinbutton [ref=e720]
+                - group
+            - generic [ref=e721]:
+              - generic [ref=e722]: 新患数の変動 (%)
+              - generic [ref=e724]:
+                - spinbutton [ref=e725]
+                - group
+            - generic [ref=e726]:
+              - generic [ref=e727]: 再診患者数の変動 (%)
+              - generic [ref=e729]:
+                - spinbutton [ref=e730]
+                - group
+        - button "シミュレーション実行" [ref=e731] [cursor=pointer]:
+          - img [ref=e732]
+          - text: シミュレーション実行
+      - generic [ref=e734]:
+        - heading "推移予測グラフ" [level=6] [ref=e735]
+        - generic [ref=e736]:
+          - img [ref=e737]
+          - paragraph [ref=e739]: 推移予測グラフ（準備中）
+  - generic [ref=e641]: "25"

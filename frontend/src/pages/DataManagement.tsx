@@ -47,6 +47,14 @@ const formatCurrency = (value: number): string => {
   return `¥${value.toLocaleString()}`;
 };
 
+const formatYearMonth = (yearMonth: string): string => {
+  const match = yearMonth.match(/^(\d{4})-(\d{2})$/);
+  if (match) {
+    return `${match[1]}年${parseInt(match[2])}月`;
+  }
+  return yearMonth;
+};
+
 export const DataManagement = () => {
   const { clinicId: clinicIdParam } = useParams<{ clinicId: string }>();
   const [clinic, setClinic] = useState<Clinic | null>(null);
@@ -611,7 +619,7 @@ export const DataManagement = () => {
                         borderBottom: '1px solid #e0e0e0',
                       }}
                     >
-                      {row.year_month}
+                      {formatYearMonth(row.year_month)}
                     </TableCell>
                     <TableCell
                       sx={{

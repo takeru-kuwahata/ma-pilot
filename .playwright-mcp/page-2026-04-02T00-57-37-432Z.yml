@@ -1,0 +1,731 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - button "keyboard_double_arrow_left" [ref=e6] [cursor=pointer]:
+          - generic [ref=e7]: keyboard_double_arrow_left
+        - link "Lステップ" [ref=e8] [cursor=pointer]:
+          - /url: /
+          - img "Lステップ" [ref=e9]
+      - navigation [ref=e10]:
+        - list [ref=e11]:
+          - listitem [ref=e12]:
+            - button "help サポート expand_more" [ref=e14] [cursor=pointer]:
+              - generic [ref=e15]: help
+              - generic [ref=e16]: サポート
+              - generic [ref=e17]: expand_more
+          - listitem [ref=e18]:
+            - link "メッセージ送信数を見る" [ref=e19] [cursor=pointer]:
+              - /url: /line/analytics/send
+              - generic [ref=e20]: equalizer
+              - generic [ref=e21]: 送信数
+          - listitem [ref=e22]:
+            - button "person 桑畑 健 (副管理者) プロフィール画像 メディカルアドバンス［シカレッジ］ expand_more" [ref=e24] [cursor=pointer]:
+              - generic [ref=e25]:
+                - generic [ref=e26]: person
+                - text: 桑畑 健
+                - generic [ref=e27]: (副管理者)
+              - img "プロフィール画像" [ref=e28]
+              - text: メディカルアドバンス［シカレッジ］
+              - generic [ref=e29]: expand_more
+    - complementary [ref=e30]:
+      - list [ref=e31]:
+        - listitem [ref=e32]:
+          - link "トップ" [ref=e33] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e35]: トップ
+      - list [ref=e36]:
+        - listitem [ref=e37]:
+          - generic [ref=e39]: star
+          - text: 1対1トーク
+        - listitem [ref=e40]:
+          - link "友だちリスト" [ref=e41] [cursor=pointer]:
+            - /url: /line/show
+            - generic [ref=e43]: 友だちリスト
+        - listitem [ref=e44]:
+          - link "トーク一覧" [ref=e45] [cursor=pointer]:
+            - /url: /line/timeline
+            - generic [ref=e47]: トーク一覧
+        - listitem [ref=e48]:
+          - link "個別トーク" [ref=e49] [cursor=pointer]:
+            - /url: /line/visual
+            - generic [ref=e51]: 個別トーク
+      - list [ref=e52]:
+        - listitem [ref=e53]:
+          - generic [ref=e55]: campaign
+          - text: メッセージ
+        - listitem [ref=e56]:
+          - link "シナリオ配信" [ref=e57] [cursor=pointer]:
+            - /url: /line/content/group
+            - generic [ref=e59]: シナリオ配信
+        - listitem [ref=e60]:
+          - link "一斉配信" [ref=e61] [cursor=pointer]:
+            - /url: /line/magazine
+            - generic [ref=e63]: 一斉配信
+        - listitem [ref=e64]:
+          - link "自動応答" [ref=e65] [cursor=pointer]:
+            - /url: /line/reaction
+            - generic [ref=e67]: 自動応答
+        - listitem [ref=e68]:
+          - link "テンプレート" [ref=e69] [cursor=pointer]:
+            - /url: /line/template
+            - generic [ref=e71]: テンプレート
+        - listitem [ref=e72]:
+          - group [ref=e73]:
+            - generic "予約管理 expand_more" [ref=e74] [cursor=pointer]:
+              - text: 予約管理
+              - generic [ref=e75]: expand_more
+        - listitem [ref=e76]:
+          - link "回答フォーム" [ref=e77] [cursor=pointer]:
+            - /url: /line/form
+            - generic [ref=e79]: 回答フォーム
+        - listitem [ref=e80]:
+          - link "リマインダ配信" [ref=e81] [cursor=pointer]:
+            - /url: /line/episode
+            - generic [ref=e83]: リマインダ配信
+        - listitem [ref=e84]:
+          - link "友だち追加時設定" [ref=e85] [cursor=pointer]:
+            - /url: /line/setting/follow
+            - generic [ref=e87]: 友だち追加時設定
+        - listitem [ref=e88]:
+          - link "アクション管理" [ref=e89] [cursor=pointer]:
+            - /url: /line/action
+            - generic [ref=e91]: アクション管理
+      - list [ref=e92]:
+        - listitem [ref=e93]:
+          - generic [ref=e95]: filter_alt
+          - text: 友だち属性
+        - listitem [ref=e96]:
+          - link "タグ管理" [ref=e97] [cursor=pointer]:
+            - /url: /line/tag
+            - generic [ref=e99]: タグ管理
+        - listitem [ref=e100]:
+          - link "友だち情報欄管理" [ref=e101] [cursor=pointer]:
+            - /url: /line/var
+            - generic [ref=e103]: 友だち情報欄管理
+        - listitem [ref=e104]:
+          - link "カスタム検索管理" [ref=e105] [cursor=pointer]:
+            - /url: /line/funnel
+            - generic [ref=e107]: カスタム検索管理
+        - listitem [ref=e108]:
+          - link "対応マーク管理" [ref=e109] [cursor=pointer]:
+            - /url: /line/setting/notify
+            - generic [ref=e111]: 対応マーク管理
+      - list [ref=e112]:
+        - listitem [ref=e113]:
+          - generic [ref=e115]: flag
+          - text: 統計情報
+        - listitem [ref=e116]:
+          - link "URLクリック測定" [ref=e117] [cursor=pointer]:
+            - /url: /line/site
+            - generic [ref=e119]: URLクリック測定
+        - listitem [ref=e120]:
+          - 'link "コンバージョン管理 (旧: フェーズ管理)" [ref=e121] [cursor=pointer]':
+            - /url: /line/journey-tag
+            - generic [ref=e123]:
+              - text: コンバージョン管理
+              - text: "(旧: フェーズ管理)"
+        - listitem [ref=e124]:
+          - link "(廃止予定) コンバージョン" [ref=e125] [cursor=pointer]:
+            - /url: /line/tracker
+            - generic [ref=e127]: (廃止予定) コンバージョン
+        - listitem [ref=e128]:
+          - link "サイトスクリプト" [ref=e129] [cursor=pointer]:
+            - /url: /line/script
+            - generic [ref=e131]: サイトスクリプト
+        - listitem [ref=e132]:
+          - link "ファネル分析" [ref=e133] [cursor=pointer]:
+            - /url: /line/journey
+            - generic [ref=e135]: ファネル分析
+        - listitem [ref=e136]:
+          - link "広告連携 NEW" [ref=e137] [cursor=pointer]:
+            - /url: /line/ad-connect
+            - generic [ref=e138]:
+              - generic [ref=e139]: 広告連携
+              - generic [ref=e141]: NEW
+        - listitem [ref=e142]:
+          - link "クロス分析" [ref=e143] [cursor=pointer]:
+            - /url: /line/board
+            - generic [ref=e145]: クロス分析
+        - listitem [ref=e146]:
+          - link "流入経路分析" [ref=e147] [cursor=pointer]:
+            - /url: /line/landing
+            - generic [ref=e149]: 流入経路分析
+      - list [ref=e150]:
+        - listitem [ref=e151]:
+          - generic [ref=e153]: folder_open
+          - text: コンテンツ
+        - listitem [ref=e154]:
+          - link "共通情報" [ref=e155] [cursor=pointer]:
+            - /url: /line/common_var
+            - generic [ref=e157]: 共通情報
+        - listitem [ref=e158]:
+          - link "登録メディア一覧" [ref=e159] [cursor=pointer]:
+            - /url: /line/media
+            - generic [ref=e161]: 登録メディア一覧
+        - listitem [ref=e162]:
+          - link "リッチメニュー" [ref=e163] [cursor=pointer]:
+            - /url: /line/richmenu
+            - generic [ref=e165]: リッチメニュー
+      - list [ref=e166]:
+        - listitem [ref=e167]:
+          - generic [ref=e169]: settings
+          - text: 設定
+        - listitem [ref=e170]:
+          - link "LINE公式アカウント設定 open_in_new" [ref=e171] [cursor=pointer]:
+            - /url: https://manager.line.biz/
+            - generic [ref=e172]:
+              - generic [ref=e173]: LINE公式アカウント設定
+              - generic [ref=e174]: open_in_new
+        - listitem [ref=e175]:
+          - link "アカウント設定" [ref=e176] [cursor=pointer]:
+            - /url: /line/account
+            - generic [ref=e178]: アカウント設定
+        - listitem [ref=e179]:
+          - link "スタッフ設定" [ref=e180] [cursor=pointer]:
+            - /url: /line/role
+            - generic [ref=e182]: スタッフ設定
+        - listitem [ref=e183]:
+          - link "データ移行 β版" [ref=e184] [cursor=pointer]:
+            - /url: /line/forger
+            - generic [ref=e185]:
+              - generic [ref=e186]: データ移行
+              - generic [ref=e188]: β版
+      - list [ref=e189]:
+        - listitem [ref=e190]:
+          - link "マイページ" [ref=e191] [cursor=pointer]:
+            - /url: /account
+            - generic [ref=e193]: マイページ
+        - listitem [ref=e194]:
+          - link "通知機能" [ref=e195] [cursor=pointer]:
+            - /url: /line/notifications
+            - generic [ref=e197]: 通知機能
+        - listitem [ref=e198]:
+          - link "新規アカウント発行" [ref=e199] [cursor=pointer]:
+            - /url: /account/newuser
+            - generic [ref=e201]: 新規アカウント発行
+        - listitem [ref=e202]:
+          - group [ref=e203]:
+            - generic "オプション機能申し込み expand_more" [ref=e204] [cursor=pointer]:
+              - text: オプション機能申し込み
+              - generic [ref=e205]: expand_more
+      - list [ref=e206]:
+        - listitem [ref=e207]:
+          - generic [ref=e209]: help
+          - text: サポート
+        - listitem [ref=e210]:
+          - link "講座・勉強会 open_in_new" [ref=e211] [cursor=pointer]:
+            - /url: https://lstep-pro.com/tutorial/purchaser_eventcal/?utm_source=lstep_ms&utm_medium=referral&utm_campaign=sidemenu
+            - generic [ref=e212]:
+              - generic [ref=e213]: 講座・勉強会
+              - generic [ref=e214]: open_in_new
+        - listitem [ref=e215]:
+          - link "使い方動画ガイド open_in_new" [ref=e216] [cursor=pointer]:
+            - /url: https://lstep-pro.com/tutorial/?utm_source=lstep_ms&utm_medium=referral&utm_campaign=sidemenu
+            - generic [ref=e217]:
+              - generic [ref=e218]: 使い方動画ガイド
+              - generic [ref=e219]: open_in_new
+        - listitem [ref=e220]:
+          - link "ご利用マニュアル open_in_new" [ref=e221] [cursor=pointer]:
+            - /url: https://manual.linestep.net/
+            - generic [ref=e222]:
+              - generic [ref=e223]: ご利用マニュアル
+              - generic [ref=e224]: open_in_new
+        - listitem [ref=e225]:
+          - link "Zoom個別相談 open_in_new" [ref=e226] [cursor=pointer]:
+            - /url: https://linestep.jp/spot_con/?utm_source=lstep_ms&utm_medium=referral&utm_campaign=sidemenu
+            - generic [ref=e227]:
+              - generic [ref=e228]: Zoom個別相談
+              - generic [ref=e229]: open_in_new
+    - main [ref=e230]:
+      - generic [ref=e231]:
+        - heading "回答フォーム" [level=2] [ref=e234]
+        - link "import_contacts マニュアル" [ref=e237] [cursor=pointer]:
+          - /url: https://manual.linestep.net/answerform
+          - generic [ref=e238]: import_contacts
+          - text: マニュアル
+      - paragraph [ref=e239]: さまざまな質問形式のフォームを作成できます。
+      - generic [ref=e241]:
+        - generic [ref=e242]:
+          - button "add 新しいフォルダ" [ref=e243] [cursor=pointer]:
+            - generic [ref=e244]: add
+            - text: 新しいフォルダ
+          - list [ref=e245]:
+            - listitem [ref=e246]:
+              - button "folder 未分類 12" [ref=e826] [cursor=pointer]:
+                - generic [ref=e248]: folder
+                - generic [ref=e249]:
+                  - generic [ref=e250]: 未分類
+                  - generic [ref=e252]: "12"
+            - listitem [ref=e253]:
+              - button "drag_indicator folder 内覧会関係 4" [ref=e254] [cursor=pointer]:
+                - generic [ref=e255]: drag_indicator
+                - generic [ref=e256]: folder
+                - generic [ref=e257]:
+                  - generic [ref=e258]: 内覧会関係
+                  - generic [ref=e260]: "4"
+            - listitem [ref=e261]:
+              - button "drag_indicator folder 印刷物_新規作成 8" [ref=e262] [cursor=pointer]:
+                - generic [ref=e263]: drag_indicator
+                - generic [ref=e264]: folder
+                - generic [ref=e265]:
+                  - generic [ref=e266]: 印刷物_新規作成
+                  - generic [ref=e268]: "8"
+            - listitem [ref=e269]:
+              - button "drag_indicator folder 印刷物_増刷 8" [ref=e270] [cursor=pointer]:
+                - generic [ref=e271]: drag_indicator
+                - generic [ref=e272]: folder
+                - generic [ref=e273]:
+                  - generic [ref=e274]: 印刷物_増刷
+                  - generic [ref=e276]: "8"
+            - listitem [ref=e277]:
+              - button "drag_indicator folder_open 1.登録時アンケート more_vert" [active] [ref=e827] [cursor=pointer]:
+                - generic [ref=e279]: drag_indicator
+                - generic [ref=e280]: folder_open
+                - generic [ref=e282]: 1.登録時アンケート
+                - button "more_vert" [ref=e829]:
+                  - generic [ref=e830]: more_vert
+            - listitem [ref=e285]:
+              - button "drag_indicator folder 2.配信 4" [ref=e286] [cursor=pointer]:
+                - generic [ref=e287]: drag_indicator
+                - generic [ref=e288]: folder
+                - generic [ref=e289]:
+                  - generic [ref=e290]: 2.配信
+                  - generic [ref=e292]: "4"
+            - listitem [ref=e293]:
+              - button "drag_indicator folder 3.レコメンド 4" [ref=e294] [cursor=pointer]:
+                - generic [ref=e295]: drag_indicator
+                - generic [ref=e296]: folder
+                - generic [ref=e297]:
+                  - generic [ref=e298]: 3.レコメンド
+                  - generic [ref=e300]: "4"
+            - listitem [ref=e301]:
+              - button "drag_indicator folder 4.ポイント 1" [ref=e302] [cursor=pointer]:
+                - generic [ref=e303]: drag_indicator
+                - generic [ref=e304]: folder
+                - generic [ref=e305]:
+                  - generic [ref=e306]: 4.ポイント
+                  - generic [ref=e308]: "1"
+            - listitem [ref=e309]:
+              - button "drag_indicator folder 5.レセシミュ着地 6" [ref=e310] [cursor=pointer]:
+                - generic [ref=e311]: drag_indicator
+                - generic [ref=e312]: folder
+                - generic [ref=e313]:
+                  - generic [ref=e314]: 5.レセシミュ着地
+                  - generic [ref=e316]: "6"
+            - listitem [ref=e317]:
+              - button "drag_indicator folder 6.誕生日クーポン 3" [ref=e318] [cursor=pointer]:
+                - generic [ref=e319]: drag_indicator
+                - generic [ref=e320]: folder
+                - generic [ref=e321]:
+                  - generic [ref=e322]: 6.誕生日クーポン
+                  - generic [ref=e324]: "3"
+            - listitem [ref=e325]:
+              - button "drag_indicator folder 7.お問い合わせ 2" [ref=e326] [cursor=pointer]:
+                - generic [ref=e327]: drag_indicator
+                - generic [ref=e328]: folder
+                - generic [ref=e329]:
+                  - generic [ref=e330]: 7.お問い合わせ
+                  - generic [ref=e332]: "2"
+            - listitem [ref=e333]:
+              - button "drag_indicator folder 使用NG_読んで学ぶ 13" [ref=e334] [cursor=pointer]:
+                - generic [ref=e335]: drag_indicator
+                - generic [ref=e336]: folder
+                - generic [ref=e337]:
+                  - generic [ref=e338]: 使用NG_読んで学ぶ
+                  - generic [ref=e340]: "13"
+            - listitem [ref=e341]:
+              - button "drag_indicator folder 使用NG_見て学ぶ・アンケート 9" [ref=e342] [cursor=pointer]:
+                - generic [ref=e343]: drag_indicator
+                - generic [ref=e344]: folder
+                - generic [ref=e345]:
+                  - generic [ref=e346]: 使用NG_見て学ぶ・アンケート
+                  - generic [ref=e348]: "9"
+        - generic [ref=e349]:
+          - generic [ref=e350]:
+            - link "add 新しい回答フォーム" [ref=e353] [cursor=pointer]:
+              - /url: /lvf/edit/new?group=61768
+              - button "add 新しい回答フォーム" [ref=e354]:
+                - generic [ref=e355]: add
+                - text: 新しい回答フォーム
+            - button "swap_vert 並び替え" [ref=e356] [cursor=pointer]:
+              - generic [ref=e357]: swap_vert
+              - text: 並び替え
+            - generic [ref=e358]:
+              - textbox "検索" [ref=e359]
+              - button "search" [ref=e360] [cursor=pointer]:
+                - generic [ref=e361]: search
+          - table [ref=e363]:
+            - rowgroup [ref=e364]:
+              - row "all checkbox フォーム名 スプレッドシート連携 回答状態 登録日 公開状態" [ref=e365]:
+                - columnheader [ref=e366]
+                - columnheader "all checkbox" [ref=e367]:
+                  - generic "all checkbox" [ref=e368]
+                - columnheader "フォーム名" [ref=e371]:
+                  - generic [ref=e373]: フォーム名
+                - columnheader "スプレッドシート連携" [ref=e374]:
+                  - generic [ref=e376]: スプレッドシート連携
+                - columnheader "回答状態" [ref=e377]:
+                  - generic [ref=e379]: 回答状態
+                - columnheader "登録日" [ref=e380]:
+                  - generic [ref=e382]: 登録日
+                - columnheader "公開状態" [ref=e383]:
+                  - generic [ref=e385]: 公開状態
+                - columnheader [ref=e386]
+                - columnheader [ref=e387]
+              - row [ref=e388]:
+                - cell [ref=e389]
+            - rowgroup [ref=e393]:
+              - row "drag_indicator デンタルショーにてご登録いただいた方へ content_copy 呼び出しタグ 外部用 - 6回答 /5人 回答結果 download 2025-02-05 公開中 プレビュー star more_vert" [ref=e831]:
+                - rowheader "drag_indicator" [ref=e832]:
+                  - generic [ref=e833]: drag_indicator
+                - cell [ref=e834]
+                - cell "デンタルショーにてご登録いただいた方へ content_copy 呼び出しタグ 外部用" [ref=e838]:
+                  - link "デンタルショーにてご登録いただいた方へ" [ref=e841] [cursor=pointer]:
+                    - /url: /lvf/edit/816114?group=61768
+                    - generic [ref=e842]: デンタルショーにてご登録いただいた方へ
+                  - generic [ref=e843]:
+                    - button "content_copy 呼び出しタグ" [ref=e844] [cursor=pointer]:
+                      - generic [ref=e845]: content_copy
+                      - text: 呼び出しタグ
+                    - link "外部用" [ref=e846] [cursor=pointer]:
+                      - /url: /lvf/ext/rc/816114
+                - cell "-" [ref=e847]
+                - cell "6回答 /5人 回答結果 download" [ref=e848]:
+                  - generic [ref=e849]:
+                    - generic [ref=e850]: 6回答 /5人
+                    - generic [ref=e851]:
+                      - link "回答結果" [ref=e852] [cursor=pointer]:
+                        - /url: /lvf/show/answer/816114
+                      - link "download" [ref=e853] [cursor=pointer]:
+                        - /url: /lvf/export/816114
+                        - generic [ref=e854]: download
+                - cell "2025-02-05" [ref=e855]
+                - cell "公開中" [ref=e856]:
+                  - generic [ref=e859]: 公開中
+                - cell "プレビュー star" [ref=e860]:
+                  - generic [ref=e861]:
+                    - link "プレビュー" [ref=e862] [cursor=pointer]:
+                      - /url: https://myfm.jp/SwbM4P?mode=example
+                    - button "star" [ref=e863] [cursor=pointer]:
+                      - generic [ref=e864]: star
+                - cell "more_vert" [ref=e865]:
+                  - button "more_vert" [ref=e867] [cursor=pointer]:
+                    - generic [ref=e868]: more_vert
+              - row "drag_indicator 20240620_ 登録アンケート（既存Dr,スタッフ,勤務医,Drフリーランス用） content_copy 呼び出しタグ 外部用 - 45回答 /39人 回答結果 download 2024-07-24 公開中 プレビュー star more_vert" [ref=e869]:
+                - rowheader "drag_indicator" [ref=e870]:
+                  - generic [ref=e871]: drag_indicator
+                - cell [ref=e872]
+                - cell "20240620_ 登録アンケート（既存Dr,スタッフ,勤務医,Drフリーランス用） content_copy 呼び出しタグ 外部用" [ref=e876]:
+                  - link "20240620_ 登録アンケート（既存Dr,スタッフ,勤務医,Drフリーランス用）" [ref=e879] [cursor=pointer]:
+                    - /url: /lvf/edit/710762?group=61768
+                    - generic [ref=e880]: 20240620_ 登録アンケート（既存Dr,スタッフ,勤務医,Drフリーランス用）
+                  - generic [ref=e881]:
+                    - button "content_copy 呼び出しタグ" [ref=e882] [cursor=pointer]:
+                      - generic [ref=e883]: content_copy
+                      - text: 呼び出しタグ
+                    - link "外部用" [ref=e884] [cursor=pointer]:
+                      - /url: /lvf/ext/rc/710762
+                - cell "-" [ref=e885]
+                - cell "45回答 /39人 回答結果 download" [ref=e886]:
+                  - generic [ref=e887]:
+                    - generic [ref=e888]: 45回答 /39人
+                    - generic [ref=e889]:
+                      - link "回答結果" [ref=e890] [cursor=pointer]:
+                        - /url: /lvf/show/answer/710762
+                      - link "download" [ref=e891] [cursor=pointer]:
+                        - /url: /lvf/export/710762
+                        - generic [ref=e892]: download
+                - cell "2024-07-24" [ref=e893]
+                - cell "公開中" [ref=e894]:
+                  - generic [ref=e897]: 公開中
+                - cell "プレビュー star" [ref=e898]:
+                  - generic [ref=e899]:
+                    - link "プレビュー" [ref=e900] [cursor=pointer]:
+                      - /url: https://myfm.jp/Hsn7QZ?mode=example
+                    - button "star" [ref=e901] [cursor=pointer]:
+                      - generic [ref=e902]: star
+                - cell "more_vert" [ref=e903]:
+                  - button "more_vert" [ref=e905] [cursor=pointer]:
+                    - generic [ref=e906]: more_vert
+              - row "drag_indicator 20240620_ 登録アンケート(P企業) content_copy 呼び出しタグ 外部用 - 33回答 /27人 回答結果 download 2024-07-24 公開中 プレビュー star more_vert" [ref=e907]:
+                - rowheader "drag_indicator" [ref=e908]:
+                  - generic [ref=e909]: drag_indicator
+                - cell [ref=e910]
+                - cell "20240620_ 登録アンケート(P企業) content_copy 呼び出しタグ 外部用" [ref=e914]:
+                  - link "20240620_ 登録アンケート(P企業)" [ref=e917] [cursor=pointer]:
+                    - /url: /lvf/edit/710698?group=61768
+                    - generic [ref=e918]: 20240620_ 登録アンケート(P企業)
+                  - generic [ref=e919]:
+                    - button "content_copy 呼び出しタグ" [ref=e920] [cursor=pointer]:
+                      - generic [ref=e921]: content_copy
+                      - text: 呼び出しタグ
+                    - link "外部用" [ref=e922] [cursor=pointer]:
+                      - /url: /lvf/ext/rc/710698
+                - cell "-" [ref=e923]
+                - cell "33回答 /27人 回答結果 download" [ref=e924]:
+                  - generic [ref=e925]:
+                    - generic [ref=e926]: 33回答 /27人
+                    - generic [ref=e927]:
+                      - link "回答結果" [ref=e928] [cursor=pointer]:
+                        - /url: /lvf/show/answer/710698
+                      - link "download" [ref=e929] [cursor=pointer]:
+                        - /url: /lvf/export/710698
+                        - generic [ref=e930]: download
+                - cell "2024-07-24" [ref=e931]
+                - cell "公開中" [ref=e932]:
+                  - generic [ref=e935]: 公開中
+                - cell "プレビュー star" [ref=e936]:
+                  - generic [ref=e937]:
+                    - link "プレビュー" [ref=e938] [cursor=pointer]:
+                      - /url: https://myfm.jp/CbTwAw?mode=example
+                    - button "star" [ref=e939] [cursor=pointer]:
+                      - generic [ref=e940]: star
+                - cell "more_vert" [ref=e941]:
+                  - button "more_vert" [ref=e943] [cursor=pointer]:
+                    - generic [ref=e944]: more_vert
+              - row "drag_indicator 20240620_ 登録アンケート（内覧会申し込みDr用） content_copy 呼び出しタグ 外部用 - 298回答 /289人 回答結果 download 2024-07-24 公開中 プレビュー star more_vert" [ref=e945]:
+                - rowheader "drag_indicator" [ref=e946]:
+                  - generic [ref=e947]: drag_indicator
+                - cell [ref=e948]
+                - cell "20240620_ 登録アンケート（内覧会申し込みDr用） content_copy 呼び出しタグ 外部用" [ref=e952]:
+                  - link "20240620_ 登録アンケート（内覧会申し込みDr用）" [ref=e955] [cursor=pointer]:
+                    - /url: /lvf/edit/710696?group=61768
+                    - generic [ref=e956]: 20240620_ 登録アンケート（内覧会申し込みDr用）
+                  - generic [ref=e957]:
+                    - button "content_copy 呼び出しタグ" [ref=e958] [cursor=pointer]:
+                      - generic [ref=e959]: content_copy
+                      - text: 呼び出しタグ
+                    - link "外部用" [ref=e960] [cursor=pointer]:
+                      - /url: /lvf/ext/rc/710696
+                - cell "-" [ref=e961]
+                - cell "298回答 /289人 回答結果 download" [ref=e962]:
+                  - generic [ref=e963]:
+                    - generic [ref=e964]: 298回答 /289人
+                    - generic [ref=e965]:
+                      - link "回答結果" [ref=e966] [cursor=pointer]:
+                        - /url: /lvf/show/answer/710696
+                      - link "download" [ref=e967] [cursor=pointer]:
+                        - /url: /lvf/export/710696
+                        - generic [ref=e968]: download
+                - cell "2024-07-24" [ref=e969]
+                - cell "公開中" [ref=e970]:
+                  - generic [ref=e973]: 公開中
+                - cell "プレビュー star" [ref=e974]:
+                  - generic [ref=e975]:
+                    - link "プレビュー" [ref=e976] [cursor=pointer]:
+                      - /url: https://myfm.jp/T7XPyX?mode=example
+                    - button "star" [ref=e977] [cursor=pointer]:
+                      - generic [ref=e978]: star
+                - cell "more_vert" [ref=e979]:
+                  - button "more_vert" [ref=e981] [cursor=pointer]:
+                    - generic [ref=e982]: more_vert
+              - row "drag_indicator 20240620_ 登録アンケート(スタッフ用,DH/DAフリーランス用) content_copy 呼び出しタグ 外部用 - 67回答 /63人 回答結果 download 2024-07-23 公開中 プレビュー star more_vert" [ref=e983]:
+                - rowheader "drag_indicator" [ref=e984]:
+                  - generic [ref=e985]: drag_indicator
+                - cell [ref=e986]
+                - cell "20240620_ 登録アンケート(スタッフ用,DH/DAフリーランス用) content_copy 呼び出しタグ 外部用" [ref=e990]:
+                  - link "20240620_ 登録アンケート(スタッフ用,DH/DAフリーランス用)" [ref=e993] [cursor=pointer]:
+                    - /url: /lvf/edit/710319?group=61768
+                    - generic [ref=e994]: 20240620_ 登録アンケート(スタッフ用,DH/DAフリーランス用)
+                  - generic [ref=e995]:
+                    - button "content_copy 呼び出しタグ" [ref=e996] [cursor=pointer]:
+                      - generic [ref=e997]: content_copy
+                      - text: 呼び出しタグ
+                    - link "外部用" [ref=e998] [cursor=pointer]:
+                      - /url: /lvf/ext/rc/710319
+                - cell "-" [ref=e999]
+                - cell "67回答 /63人 回答結果 download" [ref=e1000]:
+                  - generic [ref=e1001]:
+                    - generic [ref=e1002]: 67回答 /63人
+                    - generic [ref=e1003]:
+                      - link "回答結果" [ref=e1004] [cursor=pointer]:
+                        - /url: /lvf/show/answer/710319
+                      - link "download" [ref=e1005] [cursor=pointer]:
+                        - /url: /lvf/export/710319
+                        - generic [ref=e1006]: download
+                - cell "2024-07-23" [ref=e1007]
+                - cell "公開中" [ref=e1008]:
+                  - generic [ref=e1011]: 公開中
+                - cell "プレビュー star" [ref=e1012]:
+                  - generic [ref=e1013]:
+                    - link "プレビュー" [ref=e1014] [cursor=pointer]:
+                      - /url: https://myfm.jp/Jy4aip?mode=example
+                    - button "star" [ref=e1015] [cursor=pointer]:
+                      - generic [ref=e1016]: star
+                - cell "more_vert" [ref=e1017]:
+                  - button "more_vert" [ref=e1019] [cursor=pointer]:
+                    - generic [ref=e1020]: more_vert
+              - row "drag_indicator 使用しない20240620_ 登録アンケート（Dr用） content_copy 呼び出しタグ 外部用 - 0回答 2024-06-20 公開中 プレビュー star more_vert" [ref=e1021]:
+                - rowheader "drag_indicator" [ref=e1022]:
+                  - generic [ref=e1023]: drag_indicator
+                - cell [ref=e1024]
+                - cell "使用しない20240620_ 登録アンケート（Dr用） content_copy 呼び出しタグ 外部用" [ref=e1028]:
+                  - link "使用しない20240620_ 登録アンケート（Dr用）" [ref=e1031] [cursor=pointer]:
+                    - /url: /lvf/edit/686962?group=61768
+                    - generic [ref=e1032]: 使用しない20240620_ 登録アンケート（Dr用）
+                  - generic [ref=e1033]:
+                    - button "content_copy 呼び出しタグ" [ref=e1034] [cursor=pointer]:
+                      - generic [ref=e1035]: content_copy
+                      - text: 呼び出しタグ
+                    - link "外部用" [ref=e1036] [cursor=pointer]:
+                      - /url: /lvf/ext/rc/686962
+                - cell "-" [ref=e1037]
+                - cell "0回答" [ref=e1038]:
+                  - generic [ref=e1040]: 0回答
+                - cell "2024-06-20" [ref=e1041]
+                - cell "公開中" [ref=e1042]:
+                  - generic [ref=e1045]: 公開中
+                - cell "プレビュー star" [ref=e1046]:
+                  - generic [ref=e1047]:
+                    - link "プレビュー" [ref=e1048] [cursor=pointer]:
+                      - /url: https://myfm.jp/3vYkje?mode=example
+                    - button "star" [ref=e1049] [cursor=pointer]:
+                      - generic [ref=e1050]: star
+                - cell "more_vert" [ref=e1051]:
+                  - button "more_vert" [ref=e1053] [cursor=pointer]:
+                    - generic [ref=e1054]: more_vert
+              - row "drag_indicator 解約アンケート content_copy 呼び出しタグ 外部用 Google Sheets Logo 連携中 表示 open_in_new 12回答 /12人 回答結果 download 2023-07-11 公開中 プレビュー star more_vert" [ref=e1055]:
+                - rowheader "drag_indicator" [ref=e1056]:
+                  - generic [ref=e1057]: drag_indicator
+                - cell [ref=e1058]
+                - cell "解約アンケート content_copy 呼び出しタグ 外部用" [ref=e1062]:
+                  - link "解約アンケート" [ref=e1065] [cursor=pointer]:
+                    - /url: /lvf/edit/500570?group=61768
+                    - generic [ref=e1066]: 解約アンケート
+                  - generic [ref=e1067]:
+                    - button "content_copy 呼び出しタグ" [ref=e1068] [cursor=pointer]:
+                      - generic [ref=e1069]: content_copy
+                      - text: 呼び出しタグ
+                    - link "外部用" [ref=e1070] [cursor=pointer]:
+                      - /url: /lvf/ext/rc/500570
+                - cell "Google Sheets Logo 連携中 表示 open_in_new" [ref=e1071]:
+                  - generic [ref=e1072]:
+                    - img "Google Sheets Logo" [ref=e1073]
+                    - text: 連携中
+                  - link "表示 open_in_new" [ref=e1074] [cursor=pointer]:
+                    - /url: https://docs.google.com/spreadsheets/d/13bun-cpdMni83U7aISesmhpjywGNZTMDYh-u_w639VY
+                    - generic [ref=e1075]: 表示
+                    - generic [ref=e1076]: open_in_new
+                - cell "12回答 /12人 回答結果 download" [ref=e1077]:
+                  - generic [ref=e1078]:
+                    - generic [ref=e1079]: 12回答 /12人
+                    - generic [ref=e1080]:
+                      - link "回答結果" [ref=e1081] [cursor=pointer]:
+                        - /url: /lvf/show/answer/500570
+                      - link "download" [ref=e1082] [cursor=pointer]:
+                        - /url: /lvf/export/500570
+                        - generic [ref=e1083]: download
+                - cell "2023-07-11" [ref=e1084]
+                - cell "公開中" [ref=e1085]:
+                  - generic [ref=e1088]: 公開中
+                - cell "プレビュー star" [ref=e1089]:
+                  - generic [ref=e1090]:
+                    - link "プレビュー" [ref=e1091] [cursor=pointer]:
+                      - /url: https://myfm.jp/ZoFs1p?mode=example
+                    - button "star" [ref=e1092] [cursor=pointer]:
+                      - generic [ref=e1093]: star
+                - cell "more_vert" [ref=e1094]:
+                  - button "more_vert" [ref=e1096] [cursor=pointer]:
+                    - generic [ref=e1097]: more_vert
+              - row "drag_indicator 内覧会申込 content_copy 呼び出しタグ 外部用 Google Sheets Logo 連携中 表示 open_in_new 192回答 /187人 回答結果 download 2023-04-06 公開中 プレビュー star more_vert" [ref=e1098]:
+                - rowheader "drag_indicator" [ref=e1099]:
+                  - generic [ref=e1100]: drag_indicator
+                - cell [ref=e1101]
+                - cell "内覧会申込 content_copy 呼び出しタグ 外部用" [ref=e1105]:
+                  - link "内覧会申込" [ref=e1108] [cursor=pointer]:
+                    - /url: /lvf/edit/450811?group=61768
+                    - generic [ref=e1109]: 内覧会申込
+                  - generic [ref=e1110]:
+                    - button "content_copy 呼び出しタグ" [ref=e1111] [cursor=pointer]:
+                      - generic [ref=e1112]: content_copy
+                      - text: 呼び出しタグ
+                    - link "外部用" [ref=e1113] [cursor=pointer]:
+                      - /url: /lvf/ext/rc/450811
+                - cell "Google Sheets Logo 連携中 表示 open_in_new" [ref=e1114]:
+                  - generic [ref=e1115]:
+                    - img "Google Sheets Logo" [ref=e1116]
+                    - text: 連携中
+                  - link "表示 open_in_new" [ref=e1117] [cursor=pointer]:
+                    - /url: https://docs.google.com/spreadsheets/d/1bJGTJ4NejeSKaImbAWOSknz3Pbo932A0qKAHt6RrZiY
+                    - generic [ref=e1118]: 表示
+                    - generic [ref=e1119]: open_in_new
+                - cell "192回答 /187人 回答結果 download" [ref=e1120]:
+                  - generic [ref=e1121]:
+                    - generic [ref=e1122]: 192回答 /187人
+                    - generic [ref=e1123]:
+                      - link "回答結果" [ref=e1124] [cursor=pointer]:
+                        - /url: /lvf/show/answer/450811
+                      - link "download" [ref=e1125] [cursor=pointer]:
+                        - /url: /lvf/export/450811
+                        - generic [ref=e1126]: download
+                - cell "2023-04-06" [ref=e1127]
+                - cell "公開中" [ref=e1128]:
+                  - generic [ref=e1131]: 公開中
+                - cell "プレビュー star" [ref=e1132]:
+                  - generic [ref=e1133]:
+                    - link "プレビュー" [ref=e1134] [cursor=pointer]:
+                      - /url: https://myfm.jp/rT0irY?mode=example
+                    - button "star" [ref=e1135] [cursor=pointer]:
+                      - generic [ref=e1136]: star
+                - cell "more_vert" [ref=e1137]:
+                  - button "more_vert" [ref=e1139] [cursor=pointer]:
+                    - generic [ref=e1140]: more_vert
+              - row "drag_indicator 登録アンケート content_copy 呼び出しタグ 外部用 Google Sheets Logo 連携中 表示 open_in_new 383回答 /352人 回答結果 download 2022-06-03 公開中 プレビュー star more_vert" [ref=e1141]:
+                - rowheader "drag_indicator" [ref=e1142]:
+                  - generic [ref=e1143]: drag_indicator
+                - cell [ref=e1144]
+                - cell "登録アンケート content_copy 呼び出しタグ 外部用" [ref=e1148]:
+                  - link "登録アンケート" [ref=e1151] [cursor=pointer]:
+                    - /url: /lvf/edit/299591?group=61768
+                    - generic [ref=e1152]: 登録アンケート
+                  - generic [ref=e1153]:
+                    - button "content_copy 呼び出しタグ" [ref=e1154] [cursor=pointer]:
+                      - generic [ref=e1155]: content_copy
+                      - text: 呼び出しタグ
+                    - link "外部用" [ref=e1156] [cursor=pointer]:
+                      - /url: /lvf/ext/rc/299591
+                - cell "Google Sheets Logo 連携中 表示 open_in_new" [ref=e1157]:
+                  - generic [ref=e1158]:
+                    - img "Google Sheets Logo" [ref=e1159]
+                    - text: 連携中
+                  - link "表示 open_in_new" [ref=e1160] [cursor=pointer]:
+                    - /url: https://docs.google.com/spreadsheets/d/1YLv1D0gVDiJZhvpc_9kbm3h7PjwTG4RnT6aNn0VANAY
+                    - generic [ref=e1161]: 表示
+                    - generic [ref=e1162]: open_in_new
+                - cell "383回答 /352人 回答結果 download" [ref=e1163]:
+                  - generic [ref=e1164]:
+                    - generic [ref=e1165]: 383回答 /352人
+                    - generic [ref=e1166]:
+                      - link "回答結果" [ref=e1167] [cursor=pointer]:
+                        - /url: /lvf/show/answer/299591
+                      - link "download" [ref=e1168] [cursor=pointer]:
+                        - /url: /lvf/export/299591
+                        - generic [ref=e1169]: download
+                - cell "2022-06-03" [ref=e1170]
+                - cell "公開中" [ref=e1171]:
+                  - generic [ref=e1174]: 公開中
+                - cell "プレビュー star" [ref=e1175]:
+                  - generic [ref=e1176]:
+                    - link "プレビュー" [ref=e1177] [cursor=pointer]:
+                      - /url: https://myfm.jp/mQN90V?mode=example
+                    - button "star" [ref=e1178] [cursor=pointer]:
+                      - generic [ref=e1179]: star
+                - cell "more_vert" [ref=e1180]:
+                  - button "more_vert" [ref=e1182] [cursor=pointer]:
+                    - generic [ref=e1183]: more_vert
+          - navigation "Pagination" [ref=e812]:
+            - list [ref=e813]:
+              - listitem [ref=e814]:
+                - 'button "前のページ(現在: 1)" [disabled] [ref=e815]':
+                  - generic [ref=e816]: <
+              - listitem [ref=e817]:
+                - button "ページ1へ" [ref=e818] [cursor=pointer]: "1"
+              - listitem [ref=e819]:
+                - 'button "次のページ(現在: 1)" [disabled] [ref=e820]':
+                  - generic [ref=e821]: ">"
+  - application "ChatPlus" [ref=e822]:
+    - generic [ref=e823]:
+      - generic:
+        - heading "お問い合わせはこちらをクリック" [ref=e825] [cursor=pointer]
+        - text: 

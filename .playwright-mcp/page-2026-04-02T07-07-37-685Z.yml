@@ -1,0 +1,372 @@
+- application [ref=e1]:
+  - iframe [ref=e2]:
+    
+  - iframe [ref=e3]:
+    
+  - banner "メニューバー" [ref=e4]:
+    - generic [ref=e7]:
+      - link "ドキュメント ホーム" [ref=e9] [cursor=pointer]:
+        - /url: https://docs.google.com/document/?pli=1&usp=docs_web
+      - generic [ref=e16]:
+        - generic "MA-Pilot 動作確認チェックリスト（2026/2/26）" [ref=e18]:
+          - generic [ref=e20]: MA-Pilot 動作確認チェックリスト（2026/2/26）
+          - 'button "ドキュメントのステータス: ドライブに保存しました." [ref=e24]'
+        - generic [ref=e32]:
+          - generic [ref=e37]:
+            - button "Takeru Kuwahata" [ref=e38]:
+              - img "Takeru Kuwahata" [ref=e43] [cursor=pointer]
+            - button "匿名イフリート" [ref=e44]:
+              - img "匿名イフリート" [ref=e49] [cursor=pointer]
+            - button "匿名ウォンバット" [ref=e50]:
+              - img "匿名ウォンバット" [ref=e55] [cursor=pointer]
+            - button "匿名セイウチ" [ref=e56]:
+              - img "匿名セイウチ" [ref=e61] [cursor=pointer]
+            - button "匿名ディンゴ" [ref=e62]:
+              - img "匿名ディンゴ" [ref=e67] [cursor=pointer]
+          - button "すべてのコメントを表示" [ref=e69] [cursor=pointer]
+          - generic [ref=e72]:
+            - button "共有します。リンクを知っている全員。 リンクを知っている全員がアクセスできます。ログインは不要です。" [disabled] [ref=e73]: 共有
+            - button "クイック共有操作" [disabled] [ref=e75]
+          - link "ログイン" [ref=e81] [cursor=pointer]:
+            - /url: https://accounts.google.com/ServiceLogin?service=wise&passive=1209600&osid=1&continue=https://docs.google.com/document/d/1VLRct1qQtkTR5i2AsJrwcLZKYqx-sZv1d4a9y82EyoI/edit?pli%3D1%26tab%3Dt.0&followup=https://docs.google.com/document/d/1VLRct1qQtkTR5i2AsJrwcLZKYqx-sZv1d4a9y82EyoI/edit?pli%3D1%26tab%3Dt.0&ltmpl=docs&ec=GAZAGQ
+    - generic [ref=e82]:
+      - menubar [ref=e84]:
+        - menuitem "ファイル" [ref=e85] [cursor=pointer]
+        - menuitem "編集" [ref=e86] [cursor=pointer]
+        - menuitem "表示" [ref=e87] [cursor=pointer]
+        - menuitem "挿入" [ref=e88] [cursor=pointer]
+        - menuitem "表示形式" [ref=e89] [cursor=pointer]
+        - menuitem "ツール" [ref=e90] [cursor=pointer]
+        - menuitem "拡張機能" [ref=e91] [cursor=pointer]
+        - menuitem "ヘルプ" [ref=e92] [cursor=pointer]
+      - generic [ref=e93]:
+        - generic [ref=e94]:
+          - toolbar "メニューを検索 (option+/)" [ref=e95]:
+            - combobox "メニュー" [ref=e97]
+          - toolbar "メイン" [ref=e98]:
+            - button "元に戻す (⌘Z)" [ref=e99] [cursor=pointer]
+            - button "やり直し (⌘Y)" [ref=e104] [cursor=pointer]
+            - button "印刷 (⌘P)" [ref=e109] [cursor=pointer]
+            - button "スペルと文法のチェック (⌘+option+X)" [ref=e114] [cursor=pointer]
+            - button "書式を貼り付け" [ref=e119] [cursor=pointer]
+            - combobox "ズーム" [ref=e124] [cursor=pointer]:
+              - option "ズーム のリストで 100% を選択しています。" [selected] [ref=e127]:
+                - textbox "ズーム" [ref=e128]: 100%
+            - separator [disabled] [ref=e132]
+            - listbox "スタイル" [ref=e133] [cursor=pointer]:
+              - option "スタイル のリストで タイトル を選択しています。" [selected] [ref=e136]: タイトル
+            - separator [disabled] [ref=e140]
+            - listbox "フォント" [ref=e141] [cursor=pointer]:
+              - option "フォント のリストで Arial を選択しています。" [selected] [ref=e144]: Arial
+            - separator [disabled] [ref=e148]
+            - button "フォントサイズを縮小 (⌘+Shift+カンマ)" [ref=e149] [cursor=pointer]
+            - combobox "フォント サイズ" [ref=e154] [cursor=pointer]:
+              - option "フォント サイズ のリストで 26 を選択しています。" [selected] [ref=e157]:
+                - textbox "フォント サイズ" [ref=e158]: "26"
+            - button "フォントサイズを拡大 (⌘+Shift+ピリオド)" [ref=e159] [cursor=pointer]
+            - separator [disabled] [ref=e164]
+            - button "太字 (⌘B)" [ref=e165] [cursor=pointer]
+            - button "斜体 (⌘I)" [ref=e170] [cursor=pointer]
+            - button "下線 (⌘U)" [ref=e175] [cursor=pointer]
+            - button "テキストの色" [ref=e180] [cursor=pointer]
+            - button "ハイライトの色" [ref=e187] [cursor=pointer]
+            - separator [disabled] [ref=e194]
+            - button "リンクを挿入 (⌘K)" [ref=e195] [cursor=pointer]
+            - button "コメントを追加 (⌘+option+M)" [ref=e200] [cursor=pointer]
+            - separator [disabled] [ref=e205]
+            - button "もっと見る" [disabled] [ref=e206] [cursor=pointer]
+        - toolbar "モードと表示" [ref=e213]:
+          - button "編集モード" [ref=e214] [cursor=pointer]:
+            - generic [ref=e217]: 編集
+          - separator [disabled] [ref=e221]
+          - button "メニューを非表示 (Ctrl+Shift+F)" [ref=e222] [cursor=pointer]
+  - generic [ref=e229]:
+    - generic [ref=e234]:
+      - generic [ref=e235]: "22"
+      - generic [ref=e240]: "21"
+      - generic [ref=e245]: "20"
+      - generic [ref=e250]: "19"
+      - generic [ref=e255]: "18"
+      - generic [ref=e260]: "17"
+      - generic [ref=e265]: "16"
+      - generic [ref=e270]: "15"
+      - generic [ref=e275]: "14"
+      - generic [ref=e280]: "13"
+      - generic [ref=e285]: "12"
+      - generic [ref=e290]: "11"
+      - generic [ref=e295]: "10"
+      - generic [ref=e300]: "9"
+      - generic [ref=e305]: "8"
+      - generic [ref=e310]: "7"
+      - generic [ref=e315]: "6"
+      - generic [ref=e320]: "5"
+      - generic [ref=e325]: "4"
+      - generic [ref=e330]: "3"
+      - generic [ref=e335]: "2"
+      - generic [ref=e340]: "1"
+      - generic [ref=e349]: "1"
+      - generic [ref=e354]: "2"
+      - generic [ref=e359]: "3"
+      - generic [ref=e364]: "4"
+      - generic [ref=e369]: "5"
+      - generic [ref=e374]: "6"
+      - generic [ref=e379]: "7"
+      - generic [ref=e384]: "8"
+      - generic [ref=e389]: "9"
+      - generic [ref=e394]: "10"
+      - generic [ref=e399]: "11"
+      - generic [ref=e404]: "12"
+      - generic [ref=e409]: "13"
+      - generic [ref=e414]: "14"
+      - generic [ref=e419]: "15"
+      - generic [ref=e424]: "16"
+      - generic [ref=e429]: "17"
+      - generic [ref=e434]: "18"
+      - generic [ref=e439]: "19"
+      - generic [ref=e444]: "20"
+      - generic [ref=e449]: "21"
+    - generic [ref=e464]:
+      - generic:
+        - generic [ref=e468]:
+          - button
+        - generic:
+          - list:
+            - listitem "コメントのダイアログ。未解決 のコメント。投稿者 メディカルアドバンス株式会社。返信 0 件。" [ref=e469] [cursor=pointer]:
+              - generic [ref=e473]:
+                - generic [ref=e474]:
+                  - img "メディカルアドバンス株式会社" [ref=e476]
+                  - generic [ref=e477]:
+                    - generic [ref=e478]: メディカルアドバンス株式会社
+                    - generic [ref=e479]: 21:23 3月18日
+                  - generic [ref=e480]:
+                    - button "解決済みのマークを付けてディスカッションを非表示にする" [ref=e481]
+                    - button "その他のオプション" [ref=e485]
+                - generic [ref=e493]: 明日のミーティング時にご相談させてください。
+            - listitem "コメントのダイアログ。未解決 のコメント。投稿者 Takeru Kuwahata。返信 0 件。" [ref=e494] [cursor=pointer]:
+              - generic [ref=e498]:
+                - generic [ref=e499]:
+                  - img "Takeru Kuwahata" [ref=e501]
+                  - generic [ref=e502]:
+                    - generic [ref=e503]: Takeru Kuwahata
+                    - generic [ref=e504]: 8:55 3月12日
+                  - generic [ref=e505]:
+                    - button "解決済みのマークを付けてディスカッションを非表示にする" [ref=e506]
+                    - button "その他のオプション" [ref=e510]
+                - generic [ref=e518]: ご確認お願いします！
+            - listitem "コメントのダイアログ。未解決 のコメント。投稿者 Takeru Kuwahata。返信 0 件。" [ref=e519] [cursor=pointer]:
+              - generic [ref=e523]:
+                - generic [ref=e524]:
+                  - img "Takeru Kuwahata" [ref=e526]
+                  - generic [ref=e527]:
+                    - generic [ref=e528]: Takeru Kuwahata
+                    - generic [ref=e529]: 9:58 3月12日
+                  - generic [ref=e530]:
+                    - button "解決済みのマークを付けてディスカッションを非表示にする" [ref=e531]
+                    - button "その他のオプション" [ref=e535]
+                - generic [ref=e543]: ご確認ください！
+    - generic [ref=e556]:
+      - generic [ref=e1209]: "30"
+      - generic [ref=e1214]: "29"
+      - generic [ref=e1219]: "28"
+      - generic [ref=e1224]: "27"
+      - generic [ref=e1229]: "26"
+      - generic [ref=e1234]: "25"
+      - generic [ref=e1239]: "24"
+      - generic [ref=e1244]: "23"
+      - generic [ref=e1249]: "22"
+      - generic [ref=e1254]: "21"
+      - generic [ref=e1259]: "20"
+      - generic [ref=e1264]: "19"
+      - generic [ref=e1269]: "18"
+      - generic [ref=e1274]: "17"
+      - generic [ref=e1279]: "16"
+      - generic [ref=e1284]: "15"
+      - generic [ref=e1289]: "14"
+      - generic [ref=e1294]: "13"
+      - generic [ref=e1299]: "12"
+      - generic [ref=e1304]: "11"
+      - generic [ref=e1309]: "10"
+      - generic [ref=e1314]: "9"
+      - generic [ref=e1319]: "8"
+      - generic [ref=e1324]: "7"
+      - generic [ref=e1329]: "6"
+      - generic [ref=e1334]: "5"
+      - generic [ref=e1339]: "4"
+      - generic [ref=e1344]: "3"
+      - generic [ref=e1349]: "2"
+      - generic [ref=e1354]: "1"
+      - generic [ref=e1363]: "1"
+      - generic [ref=e1368]: "2"
+      - generic [ref=e1373]: "3"
+      - generic [ref=e1378]: "4"
+      - generic [ref=e1383]: "5"
+      - generic [ref=e1388]: "6"
+      - generic [ref=e1393]: "7"
+      - generic [ref=e1398]: "8"
+      - generic [ref=e1403]: "9"
+      - generic [ref=e1408]: "10"
+      - generic [ref=e1413]: "11"
+      - generic [ref=e1418]: "12"
+      - generic [ref=e1423]: "13"
+      - generic [ref=e1428]: "14"
+      - generic [ref=e1433]: "15"
+      - generic [ref=e1438]: "16"
+      - generic [ref=e1443]: "17"
+      - generic [ref=e1448]: "18"
+      - generic [ref=e1453]: "19"
+      - generic [ref=e1458]: "20"
+      - generic [ref=e1463]: "21"
+      - generic [ref=e1468]: "22"
+      - generic [ref=e1473]: "23"
+      - generic [ref=e1478]: "24"
+      - generic [ref=e1483]: "25"
+      - generic [ref=e1488]: "26"
+      - generic [ref=e1493]: "27"
+      - generic [ref=e1498]: "28"
+      - generic [ref=e1503]: "29"
+    - img [ref=e859]
+    - generic "ドキュメント タブ" [ref=e862]:
+      - button "タブとアウトラインを非表示" [ref=e864] [cursor=pointer]:
+        - button "戻る" [disabled] [ref=e865]:
+          - button "戻る" [disabled] [ref=e869]
+      - generic [ref=e875]:
+        - generic [ref=e877]:
+          - heading "ドキュメント タブ" [ref=e878]
+          - button "タブを追加" [ref=e881]
+        - tree "ドキュメント タブ" [ref=e885]:
+          - generic [ref=e887] [cursor=pointer]:
+            - treeitem "タブ 1. 9 件のコメント" [selected] [ref=e888]:
+              - generic [ref=e895]: タブ 1
+              - generic [ref=e897]:
+                - img [ref=e898]
+                - generic [ref=e900]: "9"
+              - button "タブ オプション" [ref=e903]
+            - generic [ref=e907]:
+              - menuitem "MA-Pilot 動作確認チェックリスト（2026/2/26）（レベル 1）" [ref=e908]:
+                - generic "MA-Pilot 動作確認チェックリスト（2026/2/26）（レベル 1）" [ref=e913]:
+                  - generic [ref=e914]: MA-Pilot 動作確認チェックリスト（2026/2/26）
+              - menuitem "📌 はじめに（レベル 2）" [ref=e915]:
+                - generic "📌 はじめに（レベル 2）" [ref=e920]:
+                  - generic [ref=e921]: 📌 はじめに
+              - menuitem "1. ログイン・ログアウト機能（レベル 2）" [ref=e922]:
+                - generic "1. ログイン・ログアウト機能（レベル 2）" [ref=e927]:
+                  - generic [ref=e928]: 1. ログイン・ログアウト機能
+              - menuitem "2. 運営者画面（管理者機能）（レベル 2）" [ref=e929]:
+                - generic "2. 運営者画面（管理者機能）（レベル 2）" [ref=e934]:
+                  - generic [ref=e935]: 2. 運営者画面（管理者機能）
+              - menuitem "3. 医院モードへの切り替え（レベル 2）" [ref=e936]:
+                - generic "3. 医院モードへの切り替え（レベル 2）" [ref=e941]:
+                  - generic [ref=e942]: 3. 医院モードへの切り替え
+              - menuitem "4. 経営ダッシュボード（医院画面）（レベル 2）" [ref=e943]:
+                - generic "4. 経営ダッシュボード（医院画面）（レベル 2）" [ref=e948]:
+                  - generic [ref=e949]: 4. 経営ダッシュボード（医院画面）
+              - menuitem "✅ ダッシュボードの表示確認（レベル 3）" [ref=e950]:
+                - generic "✅ ダッシュボードの表示確認（レベル 3）" [ref=e955]:
+                  - generic [ref=e956]: ✅ ダッシュボードの表示確認
+              - menuitem "5. 基礎データ管理（月次データの登録）（レベル 2）" [ref=e957]:
+                - generic "5. 基礎データ管理（月次データの登録）（レベル 2）" [ref=e962]:
+                  - generic [ref=e963]: 5. 基礎データ管理（月次データの登録）
+              - menuitem "6. 診療圏分析（レベル 2）" [ref=e964]:
+                - generic "6. 診療圏分析（レベル 2）" [ref=e969]:
+                  - generic [ref=e970]: 6. 診療圏分析
+              - menuitem "✅ ページの表示確認（レベル 3）" [ref=e971]:
+                - generic "✅ ページの表示確認（レベル 3）" [ref=e976]:
+                  - generic [ref=e977]: ✅ ページの表示確認
+              - menuitem "7. 経営シミュレーション（レベル 2）" [ref=e978]:
+                - generic "7. 経営シミュレーション（レベル 2）" [ref=e983]:
+                  - generic [ref=e984]: 7. 経営シミュレーション
+              - menuitem "8. レポート管理（レベル 2）" [ref=e985]:
+                - generic "8. レポート管理（レベル 2）" [ref=e990]:
+                  - generic [ref=e991]: 8. レポート管理
+              - menuitem "✅ レポート生成の確認（レベル 3）" [ref=e992]:
+                - generic "✅ レポート生成の確認（レベル 3）" [ref=e997]:
+                  - generic [ref=e998]: ✅ レポート生成の確認
+              - menuitem "9. 印刷物発注（新機能）（レベル 2）" [ref=e999]:
+                - generic "9. 印刷物発注（新機能）（レベル 2）" [ref=e1004]:
+                  - generic [ref=e1005]: 9. 印刷物発注（新機能）
+              - menuitem "✅ 再注文パターンのテスト（レベル 3）" [ref=e1006]:
+                - generic "✅ 再注文パターンのテスト（レベル 3）" [ref=e1011]:
+                  - generic [ref=e1012]: ✅ 再注文パターンのテスト
+              - menuitem "✅ 他の商品種類のテスト（レベル 3）" [ref=e1013]:
+                - generic "✅ 他の商品種類のテスト（レベル 3）" [ref=e1018]:
+                  - generic [ref=e1019]: ✅ 他の商品種類のテスト
+              - menuitem "相談フォーム：新規注文の場合（レベル 3）" [ref=e1020]:
+                - generic "相談フォーム：新規注文の場合（レベル 3）" [ref=e1025]:
+                  - generic [ref=e1026]: 相談フォーム：新規注文の場合
+              - menuitem "10. 印刷物発注履歴（レベル 2）" [ref=e1027]:
+                - generic "10. 印刷物発注履歴（レベル 2）" [ref=e1032]:
+                  - generic [ref=e1033]: 10. 印刷物発注履歴
+              - menuitem "✅ ページの表示確認（レベル 3）" [ref=e1034]:
+                - generic "✅ ページの表示確認（レベル 3）" [ref=e1039]:
+                  - generic [ref=e1040]: ✅ ページの表示確認
+              - menuitem "11. 医院設定（レベル 2）" [ref=e1041]:
+                - generic "11. 医院設定（レベル 2）" [ref=e1046]:
+                  - generic [ref=e1047]: 11. 医院設定
+              - menuitem "✅ ページの表示確認（レベル 3）" [ref=e1048]:
+                - generic "✅ ページの表示確認（レベル 3）" [ref=e1053]:
+                  - generic [ref=e1054]: ✅ ページの表示確認
+              - menuitem "✅ 入力項目の確認（レベル 3）" [ref=e1055]:
+                - generic "✅ 入力項目の確認（レベル 3）" [ref=e1060]:
+                  - generic [ref=e1061]: ✅ 入力項目の確認
+              - menuitem "12. スタッフ管理（レベル 2）" [ref=e1062]:
+                - generic "12. スタッフ管理（レベル 2）" [ref=e1067]:
+                  - generic [ref=e1068]: 12. スタッフ管理
+              - menuitem "✅ ページの表示確認（レベル 3）" [ref=e1069]:
+                - generic "✅ ページの表示確認（レベル 3）" [ref=e1074]:
+                  - generic [ref=e1075]: ✅ ページの表示確認
+              - menuitem "13. マイページ設定（レベル 2）" [ref=e1076]:
+                - generic "13. マイページ設定（レベル 2）" [ref=e1081]:
+                  - generic [ref=e1082]: 13. マイページ設定
+              - menuitem "14. 運営者モードへの切り替え（レベル 2）" [ref=e1083]:
+                - generic "14. 運営者モードへの切り替え（レベル 2）" [ref=e1088]:
+                  - generic [ref=e1089]: 14. 運営者モードへの切り替え
+              - menuitem "15. 桑畑の追加作業（レベル 2）" [ref=e1090]:
+                - generic "15. 桑畑の追加作業（レベル 2）" [ref=e1095]:
+                  - generic [ref=e1096]: 15. 桑畑の追加作業
+              - menuitem "16. レスポンシブ対応（レベル 2）" [ref=e1097]:
+                - generic "16. レスポンシブ対応（レベル 2）" [ref=e1102]:
+                  - generic [ref=e1103]: 16. レスポンシブ対応
+              - menuitem "✅ 1. 管理ダッシュボードのレスポンシブ対応（レベル 3）" [ref=e1104]:
+                - generic "✅ 1. 管理ダッシュボードのレスポンシブ対応（レベル 3）" [ref=e1109]:
+                  - generic [ref=e1110]: ✅ 1. 管理ダッシュボードのレスポンシブ対応
+              - menuitem "✅ 2. ナビゲーションメニューのレスポンシブ対応（主要改善）（レベル 3）" [ref=e1111]:
+                - generic "✅ 2. ナビゲーションメニューのレスポンシブ対応（主要改善）（レベル 3）" [ref=e1116]:
+                  - generic [ref=e1117]: ✅ 2. ナビゲーションメニューのレスポンシブ対応（主要改善）
+              - menuitem "📝 確認時の注意事項（レベル 2）" [ref=e1118]:
+                - generic "📝 確認時の注意事項（レベル 2）" [ref=e1123]:
+                  - generic [ref=e1124]: 📝 確認時の注意事項
+              - menuitem "⏱️ 初回アクセス時の待ち時間について（レベル 3）" [ref=e1125]:
+                - generic "⏱️ 初回アクセス時の待ち時間について（レベル 3）" [ref=e1130]:
+                  - generic [ref=e1131]: ⏱️ 初回アクセス時の待ち時間について
+              - menuitem "メール送信設定（印刷物注文通知）（レベル 2）" [ref=e1132]:
+                - generic "メール送信設定（印刷物注文通知）（レベル 2）" [ref=e1137]:
+                  - generic [ref=e1138]: メール送信設定（印刷物注文通知）
+              - menuitem "発行手順（レベル 3）" [ref=e1139]:
+                - generic "発行手順（レベル 3）" [ref=e1144]:
+                  - generic [ref=e1145]: 発行手順
+              - menuitem "必要な情報（レベル 3）" [ref=e1146]:
+                - generic "必要な情報（レベル 3）" [ref=e1151]:
+                  - generic [ref=e1152]: 必要な情報
+              - menuitem "動作チェックフロー（レベル 1）" [ref=e1153]:
+                - generic "動作チェックフロー（レベル 1）" [ref=e1158]:
+                  - generic [ref=e1159]: 動作チェックフロー
+              - menuitem "1. Lstep Webhook連携（レベル 2）" [ref=e1160]:
+                - generic "1. Lstep Webhook連携（レベル 2）" [ref=e1165]:
+                  - generic [ref=e1166]: 1. Lstep Webhook連携
+              - menuitem "2. 内覧会ステータス管理（レベル 2）" [ref=e1167]:
+                - generic "2. 内覧会ステータス管理（レベル 2）" [ref=e1172]:
+                  - generic [ref=e1173]: 2. 内覧会ステータス管理
+              - menuitem "3. パスワード変更機能（管理者操作）（レベル 2）" [ref=e1174]:
+                - generic "3. パスワード変更機能（管理者操作）（レベル 2）" [ref=e1179]:
+                  - generic [ref=e1180]: 3. パスワード変更機能（管理者操作）
+              - menuitem "4. 印刷物受注フォーム（レベル 2）" [ref=e1181]:
+                - generic "4. 印刷物受注フォーム（レベル 2）" [ref=e1186]:
+                  - generic [ref=e1187]: 4. 印刷物受注フォーム
+  - iframe [active] [ref=e1188]:
+    - textbox "ドキュメントのコンテンツ" [active] [ref=f1e1]
+    - group
+  - link "スクリーン リーダーのサポートを有効にする" [ref=e1189] [cursor=pointer]:
+    - /url: "#"
+  - region [ref=e1190]: スクリーン リーダーのサポートを有効にするには、⌘+option+Z を押します。キーボード ショートカットの詳細については、⌘スラッシュ を押します。
+  - generic [ref=e1191]: バナーを非表示にしました
+  - region

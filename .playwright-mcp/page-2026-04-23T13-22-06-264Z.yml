@@ -1,0 +1,153 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]: MA
+          - heading [level=6] [ref=e206]: MA-Pilot
+          - generic [ref=e10]: 管理者
+        - paragraph [ref=e11]: 桑畑 健
+    - generic [ref=e12]:
+      - generic [ref=e13]: 管理機能
+      - list [ref=e14]:
+        - listitem [ref=e15]:
+          - button [ref=e207] [cursor=pointer]:
+            - img [ref=e18]
+            - generic [ref=e21]: 管理ダッシュボード
+        - listitem [ref=e22]:
+          - button [ref=e208] [cursor=pointer]:
+            - img [ref=e25]
+            - generic [ref=e28]: 運営者アカウント管理
+        - listitem [ref=e29]:
+          - button [ref=e209] [cursor=pointer]:
+            - img [ref=e32]
+            - generic [ref=e35]: 医院アカウント管理
+        - listitem [ref=e36]:
+          - button [ref=e210] [cursor=pointer]:
+            - img [ref=e39]
+            - generic [ref=e43]: システム設定
+        - listitem [ref=e44]:
+          - button [ref=e211] [cursor=pointer]:
+            - img [ref=e47]
+            - generic [ref=e50]: 価格表管理
+        - listitem [ref=e51]:
+          - button [ref=e212] [cursor=pointer]:
+            - img [ref=e54]
+            - generic [ref=e57]: 印刷物発注管理
+      - separator [ref=e58]
+      - list [ref=e59]:
+        - listitem [ref=e60]:
+          - button [ref=e213] [cursor=pointer]:
+            - img [ref=e63]
+            - generic [ref=e66]: マイページ設定
+        - listitem [ref=e67]:
+          - button [ref=e214] [cursor=pointer]:
+            - img [ref=e70]
+            - generic [ref=e73]: ログアウト
+    - main [ref=e74]:
+      - generic [ref=e76]:
+        - heading [level=1] [ref=e215]: 印刷物注文履歴
+        - generic [ref=e79]:
+          - generic [ref=e81]:
+            - generic [ref=e82]: ステータス
+            - generic [ref=e83]:
+              - combobox [expanded] [ref=e84] [cursor=pointer]: すべて
+              - textbox: all
+              - img
+              - group:
+                - generic: ステータス
+          - button [ref=e216] [cursor=pointer]: 検索
+        - table [ref=e101]:
+          - rowgroup [ref=e102]:
+            - row [ref=e217]:
+              - columnheader [ref=e218]: 注文日
+              - columnheader [ref=e219]: 商品種類
+              - columnheader [ref=e220]: 数量
+              - columnheader [ref=e221]: 見積金額
+              - columnheader [ref=e222]: ステータス
+              - columnheader [ref=e223]: 操作
+          - rowgroup [ref=e110]:
+            - row [ref=e224]:
+              - cell [ref=e225]: 2026/4/2
+              - cell [ref=e226]: 1点の商品
+              - cell [ref=e227]: 1,000
+              - cell [ref=e228]: ¥26,500
+              - cell [ref=e229]:
+                - generic [ref=e118]: 受付済
+              - cell [ref=e230]:
+                - generic [ref=e120]:
+                  - button [ref=e231] [cursor=pointer]:
+                    - img [ref=e122]
+                  - button [ref=e232] [cursor=pointer]: 再注文
+            - row [ref=e233]:
+              - cell [ref=e234]: 2026/4/2
+              - cell [ref=e235]: 1点の商品
+              - cell [ref=e236]: 1,000
+              - cell [ref=e237]: ¥26,500
+              - cell [ref=e238]:
+                - generic [ref=e132]: 受付済
+              - cell [ref=e239]:
+                - generic [ref=e134]:
+                  - button [ref=e240] [cursor=pointer]:
+                    - img [ref=e136]
+                  - button [ref=e241] [cursor=pointer]: 再注文
+            - row [ref=e242]:
+              - cell [ref=e243]: 2026/4/2
+              - cell [ref=e244]: 1点の商品
+              - cell [ref=e245]: 1,000
+              - cell [ref=e246]: ¥26,500
+              - cell [ref=e247]:
+                - generic [ref=e146]: 受付済
+              - cell [ref=e248]:
+                - generic [ref=e148]:
+                  - button [ref=e249] [cursor=pointer]:
+                    - img [ref=e150]
+                  - button [ref=e250] [cursor=pointer]: 再注文
+            - row [ref=e251]:
+              - cell [ref=e252]: 2026/4/2
+              - cell [ref=e253]: 相談フォーム
+              - cell [ref=e254]: "-"
+              - cell [ref=e255]: "-"
+              - cell [ref=e256]:
+                - generic [ref=e160]: 受付済
+              - cell [ref=e161]:
+                - button [ref=e257] [cursor=pointer]:
+                  - img [ref=e164]
+            - row [ref=e258]:
+              - cell [ref=e259]: 2026/3/19
+              - cell [ref=e260]: 1点の商品
+              - cell [ref=e261]: "500"
+              - cell [ref=e262]: ¥36,000
+              - cell [ref=e263]:
+                - generic [ref=e173]: 受付済
+              - cell [ref=e264]:
+                - generic [ref=e175]:
+                  - button [ref=e265] [cursor=pointer]:
+                    - img [ref=e177]
+                  - button [ref=e266] [cursor=pointer]: 再注文
+            - row [ref=e267]:
+              - cell [ref=e268]: 2026/3/19
+              - cell [ref=e269]: 相談フォーム
+              - cell [ref=e270]: "-"
+              - cell [ref=e271]: "-"
+              - cell [ref=e272]:
+                - generic [ref=e187]: 受付済
+              - cell [ref=e188]:
+                - button [ref=e273] [cursor=pointer]:
+                  - img [ref=e191]
+            - row [ref=e274]:
+              - cell [ref=e275]: 2026/3/19
+              - cell [ref=e276]: 相談フォーム
+              - cell [ref=e277]: "-"
+              - cell [ref=e278]: "-"
+              - cell [ref=e279]:
+                - generic [ref=e200]: 受付済
+              - cell [ref=e201]:
+                - button [ref=e280] [cursor=pointer]:
+                  - img [ref=e204]
+  - listbox [ref=e283]:
+    - option "すべて" [active] [selected] [ref=e284] [cursor=pointer]
+    - option "受付済" [ref=e285] [cursor=pointer]
+    - option "承認済" [ref=e286] [cursor=pointer]
+    - option "制作中" [ref=e287] [cursor=pointer]
+    - option "発送済" [ref=e288] [cursor=pointer]
