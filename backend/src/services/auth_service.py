@@ -145,7 +145,7 @@ class AuthService:
             # Supabase Admin招待API（招待メールを送信）
             async with httpx.AsyncClient() as client:
                 resp = await client.post(
-                    f'{supabase_url}/auth/v1/admin/invite',
+                    f'{supabase_url}/auth/v1/invite',
                     headers={
                         'apikey': service_role_key,
                         'Authorization': f'Bearer {service_role_key}',
