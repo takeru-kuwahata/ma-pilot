@@ -3,6 +3,7 @@ from typing import List, Optional
 from ..models.monthly_data import MonthlyData, MonthlyDataCreate, MonthlyDataUpdate, CsvImportResult
 import csv
 from io import StringIO
+from datetime import datetime
 
 
 class MonthlyDataService:
@@ -112,20 +113,41 @@ class MonthlyDataService:
         failed_count = 0
         errors = []
 
-        # 日本語ヘッダー → 英語カラム名マッピング
+        # 日本語ヘッダー → 英語カラム名マッピング（新テンプレート対応）
         HEADER_MAP = {
             '年月(YYYY-MM)': 'year_month',
             '保険診療収入': 'insurance_revenue',
             '自費診療収入': 'self_pay_revenue',
+            '物販（その他）': 'other_cost',
+            '変動費': 'material_cost',  # 変動費をmaterial_costカラムに格納
+            '固定費': 'fixed_cost',
+            # 旧テンプレートとの後方互換
             '人件費': 'personnel_cost',
             '材料費': 'material_cost',
-            '固定費': 'fixed_cost',
             'その他費用': 'other_cost',
             '初診患者数': 'first_visit_patients',
             '再初診患者数': 're_first_visit_patients',
             '再診患者数': 'returning_patients',
             'その他患者数': 'other_patients',
         }
+
+        def _normalize_year_month(value: str) -> str:
+            '''Jan-26 → 2026-01 形式に変換。YYYY-MM形式はそのまま返す。'''
+            value = value.strip()
+            try:
+                # Jan-26 形式
+                dt = datetime.strptime(value, '%b-%y')
+                return dt.strftime('%Y-%m')
+            except ValueError:
+                pass
+            try:
+                # Jan-2026 形式
+                dt = datetime.strptime(value, '%b-%Y')
+                return dt.strftime('%Y-%m')
+            except ValueError:
+                pass
+            # YYYY-MM形式はそのまま
+            return value
 
         try:
             # Parse CSV
@@ -136,6 +158,8 @@ class MonthlyDataService:
                 try:
                     # 日本語ヘッダーを英語キーに正規化
                     normalized = {HEADER_MAP.get(k, k): v for k, v in row.items()}
+                    # 年月の正規化（Jan-26 → 2026-01）
+                    normalized['year_month'] = _normalize_year_month(normalized.get('year_month', ''))
                     # Validate and parse row
                     monthly_data = MonthlyDataCreate(
                         clinic_id=clinic_id,

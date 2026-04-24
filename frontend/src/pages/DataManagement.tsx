@@ -211,35 +211,29 @@ export const DataManagement = () => {
     }
 
     const headers = [
-      '対象年月',
-      '総売上',
+      '年月(YYYY-MM)',
       '保険診療収入',
-      '自由診療収入',
-      '人件費',
-      '材料費',
+      '自費診療収入',
+      '物販（その他）',
+      '変動費',
       '固定費',
-      'その他費用',
       '初診患者数',
       '再初診患者数',
       '再診患者数',
       'その他患者数',
-      '総患者数',
     ];
 
     const rows = rawMonthlyData.map((item) => [
       item.year_month,
-      item.total_revenue,
       item.insurance_revenue,
       item.self_pay_revenue,
-      item.personnel_cost,
+      item.other_cost,
       item.material_cost,
       item.fixed_cost,
-      item.other_cost,
       item.first_visit_patients,
       item.re_first_visit_patients,
       item.returning_patients,
       item.other_patients,
-      item.total_patients,
     ]);
 
     const csvContent = [headers, ...rows].map((row) => row.join(',')).join('\n');
@@ -258,15 +252,14 @@ export const DataManagement = () => {
 
   // CSVテンプレートダウンロード
   const handleDownloadTemplate = () => {
-    // CSVヘッダー（日本語表示用とバックエンドのカラム名のマッピング）
+    // CSVヘッダー（新テンプレート形式）
     const headers = [
       '年月(YYYY-MM)',
       '保険診療収入',
       '自費診療収入',
-      '人件費',
-      '材料費',
+      '物販（その他）',
+      '変動費',
       '固定費',
-      'その他費用',
       '初診患者数',
       '再初診患者数',
       '再診患者数',
@@ -278,10 +271,9 @@ export const DataManagement = () => {
       '2026-01',
       '2500000',
       '1500000',
-      '800000',
+      '100000',
       '200000',
       '1500000',
-      '100000',
       '45',
       '10',
       '380',
