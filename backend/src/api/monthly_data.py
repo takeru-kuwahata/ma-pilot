@@ -118,7 +118,7 @@ async def import_csv(
     try:
         # Read CSV file
         csv_content = await file.read()
-        csv_text = csv_content.decode('utf-8')
+        csv_text = csv_content.decode('utf-8-sig')
 
         result = await monthly_data_service.import_csv(actual_clinic_id, csv_text)
         return result
