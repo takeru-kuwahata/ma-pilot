@@ -160,10 +160,17 @@ export default function PrintOrderFormPhase2() {
         const data = await printOrderService.getPriceTables();
         setPriceTables(data);
 
-        // 重複なしの商品種類リストを作成
-        const uniqueProductTypes = Array.from(
-          new Set(data.map((pt) => pt.product_type))
-        ).sort();
+        // 重複なしの商品種類リストを指定順で作成
+        const PRODUCT_ORDER = ['診察券', 'ネームプレート', '三つ折りパンフレット', 'リコールはがき'];
+        const uniqueProductTypes = Array.from(new Set(data.map((pt) => pt.product_type)));
+        uniqueProductTypes.sort((a, b) => {
+          const ai = PRODUCT_ORDER.indexOf(a);
+          const bi = PRODUCT_ORDER.indexOf(b);
+          if (ai === -1 && bi === -1) return a.localeCompare(b, 'ja');
+          if (ai === -1) return 1;
+          if (bi === -1) return -1;
+          return ai - bi;
+        });
         setAvailableProductTypes(uniqueProductTypes);
       } catch (error) {
         console.error('価格マスタ取得エラー:', error);
