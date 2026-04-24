@@ -92,7 +92,12 @@ class EmailService:
     ) -> None:
         """クリニックへの注文受付メール送信"""
         subject = '【MA-Pilot】印刷物ご注文を受け付けました'
-        items_section = f"\n{items_text}" if items_text else ''
+        if items_text:
+            items_section = f"\n{items_text}"
+        elif product_type:
+            items_section = f"\n{product_type}"
+        else:
+            items_section = ''
         body = f"""{clinic_name} 様
 
 この度は、印刷物のご注文をいただきありがとうございます。
@@ -131,6 +136,9 @@ class EmailService:
         elif pattern_str == 'consultation':
             pattern_label = '相談フォーム'
             subject_prefix = '相談フォーム'
+        elif pattern_str == 'new_order':
+            pattern_label = '新規注文'
+            subject_prefix = '新規注文'
         else:
             pattern_label = pattern_str
             subject_prefix = pattern_str
