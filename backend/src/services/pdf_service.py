@@ -157,7 +157,8 @@ class PdfService:
         }
 
         html_content = template.render(context)
-        pdf_bytes = HTML(string=html_content, base_url='https://fonts.googleapis.com').write_pdf()
+        base_url = str(Path(__file__).parent.parent / 'static')
+        pdf_bytes = HTML(string=html_content, base_url=base_url).write_pdf()
 
         return pdf_bytes
 
@@ -224,6 +225,7 @@ class PdfService:
         }
 
         html_content = template.render(context)
-        pdf_bytes = HTML(string=html_content, base_url='https://fonts.googleapis.com').write_pdf()
+        base_url = str(Path(__file__).parent.parent / 'static')
+        pdf_bytes = HTML(string=html_content, base_url=base_url).write_pdf()
 
         return pdf_bytes
