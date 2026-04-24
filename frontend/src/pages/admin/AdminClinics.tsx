@@ -615,24 +615,22 @@ export const AdminClinics = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      <Tooltip title="クリックで変更">
-                        <Select
-                          value={clinic.openhouse_status}
-                          onChange={(e) => handleOpenhouseStatusChange(clinic.id, e.target.value as OpenhouseStatus)}
-                          size="small"
-                          sx={{ fontSize: '12px', minWidth: '110px' }}
-                          renderValue={(val) => (
-                            <Chip
-                              label={OPENHOUSE_STATUS_LABELS[val as OpenhouseStatus]}
-                              sx={{ ...OPENHOUSE_STATUS_COLORS[val as OpenhouseStatus], fontSize: '11px', fontWeight: 600, height: '24px' }}
-                            />
-                          )}
-                        >
-                          <MenuItem value="none" sx={{ fontSize: '13px' }}>なし</MenuItem>
-                          <MenuItem value="scheduled" sx={{ fontSize: '13px' }}>今後予定</MenuItem>
-                          <MenuItem value="completed" sx={{ fontSize: '13px' }}>完了</MenuItem>
-                        </Select>
-                      </Tooltip>
+                      <Select
+                        value={clinic.openhouse_status}
+                        onChange={(e) => handleOpenhouseStatusChange(clinic.id, e.target.value as OpenhouseStatus)}
+                        size="small"
+                        sx={{ fontSize: '12px', minWidth: '110px' }}
+                        renderValue={(val) => (
+                          <Chip
+                            label={OPENHOUSE_STATUS_LABELS[val as OpenhouseStatus]}
+                            sx={{ ...OPENHOUSE_STATUS_COLORS[val as OpenhouseStatus], fontSize: '11px', fontWeight: 600, height: '24px' }}
+                          />
+                        )}
+                      >
+                        <MenuItem value="none" sx={{ fontSize: '13px' }}>なし</MenuItem>
+                        <MenuItem value="scheduled" sx={{ fontSize: '13px' }}>今後予定</MenuItem>
+                        <MenuItem value="completed" sx={{ fontSize: '13px' }}>完了</MenuItem>
+                      </Select>
                     </TableCell>
                     <TableCell>
                       <IconButton size="small" onClick={() => handleView(clinic)} title="この医院として操作する" sx={{ color: '#FF6B35', '&:hover': { color: '#E55A2B' } }}>
