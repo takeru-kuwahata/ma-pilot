@@ -43,17 +43,17 @@ class MonthlyDataCreate(BaseModel):
     insurance_revenue: float
     self_pay_revenue: float
 
-    personnel_cost: float
-    material_cost: float
-    fixed_cost: float
+    personnel_cost: float = 0
+    material_cost: float = 0
+    fixed_cost: float = 0
     other_cost: float = 0
 
-    first_visit_patients: int       # 初診
-    re_first_visit_patients: int    # 再初診
-    returning_patients: int         # 再診
-    other_patients: int             # 他
+    first_visit_patients: int = 0       # 初診
+    re_first_visit_patients: int = 0    # 再初診
+    returning_patients: int = 0         # 再診
+    other_patients: int = 0             # 他
 
-    treatment_count: int
+    treatment_count: int = 0
 
 
 class MonthlyDataUpdate(BaseModel):

@@ -24,6 +24,7 @@ import {
   UploadFile as UploadFileIcon,
   Close as CloseIcon,
   Download as DownloadIcon,
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 import { monthlyDataService, clinicService } from '../services/api';
 import { MonthlyDataForm } from '../components/MonthlyDataForm';
@@ -195,6 +196,22 @@ export const DataManagement = () => {
       }
     });
     setFormDialogOpen(true);
+  };
+
+  const handleDelete = async (id: string, yearMonth: string) => {
+    if (!window.confirm(`${yearMonth} のデータを削除してもよろしいですか？`)) return;
+    try {
+      await monthlyDataService.deleteMonthlyData(id);
+      setSnackbarMessage('削除しました');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+      await loadMonthlyData();
+    } catch (error) {
+      console.error('Delete failed:', error);
+      setSnackbarMessage('削除に失敗しました');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
   };
 
   const handleSnackbarClose = () => {
@@ -639,23 +656,32 @@ export const DataManagement = () => {
                         borderBottom: '1px solid #e0e0e0',
                       }}
                     >
-                      <Button
-                        variant="outlined"
-                        onClick={() => handleEdit(row.id)}
-                        sx={{
-                          padding: '6px 16px',
-                          fontSize: '14px',
-                          backgroundColor: 'transparent',
-                          border: '1px solid #e0e0e0',
-                          color: '#424242',
-                          '&:hover': {
-                            backgroundColor: '#f5f5f5',
+                      <Box sx={{ display: 'flex', gap: '8px' }}>
+                        <Button
+                          variant="outlined"
+                          onClick={() => handleEdit(row.id)}
+                          sx={{
+                            padding: '6px 16px',
+                            fontSize: '14px',
+                            backgroundColor: 'transparent',
                             border: '1px solid #e0e0e0',
-                          },
-                        }}
-                      >
-                        編集
-                      </Button>
+                            color: '#424242',
+                            '&:hover': {
+                              backgroundColor: '#f5f5f5',
+                              border: '1px solid #e0e0e0',
+                            },
+                          }}
+                        >
+                          編集
+                        </Button>
+                        <IconButton
+                          onClick={() => handleDelete(row.id, row.year_month)}
+                          size="small"
+                          sx={{ color: '#F44336' }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 ))
