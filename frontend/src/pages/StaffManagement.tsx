@@ -44,7 +44,6 @@ export const StaffManagement = () => {
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [inviteForm, setInviteForm] = useState({
     email: '',
-    password: '',
     role: 'clinic_viewer' as 'clinic_owner' | 'clinic_editor' | 'clinic_viewer'
   });
   const [inviteLoading, setInviteLoading] = useState(false);
@@ -110,13 +109,6 @@ export const StaffManagement = () => {
       return;
     }
 
-    if (!inviteForm.password || inviteForm.password.length < 8) {
-      setSnackbarMessage('パスワードは8文字以上で入力してください');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
-      return;
-    }
-
     if (!clinic?.id) {
       setSnackbarMessage('医院IDが見つかりません');
       setSnackbarSeverity('error');
@@ -129,22 +121,22 @@ export const StaffManagement = () => {
 
       await staffService.inviteStaff({
         email: inviteForm.email,
-        password: inviteForm.password,
         role: inviteForm.role,
         clinic_id: clinic.id
       });
 
-      setSnackbarMessage('スタッフアカウントを作成しました');
+      setSnackbarMessage(`招待メールを送信しました（${inviteForm.email}）`);
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
       setInviteDialogOpen(false);
-      setInviteForm({ email: '', password: '', role: 'clinic_viewer' });
+      setInviteForm({ email: '', role: 'clinic_viewer' });
 
       // スタッフ一覧を再取得
       await loadStaffList();
     } catch (error) {
       console.error('Failed to invite staff:', error);
-      setSnackbarMessage('招待に失敗しました');
+      const msg = error instanceof Error ? error.message : '招待に失敗しました';
+      setSnackbarMessage(msg);
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
     } finally {
@@ -438,24 +430,6 @@ export const StaffManagement = () => {
                 '& .MuiInputLabel-root.Mui-focused': { color: '#FF6B35' },
               }}
             />
-            <TextField
-              label="初期パスワード"
-              type="password"
-              required
-              fullWidth
-              value={inviteForm.password}
-              onChange={(e) => setInviteForm((prev) => ({ ...prev, password: e.target.value }))}
-              disabled={inviteLoading}
-              placeholder="8文字以上"
-              inputProps={{ minLength: 8 }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '&:hover fieldset': { borderColor: '#FF6B35' },
-                  '&.Mui-focused fieldset': { borderColor: '#FF6B35' },
-                },
-                '& .MuiInputLabel-root.Mui-focused': { color: '#FF6B35' },
-              }}
-            />
             <FormControl
               fullWidth
               required
@@ -481,7 +455,7 @@ export const StaffManagement = () => {
             </FormControl>
             <Alert severity="info" icon={<InfoIcon />}>
               <Typography sx={{ fontSize: '13px' }}>
-                メールアドレスと初期パスワードを設定してスタッフアカウントを作成します。ログイン後にパスワードを変更するよう案内してください。
+                入力したメールアドレスに招待メールが送信されます。スタッフはメール内のリンクからパスワードを設定してログインできます。
               </Typography>
             </Alert>
           </Box>
@@ -502,7 +476,7 @@ export const StaffManagement = () => {
           <Button
             variant="contained"
             onClick={handleInviteStaff}
-            disabled={inviteLoading || !inviteForm.email || !inviteForm.password}
+            disabled={inviteLoading || !inviteForm.email}
             sx={{
               backgroundColor: '#FF6B35',
               color: '#ffffff',
@@ -515,7 +489,7 @@ export const StaffManagement = () => {
               },
             }}
           >
-            {inviteLoading ? <CircularProgress size={24} sx={{ color: '#ffffff' }} /> : 'アカウントを作成'}
+            {inviteLoading ? <CircularProgress size={24} sx={{ color: '#ffffff' }} /> : '招待メールを送信'}
           </Button>
         </DialogActions>
       </Dialog>

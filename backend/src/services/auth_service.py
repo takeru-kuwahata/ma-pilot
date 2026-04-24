@@ -116,39 +116,50 @@ class AuthService:
             raise ValueError(f'登録に失敗しました: {str(e)}')
 
     async def invite_user(self, email: str, role: UserRole, clinic_id: Optional[str] = None, password: Optional[str] = None) -> dict:
-        '''Create a new staff user with password'''
+        '''Invite a new staff user via Supabase invitation email'''
         import httpx
         import os
+        import json
         try:
-            if not password:
-                raise ValueError('パスワードは必須です')
-
-            # Supabase Admin REST APIで直接ユーザー作成（email_confirm=True）
-            # SUPABASE_SERVICE_ROLE_KEY が未設定の場合は SUPABASE_KEY にフォールバック
             supabase_url = os.environ.get('SUPABASE_URL', '')
             service_role_key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '') or os.environ.get('SUPABASE_KEY', '')
 
+            # まず既存ユーザーかどうか確認
+            async with httpx.AsyncClient() as client:
+                check_resp = await client.get(
+                    f'{supabase_url}/auth/v1/admin/users',
+                    headers={
+                        'apikey': service_role_key,
+                        'Authorization': f'Bearer {service_role_key}',
+                    },
+                    params={'filter': f'email.eq.{email}'},
+                    timeout=15,
+                )
+                existing_users = check_resp.json() if check_resp.status_code == 200 else {'users': []}
+                users_list = existing_users.get('users', []) if isinstance(existing_users, dict) else []
+                already_exists = any(u.get('email') == email for u in users_list)
+
+            if already_exists:
+                raise ValueError(f'このメールアドレスはすでに登録されています: {email}')
+
+            # Supabase Admin招待API（招待メールを送信）
             async with httpx.AsyncClient() as client:
                 resp = await client.post(
-                    f'{supabase_url}/auth/v1/admin/users',
+                    f'{supabase_url}/auth/v1/admin/invite',
                     headers={
                         'apikey': service_role_key,
                         'Authorization': f'Bearer {service_role_key}',
                         'Content-Type': 'application/json',
                     },
-                    json={
-                        'email': email,
-                        'password': password,
-                        'email_confirm': True,
-                    },
+                    json={'email': email},
                     timeout=15,
                 )
                 if resp.status_code not in (200, 201):
-                    raise ValueError(f'ユーザー作成失敗: {resp.text}')
+                    raise ValueError(f'招待メール送信失敗: {resp.text}')
                 user_data = resp.json()
                 user_id = user_data['id']
 
-            # Create user metadata
+            # Create user metadata (role/clinic紐付け)
             self.supabase.table('user_metadata').insert({
                 'user_id': user_id,
                 'role': role,
@@ -156,14 +167,14 @@ class AuthService:
             }).execute()
 
             return {
-                'message': 'スタッフアカウントを作成しました',
+                'message': f'招待メールを送信しました（{email}）',
                 'invite_token': user_id
             }
 
         except ValueError:
             raise
         except Exception as e:
-            raise ValueError(f'スタッフ作成に失敗しました: {str(e)}')
+            raise ValueError(f'招待に失敗しました: {str(e)}')
 
     async def update_user_role(self, user_id: str, role: UserRole) -> dict:
         '''Update user role'''
