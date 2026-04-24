@@ -47,10 +47,28 @@ const formatCurrency = (value: number): string => {
   return `¥${value.toLocaleString()}`;
 };
 
+const MONTH_MAP: Record<string, string> = {
+  jan: '1', feb: '2', mar: '3', apr: '4', may: '5', jun: '6',
+  jul: '7', aug: '8', sep: '9', oct: '10', nov: '11', dec: '12',
+};
+
 const formatYearMonth = (yearMonth: string): string => {
-  const match = yearMonth.match(/^(\d{4})-(\d{2})$/);
-  if (match) {
-    return `${match[1]}年${parseInt(match[2])}月`;
+  // YYYY-MM format
+  const isoMatch = yearMonth.match(/^(\d{4})-(\d{2})$/);
+  if (isoMatch) {
+    return `${isoMatch[1]}年${parseInt(isoMatch[2])}月`;
+  }
+  // Jan-26 or 26-Jan format (Excel-style)
+  const excelMatch = yearMonth.match(/^([A-Za-z]{3})-(\d{2})$/) || yearMonth.match(/^(\d{2})-([A-Za-z]{3})$/);
+  if (excelMatch) {
+    const [, part1, part2] = excelMatch;
+    const monthStr = isNaN(Number(part1)) ? part1 : part2;
+    const yearStr = isNaN(Number(part1)) ? part2 : part1;
+    const month = MONTH_MAP[monthStr.toLowerCase()];
+    if (month) {
+      const year = parseInt(yearStr) + 2000;
+      return `${year}年${month}月`;
+    }
   }
   return yearMonth;
 };
