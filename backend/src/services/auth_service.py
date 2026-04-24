@@ -154,8 +154,13 @@ class AuthService:
                     json={'email': email},
                     timeout=15,
                 )
+                if resp.status_code == 429:
+                    raise ValueError('メール送信の上限に達しました。しばらく時間を置いてから再試行してください。')
                 if resp.status_code not in (200, 201):
-                    raise ValueError(f'招待メール送信失敗: {resp.text}')
+                    err = resp.json() if resp.text else {}
+                    if err.get('error_code') == 'email_address_invalid':
+                        raise ValueError(f'メールアドレスの形式が無効です: {email}')
+                    raise ValueError(f'招待メール送信に失敗しました（{resp.status_code}）')
                 user_data = resp.json()
                 user_id = user_data['id']
 
