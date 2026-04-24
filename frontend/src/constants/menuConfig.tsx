@@ -31,7 +31,7 @@ export const clinicMenuItems: MenuItemConfig[] = [
     // roles未指定 = 全ロール
   },
   {
-    path: '/clinic/simulation',
+    path: '/clinic/simulations',
     label: '経営シミュレーション',
     icon: <TrendingUpIcon />,
     roles: ['clinic_owner', 'clinic_editor', 'system_admin'],

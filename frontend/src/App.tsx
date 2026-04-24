@@ -90,7 +90,8 @@ function App() {
                     <Route path="/clinic/:clinicId/dashboard" element={<Dashboard />} />
                     <Route path="/clinic/:clinicId/data-management" element={<DataManagement />} />
                     <Route path="/clinic/:clinicId/market-analysis" element={<MarketAnalysis />} />
-                    <Route path="/clinic/:clinicId/simulation" element={<Simulation />} />
+                    <Route path="/clinic/:clinicId/simulations" element={<Simulation />} />
+                    <Route path="/clinic/:clinicId/simulation" element={<Navigate to="../simulations" replace />} />
                     <Route path="/clinic/:clinicId/reports" element={<Reports />} />
                     <Route path="/clinic/:clinicId/settings" element={<ClinicSettings />} />
                     <Route path="/clinic/:clinicId/staff" element={<StaffManagement />} />
