@@ -513,7 +513,7 @@ export const MarketAnalysis = () => {
               >
                 <Typography sx={{ fontSize: '14px' }}>{demo.ageGroup}</Typography>
                 <Typography sx={{ fontSize: '14px', fontWeight: 600 }}>
-                  {demo.count.toLocaleString()}人 ({demo.percentage}%)
+                  {demo.count.toLocaleString()}人 ({Number(demo.percentage).toFixed(1)}%)
                 </Typography>
               </Box>
             ))}
