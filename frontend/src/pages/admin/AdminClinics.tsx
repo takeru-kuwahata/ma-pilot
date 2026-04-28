@@ -50,17 +50,6 @@ const getPostalCode = (clinic: Clinic): string => clinic.postal_code || '';
 const getPhoneNumber = (clinic: Clinic): string => clinic.phone_number || '';
 const getCreatedAt = (clinic: Clinic): string => clinic.created_at || '';
 
-const OPENHOUSE_STATUS_LABELS: Record<OpenhouseStatus, string> = {
-  none: 'なし',
-  scheduled: '今後予定',
-  completed: '完了',
-};
-
-const OPENHOUSE_STATUS_COLORS: Record<OpenhouseStatus, { backgroundColor: string; color: string }> = {
-  none: { backgroundColor: '#F5F5F5', color: '#757575' },
-  scheduled: { backgroundColor: '#FFF8E1', color: '#F57F17' },
-  completed: { backgroundColor: '#E8F5E9', color: '#2E7D32' },
-};
 
 export const AdminClinics = () => {
   const navigate = useNavigate();
