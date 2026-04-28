@@ -164,7 +164,11 @@ export const Reports = () => {
       await handleDownload(report.id);
     } catch (error) {
       console.error('Failed to generate report:', error);
-      setSnackbarMessage('レポート生成に失敗しました。月次データが登録されているか確認してください。');
+      const isTimeout = error instanceof Error && error.name === 'AbortError';
+      setSnackbarMessage(isTimeout
+        ? 'レポート生成がタイムアウトしました。しばらく待ってから再度お試しください。'
+        : 'レポート生成に失敗しました。月次データが登録されているか確認してください。'
+      );
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
     } finally {

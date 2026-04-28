@@ -23,13 +23,20 @@ interface GenerateReportRequest {
 
 export const reportService = {
   async generateReport(request: GenerateReportRequest): Promise<Report> {
-    const response = await fetch(`${API_BASE_URL}/api/reports/generate`, {
-      method: 'POST',
-      headers: getAuthHeaders(),
-      body: JSON.stringify(request)
-    });
-    const result = await handleResponse<ReportResponse>(response);
-    return result.data;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/reports/generate`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(request),
+        signal: controller.signal
+      });
+      const result = await handleResponse<ReportResponse>(response);
+      return result.data;
+    } finally {
+      clearTimeout(timeoutId);
+    }
   },
 
   async getReports(clinicId: string): Promise<Report[]> {
