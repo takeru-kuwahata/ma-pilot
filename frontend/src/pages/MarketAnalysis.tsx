@@ -78,8 +78,10 @@ export const MarketAnalysis = () => {
       setAnalyzing(true);
       setError(null);
 
-      // 半径2kmで診療圏分析を実行
-      const analysisData = await marketAnalysisService.createMarketAnalysis(clinic.id, 2);
+      // 半径2kmで診療圏分析を実行（フロントエンドからGoogle Places APIで競合取得）
+      const analysisData = await marketAnalysisService.createMarketAnalysis(
+        clinic.id, 2, clinic.latitude, clinic.longitude
+      );
       setAnalysis(analysisData);
     } catch (error) {
       console.error('Failed to run analysis:', error);

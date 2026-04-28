@@ -44,6 +44,7 @@ class MarketAnalysisCreate(BaseModel):
     '''Create market analysis request'''
     clinic_id: str
     radius_km: float = 3.0
+    competitors: Optional[List[CompetitorClinic]] = None
 
 
 class MarketAnalysisResponse(BaseModel):

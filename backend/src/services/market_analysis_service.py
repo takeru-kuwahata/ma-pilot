@@ -148,12 +148,16 @@ class MarketAnalysisService:
                 request.radius_km
             )
 
-            # Fetch competitors from Google Places API
-            competitors = await self._fetch_competitors_from_google_places(
-                clinic_data['latitude'],
-                clinic_data['longitude'],
-                request.radius_km
-            )
+            # フロントエンドから競合データが渡された場合はそれを使用、なければGoogle Places APIを呼ぶ
+            if request.competitors is not None:
+                competitors = request.competitors
+                print(f'[MARKET] Using {len(competitors)} competitors from frontend (Google Places via browser)')
+            else:
+                competitors = await self._fetch_competitors_from_google_places(
+                    clinic_data['latitude'],
+                    clinic_data['longitude'],
+                    request.radius_km
+                )
 
             # Calculate estimated potential patients
             # Assume 5% of population visits dentist annually, divided by number of clinics
