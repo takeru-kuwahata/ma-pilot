@@ -97,6 +97,7 @@ export const AdminClinics = () => {
     postal_code: '',
     address: '',
     phone_number: '',
+    openhouse_status: 'none' as OpenhouseStatus,
   });
 
   // 削除確認ダイアログ
@@ -168,6 +169,7 @@ export const AdminClinics = () => {
       postal_code: getPostalCode(clinic),
       address: clinic.address || '',
       phone_number: getPhoneNumber(clinic),
+      openhouse_status: (clinic.openhouse_status as OpenhouseStatus) || 'none',
     });
   };
 
@@ -183,6 +185,9 @@ export const AdminClinics = () => {
         address: editForm.address,
         phone_number: editForm.phone_number,
       });
+      if (editForm.openhouse_status !== editClinic.openhouse_status) {
+        await handleOpenhouseStatusChange(editClinic.id, editForm.openhouse_status);
+      }
       await loadClinics();
       setEditClinic(null);
     } catch (error) {
@@ -849,6 +854,18 @@ export const AdminClinics = () => {
               inputProps={{ maxLength: 13 }}
               helperText="数字を入力するとハイフンを自動入力します"
             />
+            <FormControl fullWidth>
+              <InputLabel>内覧会ステータス</InputLabel>
+              <Select
+                value={editForm.openhouse_status}
+                label="内覧会ステータス"
+                onChange={(e) => setEditForm((prev) => ({ ...prev, openhouse_status: e.target.value as OpenhouseStatus }))}
+              >
+                <MenuItem value="none">なし</MenuItem>
+                <MenuItem value="scheduled">今後予定</MenuItem>
+                <MenuItem value="completed">完了</MenuItem>
+              </Select>
+            </FormControl>
           </Box>
         </DialogContent>
         <DialogActions>
