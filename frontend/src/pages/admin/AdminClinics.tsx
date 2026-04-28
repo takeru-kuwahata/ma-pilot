@@ -619,21 +619,16 @@ export const AdminClinics = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      <Chip
-                        label={OPENHOUSE_STATUS_LABELS[clinic.openhouse_status as OpenhouseStatus]}
-                        onClick={() => {
-                          const order: OpenhouseStatus[] = ['none', 'scheduled', 'completed'];
-                          const next = order[(order.indexOf(clinic.openhouse_status as OpenhouseStatus) + 1) % order.length];
-                          handleOpenhouseStatusChange(clinic.id, next);
-                        }}
-                        sx={{
-                          ...OPENHOUSE_STATUS_COLORS[clinic.openhouse_status as OpenhouseStatus],
-                          fontSize: '11px',
-                          fontWeight: 600,
-                          height: '24px',
-                          cursor: 'pointer',
-                        }}
-                      />
+                      <Select
+                        value={clinic.openhouse_status}
+                        onChange={(e) => handleOpenhouseStatusChange(clinic.id, e.target.value as OpenhouseStatus)}
+                        size="small"
+                        sx={{ fontSize: '12px', minWidth: '100px' }}
+                      >
+                        <MenuItem value="none" sx={{ fontSize: '13px' }}>なし</MenuItem>
+                        <MenuItem value="scheduled" sx={{ fontSize: '13px' }}>今後予定</MenuItem>
+                        <MenuItem value="completed" sx={{ fontSize: '13px' }}>完了</MenuItem>
+                      </Select>
                     </TableCell>
                     <TableCell>
                       <IconButton size="small" onClick={() => handleView(clinic)} title="この医院として操作する" sx={{ color: '#FF6B35', '&:hover': { color: '#E55A2B' } }}>
