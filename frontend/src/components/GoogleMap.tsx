@@ -100,7 +100,7 @@ export const GoogleMap = ({
   }
 
   return (
-    <LoadScript googleMapsApiKey={apiKey}>
+    <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
       <GoogleMapComponent
         mapContainerStyle={mapContainerStyle}
         center={center}

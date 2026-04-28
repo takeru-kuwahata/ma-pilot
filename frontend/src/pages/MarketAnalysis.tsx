@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Box,
@@ -11,7 +11,7 @@ import {
 import { Refresh as RefreshIcon } from '@mui/icons-material';
 import { marketAnalysisService, clinicService } from '../services/api';
 import { GoogleMap } from '../components/GoogleMap';
-import type { MarketAnalysis as MarketAnalysisType, Clinic } from '../types';
+import type { MarketAnalysis as MarketAnalysisType, Clinic, CompetitorClinic } from '../types';
 
 interface MarketStats {
   population: number;
@@ -26,6 +26,66 @@ interface DemographicData {
   percentage: number;
 }
 
+function calcDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function fetchCompetitorsViaSdk(
+  latitude: number,
+  longitude: number,
+  radiusKm: number
+): Promise<CompetitorClinic[]> {
+  return new Promise((resolve) => {
+    if (!window.google?.maps?.places) {
+      resolve([]);
+      return;
+    }
+
+    // PlacesService requires a map DOM element
+    const mapDiv = document.createElement('div');
+    const map = new window.google.maps.Map(mapDiv);
+    const service = new window.google.maps.places.PlacesService(map);
+
+    const request: google.maps.places.PlaceSearchRequest = {
+      location: new window.google.maps.LatLng(latitude, longitude),
+      radius: radiusKm * 1000,
+      type: 'dentist',
+      keyword: '歯科',
+    };
+
+    service.nearbySearch(request, (results, status) => {
+      if (status !== window.google.maps.places.PlacesServiceStatus.OK || !results) {
+        resolve([]);
+        return;
+      }
+
+      const competitors: CompetitorClinic[] = results
+        .map((place) => {
+          const lat = place.geometry?.location?.lat() ?? 0;
+          const lng = place.geometry?.location?.lng() ?? 0;
+          const distance = calcDistance(latitude, longitude, lat, lng);
+          return {
+            name: place.name ?? 'Unknown',
+            address: place.vicinity ?? '',
+            latitude: lat,
+            longitude: lng,
+            distance: Math.round(distance * 100) / 100,
+          };
+        })
+        .filter((c) => c.distance > 0 && c.distance <= radiusKm)
+        .sort((a, b) => a.distance - b.distance);
+
+      resolve(competitors);
+    });
+  });
+}
+
 export const MarketAnalysis = () => {
   const { clinicId } = useParams<{ clinicId: string }>();
   const [analysis, setAnalysis] = useState<MarketAnalysisType | null>(null);
@@ -33,10 +93,23 @@ export const MarketAnalysis = () => {
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // track whether Maps JS SDK is ready
+  const mapsReadyRef = useRef(false);
 
   useEffect(() => {
     loadMarketAnalysis();
   }, [clinicId]);
+
+  // Poll until google.maps.places is available (LoadScript loads it asynchronously)
+  useEffect(() => {
+    const check = setInterval(() => {
+      if (window.google?.maps?.places) {
+        mapsReadyRef.current = true;
+        clearInterval(check);
+      }
+    }, 200);
+    return () => clearInterval(check);
+  }, []);
 
   const loadMarketAnalysis = async () => {
     try {
@@ -45,17 +118,14 @@ export const MarketAnalysis = () => {
         return;
       }
 
-      // まず医院情報を取得してUUID IDを確認
       const clinicData = await clinicService.getClinic(clinicId);
       setClinic(clinicData);
 
-      // UUID IDを使って診療圏分析データを取得
       try {
         const analysisData = await marketAnalysisService.getMarketAnalysis(clinicData.id);
         setAnalysis(analysisData);
         setError(null);
       } catch (analysisError: any) {
-        // 404エラーの場合は分析データがまだ存在しない
         if (analysisError.message?.includes('404') || analysisError.message?.includes('not found')) {
           setAnalysis(null);
           setError(null);
@@ -63,8 +133,8 @@ export const MarketAnalysis = () => {
           throw analysisError;
         }
       }
-    } catch (error) {
-      console.error('Failed to load market analysis:', error);
+    } catch (err) {
+      console.error('Failed to load market analysis:', err);
       setError('データの読み込みに失敗しました');
     } finally {
       setLoading(false);
@@ -78,13 +148,23 @@ export const MarketAnalysis = () => {
       setAnalyzing(true);
       setError(null);
 
-      // 半径2kmで診療圏分析を実行（フロントエンドからGoogle Places APIで競合取得）
+      // Wait up to 5 seconds for Maps SDK to be ready
+      let waited = 0;
+      while (!mapsReadyRef.current && waited < 5000) {
+        await new Promise((r) => setTimeout(r, 200));
+        waited += 200;
+      }
+
+      const competitors = await fetchCompetitorsViaSdk(clinic.latitude, clinic.longitude, 2);
+
       const analysisData = await marketAnalysisService.createMarketAnalysis(
-        clinic.id, 2, clinic.latitude, clinic.longitude
+        clinic.id,
+        2,
+        competitors
       );
       setAnalysis(analysisData);
-    } catch (error) {
-      console.error('Failed to run analysis:', error);
+    } catch (err) {
+      console.error('Failed to run analysis:', err);
       setError('分析の実行に失敗しました');
     } finally {
       setAnalyzing(false);
@@ -120,6 +200,7 @@ export const MarketAnalysis = () => {
       percentage: (analysis.population_data.age_groups.age65Plus / analysis.population_data.total_population) * 100
     }
   ] : [];
+
   return (
     <>
       {/* ページヘッダー */}
