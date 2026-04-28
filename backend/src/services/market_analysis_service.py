@@ -59,8 +59,9 @@ class MarketAnalysisService:
                 response.raise_for_status()
                 data = response.json()
 
+                print(f'[PLACES API] status={data.get("status")} results={len(data.get("results", []))} error_message={data.get("error_message", "")}')
                 if data.get('status') != 'OK':
-                    raise ValueError(f"Google Places API error: {data.get('status')}")
+                    raise ValueError(f"Google Places API error: {data.get('status')} - {data.get('error_message', '')}")
 
                 competitors = []
                 for place in data.get('results', []):
@@ -80,7 +81,7 @@ class MarketAnalysisService:
                 return sorted(competitors, key=lambda x: x.distance)
 
         except Exception as e:
-            print(f'Error fetching from Google Places API: {str(e)}')
+            print(f'[PLACES API] Error: {str(e)} - falling back to mock data')
             return self._generate_mock_competitors(latitude, longitude, radius_km)
 
     def _generate_mock_competitors(
