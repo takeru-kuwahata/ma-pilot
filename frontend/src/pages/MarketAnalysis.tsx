@@ -143,7 +143,7 @@ export const MarketAnalysis = () => {
             人口統計、競合分析、市場ポテンシャル
           </Typography>
         </Box>
-        {!loading && !analysis && clinic && (
+        {!loading && clinic && (
           <Button
             variant="contained"
             onClick={handleRunAnalysis}
@@ -156,7 +156,7 @@ export const MarketAnalysis = () => {
               minWidth: '160px',
             }}
           >
-            {analyzing ? '分析中...' : '分析を実行'}
+            {analyzing ? '分析中...' : analysis ? '再分析' : '分析を実行'}
           </Button>
         )}
       </Box>
