@@ -232,7 +232,7 @@ export default function PrintOrderFormPhase2() {
     setPattern('reorder');
 
     // 新しいitemsを作成
-    const newItems = reorderData.items.map((item: any) => ({
+    const newItems = (reorderData.items as { product_type: string; quantity: number }[]).map((item) => ({
       product_type: item.product_type,
       quantity: item.quantity,
     }));

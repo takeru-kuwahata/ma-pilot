@@ -24,23 +24,14 @@ export const GoogleMap = ({
   competitors,
   radiusKm
 }: GoogleMapProps) => {
-  const [apiKey, setApiKey] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
+  const [apiKey] = useState<string>(key || '');
+  const [error, setError] = useState<string>(key ? '' : 'Google Maps APIキーが設定されていません');
 
   useEffect(() => {
-    const key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-    if (!key) {
-      setError('Google Maps APIキーが設定されていません');
-    } else {
-      setApiKey(key);
-    }
-
-    // Listen for Google Maps API errors
     const handleError = () => {
-      // This will catch billing and other API errors
       setError('Google Maps APIの読み込みに失敗しました。APIキーの設定を確認してください。');
     };
-
     window.addEventListener('error', handleError);
     return () => window.removeEventListener('error', handleError);
   }, []);

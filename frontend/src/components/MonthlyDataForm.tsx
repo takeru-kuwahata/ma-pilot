@@ -74,8 +74,12 @@ export const MonthlyDataForm = memo(({ onSubmit, onCancel, initialData }: Monthl
   // initialDataが変わったとき（編集ダイアログを開き直した場合）に同期
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
-      setDisplayValues(initDisplay(initialData));
+      // 非同期コールバックで更新してカスケードレンダーを回避
+      const timer = setTimeout(() => {
+        setFormData(initialData);
+        setDisplayValues(initDisplay(initialData));
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [initialData, initDisplay]);
 

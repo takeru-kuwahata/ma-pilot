@@ -83,6 +83,7 @@ export const Simulation = () => {
       loadSimulations();
       loadLatestMonthlyData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clinic?.id]);
 
   const loadSimulations = async () => {

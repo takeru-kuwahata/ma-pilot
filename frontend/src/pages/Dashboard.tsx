@@ -309,7 +309,8 @@ export const Dashboard = () => {
 
   useEffect(() => {
     if (!clinicId) return;
-    setConsultingLoading(true);
+    // setConsultingLoading はPromise起動前に呼ぶ必要があるためタイマーで包む
+    const timer = setTimeout(() => setConsultingLoading(true), 0);
     Promise.all([
       consultingService.getReport(clinicId).catch(() => null),
       gamificationService.getData(clinicId).catch(() => null),
@@ -327,6 +328,7 @@ export const Dashboard = () => {
         }
       }
     }).finally(() => setConsultingLoading(false));
+    return () => clearTimeout(timer);
   }, [clinicId]);
 
   // clinicIdが取得できない場合

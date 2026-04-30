@@ -98,6 +98,7 @@ export const MarketAnalysis = () => {
 
   useEffect(() => {
     loadMarketAnalysis();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clinicId]);
 
   // Poll until google.maps.places is available (LoadScript loads it asynchronously)
@@ -125,8 +126,9 @@ export const MarketAnalysis = () => {
         const analysisData = await marketAnalysisService.getMarketAnalysis(clinicData.id);
         setAnalysis(analysisData);
         setError(null);
-      } catch (analysisError: any) {
-        if (analysisError.message?.includes('404') || analysisError.message?.includes('not found')) {
+      } catch (analysisError: unknown) {
+        const msg = analysisError instanceof Error ? analysisError.message : '';
+        if (msg.includes('404') || msg.includes('not found')) {
           setAnalysis(null);
           setError(null);
         } else {

@@ -1,0 +1,5 @@
+node_modules/
+dist/
+tests/e2e/
+playwright-production-login.spec.ts
+*.config.ts

@@ -104,6 +104,7 @@ export const DataManagement = () => {
     if (clinic?.id) {
       loadMonthlyData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clinic?.id]);
 
   const loadMonthlyData = async () => {

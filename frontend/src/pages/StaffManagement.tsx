@@ -77,6 +77,7 @@ export const StaffManagement = () => {
     if (clinic?.id) {
       loadStaffList();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clinic?.id]);
 
   const loadStaffList = async () => {

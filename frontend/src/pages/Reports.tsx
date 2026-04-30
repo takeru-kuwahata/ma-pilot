@@ -87,6 +87,7 @@ export const Reports = () => {
     if (clinic?.id) {
       loadReports();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clinic?.id]);
 
   const loadReports = async () => {
