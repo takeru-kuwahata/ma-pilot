@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from supabase import Client
-from ..core.database import get_supabase_client
+from ..core.database import get_supabase_client, get_service_role_client
 from ..services.gamification_service import GamificationService
 from ..services.clinic_service import ClinicService
 from ..middleware.auth import get_current_user_metadata, UserContext
@@ -13,7 +13,7 @@ class UpdateCharacterRequest(BaseModel):
     character_type: str  # advanbi / assistant / doctor
 
 
-def get_gamification_service(supabase: Client = Depends(get_supabase_client)) -> GamificationService:
+def get_gamification_service(supabase: Client = Depends(get_service_role_client)) -> GamificationService:
     return GamificationService(supabase)
 
 
@@ -47,7 +47,7 @@ async def get_gamification(
 async def update_character(
     clinic_id: str,
     request: UpdateCharacterRequest,
-    supabase: Client = Depends(get_supabase_client),
+    supabase: Client = Depends(get_service_role_client),
     clinic_service: ClinicService = Depends(get_clinic_service),
     user: UserContext = Depends(get_current_user_metadata),
 ):
