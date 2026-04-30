@@ -106,4 +106,10 @@ export const adminMenuItems: MenuItemConfig[] = [
     icon: <PrintIcon />,
     roles: ['system_admin'],
   },
+  {
+    path: '/admin/partners',
+    label: 'パートナー企業管理',
+    icon: <BusinessIcon />,
+    roles: ['system_admin'],
+  },
 ];

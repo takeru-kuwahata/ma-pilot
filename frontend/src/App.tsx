@@ -42,6 +42,7 @@ import { AdminOperators } from './pages/admin/AdminOperators';
 import { AdminSettings } from './pages/admin/AdminSettings';
 import { AdminMySettings } from './pages/admin/AdminMySettings';
 import AdminPriceTables from './pages/admin/AdminPriceTables';
+import { PartnerManagement } from './pages/admin/PartnerManagement';
 
 // エラーページ
 import { Forbidden } from './pages/Forbidden';
@@ -112,6 +113,7 @@ function App() {
                     <Route path="/admin/settings" element={<AdminSettings />} />
                     <Route path="/admin/price-tables" element={<AdminPriceTables />} />
                     <Route path="/admin/print-orders" element={<PrintOrderHistory />} />
+                    <Route path="/admin/partners" element={<PartnerManagement />} />
                     <Route path="/admin/my-settings" element={<AdminMySettings />} />
                   </Route>
                 </Route>

@@ -21,6 +21,9 @@ from src.api import (
     admin_router,
     my_router,
     webhooks_router,
+    consulting_router,
+    gamification_router,
+    partners_router,
 )
 import logging
 
@@ -128,6 +131,9 @@ app.include_router(staff_router)
 app.include_router(admin_router)
 app.include_router(my_router)
 app.include_router(webhooks_router)
+app.include_router(consulting_router)
+app.include_router(gamification_router)
+app.include_router(partners_router)
 
 
 # ヘルスチェック

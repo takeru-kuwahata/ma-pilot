@@ -1,22 +1,26 @@
 import { useParams } from 'react-router-dom';
-import { Box, Typography, Grid, Paper, Alert, CircularProgress } from '@mui/material';
+import { useEffect, useState } from 'react';
+import {
+  Box, Typography, Grid, Paper, Alert, CircularProgress,
+  Chip, Accordion, AccordionSummary, AccordionDetails,
+  Dialog, DialogContent, DialogTitle, IconButton, LinearProgress,
+} from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
+  ExpandMore as ExpandMoreIcon,
+  OpenInNew as OpenInNewIcon,
+  Close as CloseIcon,
+  EmojiEvents as TrophyIcon,
 } from '@mui/icons-material';
 import { useDashboardData } from '../hooks/useDashboardData';
-import { DashboardKpi } from '../types';
+import { DashboardKpi, ConsultingReport, GamificationData, Proposal, ProposalPriority, ScoreLevel } from '../types';
+import { consultingService } from '../services/api/consultingService';
+import { gamificationService } from '../services/api/gamificationService';
 import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
+  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, Legend, ResponsiveContainer, RadarChart, Radar,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from 'recharts';
 
 // KPIカードコンポーネント
@@ -59,10 +63,271 @@ const KpiCard = ({ kpi }: { kpi: DashboardKpi }) => {
   );
 };
 
+// ---- ユーティリティ ----
+
+const PRIORITY_COLOR: Record<ProposalPriority, string> = {
+  critical: '#D32F2F',
+  high: '#F57C00',
+  medium: '#F9A825',
+  low: '#757575',
+};
+
+const PRIORITY_LABEL: Record<ProposalPriority, string> = {
+  critical: '緊急',
+  high: '高',
+  medium: '中',
+  low: '低',
+};
+
+const LEVEL_COLOR: Record<ScoreLevel, string> = {
+  critical: '#D32F2F',
+  poor: '#F57C00',
+  average: '#F9A825',
+  good: '#388E3C',
+  excellent: '#1565C0',
+};
+
+const RANK_COLOR: Record<string, string> = {
+  bronze: '#CD7F32',
+  silver: '#A0A0A0',
+  gold: '#FFD700',
+  platinum: '#E0E0E0',
+  diamond: '#1565C0',
+};
+
+// ---- 提案カード ----
+const ProposalCard = ({
+  proposal, clinicId,
+}: { proposal: Proposal; clinicId: string }) => {
+  const handleServiceClick = async (serviceId: string) => {
+    await consultingService.logRecommendationClick(clinicId, serviceId, proposal.problem_tag);
+  };
+
+  return (
+    <Paper sx={{ mb: 2, border: `2px solid ${PRIORITY_COLOR[proposal.priority]}20` }}>
+      <Accordion disableGutters elevation={0}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 2, py: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+            <Chip
+              label={PRIORITY_LABEL[proposal.priority]}
+              size="small"
+              sx={{ bgcolor: PRIORITY_COLOR[proposal.priority], color: '#fff', fontWeight: 700, minWidth: 36 }}
+            />
+            <Chip label={proposal.category} size="small" variant="outlined" />
+            <Typography variant="body2" sx={{ fontWeight: 600, flex: 1 }}>
+              {proposal.title}
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails sx={{ px: 2, pb: 2 }}>
+          {/* Why */}
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: 'block', mb: 0.5 }}>
+            なぜ問題か
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1.5, color: 'text.secondary' }}>
+            {proposal.why}
+          </Typography>
+
+          {/* What */}
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: 'block', mb: 0.5 }}>
+            目標
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1.5 }}>
+            {proposal.what}
+          </Typography>
+
+          {/* How */}
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: 'block', mb: 0.5 }}>
+            具体的な施策
+          </Typography>
+          <Box component="ul" sx={{ m: 0, pl: 2.5, mb: 1.5 }}>
+            {proposal.how.map((action, i) => (
+              <Typography key={i} component="li" variant="body2" sx={{ mb: 0.25 }}>
+                {action}
+              </Typography>
+            ))}
+          </Box>
+
+          {/* 期待効果 */}
+          <Paper sx={{ p: 1.5, bgcolor: '#E8F5E9', mb: 2 }} elevation={0}>
+            <Typography variant="caption" sx={{ fontWeight: 700, color: '#388E3C' }}>期待効果</Typography>
+            <Typography variant="body2">{proposal.expected_impact}</Typography>
+          </Paper>
+
+          {/* レコメンドサービス */}
+          {proposal.recommended_services.length > 0 && (
+            <Box>
+              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: 'block', mb: 1 }}>
+                この課題を解決するサービス
+              </Typography>
+              <Grid container spacing={1}>
+                {proposal.recommended_services.map((svc) => (
+                  <Grid item xs={12} sm={6} md={4} key={svc.id}>
+                    <Paper
+                      variant="outlined"
+                      sx={{ p: 1.5, cursor: 'pointer', '&:hover': { bgcolor: '#F5F5F5' } }}
+                      onClick={() => {
+                        handleServiceClick(svc.id);
+                        if (svc.service_url) window.open(svc.service_url, '_blank');
+                      }}
+                    >
+                      <Typography variant="caption" color="text.secondary">{svc.company_name}</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>{svc.service_name}</Typography>
+                      {svc.catchcopy && (
+                        <Typography variant="caption" color="primary">{svc.catchcopy}</Typography>
+                      )}
+                      {svc.price_range && (
+                        <Typography variant="caption" display="block" color="text.secondary">{svc.price_range}</Typography>
+                      )}
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
+                        <OpenInNewIcon sx={{ fontSize: 12, color: 'primary.main' }} />
+                        <Typography variant="caption" color="primary">詳細を見る</Typography>
+                      </Box>
+                    </Paper>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          )}
+        </AccordionDetails>
+      </Accordion>
+    </Paper>
+  );
+};
+
+// ---- ゲーミフィケーションカード ----
+const GamificationCard = ({ data }: { data: GamificationData }) => {
+  const radarData = data.parameters.map((p) => ({
+    subject: p.label,
+    value: p.value,
+    prev: p.previous,
+  }));
+
+  return (
+    <Paper sx={{ p: 3, mb: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+        <TrophyIcon sx={{ color: RANK_COLOR[data.current_rank] || '#CD7F32', fontSize: 32 }} />
+        <Box>
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            {data.rank_label}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            全国上位 <strong>{data.percentile}%</strong>
+            {data.next_rank_label && ` ／ ${data.next_rank_label}まであと ${data.points_to_next_rank}点`}
+          </Typography>
+        </Box>
+        <Box sx={{ ml: 'auto', textAlign: 'right' }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: RANK_COLOR[data.current_rank] }}>
+            {data.total_score}点
+          </Typography>
+          <Typography variant="caption" color="text.secondary">経営健診スコア</Typography>
+        </Box>
+      </Box>
+
+      {/* 次ランクまでのプログレスバー */}
+      {data.next_rank_label && (
+        <Box sx={{ mb: 2 }}>
+          <LinearProgress
+            variant="determinate"
+            value={Math.min(100, data.total_score)}
+            sx={{ height: 8, borderRadius: 4, bgcolor: '#E0E0E0',
+              '& .MuiLinearProgress-bar': { bgcolor: RANK_COLOR[data.current_rank] } }}
+          />
+        </Box>
+      )}
+
+      {/* レーダーチャート */}
+      <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>能力パラメーター</Typography>
+      <ResponsiveContainer width="100%" height={220}>
+        <RadarChart data={radarData} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
+          <PolarGrid />
+          <PolarAngleAxis dataKey="subject" tick={{ fontSize: 12 }} />
+          <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
+          <Radar name="前月" dataKey="prev" stroke="#BDBDBD" fill="#BDBDBD" fillOpacity={0.2} strokeDasharray="4 2" />
+          <Radar name="今月" dataKey="value" stroke="#1976D2" fill="#1976D2" fillOpacity={0.35} />
+          <Legend />
+        </RadarChart>
+      </ResponsiveContainer>
+
+      {/* 連続入力記録 */}
+      <Box sx={{ display: 'flex', gap: 3, mt: 1 }}>
+        <Box>
+          <Typography variant="caption" color="text.secondary">連続入力</Typography>
+          <Typography variant="body1" sx={{ fontWeight: 700 }}>{data.consecutive_months}ヶ月</Typography>
+        </Box>
+        <Box>
+          <Typography variant="caption" color="text.secondary">累計入力</Typography>
+          <Typography variant="body1" sx={{ fontWeight: 700 }}>{data.total_input_months}ヶ月</Typography>
+        </Box>
+      </Box>
+    </Paper>
+  );
+};
+
+// ---- キャラクターポップアップ ----
+const CharacterPopup = ({
+  open, onClose, message, mood, characterType,
+}: {
+  open: boolean;
+  onClose: () => void;
+  message: string;
+  mood: string;
+  characterType: string;
+}) => (
+  <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+    <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box sx={{
+        width: 48, height: 48, borderRadius: '50%', bgcolor: '#E3F2FD',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 28,
+      }}>
+        {/* キャラクター画像プレースホルダー（後で差し替え） */}
+        {characterType === 'advanbi' ? '🦌' : characterType === 'assistant' ? '👩‍⚕️' : '👨‍⚕️'}
+      </Box>
+      <Typography variant="subtitle1" sx={{ fontWeight: 700, flex: 1 }}>
+        {characterType === 'advanbi' ? 'アドバンビ' : characterType === 'assistant' ? '歯科助手' : '勤務医'}
+      </Typography>
+      <IconButton size="small" onClick={onClose}><CloseIcon fontSize="small" /></IconButton>
+    </DialogTitle>
+    <DialogContent>
+      <Paper sx={{ p: 2, bgcolor: mood === 'celebrate' ? '#FFF8E1' : '#F5F5F5', borderRadius: 2 }} elevation={0}>
+        <Typography variant="body1">{message}</Typography>
+      </Paper>
+    </DialogContent>
+  </Dialog>
+);
+
+// ---- メインコンポーネント ----
 export const Dashboard = () => {
   const { clinicId } = useParams<{ clinicId: string }>();
+  const [consulting, setConsulting] = useState<ConsultingReport | null>(null);
+  const [gamification, setGamification] = useState<GamificationData | null>(null);
+  const [consultingLoading, setConsultingLoading] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const { data, loading, error } = useDashboardData(clinicId || null);
+
+  useEffect(() => {
+    if (!clinicId) return;
+    setConsultingLoading(true);
+    Promise.all([
+      consultingService.getReport(clinicId).catch(() => null),
+      gamificationService.getData(clinicId).catch(() => null),
+    ]).then(([c, g]) => {
+      setConsulting(c);
+      setGamification(g);
+      // 新しい節目イベントがあればポップアップ表示（セッション内で1回のみ）
+      if (g && g.new_milestones.length > 0) {
+        const sessionKey = `milestone_shown_${clinicId}`;
+        const shownKeys = sessionStorage.getItem(sessionKey) || '';
+        const newKeys = g.new_milestones.map((m: { key: string }) => m.key).join(',');
+        if (shownKeys !== newKeys) {
+          setPopupOpen(true);
+          sessionStorage.setItem(sessionKey, newKeys);
+        }
+      }
+    }).finally(() => setConsultingLoading(false));
+  }, [clinicId]);
 
   // clinicIdが取得できない場合
   if (!clinicId && !loading) {
@@ -285,6 +550,96 @@ export const Dashboard = () => {
             </Paper>
           </Grid>
         </Grid>
+
+        {/* ===== 経営健診・ゲーミフィケーションセクション ===== */}
+        {consultingLoading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+            <CircularProgress size={32} />
+          </Box>
+        )}
+
+        {!consultingLoading && (gamification || consulting) && (
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
+              経営健診レポート
+            </Typography>
+
+            <Grid container spacing={3}>
+              {/* 左: ゲーミフィケーション */}
+              <Grid item xs={12} lg={4}>
+                {gamification && <GamificationCard data={gamification} />}
+              </Grid>
+
+              {/* 右: KPIスコア一覧 */}
+              <Grid item xs={12} lg={8}>
+                {consulting && (
+                  <Paper sx={{ p: 3, mb: 3 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 600 }}>指標別スコア</Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        診断月: {consulting.year_month}
+                      </Typography>
+                    </Box>
+                    {!consulting.has_enough_data && (
+                      <Alert severity="info" sx={{ mb: 2 }}>
+                        3ヶ月以上のデータが揃うと、より精度の高い分析が可能になります。
+                      </Alert>
+                    )}
+                    <Grid container spacing={1.5}>
+                      {consulting.kpi_scores.map((ks) => (
+                        <Grid item xs={12} sm={6} key={ks.key}>
+                          <Paper variant="outlined" sx={{ p: 1.5 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <Typography variant="body2" sx={{ fontWeight: 600 }}>{ks.label}</Typography>
+                              <Chip
+                                label={`${ks.score}/5`}
+                                size="small"
+                                sx={{ bgcolor: LEVEL_COLOR[ks.level], color: '#fff', fontWeight: 700 }}
+                              />
+                            </Box>
+                            <Typography variant="h6" sx={{ fontWeight: 700, mt: 0.5 }}>
+                              {ks.value.toFixed(1)}{ks.unit}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">{ks.benchmark_label}</Typography>
+                          </Paper>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Paper>
+                )}
+              </Grid>
+            </Grid>
+
+            {/* 改善提案セクション */}
+            {consulting && consulting.proposals.length > 0 && (
+              <Box sx={{ mt: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                  💡 経営改善提案（優先度順）
+                </Typography>
+                {consulting.proposals.map((proposal) => (
+                  <ProposalCard key={proposal.id} proposal={proposal} clinicId={clinicId!} />
+                ))}
+              </Box>
+            )}
+
+            {consulting && consulting.proposals.length === 0 && (
+              <Alert severity="success" sx={{ mt: 2 }}>
+                現在、緊急性の高い改善提案はありません。引き続き現状を維持しましょう！
+              </Alert>
+            )}
+          </Box>
+        )}
+
+        {/* キャラクターポップアップ */}
+        {gamification && (
+          <CharacterPopup
+            open={popupOpen}
+            onClose={() => setPopupOpen(false)}
+            message={gamification.character_message}
+            mood={gamification.character_mood}
+            characterType={gamification.character_type}
+          />
+        )}
     </>
   );
 };

@@ -10,6 +10,9 @@ from .staff import router as staff_router
 from .admin import router as admin_router
 from .my import router as my_router
 from .webhooks import router as webhooks_router
+from .consulting import router as consulting_router
+from .gamification import router as gamification_router
+from .partners import router as partners_router
 
 __all__ = [
     "print_orders_router",
@@ -24,4 +27,7 @@ __all__ = [
     "admin_router",
     "my_router",
     "webhooks_router",
+    "consulting_router",
+    "gamification_router",
+    "partners_router",
 ]

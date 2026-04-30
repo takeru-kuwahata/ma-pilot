@@ -7,4 +7,6 @@ export { reportService } from './reportService';
 export { marketAnalysisService } from './marketAnalysisService';
 export { staffService } from './staffService';
 export { adminService } from './adminService';
+export { consultingService } from './consultingService';
+export { gamificationService } from './gamificationService';
 export { ApiError } from './config';

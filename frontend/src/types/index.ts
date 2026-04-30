@@ -395,6 +395,109 @@ export interface PriceEstimateResponse {
 }
 
 // ============================================
+// 経営コンサルテーション関連型定義
+// ============================================
+
+export type ScoreLevel = 'critical' | 'poor' | 'average' | 'good' | 'excellent';
+export type ProposalPriority = 'critical' | 'high' | 'medium' | 'low';
+export type ProposalCategory = '集患' | '収益性' | 'コスト最適化' | '成長性';
+
+export interface KpiScore {
+  key: string;
+  label: string;
+  value: number;
+  unit: string;
+  score: number;          // 1-5
+  level: ScoreLevel;
+  benchmark_avg: number;
+  benchmark_good: number;
+  benchmark_label: string;
+}
+
+export interface CategoryScore {
+  category: ProposalCategory;
+  score: number;          // 0-100
+  level: ScoreLevel;
+}
+
+export interface PartnerService {
+  id: string;
+  company_name: string;
+  service_name: string;
+  catchcopy?: string;
+  description?: string;
+  price_range?: string;
+  service_url?: string;
+  coupon_code?: string;
+  logo_url?: string;
+  display_priority: number;
+}
+
+export interface Proposal {
+  id: string;
+  priority: ProposalPriority;
+  category: ProposalCategory;
+  pattern_id: string;
+  title: string;
+  why: string;
+  what: string;
+  how: string[];
+  expected_impact: string;
+  problem_tag: string;
+  recommended_services: PartnerService[];
+}
+
+export interface ConsultingReport {
+  total_score: number;        // 0-100
+  total_level: ScoreLevel;
+  percentile: number;         // 全国上位X%
+  category_scores: CategoryScore[];
+  kpi_scores: KpiScore[];
+  proposals: Proposal[];
+  year_month: string;
+  has_enough_data: boolean;
+}
+
+// ============================================
+// ゲーミフィケーション関連型定義
+// ============================================
+
+export type CharacterType = 'advanbi' | 'assistant' | 'doctor';
+export type CharacterMood = 'happy' | 'encouraging' | 'neutral' | 'celebrate';
+export type RankType = 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond';
+
+export interface RadarParameter {
+  key: string;
+  label: string;
+  value: number;      // 0-100
+  previous: number;   // 前月値
+}
+
+export interface MilestoneEvent {
+  key: string;
+  label: string;
+  message: string;
+  is_new: boolean;
+}
+
+export interface GamificationData {
+  clinic_id: string;
+  current_rank: RankType;
+  rank_label: string;
+  total_score: number;
+  percentile: number;
+  next_rank_label?: string;
+  points_to_next_rank: number;
+  parameters: RadarParameter[];
+  consecutive_months: number;
+  total_input_months: number;
+  new_milestones: MilestoneEvent[];
+  character_type: CharacterType;
+  character_message: string;
+  character_mood: CharacterMood;
+}
+
+// ============================================
 // UI構造リファクタリング関連型定義
 // ============================================
 
