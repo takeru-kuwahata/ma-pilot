@@ -13,6 +13,7 @@ from .webhooks import router as webhooks_router
 from .consulting import router as consulting_router
 from .gamification import router as gamification_router
 from .partners import router as partners_router
+from .stripe_payments import router as stripe_router
 
 __all__ = [
     "print_orders_router",
@@ -30,4 +31,5 @@ __all__ = [
     "consulting_router",
     "gamification_router",
     "partners_router",
+    "stripe_router",
 ]

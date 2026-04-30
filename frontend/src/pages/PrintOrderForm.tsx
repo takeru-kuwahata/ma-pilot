@@ -45,6 +45,7 @@ import * as printOrderService from '../services/printOrderService';
 import { clinicService } from '../services/api/clinicService';
 import { useCurrentClinic } from '../hooks/useCurrentClinic';
 import { useAuthStore } from '../stores/authStore';
+import { StripePaymentForm } from '../components/StripePaymentForm';
 
 const SHIPPING_FEE = 1000; // 送料（税抜・定額）
 
@@ -66,6 +67,7 @@ export default function PrintOrderFormPhase2() {
   const [isAddressEditable, setIsAddressEditable] = useState(false);
   const [isPhoneEditable, setIsPhoneEditable] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
+  const [stripeModalOpen, setStripeModalOpen] = useState(false);
 
   const {
     control,
@@ -320,7 +322,13 @@ export default function PrintOrderFormPhase2() {
       }
 
       setSubmittedOrderId(result.id);
-      setSuccessModalOpen(true);
+
+      // クレジットカード払いの場合はStripe決済モーダルを表示
+      if (data.payment_method === 'stripe') {
+        setStripeModalOpen(true);
+      } else {
+        setSuccessModalOpen(true);
+      }
       reset({
         clinic_id: clinicId || '',
         clinic_name: clinicName || '',
@@ -445,6 +453,27 @@ export default function PrintOrderFormPhase2() {
             </Grid>
           </Grid>
         </Box>
+
+        {/* Stripe決済モーダル */}
+        <Dialog open={stripeModalOpen} onClose={() => setStripeModalOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>クレジットカード決済</DialogTitle>
+          <DialogContent>
+            {submittedOrderId && (
+              <StripePaymentForm
+                orderId={submittedOrderId}
+                amount={totalAmount}
+                onSuccess={() => {
+                  setStripeModalOpen(false);
+                  setSuccessModalOpen(true);
+                }}
+                onCancel={() => {
+                  setStripeModalOpen(false);
+                  setSuccessModalOpen(true);
+                }}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
 
         {/* 成功モーダル */}
         <Dialog open={successModalOpen} onClose={handleCloseSuccessModal}>

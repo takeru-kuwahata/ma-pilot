@@ -24,6 +24,7 @@ from src.api import (
     consulting_router,
     gamification_router,
     partners_router,
+    stripe_router,
 )
 import logging
 
@@ -134,6 +135,7 @@ app.include_router(webhooks_router)
 app.include_router(consulting_router)
 app.include_router(gamification_router)
 app.include_router(partners_router)
+app.include_router(stripe_router)
 
 
 # ヘルスチェック
