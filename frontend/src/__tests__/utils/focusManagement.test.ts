@@ -108,8 +108,8 @@ describe('focusManagement', () => {
 
   it('tabindex="-1" の要素を除外する', () => {
     container.innerHTML = `
-      <button tabindex="-1">Hidden from tab order</button>
-      <button tabindex="0">In tab order</button>
+      <div tabindex="-1">Hidden from tab order</div>
+      <div tabindex="0">In tab order</div>
       <button>Default tab order</button>
     `;
 

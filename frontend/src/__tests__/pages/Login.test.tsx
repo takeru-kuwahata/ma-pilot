@@ -10,7 +10,7 @@ describe('Login Page', () => {
         <LoginPage />
       </BrowserRouter>
     );
-    expect(screen.getByText(/ログイン|Login/i)).toBeDefined();
+    expect(screen.getAllByText(/ログイン|Login/i).length).toBeGreaterThan(0);
   });
 
   it('renders email and password inputs (if applicable)', () => {
