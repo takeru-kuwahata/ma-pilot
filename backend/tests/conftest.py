@@ -4,7 +4,7 @@ Test fixtures and configuration for backend tests
 import os
 import pytest
 from typing import Generator
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from fastapi import FastAPI
 from unittest.mock import Mock, AsyncMock
 
@@ -50,7 +50,7 @@ async def test_app() -> Generator[FastAPI, None, None]:
 @pytest.fixture
 async def async_client(test_app: FastAPI) -> Generator[AsyncClient, None, None]:
     '''Async HTTP client for testing'''
-    async with AsyncClient(app=test_app, base_url='http://test') as client:
+    async with AsyncClient(transport=ASGITransport(app=test_app), base_url='http://test') as client:
         yield client
 
 
