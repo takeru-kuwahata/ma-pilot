@@ -26,6 +26,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@stripe/stripe-js': path.resolve(__dirname, './src/__mocks__/stripe.ts'),
+      '@stripe/react-stripe-js': path.resolve(__dirname, './src/__mocks__/stripe.ts'),
     },
   },
 });

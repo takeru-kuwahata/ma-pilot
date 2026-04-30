@@ -1,13 +1,6 @@
 import '@testing-library/jest-dom';
 import { afterEach, vi } from 'vitest';
 
-vi.mock('@stripe/stripe-js', () => ({ loadStripe: vi.fn(() => Promise.resolve(null)) }));
-vi.mock('@stripe/react-stripe-js', () => ({
-  Elements: ({ children }: { children: React.ReactNode }) => children,
-  CardElement: () => null,
-  useStripe: () => null,
-  useElements: () => null,
-}));
 import { cleanup } from '@testing-library/react';
 
 // Cleanup after each test
