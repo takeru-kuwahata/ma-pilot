@@ -131,7 +131,7 @@ export default function PrintOrderHistory() {
         </Typography>
 
         {/* フィルター */}
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 2 }}>
           <Grid container spacing={2} alignItems="center">
             <Grid item xs={12} sm={6} md={4}>
               <FormControl fullWidth>
@@ -162,6 +162,10 @@ export default function PrintOrderHistory() {
             </Grid>
           </Grid>
         </Box>
+
+        <Typography variant="body2" sx={{ color: '#9e9e9e', fontSize: '12px', mb: 3, px: 0.5 }}>
+          ※物価の高騰や原材料費の変動により、予告なく価格が変更となる場合がございます。あらかじめご了承ください。
+        </Typography>
 
         {/* エラー表示 */}
         {error && (
@@ -256,10 +260,6 @@ export default function PrintOrderHistory() {
           </TableContainer>
         )}
         </Paper>
-
-        <Typography variant="body2" sx={{ color: '#9e9e9e', fontSize: '12px', mt: 2, px: 1 }}>
-          ※物価の高騰や原材料費の変動により、予告なく価格が変更となる場合がございます。あらかじめご了承ください。
-        </Typography>
 
       {/* 詳細モーダル */}
       <Dialog
