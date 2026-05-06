@@ -132,20 +132,14 @@ class MonthlyDataService:
         }
 
         def _normalize_year_month(value: str) -> str:
-            '''Jan-26 → 2026-01 形式に変換。YYYY-MM形式はそのまま返す。'''
+            '''各種Excel形式の年月 → YYYY-MM 形式に変換。YYYY-MM形式はそのまま返す。'''
             value = value.strip()
-            try:
-                # Jan-26 形式
-                dt = datetime.strptime(value, '%b-%y')
-                return dt.strftime('%Y-%m')
-            except ValueError:
-                pass
-            try:
-                # Jan-2026 形式
-                dt = datetime.strptime(value, '%b-%Y')
-                return dt.strftime('%Y-%m')
-            except ValueError:
-                pass
+            for fmt in ('%b-%y', '%b-%Y', '%y-%b', '%Y-%b'):
+                try:
+                    dt = datetime.strptime(value, fmt)
+                    return dt.strftime('%Y-%m')
+                except ValueError:
+                    pass
             # YYYY-MM形式はそのまま
             return value
 
