@@ -162,9 +162,12 @@ export default function PrintOrderFormPhase2() {
         const data = await printOrderService.getPriceTables();
         setPriceTables(data);
 
-        // 重複なしの商品種類リストを指定順で作成
-        const PRODUCT_ORDER = ['診察券', 'ネームプレート', '三つ折りパンフレット', 'リコールはがき'];
-        const uniqueProductTypes = Array.from(new Set(data.map((pt) => pt.product_type)));
+        // 重複なしの商品種類リストを指定順で作成（ネームプレートは発注フォームから除外）
+        const PRODUCT_ORDER = ['診察券（通常納品）', '診察券（特急納品）', '三つ折りパンフレット', 'リコールはがき'];
+        const HIDDEN_PRODUCTS = ['ネームプレート'];
+        const uniqueProductTypes = Array.from(new Set(data.map((pt) => pt.product_type))).filter(
+          (pt) => !HIDDEN_PRODUCTS.includes(pt)
+        );
         uniqueProductTypes.sort((a, b) => {
           const ai = PRODUCT_ORDER.indexOf(a);
           const bi = PRODUCT_ORDER.indexOf(b);
@@ -801,7 +804,6 @@ export default function PrintOrderFormPhase2() {
                   ) : (
                     <>
                       ご注文確定後、<strong>7〜10日後発送予定</strong>です（※商品によって異なります）。お急ぎの場合は備考欄にご記入ください。<br />
-                      ・診察券のみ特急対応あり（1日短縮・料金別途）<br />
                       ・北海道・沖縄など本州以外はプラス2〜3日かかります
                     </>
                   )}
@@ -997,27 +999,33 @@ export default function PrintOrderFormPhase2() {
             </Typography>
 
             <Typography variant="subtitle2" sx={{ mt: 2, mb: 1, fontWeight: 600 }}>
-              【印刷物の色合いについて】
+              【印刷物の⾊合いについて】
             </Typography>
             <Typography variant="body2" sx={{ mb: 2 }}>
-              ・パソコンなどの画面上で表示されるRGBカラーと、印刷時に使用されるCMYKカラーでは色の再現方式が異なるため、画面上と実際の印刷物の色味に差異が生じる場合がございます。<br />
-              ・仕上がりの色合いに関しまして、印刷毎に機械が変わるため同一データであっても毎回同じ色合いでの仕上がりは保証しかねます。<br />
-              ・ゴールド、シルバー、ブロンズ等の色は出力出来かねる為、ベージュやグレーなどの【近似色対応】となります。
+              ・パソコンなどの画⾯上で表⽰されるRGBカラーと、印刷時に使⽤されるCMYKカラーでは⾊の再現⽅式が異なるため、画⾯上と実際の印刷物の⾊味に差異が⽣じる場合がございます。<br />
+              ・仕上がりの⾊合いに関しまして、印刷毎に機械が変わるため同⼀データであっても毎回同じ⾊合いでの仕上がりは保証しかねます。<br />
+              ・ゴールド、シルバー、ブロンズ等の⾊は出⼒出来かねる為、ベージュやグレーなどの【近似⾊対応】となります。
             </Typography>
 
             <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-              【各印刷物の修正費用・修正回数に関して】
+              【各印刷物の修正費⽤に関して】
             </Typography>
             <Typography variant="body2" sx={{ mb: 2 }}>
-              ・修正回数の上限は6回までとなります。<br />
-              ・修正費用は、修正の内容、量によって異なります。ご依頼時に算出いたしますが、作成過程で増えた場合は別途料金が発生いたしますので予めご了承ください。
+              ・修正費⽤は、修正の内容、量によって異なります。ご依頼時に算出いたしますが、作成過程で増えた場合は別途料⾦が発⽣いたしますので予めご了承ください。
+            </Typography>
+
+            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
+              【途中キャンセルについて】
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 2 }}>
+              印刷開始時、修正作業開始後のキャンセルにつきましては、所定の費⽤が発⽣いたします。
             </Typography>
 
             <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
               【納品に関して】
             </Typography>
             <Typography variant="body2" sx={{ mb: 2 }}>
-              天候・交通事情により商品のお届けに遅れが生じる可能性がございます。お客様には大変ご迷惑をお掛けいたしますが、何卒ご理解を賜りますようお願い申し上げます。
+              天候・交通事情により商品のお届けに遅れが⽣じる可能性がございます。お客様には⼤変ご迷惑をお掛けいたしますが、何卒ご理解を賜りますようお願い申し上げます。
             </Typography>
 
             <Controller
