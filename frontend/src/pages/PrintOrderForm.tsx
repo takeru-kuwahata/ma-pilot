@@ -783,9 +783,12 @@ export default function PrintOrderFormPhase2() {
                           概算金額（税抜・参考）
                         </Typography>
                         <Typography variant="h4">
-                          ¥{getItemPrice(watchConsultationProductType, watchConsultationQuantity).toLocaleString()}
+                          ¥{(getItemPrice(watchConsultationProductType, watchConsultationQuantity) + SHIPPING_FEE).toLocaleString()}
                         </Typography>
-                        <Typography variant="caption" display="block" sx={{ mt: 1 }}>
+                        <Typography variant="body2" sx={{ mt: 1 }}>
+                          内訳：商品代 ¥{getItemPrice(watchConsultationProductType, watchConsultationQuantity).toLocaleString()} + 送料 ¥{SHIPPING_FEE.toLocaleString()}（定額）
+                        </Typography>
+                        <Typography variant="caption" display="block" sx={{ mt: 0.5 }}>
                           ※この金額は参考価格です。正式なお見積りは担当者よりご連絡いたします。
                         </Typography>
                       </CardContent>
