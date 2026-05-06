@@ -5,6 +5,7 @@ import os
 from ..core import get_supabase_client
 from ..services import PrintOrderService
 from ..services.pdf_service import PdfService
+from ..services.email_service import EmailService
 from ..models import (
     PriceTable,
     PriceTableCreate,
@@ -288,6 +289,18 @@ async def upload_order_attachment(
         current_notes = order.notes or ""
         attachment_note = f"\n[添付ファイル] {file.filename}: {public_url}"
         supabase.table("print_orders").update({"notes": current_notes + attachment_note}).eq("id", order_id).execute()
+
+        try:
+            email_svc = EmailService(supabase)
+            email_svc.send_attachment_notification(
+                order_id=order_id,
+                clinic_name=order.clinic_name,
+                clinic_email=order.email,
+                filename=file.filename,
+                file_url=public_url,
+            )
+        except Exception:
+            pass
 
         return ApiResponse(
             data={"url": public_url, "filename": file.filename},

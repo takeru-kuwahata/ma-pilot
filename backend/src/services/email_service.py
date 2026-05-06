@@ -167,6 +167,53 @@ MA-Pilot 印刷物受注システム
         staff_email = self.get_print_order_email()
         _send_email(staff_email, subject, body)
 
+    def send_attachment_notification(
+        self,
+        order_id: str,
+        clinic_name: str,
+        clinic_email: str,
+        filename: str,
+        file_url: str,
+    ) -> None:
+        """添付ファイルアップロード後に注文者・スタッフ両方へURLを通知"""
+        # 注文者への通知
+        clinic_subject = '【MA-Pilot】添付ファイルを受け付けました'
+        clinic_body = f"""{clinic_name} 様
+
+ご注文（注文番号: {order_id}）に添付いただいたファイルを受け付けました。
+
+■添付ファイル
+ファイル名: {filename}
+URL: {file_url}
+
+担当者が確認次第ご連絡いたします。
+
+---
+株式会社メディカルアドバンス
+---
+"""
+        _send_email(clinic_email, clinic_subject, clinic_body)
+
+        # スタッフへの通知
+        staff_subject = f'【添付ファイル】{clinic_name} 様 注文番号: {order_id}'
+        staff_body = f"""注文に添付ファイルが追加されました。
+
+■注文情報
+注文番号: {order_id}
+クリニック名: {clinic_name}
+メールアドレス: {clinic_email}
+
+■添付ファイル
+ファイル名: {filename}
+URL: {file_url}
+
+---
+MA-Pilot 印刷物受注システム
+---
+"""
+        staff_email = self.get_print_order_email()
+        _send_email(staff_email, staff_subject, staff_body)
+
     async def send_welcome_email(
         self,
         to_email: str,
