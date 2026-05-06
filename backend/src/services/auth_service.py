@@ -124,25 +124,8 @@ class AuthService:
             supabase_url = os.environ.get('SUPABASE_URL', '')
             service_role_key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '') or os.environ.get('SUPABASE_KEY', '')
 
-            # まず既存ユーザーかどうか確認
-            async with httpx.AsyncClient() as client:
-                check_resp = await client.get(
-                    f'{supabase_url}/auth/v1/admin/users',
-                    headers={
-                        'apikey': service_role_key,
-                        'Authorization': f'Bearer {service_role_key}',
-                    },
-                    params={'filter': f'email.eq.{email}'},
-                    timeout=15,
-                )
-                existing_users = check_resp.json() if check_resp.status_code == 200 else {'users': []}
-                users_list = existing_users.get('users', []) if isinstance(existing_users, dict) else []
-                already_exists = any(u.get('email') == email for u in users_list)
-
-            if already_exists:
-                raise ValueError(f'このメールアドレスはすでに登録されています: {email}')
-
             # Supabase Admin招待API（招待メールを送信）
+            existing_user_id = None
             async with httpx.AsyncClient() as client:
                 resp = await client.post(
                     f'{supabase_url}/auth/v1/invite',
@@ -160,17 +143,46 @@ class AuthService:
                     err = resp.json() if resp.text else {}
                     if err.get('error_code') == 'email_address_invalid':
                         raise ValueError(f'メールアドレスの形式が無効です: {email}')
-                    raise ValueError(f'招待メール送信に失敗しました（{resp.status_code}）')
-                user_data = resp.json()
-                user_id = user_data['id']
+                    if err.get('error_code') == 'email_exists':
+                        # 既存ユーザー → Auth内のIDを検索してスタッフとして紐付け
+                        search_resp = await client.get(
+                            f'{supabase_url}/auth/v1/admin/users',
+                            headers={
+                                'apikey': service_role_key,
+                                'Authorization': f'Bearer {service_role_key}',
+                            },
+                            params={'search': email, 'per_page': 50},
+                            timeout=15,
+                        )
+                        search_data = search_resp.json() if search_resp.status_code == 200 else {}
+                        found = [u for u in search_data.get('users', []) if u.get('email') == email]
+                        if not found:
+                            raise ValueError(f'このメールアドレスはすでに登録されています: {email}')
+                        existing_user_id = found[0]['id']
+                    else:
+                        raise ValueError(f'招待メール送信に失敗しました（{resp.status_code}）')
 
-            # Create user metadata (role/clinic紐付け)
-            self.supabase.table('user_metadata').insert({
-                'user_id': user_id,
-                'role': role,
-                'clinic_id': clinic_id
-            }).execute()
+                user_id = existing_user_id if existing_user_id else resp.json()['id']
 
+            # user_metadataにclinic_idとroleを登録（既存レコードがあればupsert）
+            existing_meta = self.supabase.table('user_metadata').select('user_id').eq('user_id', user_id).execute()
+            if existing_meta.data:
+                self.supabase.table('user_metadata').update({
+                    'role': role,
+                    'clinic_id': clinic_id
+                }).eq('user_id', user_id).execute()
+            else:
+                self.supabase.table('user_metadata').insert({
+                    'user_id': user_id,
+                    'role': role,
+                    'clinic_id': clinic_id
+                }).execute()
+
+            if existing_user_id:
+                return {
+                    'message': f'既存アカウントをスタッフとして追加しました（{email}）',
+                    'invite_token': user_id
+                }
             return {
                 'message': f'招待メールを送信しました（{email}）',
                 'invite_token': user_id
