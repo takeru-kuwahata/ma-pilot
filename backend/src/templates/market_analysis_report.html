@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        @font-face {
+            font-family: 'Noto Sans JP';
+            font-style: normal;
+            font-weight: 400;
+            src: url('fonts/NotoSansJP-Regular.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'Noto Sans JP';
+            font-style: normal;
+            font-weight: 700;
+            src: url('fonts/NotoSansJP-Bold.ttf') format('truetype');
+        }
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 15px;
+        }
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1976d2;
+            margin: 0 0 5px 0;
+        }
+        .header p {
+            font-size: 12px;
+            color: #666;
+            margin: 0;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+            padding-left: 10px;
+            margin-bottom: 12px;
+        }
+        .kpi-grid {
+            display: table;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px;
+        }
+        .kpi-row {
+            display: table-row;
+        }
+        .kpi-box {
+            display: table-cell;
+            width: 25%;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        .kpi-label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        .kpi-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1976d2;
+        }
+        .kpi-unit {
+            font-size: 11px;
+            color: #666;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        th {
+            background: #1976d2;
+            color: white;
+            padding: 8px 10px;
+            text-align: left;
+            font-weight: 700;
+        }
+        td {
+            padding: 7px 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:nth-child(even) td {
+            background: #f9f9f9;
+        }
+        .age-bar-wrap {
+            margin-top: 8px;
+        }
+        .age-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 11px;
+        }
+        .age-label {
+            width: 80px;
+            color: #555;
+        }
+        .age-bar-bg {
+            flex: 1;
+            background: #e0e0e0;
+            border-radius: 3px;
+            height: 14px;
+            margin: 0 8px;
+        }
+        .age-bar {
+            height: 14px;
+            border-radius: 3px;
+            background: #1976d2;
+        }
+        .age-pct {
+            width: 40px;
+            text-align: right;
+            color: #333;
+            font-weight: 700;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ title }}</h1>
+        <p>{{ clinic_name }} ／ 生成日時：{{ generated_at }} ／ 分析半径：{{ radius_km }}km</p>
+    </div>
+
+    <!-- KPI -->
+    <div class="section">
+        <div class="section-title">診療圏サマリー</div>
+        <div class="kpi-grid">
+            <div class="kpi-row">
+                <div class="kpi-box">
+                    <div class="kpi-label">圏内総人口</div>
+                    <div class="kpi-value">{{ "{:,}".format(total_population) }}</div>
+                    <div class="kpi-unit">人</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-label">競合歯科数</div>
+                    <div class="kpi-value">{{ competitor_count }}</div>
+                    <div class="kpi-unit">院</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-label">推計潜在患者数</div>
+                    <div class="kpi-value">{{ estimated_potential }}</div>
+                    <div class="kpi-unit">人/月</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-label">市場シェア</div>
+                    <div class="kpi-value">{{ "%.1f"|format(market_share) }}</div>
+                    <div class="kpi-unit">%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 年齢構成 -->
+    <div class="section">
+        <div class="section-title">圏内人口の年齢構成</div>
+        <div class="age-bar-wrap">
+            <div class="age-row">
+                <div class="age-label">0〜14歳</div>
+                <div class="age-bar-bg">
+                    <div class="age-bar" style="width: {{ age0_14_pct }}%;"></div>
+                </div>
+                <div class="age-pct">{{ "%.1f"|format(age0_14_pct) }}%</div>
+            </div>
+            <div class="age-row">
+                <div class="age-label">15〜64歳</div>
+                <div class="age-bar-bg">
+                    <div class="age-bar" style="width: {{ age15_64_pct }}%;"></div>
+                </div>
+                <div class="age-pct">{{ "%.1f"|format(age15_64_pct) }}%</div>
+            </div>
+            <div class="age-row">
+                <div class="age-label">65歳以上</div>
+                <div class="age-bar-bg">
+                    <div class="age-bar" style="width: {{ age65plus_pct }}%;"></div>
+                </div>
+                <div class="age-pct">{{ "%.1f"|format(age65plus_pct) }}%</div>
+            </div>
+        </div>
+        <p style="font-size:11px; color:#666; margin-top:8px;">
+            0〜14歳：{{ "{:,}".format(age0_14) }}人 ／ 15〜64歳：{{ "{:,}".format(age15_64) }}人 ／ 65歳以上：{{ "{:,}".format(age65plus) }}人
+        </p>
+    </div>
+
+    <!-- 競合一覧 -->
+    {% if competitors %}
+    <div class="section">
+        <div class="section-title">周辺競合歯科医院一覧</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>医院名</th>
+                    <th>距離</th>
+                    <th>住所</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in competitors %}
+                <tr>
+                    <td>{{ c.name }}</td>
+                    <td>{{ "%.2f"|format(c.distance) }}km</td>
+                    <td>{{ c.address or "—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        本レポートは MA-Pilot 診療圏分析機能により自動生成されました
+    </div>
+</body>
+</html>

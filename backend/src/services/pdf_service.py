@@ -229,3 +229,47 @@ class PdfService:
         pdf_bytes = HTML(string=html_content, base_url=base_url).write_pdf()
 
         return pdf_bytes
+
+    def generate_market_analysis_report_pdf(
+        self,
+        title: str,
+        clinic_name: str,
+        radius_km: float,
+        total_population: int,
+        age0_14: int,
+        age15_64: int,
+        age65plus: int,
+        competitor_count: int,
+        competitors: list,
+        estimated_potential: int,
+        market_share: float,
+    ) -> bytes:
+        template = self.env.get_template("market_analysis_report.html")
+
+        age0_14_pct = (age0_14 / total_population * 100) if total_population > 0 else 0
+        age15_64_pct = (age15_64 / total_population * 100) if total_population > 0 else 0
+        age65plus_pct = (age65plus / total_population * 100) if total_population > 0 else 0
+
+        context = {
+            "title": title,
+            "clinic_name": clinic_name,
+            "generated_at": datetime.now().strftime("%Y年%m月%d日 %H:%M"),
+            "radius_km": radius_km,
+            "total_population": total_population,
+            "age0_14": age0_14,
+            "age15_64": age15_64,
+            "age65plus": age65plus,
+            "age0_14_pct": age0_14_pct,
+            "age15_64_pct": age15_64_pct,
+            "age65plus_pct": age65plus_pct,
+            "competitor_count": competitor_count,
+            "competitors": competitors,
+            "estimated_potential": estimated_potential,
+            "market_share": market_share,
+        }
+
+        html_content = template.render(context)
+        base_url = str(Path(__file__).parent.parent / 'static')
+        pdf_bytes = HTML(string=html_content, base_url=base_url).write_pdf()
+
+        return pdf_bytes

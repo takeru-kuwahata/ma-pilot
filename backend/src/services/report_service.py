@@ -21,6 +21,8 @@ class ReportService:
                 pdf_bytes = await self._generate_monthly_report_pdf(request)
             elif request.type == 'simulation':
                 pdf_bytes = await self._generate_simulation_report_pdf(request)
+            elif request.type == 'market_analysis':
+                pdf_bytes = await self._generate_market_analysis_report_pdf(request)
             else:
                 raise ValueError(f'Unsupported report type: {request.type}')
 
@@ -192,6 +194,61 @@ class ReportService:
             personnel_cost_rate=personnel_cost_rate,
             material_cost_rate=material_cost_rate,
             fixed_cost=fixed_cost,
+        )
+
+        return pdf_bytes
+
+    async def _generate_market_analysis_report_pdf(self, request: ReportGenerateRequest) -> bytes:
+        '''Generate market analysis report PDF'''
+        response = self.supabase.table('market_analyses').select('*').eq(
+            'clinic_id', request.clinic_id
+        ).order('created_at', desc=True).limit(1).execute()
+
+        if not response.data or len(response.data) == 0:
+            raise ValueError('No market analysis data found')
+
+        analysis = response.data[0]
+
+        clinic_response = self.supabase.table('clinics').select('name').eq(
+            'id', request.clinic_id
+        ).single().execute()
+
+        clinic_name = clinic_response.data['name'] if clinic_response.data else 'クリニック'
+
+        radius_km = analysis.get('radius_km', 2.0)
+        pop_data = analysis.get('population_data', {})
+        total_population = pop_data.get('total_population', 0)
+        age_groups = pop_data.get('age_groups', {})
+        age0_14 = age_groups.get('age0_14', 0)
+        age15_64 = age_groups.get('age15_64', 0)
+        age65plus = age_groups.get('age65Plus', age_groups.get('age65plus', 0))
+
+        competitors_raw = analysis.get('competitors', [])
+        competitors = []
+        for c in competitors_raw:
+            if isinstance(c, dict):
+                competitors.append({
+                    'name': c.get('name', ''),
+                    'distance': c.get('distance', 0),
+                    'address': c.get('address', ''),
+                })
+
+        competitor_count = len(competitors)
+        estimated_potential = analysis.get('estimated_potential_patients', 0)
+        market_share = analysis.get('market_share', 0)
+
+        pdf_bytes = self.pdf_service.generate_market_analysis_report_pdf(
+            title=request.title,
+            clinic_name=clinic_name,
+            radius_km=radius_km,
+            total_population=total_population,
+            age0_14=age0_14,
+            age15_64=age15_64,
+            age65plus=age65plus,
+            competitor_count=competitor_count,
+            competitors=competitors,
+            estimated_potential=estimated_potential,
+            market_share=market_share,
         )
 
         return pdf_bytes
