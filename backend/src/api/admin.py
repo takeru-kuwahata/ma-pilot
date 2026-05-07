@@ -254,24 +254,6 @@ async def update_admin_settings(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get('/wp-connectivity-test')
-async def wp_connectivity_test():
-    '''Render.comからWordPress REST APIへの疎通確認（一時的なテスト用）'''
-    try:
-        async with httpx.AsyncClient(timeout=15.0) as client:
-            res = await client.get(
-                'https://si-college.net/wp-json/wp/v2/users/me',
-                auth=('admin_ma', '1f2i Ikpb ACjK 2zz6 JMvn VLUI'),
-            )
-        return {
-            'status_code': res.status_code,
-            'reachable': res.status_code == 200,
-            'response_preview': res.text[:200],
-        }
-    except Exception as e:
-        return {'reachable': False, 'error': str(e)}
-
-
 @router.get('/geocode')
 async def geocode_address(address: str):
     '''住所から緯度経度を取得（Community Geocoder経由）'''
