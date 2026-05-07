@@ -491,6 +491,7 @@ export interface GamificationData {
   parameters: RadarParameter[];
   consecutive_months: number;
   total_input_months: number;
+  streak_start_month?: string | null;
   new_milestones: MilestoneEvent[];
   character_type: CharacterType;
   character_message: string;

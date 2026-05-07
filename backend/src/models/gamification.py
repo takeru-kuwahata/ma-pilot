@@ -30,6 +30,7 @@ class GamificationData(BaseModel):
     # 継続記録
     consecutive_months: int
     total_input_months: int
+    streak_start_month: Optional[str]  # 連続入力の起点月（YYYY-MM）
     # 節目イベント（今回新たに達成したもの）
     new_milestones: List[MilestoneEvent]
     # キャラクター

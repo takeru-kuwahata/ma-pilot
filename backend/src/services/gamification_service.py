@@ -96,8 +96,8 @@ class GamificationService:
         rank, rank_label, next_rank_label, points_to_next = self._calc_rank(total_score)
         percentile = self._calc_percentile(total_score)
 
-        # 継続記録の更新
-        consecutive, total_months = self._update_consecutive(
+        # 継続記録の更新（月次データから直接計算）
+        consecutive, total_months, streak_start = self._update_consecutive(
             clinic_id, current['year_month'], gm_row
         )
 
@@ -131,6 +131,7 @@ class GamificationService:
             parameters=parameters,
             consecutive_months=consecutive,
             total_input_months=total_months,
+            streak_start_month=streak_start,
             new_milestones=new_milestones,
             character_type=character_type,
             character_message=message,
@@ -243,30 +244,31 @@ class GamificationService:
     # --------------------------------------------------------
     # 継続記録
     # --------------------------------------------------------
-    def _update_consecutive(self, clinic_id: str, current_month: str, gm_row: dict) -> tuple[int, int]:
-        last_month = gm_row.get('last_input_month')
-        consecutive = gm_row.get('consecutive_months', 0)
-        total = gm_row.get('total_input_months', 0)
+    def _update_consecutive(self, clinic_id: str, current_month: str, gm_row: dict) -> tuple[int, int, str | None]:
+        '''月次データから連続入力月数・累計・起点月を直接計算する'''
+        all_months_res = self.supabase.table('monthly_data') \
+            .select('year_month') \
+            .eq('clinic_id', clinic_id) \
+            .order('year_month', desc=False) \
+            .execute()
+        months = sorted({r['year_month'] for r in (all_months_res.data or [])})
+        total = len(months)
+        if total == 0:
+            return 0, 0, None
 
-        if last_month == current_month:
-            # 同月の再計算
-            return consecutive, total
-
-        if last_month:
-            # 前月と連続しているか判定
-            y, m = map(int, last_month.split('-'))
-            cy, cm = map(int, current_month.split('-'))
-            expected_next = (y * 12 + m) + 1
-            actual_next = cy * 12 + cm
-            if actual_next == expected_next:
+        # 直近の連続月数を計算（最新月から遡る）
+        consecutive = 1
+        streak_start = months[-1]
+        for i in range(len(months) - 1, 0, -1):
+            y1, m1 = map(int, months[i - 1].split('-'))
+            y2, m2 = map(int, months[i].split('-'))
+            if y2 * 12 + m2 - (y1 * 12 + m1) == 1:
                 consecutive += 1
+                streak_start = months[i - 1]
             else:
-                consecutive = 1
-        else:
-            consecutive = 1
+                break
 
-        total += 1
-        return consecutive, total
+        return consecutive, total, streak_start
 
     # --------------------------------------------------------
     # 節目イベント検出
@@ -441,6 +443,7 @@ class GamificationService:
             ],
             consecutive_months=0,
             total_input_months=0,
+            streak_start_month=None,
             new_milestones=[],
             character_type=gm_row.get('character_type', 'advanbi'),
             character_message='データを入力すると経営健診が始まります。まずは今月のデータを入力しましょう！',

@@ -254,6 +254,14 @@ const GamificationCard = ({ data }: { data: GamificationData }) => {
         <Box>
           <Typography variant="caption" color="text.secondary">連続入力</Typography>
           <Typography variant="body1" sx={{ fontWeight: 700 }}>{data.consecutive_months}ヶ月</Typography>
+          {data.streak_start_month && (() => {
+            const [y, m] = data.streak_start_month.split('-');
+            return (
+              <Typography variant="caption" color="text.secondary" display="block">
+                {`${y}年${parseInt(m)}月〜`}
+              </Typography>
+            );
+          })()}
         </Box>
         <Box>
           <Typography variant="caption" color="text.secondary">累計入力</Typography>
