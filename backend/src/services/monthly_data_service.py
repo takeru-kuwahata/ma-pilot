@@ -133,14 +133,22 @@ class MonthlyDataService:
 
         def _normalize_year_month(value: str) -> str:
             '''各種Excel形式の年月 → YYYY-MM 形式に変換。YYYY-MM形式はそのまま返す。'''
+            import re as _re
             value = value.strip()
+            # YYYY-MM形式はそのまま
+            if _re.match(r'^\d{4}-\d{2}$', value):
+                return value
+            # 2026年1月 形式
+            m = _re.match(r'^(\d{4})年(\d{1,2})月$', value)
+            if m:
+                return f'{m.group(1)}-{int(m.group(2)):02d}'
+            # Excel形式（Jan-26, 26-Jan等）
             for fmt in ('%b-%y', '%b-%Y', '%y-%b', '%Y-%b'):
                 try:
                     dt = datetime.strptime(value, fmt)
                     return dt.strftime('%Y-%m')
                 except ValueError:
                     pass
-            # YYYY-MM形式はそのまま
             return value
 
         try:

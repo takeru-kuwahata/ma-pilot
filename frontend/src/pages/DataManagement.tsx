@@ -312,7 +312,7 @@ export const DataManagement = () => {
 
     // サンプル行（1行だけ）
     const sampleRow = [
-      '2026-01',
+      '2026年1月',
       '2500000',
       '1500000',
       '100000',
