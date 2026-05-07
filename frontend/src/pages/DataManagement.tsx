@@ -268,7 +268,7 @@ export const DataManagement = () => {
     ];
 
     const rows = rawMonthlyData.map((item) => [
-      item.year_month,
+      formatYearMonth(item.year_month),
       item.insurance_revenue,
       item.self_pay_revenue,
       item.other_cost,
