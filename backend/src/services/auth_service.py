@@ -164,9 +164,13 @@ class AuthService:
 
                 user_id = existing_user_id if existing_user_id else resp.json()['id']
 
-            # user_metadataにclinic_idとroleを登録（既存レコードがあればupsert）
-            existing_meta = self.supabase.table('user_metadata').select('user_id').eq('user_id', user_id).execute()
+            # user_metadataにclinic_idとroleを登録
+            existing_meta = self.supabase.table('user_metadata').select('user_id,role').eq('user_id', user_id).execute()
             if existing_meta.data:
+                current_role = existing_meta.data[0].get('role', '')
+                if current_role == 'system_admin':
+                    # system_adminのroleは絶対に上書きしない
+                    raise ValueError(f'このメールアドレスはシステム管理者アカウントのため、スタッフとして招待できません: {email}')
                 self.supabase.table('user_metadata').update({
                     'role': role,
                     'clinic_id': clinic_id
