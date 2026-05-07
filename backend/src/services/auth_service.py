@@ -1,6 +1,9 @@
 from supabase import Client
 from typing import Optional
 from ..models.user import User, UserRole
+import httpx
+import urllib.parse
+import re
 
 
 class AuthService:
@@ -8,6 +11,25 @@ class AuthService:
 
     def __init__(self, supabase: Client):
         self.supabase = supabase
+
+    async def _geocode_address(self, address: str) -> Optional[tuple[float, float]]:
+        '''住所から緯度経度を取得（Community Geocoder）'''
+        try:
+            encoded = urllib.parse.quote(address)
+            url = f'https://geocoder.csis.u-tokyo.ac.jp/cgi-bin/simple_geocode.cgi?charset=UTF-8&addr={encoded}'
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                resp = await client.get(url)
+                text = resp.text
+                lat_match = re.search(r'<latitude>([\d.]+)</latitude>', text)
+                lng_match = re.search(r'<longitude>([\d.]+)</longitude>', text)
+                if lat_match and lng_match:
+                    lat = float(lat_match.group(1))
+                    lng = float(lng_match.group(1))
+                    if 24 <= lat <= 46 and 122 <= lng <= 154:
+                        return lat, lng
+        except Exception:
+            pass
+        return None
 
     async def login(self, email: str, password: str) -> dict:
         '''Login user'''
@@ -82,13 +104,17 @@ class AuthService:
             user_id = auth_response.user.id
 
             # 3. clinicsテーブルにクリニック作成
+            coords = await self._geocode_address(address)
+            lat = coords[0] if coords else 35.6762
+            lng = coords[1] if coords else 139.6503
+
             clinic_data: dict = {
                 'name': clinic_name,
                 'postal_code': postal_code,
                 'address': address,
                 'phone_number': phone_number,
-                'latitude': 35.6762,
-                'longitude': 139.6503,
+                'latitude': lat,
+                'longitude': lng,
                 'owner_id': user_id,
             }
             if slug:

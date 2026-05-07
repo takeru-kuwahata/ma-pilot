@@ -8,6 +8,8 @@ from pydantic import BaseModel
 import httpx
 import xml.etree.ElementTree as ET
 import os
+import re
+import urllib.parse
 
 
 class CreateOperatorRequest(BaseModel):
@@ -377,16 +379,33 @@ async def import_wordpress_users(
 
             user_id = res.json()['id']
 
-            # clinicsテーブルに医院情報を作成
+            # clinicsテーブルに医院情報を作成（住所からジオコーディング）
+            address_str = user.get('address', '')
+            lat, lng = 35.6762, 139.6503
+            if address_str:
+                try:
+                    encoded = urllib.parse.quote(address_str)
+                    geo_url = f'https://geocoder.csis.u-tokyo.ac.jp/cgi-bin/simple_geocode.cgi?charset=UTF-8&addr={encoded}'
+                    async with httpx.AsyncClient(timeout=10.0) as geo_client:
+                        geo_resp = await geo_client.get(geo_url)
+                    lat_m = re.search(r'<latitude>([\d.]+)</latitude>', geo_resp.text)
+                    lng_m = re.search(r'<longitude>([\d.]+)</longitude>', geo_resp.text)
+                    if lat_m and lng_m:
+                        _lat, _lng = float(lat_m.group(1)), float(lng_m.group(1))
+                        if 24 <= _lat <= 46 and 122 <= _lng <= 154:
+                            lat, lng = _lat, _lng
+                except Exception:
+                    pass
+
             clinic_res = supabase.table('clinics').insert({
                 'name': clinic_name,
                 'postal_code': user.get('postal_code', ''),
-                'address': user.get('address', ''),
+                'address': address_str,
                 'phone_number': user.get('phone_number', ''),
                 'owner_id': user_id,
                 'is_active': True,
-                'latitude': 35.6762,
-                'longitude': 139.6503,
+                'latitude': lat,
+                'longitude': lng,
                 'openhouse_status': user.get('openhouse_status', 'none'),
             }).execute()
 
