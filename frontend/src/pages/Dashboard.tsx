@@ -331,6 +331,14 @@ export const Dashboard = () => {
       setConsulting(c);
       setGamification(g);
       if (memo !== null && memo !== undefined) setClinicMemo(memo);
+
+      // 初回ウェルカムポップアップ（同じブラウザで1度のみ・localStorageで永続化）
+      const welcomeKey = `welcome_shown_${clinicId}`;
+      if (!localStorage.getItem(welcomeKey)) {
+        setPopupOpen(true);
+        localStorage.setItem(welcomeKey, '1');
+        return;
+      }
       // 新しい節目イベントがあればポップアップ表示（セッション内で1回のみ）
       if (g && g.new_milestones.length > 0) {
         const sessionKey = `milestone_shown_${clinicId}`;
@@ -688,15 +696,13 @@ export const Dashboard = () => {
         )}
 
         {/* キャラクターポップアップ */}
-        {gamification && (
-          <CharacterPopup
-            open={popupOpen}
-            onClose={() => setPopupOpen(false)}
-            message={gamification.character_message}
-            mood={gamification.character_mood}
-            characterType={gamification.character_type}
-          />
-        )}
+        <CharacterPopup
+          open={popupOpen}
+          onClose={() => setPopupOpen(false)}
+          message={gamification?.character_message ?? 'MA-Pilotへようこそ！ ぼくはアドバンビ。経営データを一緒に分析して、医院の成長をサポートするよ。まずは今月のデータを入力してみてね！'}
+          mood={gamification?.character_mood ?? 'happy'}
+          characterType={gamification?.character_type ?? 'advanbi'}
+        />
     </>
   );
 };
