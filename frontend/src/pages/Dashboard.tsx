@@ -4,6 +4,7 @@ import {
   Box, Typography, Grid, Paper, Alert, CircularProgress,
   Chip, Accordion, AccordionSummary, AccordionDetails,
   Dialog, DialogContent, DialogTitle, IconButton, LinearProgress,
+  TextField, Button,
 } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -312,6 +313,9 @@ export const Dashboard = () => {
   const [gamification, setGamification] = useState<GamificationData | null>(null);
   const [consultingLoading, setConsultingLoading] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
+  const [clinicMemo, setClinicMemo] = useState<string>('');
+  const [memoSaving, setMemoSaving] = useState(false);
+  const [memoSaved, setMemoSaved] = useState(false);
 
   const { data, loading, error } = useDashboardData(clinicId || null);
 
@@ -322,9 +326,11 @@ export const Dashboard = () => {
     Promise.all([
       consultingService.getReport(clinicId).catch(() => null),
       gamificationService.getData(clinicId).catch(() => null),
-    ]).then(([c, g]) => {
+      consultingService.getMemo(clinicId).catch(() => null),
+    ]).then(([c, g, memo]) => {
       setConsulting(c);
       setGamification(g);
+      if (memo !== null && memo !== undefined) setClinicMemo(memo);
       // 新しい節目イベントがあればポップアップ表示（セッション内で1回のみ）
       if (g && g.new_milestones.length > 0) {
         const sessionKey = `milestone_shown_${clinicId}`;
@@ -637,6 +643,47 @@ export const Dashboard = () => {
                 現在、緊急性の高い改善提案はありません。引き続き現状を維持しましょう！
               </Alert>
             )}
+
+            {/* 院長メモ */}
+            <Box sx={{ mt: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                📝 院長メモ（感じている課題・相談事項）
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                スタッフ離職率が高い、ユニット数に対して患者が少ないなど、現在感じている問題や課題を自由に記入できます。
+              </Typography>
+              <TextField
+                multiline
+                minRows={4}
+                fullWidth
+                placeholder="例：最近スタッフの定着率が低い、自由診療の比率を上げたい、新患が伸び悩んでいる…など"
+                value={clinicMemo}
+                onChange={(e) => { setClinicMemo(e.target.value); setMemoSaved(false); }}
+                variant="outlined"
+                sx={{ mb: 1 }}
+              />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Button
+                  variant="contained"
+                  size="small"
+                  disabled={memoSaving}
+                  onClick={async () => {
+                    setMemoSaving(true);
+                    try {
+                      await consultingService.saveMemo(clinicId!, clinicMemo);
+                      setMemoSaved(true);
+                    } finally {
+                      setMemoSaving(false);
+                    }
+                  }}
+                >
+                  {memoSaving ? '保存中...' : '保存する'}
+                </Button>
+                {memoSaved && (
+                  <Typography variant="caption" color="success.main">保存しました</Typography>
+                )}
+              </Box>
+            </Box>
           </Box>
         )}
 

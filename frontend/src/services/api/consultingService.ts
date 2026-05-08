@@ -22,4 +22,18 @@ export const consultingService = {
       body: JSON.stringify({ clinic_id: clinicId, service_id: serviceId, problem_tag: problemTag }),
     });
   },
+
+  async getMemo(clinicId: string): Promise<string | null> {
+    const response = await fetch(`${API_BASE_URL}/api/consulting/${clinicId}/memo`, { headers: getAuthHeaders() });
+    const result = await handleResponse<{ memo: string | null }>(response);
+    return result.memo;
+  },
+
+  async saveMemo(clinicId: string, memo: string): Promise<void> {
+    await fetch(`${API_BASE_URL}/api/consulting/${clinicId}/memo`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ memo }),
+    });
+  },
 };
