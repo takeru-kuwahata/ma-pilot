@@ -20,14 +20,22 @@ export const AcceptInvitePage = () => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Supabaseは招待リンクのハッシュを自動処理してセッションを確立する
-    // onAuthStateChangeでINITIAL_SESSIONまたはSIGNED_INが来たら準備完了
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
-        setReady(true);
-      }
-    });
-    return () => subscription.unsubscribe();
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const tokenHash = params.get('token_hash');
+    const type = params.get('type');
+
+    if (tokenHash && type === 'invite') {
+      supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'invite' }).then(({ error: verifyError }) => {
+        if (verifyError) {
+          setError('招待リンクが無効または期限切れです。管理者に再送を依頼してください。');
+        } else {
+          setReady(true);
+        }
+      });
+    } else {
+      setError('招待リンクが不正です。メール内のリンクから再度アクセスしてください。');
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
