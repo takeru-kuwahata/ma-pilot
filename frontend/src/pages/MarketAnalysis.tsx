@@ -36,31 +36,28 @@ function calcDistance(lat1: number, lon1: number, lat2: number, lon2: number): n
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-function fetchCompetitorsViaSdk(
-  latitude: number,
-  longitude: number,
+function searchNearbyByDistance(
+  service: google.maps.places.PlacesService,
+  location: google.maps.LatLng,
+  clinicLat: number,
+  clinicLng: number,
   radiusKm: number
 ): Promise<CompetitorClinic[]> {
   return new Promise((resolve) => {
-    if (!window.google?.maps?.places) {
-      resolve([]);
-      return;
-    }
-
-    // PlacesService requires a map DOM element
-    const mapDiv = document.createElement('div');
-    const map = new window.google.maps.Map(mapDiv);
-    const service = new window.google.maps.places.PlacesService(map);
-
+    // rankBy: DISTANCE で距離順取得（radiusは指定不可、代わりにlocationのみ）
     const request: google.maps.places.PlaceSearchRequest = {
-      location: new window.google.maps.LatLng(latitude, longitude),
-      radius: radiusKm * 1000,
+      location,
+      rankBy: window.google.maps.places.RankBy.DISTANCE,
       type: 'dentist',
       keyword: '歯科',
     };
 
     service.nearbySearch(request, (results, status) => {
-      if (status !== window.google.maps.places.PlacesServiceStatus.OK || !results) {
+      if (
+        (status !== window.google.maps.places.PlacesServiceStatus.OK &&
+          status !== window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) ||
+        !results
+      ) {
         resolve([]);
         return;
       }
@@ -69,7 +66,7 @@ function fetchCompetitorsViaSdk(
         .map((place) => {
           const lat = place.geometry?.location?.lat() ?? 0;
           const lng = place.geometry?.location?.lng() ?? 0;
-          const distance = calcDistance(latitude, longitude, lat, lng);
+          const distance = calcDistance(clinicLat, clinicLng, lat, lng);
           return {
             name: place.name ?? 'Unknown',
             address: place.vicinity ?? '',
@@ -83,6 +80,27 @@ function fetchCompetitorsViaSdk(
 
       resolve(competitors);
     });
+  });
+}
+
+function fetchCompetitorsViaSdk(
+  latitude: number,
+  longitude: number,
+  radiusKm: number
+): Promise<CompetitorClinic[]> {
+  return new Promise((resolve) => {
+    if (!window.google?.maps?.places) {
+      resolve([]);
+      return;
+    }
+
+    const mapDiv = document.createElement('div');
+    const map = new window.google.maps.Map(mapDiv);
+    const service = new window.google.maps.places.PlacesService(map);
+    const location = new window.google.maps.LatLng(latitude, longitude);
+
+    // rankBy: DISTANCE で近い順に取得し、radiusKm以内でフィルタ
+    searchNearbyByDistance(service, location, latitude, longitude, radiusKm).then(resolve);
   });
 }
 
