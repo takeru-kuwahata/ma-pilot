@@ -128,6 +128,7 @@ export const AcceptInvitePage = () => {
                 margin="normal"
                 required
                 placeholder="8文字以上"
+                helperText="8文字以上で入力してください"
                 inputProps={{ minLength: 8, autoComplete: 'new-password' }}
                 sx={{
                   '& .MuiOutlinedInput-root': { '&.Mui-focused fieldset': { borderColor: '#FF6B35' } },
