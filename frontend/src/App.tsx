@@ -22,6 +22,7 @@ import { AdminLayout } from './layouts/AdminLayout';
 
 // 公開ページ
 import { LoginPage } from './pages/LoginPage';
+import { AcceptInvitePage } from './pages/AcceptInvitePage';
 
 // 医院エリアページ
 import { Dashboard } from './pages/Dashboard';
@@ -77,6 +78,9 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/" element={<Navigate to="/login" replace />} />
               </Route>
+
+              {/* ========== 招待承認（パスワード設定） ========== */}
+              <Route path="/accept-invite" element={<AcceptInvitePage />} />
 
               {/* ========== 医院エリア（/clinic/:clinicId/*） ========== */}
               <Route element={<PrivateRoute />}>
