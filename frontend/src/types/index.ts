@@ -141,6 +141,7 @@ export interface CompetitorClinic {
   latitude: number;
   longitude: number;
   distance: number; // km単位
+  website?: string;
 }
 
 export interface MarketAnalysis {

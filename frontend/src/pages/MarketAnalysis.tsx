@@ -62,23 +62,40 @@ function searchNearbyByDistance(
         return;
       }
 
-      const competitors: CompetitorClinic[] = results
+      const filtered = results
         .map((place) => {
           const lat = place.geometry?.location?.lat() ?? 0;
           const lng = place.geometry?.location?.lng() ?? 0;
           const distance = calcDistance(clinicLat, clinicLng, lat, lng);
-          return {
-            name: place.name ?? 'Unknown',
-            address: place.vicinity ?? '',
-            latitude: lat,
-            longitude: lng,
-            distance: Math.round(distance * 100) / 100,
-          };
+          return { place, lat, lng, distance };
         })
         .filter((c) => c.distance > 0 && c.distance <= radiusKm)
         .sort((a, b) => a.distance - b.distance);
 
-      resolve(competitors);
+      // getDetails でホームページURLを並列取得
+      const detailPromises = filtered.map(({ place, lat, lng, distance }) =>
+        new Promise<CompetitorClinic>((res) => {
+          if (!place.place_id) {
+            res({ name: place.name ?? 'Unknown', address: place.vicinity ?? '', latitude: lat, longitude: lng, distance: Math.round(distance * 100) / 100 });
+            return;
+          }
+          service.getDetails(
+            { placeId: place.place_id, fields: ['website'] },
+            (detail, detailStatus) => {
+              res({
+                name: place.name ?? 'Unknown',
+                address: place.vicinity ?? '',
+                latitude: lat,
+                longitude: lng,
+                distance: Math.round(distance * 100) / 100,
+                website: detailStatus === window.google.maps.places.PlacesServiceStatus.OK ? (detail?.website ?? undefined) : undefined,
+              });
+            }
+          );
+        })
+      );
+
+      Promise.all(detailPromises).then(resolve);
     });
   });
 }

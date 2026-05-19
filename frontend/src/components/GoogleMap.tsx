@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GoogleMap as GoogleMapComponent, LoadScript, Marker, Circle } from '@react-google-maps/api';
+import { GoogleMap as GoogleMapComponent, LoadScript, Marker, Circle, InfoWindow } from '@react-google-maps/api';
 import { Box, Typography } from '@mui/material';
 import type { CompetitorClinic } from '../types';
 
@@ -27,6 +27,7 @@ export const GoogleMap = ({
   const key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
   const [apiKey] = useState<string>(key || '');
   const [error, setError] = useState<string>(key ? '' : 'Google Maps APIキーが設定されていません');
+  const [selectedCompetitor, setSelectedCompetitor] = useState<CompetitorClinic | null>(null);
 
   useEffect(() => {
     const handleError = () => {
@@ -131,8 +132,36 @@ export const GoogleMap = ({
             icon={{
               url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
             }}
+            onClick={() => setSelectedCompetitor(competitor)}
           />
         ))}
+
+        {/* クリック時のポップアップ */}
+        {selectedCompetitor && (
+          <InfoWindow
+            position={{
+              lat: selectedCompetitor.latitude,
+              lng: selectedCompetitor.longitude
+            }}
+            onCloseClick={() => setSelectedCompetitor(null)}
+          >
+            <Box sx={{ maxWidth: '200px', padding: '4px' }}>
+              <Typography sx={{ fontSize: '14px', fontWeight: 600, marginBottom: '4px' }}>
+                {selectedCompetitor.name}
+              </Typography>
+              {selectedCompetitor.website && (
+                <a
+                  href={selectedCompetitor.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontSize: '13px', color: '#1976d2', wordBreak: 'break-all' }}
+                >
+                  ホームページを見る
+                </a>
+              )}
+            </Box>
+          </InfoWindow>
+        )}
       </GoogleMapComponent>
     </LoadScript>
   );
