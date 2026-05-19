@@ -182,12 +182,15 @@ class MonthlyDataService:
                     # Try to create or update
                     data_dict = self._calculate_totals(monthly_data.model_dump())
 
-                    # Check if record exists
+                    # 既存レコードを確認してUPSERT（clinic_id + year_month の組み合わせで一意）
                     existing = self.supabase.table('monthly_data').select('id').eq('clinic_id', clinic_id).eq('year_month', normalized['year_month']).execute()
 
                     if existing.data and len(existing.data) > 0:
-                        # Update existing
+                        # 既存レコードを更新（重複を防ぐため最初の1件のみ対象）
                         self.supabase.table('monthly_data').update(data_dict).eq('id', existing.data[0]['id']).execute()
+                        # 万が一重複レコードがある場合は余分なものを削除
+                        for extra in existing.data[1:]:
+                            self.supabase.table('monthly_data').delete().eq('id', extra['id']).execute()
                     else:
                         # Insert new
                         self.supabase.table('monthly_data').insert(data_dict).execute()

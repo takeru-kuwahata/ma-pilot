@@ -72,7 +72,35 @@ function searchByKeyword(
   });
 }
 
-function searchNearbyByDistance(
+function getDetails(
+  service: google.maps.places.PlacesService,
+  place: google.maps.places.PlaceResult,
+  lat: number,
+  lng: number,
+  distance: number
+): Promise<CompetitorClinic> {
+  return new Promise((res) => {
+    if (!place.place_id) {
+      res({ name: place.name ?? 'Unknown', address: place.vicinity ?? '', latitude: lat, longitude: lng, distance: Math.round(distance * 100) / 100 });
+      return;
+    }
+    service.getDetails(
+      { placeId: place.place_id, fields: ['website'] },
+      (detail, detailStatus) => {
+        res({
+          name: place.name ?? 'Unknown',
+          address: place.vicinity ?? '',
+          latitude: lat,
+          longitude: lng,
+          distance: Math.round(distance * 100) / 100,
+          website: detailStatus === window.google.maps.places.PlacesServiceStatus.OK ? (detail?.website ?? undefined) : undefined,
+        });
+      }
+    );
+  });
+}
+
+async function searchNearbyByDistance(
   service: google.maps.places.PlacesService,
   location: google.maps.LatLng,
   clinicLat: number,
@@ -82,42 +110,26 @@ function searchNearbyByDistance(
   // 複数キーワードで並列検索して結果を統合（place_idで重複排除）
   const keywords = ['歯科', 'dental clinic', 'デンタルクリニック'];
 
-  return Promise.all(
+  const allResults = await Promise.all(
     keywords.map((kw) => searchByKeyword(service, location, clinicLat, clinicLng, radiusKm, kw))
-  ).then((results) => {
-    const seen = new Set<string>();
-    const merged = results.flat().filter(({ place, lat, lng }) => {
-      const key = place.place_id ?? `${lat},${lng}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    }).sort((a, b) => a.distance - b.distance);
+  );
 
-    // getDetails でホームページURLを並列取得
-    const detailPromises = merged.map(({ place, lat, lng, distance }) =>
-      new Promise<CompetitorClinic>((res) => {
-        if (!place.place_id) {
-          res({ name: place.name ?? 'Unknown', address: place.vicinity ?? '', latitude: lat, longitude: lng, distance: Math.round(distance * 100) / 100 });
-          return;
-        }
-        service.getDetails(
-          { placeId: place.place_id, fields: ['website'] },
-          (detail, detailStatus) => {
-            res({
-              name: place.name ?? 'Unknown',
-              address: place.vicinity ?? '',
-              latitude: lat,
-              longitude: lng,
-              distance: Math.round(distance * 100) / 100,
-              website: detailStatus === window.google.maps.places.PlacesServiceStatus.OK ? (detail?.website ?? undefined) : undefined,
-            });
-          }
-        );
-      })
-    );
+  const seen = new Set<string>();
+  const merged = allResults.flat().filter(({ place, lat, lng }) => {
+    const key = place.place_id ?? `${lat},${lng}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).sort((a, b) => a.distance - b.distance);
 
-    return Promise.all(detailPromises);
-  });
+  // getDetails でホームページURLを順番に取得（API制限対策で50ms間隔）
+  const competitors: CompetitorClinic[] = [];
+  for (const { place, lat, lng, distance } of merged) {
+    await new Promise<void>((res) => setTimeout(res, 50));
+    const competitor = await getDetails(service, place, lat, lng, distance);
+    competitors.push(competitor);
+  }
+  return competitors;
 }
 
 function fetchCompetitorsViaSdk(
@@ -380,6 +392,9 @@ export const MarketAnalysis = () => {
             }}
           >
             高齢化率
+            <Typography component="span" sx={{ fontSize: '11px', color: '#9e9e9e', display: 'block' }}>
+              ※65歳以上
+            </Typography>
           </Typography>
           <Typography
             sx={{
@@ -458,6 +473,9 @@ export const MarketAnalysis = () => {
             }}
           >
             市場ポテンシャル
+            <Typography component="span" sx={{ fontSize: '11px', color: '#9e9e9e', display: 'block' }}>
+              ※100÷競合院数（高いほど有利）
+            </Typography>
           </Typography>
           <Typography
             sx={{
