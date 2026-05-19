@@ -526,7 +526,7 @@ export const MarketAnalysis = () => {
               competitors={analysis.competitors}
               radiusKm={analysis.radius_km}
             />
-            <Typography sx={{ fontSize: '12px', color: '#9e9e9e', marginTop: '8px' }}>
+            <Typography sx={{ fontSize: '12px', color: '#d32f2f', marginTop: '8px' }}>
               ※ 競合医院の表示はGoogleマップのデータに基づいています。登録状況によっては一部の医院が表示されない場合があります。表示件数・位置情報の完全な正確性は保証できません。
             </Typography>
           </>
