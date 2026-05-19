@@ -36,22 +36,20 @@ function calcDistance(lat1: number, lon1: number, lat2: number, lon2: number): n
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-function searchNearbyByDistance(
+function searchByKeyword(
   service: google.maps.places.PlacesService,
   location: google.maps.LatLng,
   clinicLat: number,
   clinicLng: number,
-  radiusKm: number
-): Promise<CompetitorClinic[]> {
+  radiusKm: number,
+  keyword: string
+): Promise<{ place: google.maps.places.PlaceResult; lat: number; lng: number; distance: number }[]> {
   return new Promise((resolve) => {
-    // rankBy: DISTANCE で距離順取得（radiusは指定不可、代わりにlocationのみ）
     const request: google.maps.places.PlaceSearchRequest = {
       location,
       rankBy: window.google.maps.places.RankBy.DISTANCE,
-      type: 'dentist',
-      keyword: '歯科',
+      keyword,
     };
-
     service.nearbySearch(request, (results, status) => {
       if (
         (status !== window.google.maps.places.PlacesServiceStatus.OK &&
@@ -61,42 +59,64 @@ function searchNearbyByDistance(
         resolve([]);
         return;
       }
-
-      const filtered = results
-        .map((place) => {
-          const lat = place.geometry?.location?.lat() ?? 0;
-          const lng = place.geometry?.location?.lng() ?? 0;
-          const distance = calcDistance(clinicLat, clinicLng, lat, lng);
-          return { place, lat, lng, distance };
-        })
-        .filter((c) => c.distance > 0 && c.distance <= radiusKm)
-        .sort((a, b) => a.distance - b.distance);
-
-      // getDetails でホームページURLを並列取得
-      const detailPromises = filtered.map(({ place, lat, lng, distance }) =>
-        new Promise<CompetitorClinic>((res) => {
-          if (!place.place_id) {
-            res({ name: place.name ?? 'Unknown', address: place.vicinity ?? '', latitude: lat, longitude: lng, distance: Math.round(distance * 100) / 100 });
-            return;
-          }
-          service.getDetails(
-            { placeId: place.place_id, fields: ['website'] },
-            (detail, detailStatus) => {
-              res({
-                name: place.name ?? 'Unknown',
-                address: place.vicinity ?? '',
-                latitude: lat,
-                longitude: lng,
-                distance: Math.round(distance * 100) / 100,
-                website: detailStatus === window.google.maps.places.PlacesServiceStatus.OK ? (detail?.website ?? undefined) : undefined,
-              });
-            }
-          );
-        })
+      resolve(
+        results
+          .map((place) => {
+            const lat = place.geometry?.location?.lat() ?? 0;
+            const lng = place.geometry?.location?.lng() ?? 0;
+            return { place, lat, lng, distance: calcDistance(clinicLat, clinicLng, lat, lng) };
+          })
+          .filter((c) => c.distance > 0 && c.distance <= radiusKm)
       );
-
-      Promise.all(detailPromises).then(resolve);
     });
+  });
+}
+
+function searchNearbyByDistance(
+  service: google.maps.places.PlacesService,
+  location: google.maps.LatLng,
+  clinicLat: number,
+  clinicLng: number,
+  radiusKm: number
+): Promise<CompetitorClinic[]> {
+  // 複数キーワードで並列検索して結果を統合（place_idで重複排除）
+  const keywords = ['歯科', 'dental clinic', 'デンタルクリニック'];
+
+  return Promise.all(
+    keywords.map((kw) => searchByKeyword(service, location, clinicLat, clinicLng, radiusKm, kw))
+  ).then((results) => {
+    const seen = new Set<string>();
+    const merged = results.flat().filter(({ place, lat, lng }) => {
+      const key = place.place_id ?? `${lat},${lng}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).sort((a, b) => a.distance - b.distance);
+
+    // getDetails でホームページURLを並列取得
+    const detailPromises = merged.map(({ place, lat, lng, distance }) =>
+      new Promise<CompetitorClinic>((res) => {
+        if (!place.place_id) {
+          res({ name: place.name ?? 'Unknown', address: place.vicinity ?? '', latitude: lat, longitude: lng, distance: Math.round(distance * 100) / 100 });
+          return;
+        }
+        service.getDetails(
+          { placeId: place.place_id, fields: ['website'] },
+          (detail, detailStatus) => {
+            res({
+              name: place.name ?? 'Unknown',
+              address: place.vicinity ?? '',
+              latitude: lat,
+              longitude: lng,
+              distance: Math.round(distance * 100) / 100,
+              website: detailStatus === window.google.maps.places.PlacesServiceStatus.OK ? (detail?.website ?? undefined) : undefined,
+            });
+          }
+        );
+      })
+    );
+
+    return Promise.all(detailPromises);
   });
 }
 
@@ -498,13 +518,18 @@ export const MarketAnalysis = () => {
             </Typography>
           </Box>
         ) : clinic && analysis ? (
-          <GoogleMap
-            clinicLatitude={clinic.latitude}
-            clinicLongitude={clinic.longitude}
-            clinicName={clinic.name}
-            competitors={analysis.competitors}
-            radiusKm={analysis.radius_km}
-          />
+          <>
+            <GoogleMap
+              clinicLatitude={clinic.latitude}
+              clinicLongitude={clinic.longitude}
+              clinicName={clinic.name}
+              competitors={analysis.competitors}
+              radiusKm={analysis.radius_km}
+            />
+            <Typography sx={{ fontSize: '12px', color: '#9e9e9e', marginTop: '8px' }}>
+              ※ 競合医院の表示はGoogleマップのデータに基づいています。登録状況によっては一部の医院が表示されない場合があります。表示件数・位置情報の完全な正確性は保証できません。
+            </Typography>
+          </>
         ) : (
           <Box
             sx={{
