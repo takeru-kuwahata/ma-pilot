@@ -92,7 +92,7 @@ const RANK_COLOR: Record<string, string> = {
   bronze: '#CD7F32',
   silver: '#A0A0A0',
   gold: '#FFD700',
-  platinum: '#E0E0E0',
+  platinum: '#7B68EE',
   diamond: '#1565C0',
 };
 
@@ -221,7 +221,7 @@ const GamificationCard = ({ data }: { data: GamificationData }) => {
           <Typography variant="h4" sx={{ fontWeight: 700, color: RANK_COLOR[data.current_rank] }}>
             {data.total_score}点
           </Typography>
-          <Typography variant="caption" color="text.secondary">経営健診スコア</Typography>
+          <Typography variant="caption" sx={{ color: '#616161' }}>経営健診スコア</Typography>
         </Box>
       </Box>
 
