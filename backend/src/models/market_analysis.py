@@ -24,6 +24,7 @@ class CompetitorClinic(BaseModel):
     latitude: float
     longitude: float
     distance: float  # km
+    website: Optional[str] = None
 
 
 class MarketAnalysis(BaseModel):
