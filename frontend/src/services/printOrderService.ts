@@ -136,7 +136,9 @@ export const createPrintOrder = async (
     );
   }
 
-  return response.json();
+  const json = await response.json();
+  // バックエンドはApiResponse({ data: PrintOrder })でラップして返す
+  return json.data ?? json;
 };
 
 /**
