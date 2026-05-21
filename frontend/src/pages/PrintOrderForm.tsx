@@ -1011,11 +1011,11 @@ export default function PrintOrderFormPhase2() {
             </Typography>
 
             <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-              【各印刷物の修正費⽤に関して】
+              【各印刷物の修正費⽤、回数に関して】
             </Typography>
             <Typography variant="body2" sx={{ mb: 2 }}>
-              ・修正回数の上限は6回までとなります。<br />
-              ・修正費⽤は、修正の内容、量によって異なります。ご依頼時に算出いたしますが、作成過程で増えた場合は別途料⾦が発⽣いたしますので予めご了承ください。
+              ・修正費⽤は、修正の内容、量によって異なります。ご依頼時に算出いたしますが、作成過程で増えた場合は別途料⾦が発⽣いたしますので予めご了承ください。<br />
+              ・診察券・封筒・リコールハガキ（官製はがきタイプ・ポストカードタイプ）の修正回数の上限は6回です。
             </Typography>
 
             <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
