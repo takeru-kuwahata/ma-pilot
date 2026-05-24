@@ -62,7 +62,8 @@ describe('printOrderService', () => {
 
   describe('getPriceTables', () => {
     it('Supabaseから価格マスタ一覧を取得する', async () => {
-      const { __chain } = await import('../../lib/supabase') as { __chain: Record<string, ReturnType<typeof vi.fn>> };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { __chain } = await import('../../lib/supabase') as unknown as { __chain: Record<string, ReturnType<typeof vi.fn>> };
       // 2回目の .order() がPromiseとして解決する
       __chain.order.mockReturnValueOnce(__chain).mockResolvedValueOnce({
         data: [SAMPLE_PRICE_TABLE],
@@ -75,7 +76,8 @@ describe('printOrderService', () => {
     });
 
     it('エラー時はエラーをthrowする', async () => {
-      const { __chain } = await import('../../lib/supabase') as { __chain: Record<string, ReturnType<typeof vi.fn>> };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { __chain } = await import('../../lib/supabase') as unknown as { __chain: Record<string, ReturnType<typeof vi.fn>> };
       __chain.order.mockReturnValueOnce(__chain).mockResolvedValueOnce({
         data: null,
         error: { message: 'DB接続エラー' },
@@ -133,12 +135,11 @@ describe('printOrderService', () => {
 
       const orderData = {
         clinic_id: 'clinic-uuid-001',
-        price_table_id: 'price-001',
+        clinic_name: 'テスト歯科医院',
+        email: 'test@example.com',
+        pattern: 'consultation' as const,
         product_type: 'チラシ',
         quantity: 1000,
-        unit_price: 15000,
-        design_fee: 0,
-        total_price: 15000,
         delivery_address: '東京都渋谷区1-2-3',
       };
 
@@ -162,13 +163,9 @@ describe('printOrderService', () => {
       await expect(
         printOrderService.createPrintOrder({
           clinic_id: '',
-          price_table_id: '',
-          product_type: '',
-          quantity: 0,
-          unit_price: 0,
-          design_fee: 0,
-          total_price: 0,
-          delivery_address: '',
+          clinic_name: '',
+          email: '',
+          pattern: 'consultation' as const,
         }),
       ).rejects.toThrow();
     });
