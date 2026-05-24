@@ -1,6 +1,6 @@
-# MA-Pilot 開発状況・残課題メモ（開発者向け）
+# MA-Pilot 開発状況メモ（開発者向け）
 
-最終更新：2026-02-18
+最終更新：2026-05-25
 
 ---
 
@@ -10,11 +10,32 @@
 |------|------|
 | フロントエンド | Vercel（GitHub push で自動デプロイ） |
 | バックエンド | Render.com 無料プラン（GitHub push → GitHub Actions → Deploy Hook で自動デプロイ） |
-| DB / Auth | Supabase |
-| フロントURL | Vercel で確認 |
+| DB / Auth | Supabase（PostgreSQL 15 + Auth + Storage） |
+| フロントURL | https://ma-pilot.vercel.app |
 | バックエンドURL | https://ma-pilot.onrender.com |
 
 **注意：Render 無料プランは15分間アクセスがないとスリープする。初回リクエストに最大50秒かかる。**
+
+---
+
+## 実装済み機能（本番稼働中）
+
+| カテゴリ | 内容 |
+|---------|------|
+| 認証 | ログイン・ログアウト・パスワードリセット・自己登録・パスワード変更 |
+| 経営ダッシュボード | KPI表示・グラフ・コンサルティング診断・ゲーミフィケーション |
+| 基礎データ管理 | 月次データ入力・CSV取込・院長メモ |
+| 診療圏分析 | 地図・競合検索（Google Maps APIキーなし時はモックデータ） |
+| 経営シミュレーション | 目標設定・逆算計算・戦略提案 |
+| レポート生成 | PDF/CSV生成（WeasyPrint） |
+| 医院設定 | 医院情報編集・スタッフ招待・権限管理・内覧会ステータス |
+| 管理画面 | 医院一覧・有効化/無効化・パスワード変更・価格マスタCRUD |
+| 印刷物受注 | 発注フォーム・履歴・見積もりPDF・添付ファイル |
+| Lstep Webhook | 4フォームタイプ自動処理（MA-Pilot + WordPress + ウェルカムメール） |
+| Stripe決済 | 枠組み実装済み（APIキー設定待ち） |
+| コンサルティング | 月次データ診断→KPI・院長メモ連動・パートナー推薦カード |
+| ゲーミフィケーション | ランク・スコア・レーダーチャート・パーセンタイル |
+| メール送信 | Google Workspace SMTPリレー（smtp-relay.gmail.com:587、IPアドレス認証） |
 
 ---
 
@@ -24,30 +45,37 @@
 
 | # | 内容 | 場所 |
 |---|------|------|
-| ~~B-1~~ | ✅ **修正済み（2026-02-18）** TypeScript 型をスネークケースに統一。`getRaw()` ヘルパー削除。全15ファイル対応 | |
-| B-2 | Supabase Python SDK の `auth.admin.get_user_by_id()` が Render 環境で動作しないため、operators エンドポイントは httpx で直接 REST API を叩いている。原因未特定 | `backend/src/api/admin.py` |
-| ~~B-3~~ | ✅ **修正済み（2026-02-18）** `display_name` 変更後に `localStorage` も更新するよう修正。リロード後も反映される | |
+| B-2 | Supabase Python SDK の `auth.admin.get_user_by_id()` が Render 環境で動作しないため、admin エンドポイントは httpx で直接 REST API を叩いている。原因未特定 | `backend/src/api/admin.py` |
 
 ### 中優先度
 
 | # | 内容 | 場所 |
 |---|------|------|
-| M-1 | 診療圏分析ページのデータが実APIと繋がっていない可能性あり（e-Stat / RESAS API キーが未設定のため） | `MarketAnalysis.tsx` |
+| M-1 | 診療圏分析の実データ未接続（e-Stat / RESAS API キーが未設定のためモックデータで動作中） | `MarketAnalysis.tsx` |
 | M-2 | AdminSettings ページの設定保存がプレースホルダー実装（DBに保存されない） | `backend/src/api/admin.py` |
-| M-3 | レポート生成（PDF）が実際に動作するか未確認（WeasyPrint の Render 環境での動作要確認） | `backend/src/api/reports.py` |
-| ~~M-4~~ | ✅ **修正済み（2026-02-18）** `ClinicMySettings.tsx` 作成、`/clinic/my-settings` ルート追加、MainLayout にリンク追加 | |
+| M-3 | レポートPDF生成が実環境で動作するか未確認（WeasyPrint の Render 環境要確認） | `backend/src/api/reports.py` |
 
 ### 低優先度
 
 | # | 内容 |
 |---|------|
-| L-1 | GitHub Actions の `VERCEL_TOKEN` / `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID` が未設定（Vercel は GitHub App 連携で動いているため現状問題なし） |
-| L-2 | E2E テストが多数失敗している（`test-results/` に大量のエラーファイルあり） |
-| L-3 | `admin@ma-pilot.local` のような開発用ダミーアカウントが残っている可能性 |
+| L-1 | GitHub Actions の `VERCEL_TOKEN` 等が未設定（Vercel は GitHub App 連携で動いているため現状問題なし） |
+| L-3 | Lstep Webhook エンドツーエンド動作確認未実施（実フォーム送信テストは未実施） |
 
 ---
 
-## 運営者アカウント一覧（2026-02-18 登録済み）
+## クライアント対応待ち事項
+
+| 内容 | 担当 |
+|------|------|
+| Stripe本番キー設定（`STRIPE_SECRET_KEY` / `VITE_STRIPE_PUBLIC_KEY`） | 理沙さん確認中 |
+| コンサルティング診断ロジックの動作確認（Googleドキュメント送付済み 2026-04-30） | クライアント |
+| DXヒアリングシート回答（送付済み） | クライアント |
+| 価格マスタ修正23件・新規追加19件（管理画面から自身で対応可能） | クライアント |
+
+---
+
+## 本番環境テスト済みアカウント一覧
 
 | 氏名 | メール | 初期PW |
 |------|--------|--------|
@@ -61,25 +89,17 @@
 
 ---
 
-## 直近の主な変更履歴
+## 主な変更履歴（直近）
 
 | 日付 | 内容 |
 |------|------|
-| 2026-02-18 | 運営者アカウント管理ページ実装（一覧・追加・削除） |
-| 2026-02-18 | マイページ設定実装（表示名・パスワード変更） |
-| 2026-02-18 | B-1: TypeScript型をスネークケースに統一（全15ファイル、TypeScriptエラー0件確認） |
-| 2026-02-18 | B-3: display_name変更後にlocalStorageも更新（リロード後も反映） |
-| 2026-02-18 | M-4: 医院モードのマイページ設定実装（ClinicMySettings.tsx + /clinic/my-settings ルート） |
-| 2026-02-18 | AdminLayout 右上アイコン削除、display_name をヘッダーに表示 |
-| 2026-02-18 | Render 自動デプロイ設定（GitHub Actions + Deploy Hook） |
-| 2026-02-18 | AdminClinics に医院削除・並び替え・件数切り替えを実装 |
-| 2026-02-18 | AdminDashboard の is_active / created_at スネークケース修正 |
-
----
-
-## 次のフェーズで検討すべき機能
-
-- 医院ユーザー側のマイページ（パスワード変更）
-- レポートPDF生成の実環境テスト
-- e-Stat / RESAS APIキーの設定・診療圏分析の実データ接続
-- Render を有料プランへアップグレード（スリープ解消）
+| 2026-05-25 | フロントエンドサービステスト強化・Lstep Webhookユニットテスト実装（計+59テスト） |
+| 2026-05-24 | 本番運用診断フェーズ3: テストカバレッジ改善（50スキップ→106パス） |
+| 2026-05-24 | 本番運用診断フェーズ2: CSP修正・トランザクション補償実装・セキュリティヘッダー追加 |
+| 2026-05-24 | 本番運用診断フェーズ1: セキュリティ・パフォーマンス・運用性の修正 |
+| 2026-05-20 | SMTPリレー切り替え（Xserver → Google Workspace、IPアドレス認証） |
+| 2026-04-30 | コンサルティング・ゲーミフィケーション・パートナー推薦 本番デプロイ済み |
+| 2026-04-30 | Stripe決済枠組み実装（APIキー設定で稼働可能） |
+| 2026-04-16 | 価格マスタ管理画面CRUD実装（/admin/price-tables） |
+| 2026-04-02 | Lstep Webhook連携デプロイ済み（POST /api/webhooks/lstep） |
+| 2026-03-26 | クリニック自己登録・内覧会ステータス管理・パスワード変更機能 |

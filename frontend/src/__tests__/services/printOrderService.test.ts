@@ -62,7 +62,6 @@ describe('printOrderService', () => {
 
   describe('getPriceTables', () => {
     it('Supabaseから価格マスタ一覧を取得する', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { __chain } = await import('../../lib/supabase') as unknown as { __chain: Record<string, ReturnType<typeof vi.fn>> };
       // 2回目の .order() がPromiseとして解決する
       __chain.order.mockReturnValueOnce(__chain).mockResolvedValueOnce({
@@ -76,7 +75,6 @@ describe('printOrderService', () => {
     });
 
     it('エラー時はエラーをthrowする', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { __chain } = await import('../../lib/supabase') as unknown as { __chain: Record<string, ReturnType<typeof vi.fn>> };
       __chain.order.mockReturnValueOnce(__chain).mockResolvedValueOnce({
         data: null,

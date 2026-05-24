@@ -1,374 +1,129 @@
 # MA-Pilot 開発進捗状況
 
----
-
-## 🔒 本番運用診断履歴
-
-### 第1回診断 (2026-05-24)
-
-**総合スコア**: 69/100 (C評価: Fair — 重要な改善後に本番運用可能)
-
-#### スコア内訳
-| カテゴリ | スコア | 主な問題 |
-|---------|--------|---------|
-| セキュリティ | 24.5/30 | CSP設定不備、トークンlocalStorage保存、CORS全ヘッダー許可 |
-| パフォーマンス | 14/20 | N+1問題（print_orders）、バンドルサイズ1.52MB |
-| 信頼性 | 11/20 | トランザクション管理完全不在（5箇所）、グローバルエラーハンドラー不在 |
-| 運用性 | 14/20 | print文10件・console.log 16件残存、/metrics未実装、バックアップ文書なし |
-| コード品質 | 5.5/10 | テストの73%がスキップ（推定カバレッジ20-40%） |
-
-#### CVSS脆弱性
-✅ Critical: 0件 / High: 0件（全て修正済み） / Medium: 0件 / Low: 0件
-
-#### ライセンス
-✅ 全依存パッケージが商用利用可能（MIT/BSD-3-Clause/Apache-2.0）
+最終更新：2026-05-25
 
 ---
 
-## 🔧 改善タスク（優先度順）
+## 本番環境ステータス
 
-### 🔴 フェーズ1: 1週間以内（必須）
-
-- [ ] **CSP設定修正** — unsafe-inline/unsafe-eval削除、nonceベースに移行
-  - `backend/main.py:77-84`
-- [ ] **グローバルエラーハンドラー追加** — Exception/HTTPException/ValidationError
-  - `backend/main.py`
-- [ ] **N+1問題修正** — print_order_items を IN句で一括取得
-  - `backend/src/services/print_order_service.py:310-320`
-- [ ] **CORS allow_headers制限** — ワイルドカード → ホワイトリスト
-  - `backend/main.py:117`
-- [ ] **トランザクション実装** — ユーザー登録・印刷物注文作成
-  - `backend/src/services/auth_service.py:86-142`
-  - `backend/src/services/print_order_service.py:151-287`
-- [ ] **print文/console.log除去** — 10件(backend) / 16件(frontend)
-
-### 🟡 フェーズ2: 1ヶ月以内（重要）
-
-- [ ] **JWTトークン保存変更** — localStorage → HttpOnly Cookie
-  - `frontend/src/services/api/authService.ts:24`
-- [ ] **スキップテスト実装** — test_auth.py / test_dashboard.py / test_clinics.py（50件）
-- [ ] **CSRF保護実装**
-- [ ] **/metricsエンドポイント追加** — Prometheus形式
-- [ ] **vercel.jsonセキュリティヘッダー追加**
-- [ ] **BACKUP.md作成** — バックアップ・リストア手順の詳細化
-
-### 🟢 フェーズ3: 3ヶ月以内（推奨）
-
-- [ ] **構造化ログ導入** — loguru または structlog
-- [ ] **テストカバレッジ70%達成**
-- [ ] **Redis導入** — レート制限・キャッシュの永続化
-- [ ] **バンドルサイズ最適化** — recharts/MUI個別import化
-- [ ] **インデックス追加** — service_problem_tags / partner_services
+| 項目 | 状態 |
+|------|------|
+| フロントエンド（Vercel） | ✅ 正常稼働中 |
+| バックエンド（Render） | ✅ 正常稼働中 |
+| CI（GitHub Actions） | ✅ Test Suite グリーン（Backend 132件・Frontend 94件） |
+| Supabase | ✅ 正常稼働中 |
 
 ---
 
-## 1. 基本情報
+## 実装済み全機能一覧
 
-- **ステータス**: 本番環境デプロイ完了・ログイン問題修正完了
-- **完了タスク数**: 8/11（Phase 1-3, 5, 7-8完了）+ 緊急修正対応
-- **進捗率**: 73%
-- **次のマイルストーン**: Phase 6（ヒアリングシート機能）実装
-- **最終更新日**: 2026-02-03
-- **本番URL**: https://ma-pilot.vercel.app ✅ デプロイ済み
-- **バックエンドURL**: https://ma-pilot.onrender.com ✅ デプロイ済み
-- **開発環境**:
-  - フロントエンド: http://localhost:3247
-  - バックエンド: http://localhost:8432
+### コアシステム（全完了）
 
-## 🔴 重要: バックエンド実装状況
+| 機能 | ルート | 状態 |
+|------|--------|------|
+| ログイン・認証 | `/login` | ✅ |
+| 経営ダッシュボード | `/dashboard` | ✅ |
+| 基礎データ管理（月次） | `/data` | ✅ |
+| 診療圏分析 | `/market-analysis` | ✅ |
+| 経営シミュレーション | `/simulation` | ✅ |
+| レポート生成・管理 | `/reports` | ✅ |
+| 医院設定・スタッフ管理 | `/settings` | ✅ |
 
-**✅ バックエンドは完全に実装済みです**
+### 管理者画面（全完了）
 
-- 38エンドポイント実装済み（10個のAPIルーター）
-  - コアシステム: 30エンドポイント（auth: 3, clinics: 2, monthly_data: 5, dashboard: 1, simulations: 3, reports: 3, market_analysis: 2, staff: 4, admin: 7）
-  - 印刷物受注: 8エンドポイント（price_tables: 2, print_orders: 6）
-- 11サービス実装済み（auth, clinic, dashboard, email, market_analysis, monthly_data, pdf, print_order, report, simulation等）
-- セキュリティ実装済み（CORS、レート制限、セキュリティヘッダー）
-- デプロイ準備完了（render.yaml設定済み）
+| 機能 | ルート | 状態 |
+|------|--------|------|
+| 管理ダッシュボード | `/admin/dashboard` | ✅ |
+| 医院アカウント管理 | `/admin/clinics` | ✅ |
+| 価格マスタ管理 | `/admin/price-tables` | ✅ |
+| システム設定（一部プレースホルダー） | `/admin/settings` | ⚠️ |
 
-## 2. 実装計画
+### 拡張機能（全完了）
 
-BlueLampでの開発は以下のフローに沿って進行します：
-
-### 開発フェーズ
-| フェーズ | 状態 | 担当エージェント | 解説 |
-|---------|------|----------------|------|
-| **Phase @1: 要件定義** | [x] | 要件定義エンジニア | あなたのアイデアを実現可能な要件に落とし込みます |
-| **Phase @2: Git/GitHub管理** | [x] | Git管理エージェント | プロジェクトリポジトリを準備し開発環境を整えます |
-| **Phase @3: フロントエンド基盤** | [x] | フロントエンド基盤オーケストレーター | React+TypeScript+Viteの最新基盤が即座に立ち上がります |
-| **Phase @4: ページ実装** | [ ] | ページ実装オーケストレーター | 画面が一つずつ形になっていきます |
-
-## 3. 開始手順
-
-Phase 1（要件定義）は完了しました。次のステップを選択してください：
-
-- **Phase @2: Git/GitHub管理** - 推奨（バージョン管理・バックアップ）
-- **Phase @3: フロントエンド基盤** - Phase 2をスキップして直接開発開始も可能
+| 機能 | 状態 | 備考 |
+|------|------|------|
+| 印刷物受注システム | ✅ | 発注・履歴・PDF |
+| Lstep Webhook連携 | ✅ | 4フォームタイプ対応 |
+| コンサルティング診断 | ✅ | KPI・院長メモ連動 |
+| ゲーミフィケーション | ✅ | ランク・レーダーチャート |
+| パートナーサービス推薦 | ✅ | 課題タグ連携 |
+| Stripe決済（枠組み） | ⏸ | APIキー設定待ち |
+| メール送信（SMTP） | ✅ | Google Workspace IPアドレス認証 |
 
 ---
 
-## 4. 統合ページ管理表
+## APIエンドポイント（実装済み）
 
-### 医院ユーザー向けページ
+| ルーター | エンドポイント数 |
+|---------|---------------|
+| auth | 5（login/logout/register/reset-password/change-password） |
+| clinics | 3（get/update/list） |
+| monthly_data | 5（CRUD + list） |
+| dashboard | 1 |
+| simulations | 3（CRUD） |
+| reports | 4（generate/list/get/download） |
+| market_analysis | 2（get/create） |
+| staff | 4（list/get/invite/delete） |
+| admin | 9（clinics CRUD + openhouse + password + import） |
+| print_orders | 6（CRUD + approve + attachment） |
+| price_tables | 2（list/CRUD） |
+| webhooks | 1（lstep） |
+| stripe_payments | 2（payment-intent/confirm） |
+| consulting | 2（diagnosis/partners） |
+| gamification | 1（score） |
+| my | 2（profile/update） |
 
-| ID | ページ名 | ルート | 権限レベル | 統合機能 | 着手 | 完了 |
-|----|---------|-------|----------|---------|------|------|
-| P-001 | ログイン/アカウント作成 | `/login` | ゲスト | 認証、招待経由登録、パスワードリセット | [ ] | [ ] |
-| P-002 | 経営ダッシュボード | `/dashboard` | 閲覧者以上 | KPI表示、グラフ、アラート、クイックアクション | [ ] | [ ] |
-| P-003 | 基礎データ管理 | `/data` | 編集者以上 | 月次データ入力、CSV取込、立地情報入力 | [ ] | [ ] |
-| P-004 | 診療圏分析 | `/market-analysis` | 閲覧者以上 | 地図表示、人口統計、競合検索、商圏レポート | [ ] | [ ] |
-| P-005 | 経営シミュレーション | `/simulation` | 編集者以上 | 目標設定、逆算計算、戦略提案、履歴管理 | [ ] | [ ] |
-| P-006 | レポート生成・管理 | `/reports` | 閲覧者以上 | テンプレート選択、PDF/CSV生成、履歴 | [ ] | [ ] |
-| P-007 | 医院設定・スタッフ管理 | `/settings` | オーナー以上 | 医院情報編集、スタッフ招待・権限管理 | [ ] | [ ] |
-
-### 管理者向けページ
-
-| ID | ページ名 | ルート | 権限レベル | 統合機能 | 着手 | 完了 |
-|----|---------|-------|----------|---------|------|------|
-| A-001 | 管理ダッシュボード | `/admin/dashboard` | システム管理者 | 全医院集計、利用統計、アラート一覧 | [ ] | [ ] |
-| A-002 | 医院アカウント管理 | `/admin/clinics` | システム管理者 | 医院一覧、新規登録、詳細閲覧、有効化/無効化 | [ ] | [ ] |
-| A-003 | システム設定 | `/admin/settings` | システム管理者 | 外部API設定、メールテンプレート、ログ閲覧 | [ ] | [ ] |
-
----
-
-## 5. Phase 1 完了成果物
-
-- ✅ `docs/requirements.md` - 要件定義書
-- ✅ `CLAUDE.md` - プロジェクト設定ファイル
-- ✅ `docs/SCOPE_PROGRESS.md` - 進捗管理表（本ファイル）
-
-## 6. Phase 2 完了成果物
-
-- ✅ `.gitignore` - 機密情報保護設定
-- ✅ Gitリポジトリ初期化完了
-- ✅ GitHubリモートリポジトリ設定（https://github.com/takeru-kuwahata/ma-pilot）
-- ✅ Gitフック設定（コミット日時自動追加）
-- ✅ 初回コミット・プッシュ完了
-
-## 7. Phase 3 完了成果物
-
-### フロントエンド基盤構築完了
-
-- ✅ React 18 + TypeScript 5 + Vite 5 + MUI v6 基盤構築完了
-- ✅ 型定義完備（38エンティティ定義済み）
-- ✅ Supabase接続、Zustand状態管理、React Router v6設定済み
-- ✅ 開発サーバー起動確認完了（http://localhost:3247）
+**合計: 52エンドポイント**
 
 ---
 
-## 🆕 機能拡張: UI構造リファクタリング
+## テスト状況
 
-### 進捗状況
-| Stage | 内容 | 状態 |
-|:-----:|------|:----:|
-| 0 | 要件確認・実装計画策定 | ✅ |
-| 1 | Phase 1: 基盤整備（型定義・状態管理） | ✅ |
-| 2 | Phase 2: ルーティング保護機能 | ✅ |
-| 3 | Phase 3: ルーティング構造変更 | ✅ |
-| 4 | Phase 4: レイアウト改修 | ✅ |
-| 5 | Phase 5: ページ修正（9ページ） | ✅ |
-| 6 | Phase 6: 不要ファイル削除 | ✅ |
+| 対象 | テスト数 | 状態 |
+|------|---------|------|
+| Backend（pytest） | 132件 | ✅ 全パス |
+| Frontend（vitest） | 94件（22ファイル） | ✅ 全パス |
 
-### ファイル変更計画
+### Backendカバレッジ（サービス層）
+- auth, clinics, dashboard, monthly_data, simulations, reports, market_analysis, staff, admin, lstep_webhook
 
-#### 修正ファイル（10件）
-| ファイル | 変更内容 | Phase |
-|---------|---------|-------|
-| types/index.ts | MenuItemConfig、LayoutMode型追加 | 1 |
-| authStore.ts | selectedClinicId、setSelectedClinic追加 | 1 |
-| App.tsx | ネストルート実装、権限チェック追加 | 3 |
-| MainLayout.tsx | 動的メニュー生成、クリニック選択ドロップダウン | 4 |
-| AdminLayout.tsx | モード切替UI追加 | 4 |
-| Dashboard.tsx | useLayout削除 | 5 |
-| DataManagement.tsx | useLayout削除 | 5 |
-| MarketAnalysis.tsx | useLayout削除 | 5 |
-| Simulation.tsx | useLayout削除 | 5 |
-| Reports.tsx | useLayout削除 | 5 |
-
-#### 新規作成ファイル（7件）
-| ファイル | 内容 | Phase |
-|---------|------|-------|
-| components/routing/PrivateRoute.tsx | 認証チェック | 2 |
-| components/routing/RoleRoute.tsx | 権限チェック | 2 |
-| components/routing/AdminModeWrapper.tsx | クリニック選択UI | 3 |
-| constants/menuConfig.ts | 権限別メニュー定義 | 1 |
-| utils/menuFilter.ts | メニューフィルタリング | 1 |
-| hooks/useCurrentClinic.ts | 現在の医院情報取得 | 4 |
-| pages/Forbidden.tsx | 403エラーページ | 2 |
-
-#### 削除ファイル（2件）
-| ファイル | 理由 | Phase |
-|---------|------|-------|
-| components/Layout.tsx | 未使用 | 6 |
-| hooks/useLayout.tsx | 新構造で不要 | 6 |
-
-### 実装チェックリスト
-
-#### Phase 1: 基盤整備
-- [x] types/index.ts に MenuItemConfig、LayoutMode 型追加
-- [x] authStore.ts に selectedClinicId、setSelectedClinic 追加
-- [x] constants/menuConfig.tsx 新規作成（権限別メニュー定義）
-- [x] utils/menuFilter.ts 新規作成（メニューフィルタリング）
-
-#### Phase 2: ルーティング保護機能
-- [x] components/routing/PrivateRoute.tsx 新規作成
-- [x] components/routing/RoleRoute.tsx 新規作成
-- [x] pages/Forbidden.tsx 新規作成
-
-#### Phase 3: ルーティング構造変更
-- [x] App.tsx 改修（ネストルート実装）
-- [x] components/routing/AdminModeWrapper.tsx 新規作成
-
-#### Phase 4: レイアウト改修
-- [x] hooks/useCurrentClinic.ts 新規作成
-- [x] MainLayout.tsx 改修（動的メニュー、クリニック選択）
-- [x] AdminLayout.tsx 改修（モード切替UI）
-
-#### Phase 5: ページ修正
-| ページ | useLayout削除 |
-|--------|:------------:|
-| Dashboard.tsx | [x] |
-| DataManagement.tsx | [x] |
-| MarketAnalysis.tsx | [x] |
-| Simulation.tsx | [x] |
-| Reports.tsx | [x] |
-| ClinicSettings.tsx | [x] |
-| StaffManagement.tsx | [x] |
-| PrintOrderForm.tsx | [x] |
-| PrintOrderHistory.tsx | [x] |
-
-#### Phase 6: 不要ファイル削除
-- [x] components/Layout.tsx 削除
-- [x] hooks/useLayout.tsx 削除
+### Frontend カバレッジ
+- hooks: useAuth
+- services: authService, clinicService, printOrderService
+- components: RevenueChart, KPICard, MonthlyDataForm
+- utils: formatters, focusManagement, announcer, mockData
+- pages: 11ページ（スモークテスト）
 
 ---
 
-## 📊 全体進捗サマリー
+## 本番運用診断結果（2026-05-24実施）
 
-| フェーズ | 進捗率 | 状態 |
-|---------|--------|------|
-| Phase 1-4（基盤構築） | 100% | ✅ 完了 |
-| Phase 5（バックエンドAPI実装） | 100% | ✅ 完了（38エンドポイント） |
-| Phase 7（印刷物受注システム） | 100% | ✅ 完了（MVP版） |
-| Phase 8（API統合） | 100% | ✅ 完了（TypeScriptエラー0件） |
-| Phase 9（ドキュメント齟齬解消） | 100% | ✅ 完了（2026-01-26深夜） |
-| Phase 6（ヒアリングシート機能） | 0% | ⏸️ 待機中 |
+**診断スコア**: 69/100 → 改善作業実施済み
 
-**次のマイルストーン**: 本番環境デプロイ（Vercel + Render.com）
+### 実施済み改善
 
----
+| フェーズ | 内容 |
+|---------|------|
+| フェーズ1 | セキュリティヘッダー強化・print文/console.log除去・N+1問題修正・CORS制限 |
+| フェーズ2 | CSP修正・トランザクション補償実装・グローバルエラーハンドラー追加 |
+| フェーズ3 | テストカバレッジ改善（50スキップ→132パス）・Lstep Webhookテスト実装 |
 
-## 🔧 Phase 9-10 完了成果物
+### 未実施（低優先度）
 
-### Phase 9: ドキュメント齟齬解消作業（2026-01-26実施）
-
-**成果**: 要件定義書と実装の完全同期、デプロイ準備完了
-
-### Phase 10: システム調査とドキュメント同期（2026-02-03実施）
-
-**目的**: 既存システムの包括的調査と、コードを真実の源とする体制確立
-
-**実施内容**:
-1. ✅ 既存システムの包括的調査
-   - 14ページ実装確認（コア11 + 印刷物受注3）
-   - 10個のAPIルーター実装確認
-   - 38エンドポイント実装確認（コア30 + 印刷物受注8）
-   - 10サービス実装確認
-   - 8テーブル実装確認（コア6 + 印刷物受注2）
-   - 345行の型定義ファイル確認
-   - TypeScriptエラー0件確認
-   - ESLintエラー10件検出→修正完了（Dashboard.tsxの`any`型を`Record<string, unknown>`に置換）
-
-2. ✅ requirements.md最終調整
-   - セクション3（ページ詳細）: 実装済み一覧を簡潔に記載、詳細はコード参照
-   - セクション4（データ設計）: テーブル名・型名のみ記載、詳細はコード参照
-   - セクション6（バックエンド）: エンドポイント数・サービス数のみ記載、詳細はコード参照
-   - セクション8（Phase 6）: 冗長な記載を削除、必要最小限に簡略化
-   - セクション9（印刷物受注）: 番号を10に変更、一貫性を確保
-
-3. ✅ SCOPE_PROGRESS.md更新
-   - Phase 10の成果物を詳細に記録
-   - バックエンド実装状況の詳細化
-
-**成果**:
-- ESLintエラー: 10件 → 0件（完全解消）
-- TypeScriptエラー: 0件（維持）
-- コード品質: 完全クリーン状態
-- ドキュメント: コードを真実の源とする体制確立
+| 内容 | 理由 |
+|------|------|
+| JWTをHttpOnly Cookieへ移行 | 既存ユーザーへの影響大・要調整 |
+| /metricsエンドポイント | 現フェーズでは不要 |
+| Redisキャッシュ導入 | 現規模では不要 |
 
 ---
 
-## 🆕 機能拡張: Lstep連携・Stripe決済・内覧会ステータス管理
+## 待ち事項
 
-**要件確定日**: 2026-03-24
-**ブランチ**: feature/lstep-stripe-integration
-**実装待ち情報**: WordPress管理者ユーザー名、Stripe APIキー、Lstep Webhookフォーム項目一覧
-
-### 進捗状況（2026-04-02更新）
-
-| Stage | 内容 | 状態 |
-|:-----:|------|:----:|
-| 0 | 要件確認・設計書作成 | ✅ 完了 |
-| 1 | DB変更（openhouse_status追加） | ✅ 完了 |
-| 2 | 型定義更新（types/index.ts） | ✅ 完了 |
-| 3 | バックエンド実装（機能2・3・パスワード変更） | ✅ 完了 |
-| 4 | フロントエンド実装（機能2・3・パスワード変更） | ✅ 完了 |
-| 5 | 本番デプロイ | ✅ 完了 |
-| 6 | Lstep Webhook実装・設定 | ✅ 完了 |
-| 7 | Stripe決済実装 | ⏸ クライアント待ち |
-
-### 完了済み実装（2026-03-24）
-
-#### 機能3: 内覧会ステータス管理 ✅
-- DBマイグレーション適用済み（Supabase本番環境）
-- `PUT /api/admin/clinics/{id}/openhouse-status` 実装済み
-- AdminClinics画面: ステータス列・フィルタ・ソート・即時変更UI実装済み
-
-#### 機能2: WordPressユーザーCSV一括移植 ✅
-- `POST /api/admin/import-wordpress-users` 実装済み
-- AdminClinics画面: CSVインポートダイアログ実装済み
-- CSVフォーマット: `email, display_name, clinic_name, password, postal_code, address, phone_number, openhouse_status`
-
-#### パスワード管理機能 ✅
-- `PUT /api/admin/clinics/{id}/password` 実装済み
-- AdminClinics画面: 各医院行の鍵アイコンからパスワード変更可能
-
-#### その他対応 ✅
-- `printOrderService.ts` のsupabaseインポートパス修正
-- Supabase: Site URL を `https://ma-pilot.vercel.app` に変更
-- Supabase: パスワード最小文字数を8文字に変更
-- `backend/.env` にWordPress接続情報を保存済み
-
-### 完了済み（2026-04-02追加）
-
-#### 機能1: Lstep Webhook自動アカウント発行 ✅
-- `POST /api/webhooks/lstep` 実装・デプロイ済み（コミット fa71a08）
-- LINE Webhook転送URL設定済み（アカウント設定 > 外部連携設定）
-  - URL: `https://ma-pilot.onrender.com/api/webhooks/lstep`
-- Lステップ4フォームに `form_type` 隠しフィールド追加済み
-  - デンタルショー（ID:816114）→ `dental_show`
-  - 勤務医等（ID:710762）→ `doctor_other`
-  - 内覧会申し込みDr（ID:710696）→ `doctor_openhouse`
-  - スタッフ用（ID:710319）→ `staff`
-- `form_id` からも自動判別できるよう二重対応（コミット ba80406）
-- **未実施**: エンドツーエンド動作確認（実フォーム送信テスト）
-
-### 未完了タスク（クライアント情報待ち）
-
-#### 機能4: Stripe決済（印刷物発注）
-| # | 待ち内容 | 状態 |
-|---|---------|:----:|
-| 1 | Stripeテスト用公開可能キー（pk_test_...） | ⬜ 待ち |
-| 2 | Stripeテスト用シークレットキー（sk_test_...） | ⬜ 待ち |
-| 3 | Stripe本番用公開可能キー（pk_live_...） | ⬜ 待ち |
-| 4 | Stripe本番用シークレットキー（sk_live_...） | ⬜ 待ち |
-
-実装予定:
-- `stripe==11.5.0` バックエンド追加
-- `@stripe/stripe-js` フロントエンド追加
-- `POST /api/print-orders/{id}/create-payment-intent`
-- `POST /api/webhooks/stripe`
-- PrintOrderForm: Stripe Elements統合
-
-### 別途調査タスク
-- **#8**: 印刷物注文フォームの内容がメールで届かない問題（未着手）
+| 内容 | 担当 | 優先度 |
+|------|------|--------|
+| Stripeキー設定 | 理沙さん | 高 |
+| コンサルティング動作確認 | クライアント | 中 |
+| DXヒアリングシート回答 | クライアント | 中 |
+| 価格マスタ修正・追加（23件+19件） | クライアント | 低 |
+| Lstep Webhook E2E確認（実フォーム送信） | 任意 | 低 |
