@@ -17,6 +17,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  TextField,
 } from '@mui/material';
 import {
   AddCircle as AddCircleIcon,
@@ -27,6 +28,7 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 import { monthlyDataService, clinicService } from '../services/api';
+import { consultingService } from '../services/api/consultingService';
 import { MonthlyDataForm } from '../components/MonthlyDataForm';
 import type { MonthlyData, MonthlyDataFormData, Clinic } from '../types';
 
@@ -85,6 +87,9 @@ export const DataManagement = () => {
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<{ id: string; data: MonthlyDataFormData } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [clinicMemo, setClinicMemo] = useState<string>('');
+  const [memoSaving, setMemoSaving] = useState(false);
+  const [memoSaved, setMemoSaved] = useState(false);
 
   // 医院情報を取得（slugまたはUUIDからUUID IDを取得）
   useEffect(() => {
@@ -103,6 +108,9 @@ export const DataManagement = () => {
   useEffect(() => {
     if (clinic?.id) {
       loadMonthlyData();
+      consultingService.getMemo(clinic.id).then((memo) => {
+        if (memo !== null && memo !== undefined) setClinicMemo(memo);
+      }).catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clinic?.id]);
@@ -517,6 +525,58 @@ export const DataManagement = () => {
           </Box>
         </Paper>
       </Box>
+
+      {/* 院長メモ */}
+      <Paper
+        sx={{
+          backgroundColor: '#ffffff',
+          borderRadius: '8px',
+          padding: '24px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+          marginBottom: '24px',
+          border: '1.5px solid #FF6B35',
+        }}
+      >
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, fontSize: '16px' }}>
+          📝 院長メモ（現在感じている課題・相談事項）
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5, fontSize: '13px' }}>
+          スタッフ離職率が高い、ユニット数に対して患者が少ないなど、現在感じている問題や課題を自由に記入できます。ここに入力された内容に基づき、ダッシュボード側で最適な改善策をおすすめします。
+        </Typography>
+        <TextField
+          multiline
+          minRows={3}
+          fullWidth
+          placeholder="例：ユニット数は十分だが、スタッフの定着率が悪く、新人教育が追いついていない。求人や教育の自動化・仕組み化を検討したい。"
+          value={clinicMemo}
+          onChange={(e) => { setClinicMemo(e.target.value); setMemoSaved(false); }}
+          variant="outlined"
+          sx={{ mb: 1.5 }}
+        />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Button
+            variant="contained"
+            size="small"
+            disabled={memoSaving}
+            onClick={async () => {
+              if (!clinic?.id) return;
+              setMemoSaving(true);
+              try {
+                await consultingService.saveMemo(clinic.id, clinicMemo);
+                setMemoSaved(true);
+              } finally {
+                setMemoSaving(false);
+              }
+            }}
+            sx={{ backgroundColor: '#FF6B35', '&:hover': { backgroundColor: '#E55A2B' } }}
+          >
+            {memoSaving ? '保存中...' : '保存する → 経営ダッシュボードへ反映'}
+          </Button>
+          {memoSaved && (
+            <Typography variant="caption" color="success.main">保存しました</Typography>
+          )}
+        </Box>
+      </Paper>
 
       {/* データ一覧テーブル */}
       <Paper

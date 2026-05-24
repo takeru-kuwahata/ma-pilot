@@ -455,6 +455,33 @@ export const Dashboard = () => {
           ))}
         </Grid>
 
+        {/* 院長メモ表示バナー（入力済みの場合のみ表示） */}
+        {clinicMemo && (
+          <Paper
+            sx={{
+              p: 2,
+              mb: 3,
+              border: '1.5px solid #FF6B35',
+              borderRadius: 2,
+              backgroundColor: '#FFF8F5',
+              display: 'flex',
+              gap: 1.5,
+              alignItems: 'flex-start',
+            }}
+            elevation={0}
+          >
+            <Typography sx={{ fontSize: '20px', lineHeight: 1.4 }}>📝</Typography>
+            <Box>
+              <Typography variant="caption" sx={{ fontWeight: 700, color: '#FF6B35', display: 'block', mb: 0.5 }}>
+                院長メモ（現在感じている課題・相談事項） ※ダッシュボード連携
+              </Typography>
+              <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                {clinicMemo}
+              </Typography>
+            </Box>
+          </Paper>
+        )}
+
         {/* グラフセクション */}
         <Grid container spacing={3} sx={{ mb: 3 }}>
           {/* 売上・利益推移グラフ */}
