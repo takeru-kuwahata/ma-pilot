@@ -85,6 +85,8 @@ class AuthService:
 
     async def register(self, email: str, password: str, clinic_name: str, postal_code: str, address: str, phone_number: str, slug: Optional[str] = None) -> dict:
         '''Self-register a new clinic owner with email confirmation'''
+        user_id: Optional[str] = None
+        clinic_id: Optional[str] = None
         try:
             # 1. slugの重複チェック
             if slug:
@@ -139,7 +141,34 @@ class AuthService:
         except ValueError:
             raise
         except Exception as e:
+            # 補償トランザクション: 途中失敗時に作成済みリソースを削除
+            await self._rollback_registration(user_id, clinic_id)
             raise ValueError(f'登録に失敗しました: {str(e)}')
+
+    async def _rollback_registration(self, user_id: Optional[str], clinic_id: Optional[str]) -> None:
+        '''登録失敗時のロールバック: 作成済みのclinic/user_metadata/Authユーザーを削除'''
+        import httpx
+        import os
+        import logging
+        logger = logging.getLogger(__name__)
+        try:
+            if clinic_id:
+                self.supabase.table('clinics').delete().eq('id', clinic_id).execute()
+            if user_id:
+                self.supabase.table('user_metadata').delete().eq('user_id', user_id).execute()
+                supabase_url = os.environ.get('SUPABASE_URL', '')
+                service_role_key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '') or os.environ.get('SUPABASE_KEY', '')
+                async with httpx.AsyncClient() as client:
+                    await client.delete(
+                        f'{supabase_url}/auth/v1/admin/users/{user_id}',
+                        headers={
+                            'apikey': service_role_key,
+                            'Authorization': f'Bearer {service_role_key}',
+                        },
+                        timeout=10,
+                    )
+        except Exception as rollback_err:
+            logger.error('Registration rollback failed for user_id=%s: %s', user_id, rollback_err)
 
     async def invite_user(self, email: str, role: UserRole, clinic_id: Optional[str] = None, password: Optional[str] = None) -> dict:
         '''Invite a new staff user via Supabase invitation email'''

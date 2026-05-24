@@ -1,6 +1,9 @@
 from typing import List, Optional
 import json
+import logging
 from supabase import Client
+
+logger = logging.getLogger(__name__)
 from ..models import (
     PriceTable,
     PriceTableCreate,
@@ -150,8 +153,6 @@ class PrintOrderService:
 
     def create_order(self, order_data: PrintOrderCreate) -> PrintOrder:
         """注文を作成（Phase 2: 複数商品対応）"""
-        import logging
-        logger = logging.getLogger(__name__)
 
         # デバッグログ
         logger.info(f"[DEBUG] create_order called with pattern: {order_data.pattern}")
@@ -216,26 +217,34 @@ class PrintOrderService:
         created_order_data = response.data[0]
         order_id = created_order_data["id"]
 
-        # Phase 2: print_order_itemsテーブルに明細を挿入
-        if order_data.items:
-            for item in order_data.items:
-                price_table = self.find_matching_price_table(
-                    item.product_type, item.quantity
-                )
-                if price_table:
-                    item_insert_data = {
-                        "order_id": order_id,
-                        "product_type": item.product_type,
-                        "quantity": item.quantity,
-                        "unit_price": price_table.price,
-                        "subtotal": price_table.price,
-                        "design_fee": item.design_fee or 0,
-                        "delivery_days": item.delivery_days or 7,
-                        "specifications": json.dumps(item.specifications, ensure_ascii=False)
-                        if item.specifications
-                        else None,
-                    }
-                    self.supabase.table("print_order_items").insert(item_insert_data).execute()
+        # Phase 2: print_order_itemsテーブルに明細を挿入（補償トランザクション付き）
+        try:
+            if order_data.items:
+                for item in order_data.items:
+                    price_table = self.find_matching_price_table(
+                        item.product_type, item.quantity
+                    )
+                    if price_table:
+                        item_insert_data = {
+                            "order_id": order_id,
+                            "product_type": item.product_type,
+                            "quantity": item.quantity,
+                            "unit_price": price_table.price,
+                            "subtotal": price_table.price,
+                            "design_fee": item.design_fee or 0,
+                            "delivery_days": item.delivery_days or 7,
+                            "specifications": json.dumps(item.specifications, ensure_ascii=False)
+                            if item.specifications
+                            else None,
+                        }
+                        self.supabase.table("print_order_items").insert(item_insert_data).execute()
+        except Exception as items_err:
+            # 明細挿入失敗時: 注文レコードをロールバック
+            try:
+                self.supabase.table("print_orders").delete().eq("id", order_id).execute()
+            except Exception as rollback_err:
+                logger.error('Order rollback failed for order_id=%s: %s', order_id, rollback_err)
+            raise ValueError(f'注文明細の登録に失敗しました: {str(items_err)}')
 
         # 注文データを再取得（明細含む）
         created_order = self.get_order_by_id(order_id)
@@ -281,8 +290,7 @@ class PrintOrderService:
             )
         except Exception as e:
             # メール送信失敗してもエラーにしない（ログのみ）
-            import logging
-            logging.error(f"メール送信エラー: {e}")
+            logger.error('メール送信エラー: %s', e)
 
         return created_order
 

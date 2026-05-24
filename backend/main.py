@@ -102,14 +102,10 @@ async def add_security_headers(request: Request, call_next):
     if settings.is_production():
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
 
-    # CSP（Content Security Policy）設定
+    # CSP（Content Security Policy）設定 — APIレスポンス用（unsafe-inline/unsafe-eval を除去）
     response.headers['Content-Security-Policy'] = (
-        "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
-        "style-src 'self' 'unsafe-inline'; "
-        "img-src 'self' data: https:; "
-        "font-src 'self' data:; "
-        "connect-src 'self' https://*.supabase.co;"
+        "default-src 'none'; "
+        "frame-ancestors 'none';"
     )
 
     return response
