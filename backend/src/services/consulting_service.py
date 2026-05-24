@@ -429,6 +429,13 @@ class ConsultingService:
         if not monthly_list:
             return self._empty_report()
 
+        # 院長メモを取得（メモ連動アドバイス用）
+        try:
+            memo_res = self.supabase.table('clinics').select('clinic_memo').eq('id', clinic_id).single().execute()
+            clinic_memo = (memo_res.data or {}).get('clinic_memo') or ''
+        except Exception:
+            clinic_memo = ''
+
         current = monthly_list[0]
         previous = monthly_list[1] if len(monthly_list) > 1 else None
         has_enough = len(monthly_list) >= 3
@@ -437,7 +444,7 @@ class ConsultingService:
         kpi_scores = self._score_kpis(metrics)
         total_score = self._calc_total_score(kpi_scores)
         category_scores = self._calc_category_scores(metrics)
-        proposals = await self._generate_proposals(metrics)
+        proposals = await self._generate_proposals(metrics, clinic_memo)
         percentile = self._calc_percentile(total_score)
 
         return ConsultingReport(
@@ -593,12 +600,115 @@ class ConsultingService:
     # --------------------------------------------------------
     # 提案生成（パターンマッチング）
     # --------------------------------------------------------
-    async def _generate_proposals(self, metrics: dict) -> list[Proposal]:
+    # メモキーワード → 提案パターン（院長メモ連動アドバイス）
+    MEMO_KEYWORD_PATTERNS = [
+        {
+            'keywords': ['スタッフ', '採用', '求人', '人材', '人手不足', '離職', '退職', '定着'],
+            'problem_tag': 'スタッフ_採用',
+            'priority': 'high',
+            'category': '成長性',
+            'title': '【院長メモより】スタッフ採用・定着の課題に対応しましょう',
+            'why': '院長メモにスタッフ採用・定着に関するご相談が記入されています。歯科業界はスタッフ採用難が続いており、早期の対策が重要です。',
+            'what': '目標：スタッフの採用力・定着率を高め、安定した診療体制を整備する。',
+            'how': [
+                '歯科専門の求人媒体への掲載と求人票の見直し（給与・福利厚生の明確化）',
+                'スタッフ評価制度・キャリアパスの整備で定着率を向上',
+                '研修制度・資格支援制度の導入で職場の魅力を高める',
+                '退職理由の把握と職場環境の改善（ヒアリング実施）',
+            ],
+            'expected_impact': 'スタッフ体制の安定化により、患者サービス品質の向上と診療効率の改善が見込まれます。',
+        },
+        {
+            'keywords': ['自費', '自費率', '自費診療', 'インプラント', '矯正', 'ホワイトニング', '審美'],
+            'problem_tag': '収益_自費',
+            'priority': 'high',
+            'category': '収益性',
+            'title': '【院長メモより】自費診療の拡大に向けた取り組みを強化しましょう',
+            'why': '院長メモに自費診療に関するご意向が記入されています。自費率の向上は収益性改善に直結します。',
+            'what': '目標：自費診療メニューの拡充とカウンセリング強化で自費率を高める。',
+            'how': [
+                'スタッフへの自費提案トレーニングを実施する',
+                'カウンセリングルームの整備・カウンセリングスキルを磨く',
+                '自費メニューのパンフレット・院内POPを整備する',
+                'インプラント・矯正の説明会・症例展示を充実させる',
+            ],
+            'expected_impact': '自費率が5%向上すると、月次売上が数百万円単位で改善します。',
+        },
+        {
+            'keywords': ['患者', '新患', '集患', '予約', '口コミ', 'Google', 'HP', 'ホームページ', 'Web', 'SNS'],
+            'problem_tag': '集患_Web_メモ',
+            'priority': 'high',
+            'category': '集患',
+            'title': '【院長メモより】集患・新患獲得の強化を検討しましょう',
+            'why': '院長メモに集患・患者獲得に関するご相談が記入されています。Web集患の強化は費用対効果の高い施策です。',
+            'what': '目標：Web経由の新患数を月5人以上増やす（3ヶ月以内）。',
+            'how': [
+                'Googleビジネスプロフィールの最適化（写真・投稿・クチコミ対応）',
+                'ホームページのSEO改善と問診票オンライン化による利便性向上',
+                'LINEでの予約・リコール自動化でリピート率を高める',
+                'InstagramなどSNSでの症例・院内紹介コンテンツの発信',
+            ],
+            'expected_impact': '新患獲得数が月5人増えると年間で数百万円の売上増加につながります。',
+        },
+        {
+            'keywords': ['経費', 'コスト', '削減', '節約', '固定費', '材料費', '光熱費'],
+            'problem_tag': 'コスト_経費_メモ',
+            'priority': 'medium',
+            'category': 'コスト最適化',
+            'title': '【院長メモより】コスト削減・経費最適化に取り組みましょう',
+            'why': '院長メモにコスト・経費に関するご相談が記入されています。経費率の改善は利益率向上に直結します。',
+            'what': '目標：主要経費を見直し、利益率を3〜5%改善する。',
+            'how': [
+                '材料費の仕入先・発注量を見直し、ボリュームディスカウントを交渉する',
+                '光熱費の削減（省エネ設備・電力会社の見直し）',
+                'デジタル化による間接コスト削減（予約・会計・書類管理）',
+                '業務効率化ツールの導入でスタッフ残業を削減する',
+            ],
+            'expected_impact': '経費率を3%改善すると、月次利益が数十万円単位で向上します。',
+        },
+        {
+            'keywords': ['リコール', '予防', 'メンテナンス', '定期健診', '衛生士', '歯科衛生士'],
+            'problem_tag': '予防_リコール_メモ',
+            'priority': 'medium',
+            'category': '集患',
+            'title': '【院長メモより】リコール・予防歯科の体制を強化しましょう',
+            'why': '院長メモにリコール・予防に関するご相談が記入されています。リコール率の向上は安定収益の基盤となります。',
+            'what': '目標：リコール率を現状から10%向上させ、定期来院患者を増やす。',
+            'how': [
+                'リコール通知の自動化（LINE・SMS・はがき）で来院促進',
+                '歯科衛生士主導の予防プログラムを整備・強化する',
+                'リコール患者へのメンテナンスメニュー充実と価値訴求',
+                '定期健診の重要性を患者に伝えるコミュニケーション改善',
+            ],
+            'expected_impact': 'リコール率10%向上で、既存患者からの安定収益が大きく改善します。',
+        },
+        {
+            'keywords': ['設備', '機器', 'レントゲン', 'CT', '歯科用', '老朽化', '更新', '投資'],
+            'problem_tag': '設備_投資_メモ',
+            'priority': 'medium',
+            'category': '成長性',
+            'title': '【院長メモより】設備投資・機器更新の計画を立てましょう',
+            'why': '院長メモに設備・機器に関するご相談が記入されています。適切な設備投資は診療品質と患者満足度を高めます。',
+            'what': '目標：設備投資計画を策定し、ROI（投資対効果）を最大化する。',
+            'how': [
+                '現行設備の稼働率・老朽化状況を把握し、優先順位を整理する',
+                '補助金・リース活用で初期投資を抑える方法を検討する',
+                '設備投資後の増収見込みを試算し、回収期間を明確にする',
+                'メーカー比較・デモ機体験で最適な機器を選定する',
+            ],
+            'expected_impact': '適切な設備投資により、診療効率・患者満足度・自費率の向上が見込まれます。',
+        },
+    ]
+
+    async def _generate_proposals(self, metrics: dict, clinic_memo: str = '') -> list[Proposal]:
         matched = []
+        used_tags: set[str] = set()
+
         for pattern in DIAGNOSIS_PATTERNS:
             try:
                 if pattern['condition'](metrics):
                     services = await self._get_services_for_tag(pattern['problem_tag'])
+                    used_tags.add(pattern['problem_tag'])
                     matched.append(Proposal(
                         id=str(uuid.uuid4()),
                         priority=pattern['priority'],
@@ -615,10 +725,32 @@ class ConsultingService:
             except Exception:
                 continue
 
+        # 院長メモのキーワードマッチングで追加提案（KPIベースと重複しないタグのみ）
+        if clinic_memo:
+            for mp in self.MEMO_KEYWORD_PATTERNS:
+                if mp['problem_tag'] in used_tags:
+                    continue
+                if any(kw in clinic_memo for kw in mp['keywords']):
+                    services = await self._get_services_for_tag(mp['problem_tag'])
+                    used_tags.add(mp['problem_tag'])
+                    matched.append(Proposal(
+                        id=str(uuid.uuid4()),
+                        priority=mp['priority'],
+                        category=mp['category'],
+                        pattern_id=f"MEMO_{mp['problem_tag']}",
+                        title=mp['title'],
+                        why=mp['why'],
+                        what=mp['what'],
+                        how=mp['how'],
+                        expected_impact=mp['expected_impact'],
+                        problem_tag=mp['problem_tag'],
+                        recommended_services=services,
+                    ))
+
         # 優先度順にソート
         priority_order = {'critical': 0, 'high': 1, 'medium': 2, 'low': 3}
         matched.sort(key=lambda p: priority_order[p.priority])
-        return matched[:5]  # 最大5件
+        return matched[:7]  # メモ提案含め最大7件
 
     async def _get_services_for_tag(self, tag: str) -> list[PartnerService]:
         try:

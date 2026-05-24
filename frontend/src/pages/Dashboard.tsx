@@ -158,31 +158,90 @@ const ProposalCard = ({
           {/* レコメンドサービス */}
           {proposal.recommended_services.length > 0 && (
             <Box>
-              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: 'block', mb: 1 }}>
-                この課題を解決するサービス
-              </Typography>
-              <Grid container spacing={1}>
+              {/* セクションヘッダー */}
+              <Box sx={{
+                display: 'flex', alignItems: 'center', gap: 1, mb: 1.5,
+                px: 1.5, py: 1,
+                bgcolor: '#FFF3E0',
+                borderRadius: 1,
+                border: '1px solid #FFB74D',
+              }}>
+                <Typography variant="caption" sx={{ fontWeight: 700, color: '#E65100', fontSize: '0.75rem' }}>
+                  🏅 メディカルアドバンスのおすすめサービス
+                </Typography>
+                <Typography variant="caption" sx={{ color: '#BF360C', fontSize: '0.68rem' }}>
+                  ※ シカレッジ掲載ページから申し込むと特典あり
+                </Typography>
+              </Box>
+              <Grid container spacing={1.5}>
                 {proposal.recommended_services.map((svc) => (
                   <Grid item xs={12} sm={6} md={4} key={svc.id}>
                     <Paper
-                      variant="outlined"
-                      sx={{ p: 1.5, cursor: 'pointer', '&:hover': { bgcolor: '#F5F5F5' } }}
+                      sx={{
+                        p: 2,
+                        cursor: 'pointer',
+                        border: '1.5px solid #FFB74D',
+                        borderRadius: 2,
+                        background: 'linear-gradient(135deg, #FFFDE7 0%, #FFF8E1 100%)',
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          borderColor: '#F57C00',
+                          boxShadow: '0 4px 12px rgba(245, 124, 0, 0.2)',
+                          transform: 'translateY(-2px)',
+                        },
+                      }}
                       onClick={() => {
                         handleServiceClick(svc.id);
                         if (svc.service_url) window.open(svc.service_url, '_blank');
                       }}
                     >
-                      <Typography variant="caption" color="text.secondary">{svc.company_name}</Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 600 }}>{svc.service_name}</Typography>
+                      {/* MA推薦バッジ */}
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                        <Chip
+                          label="MA推薦"
+                          size="small"
+                          sx={{
+                            bgcolor: '#E65100', color: '#fff', fontWeight: 700,
+                            fontSize: '0.6rem', height: 18,
+                          }}
+                        />
+                        <Chip
+                          label="シカレッジ特典あり"
+                          size="small"
+                          sx={{
+                            bgcolor: '#1565C0', color: '#fff', fontWeight: 600,
+                            fontSize: '0.6rem', height: 18,
+                          }}
+                        />
+                      </Box>
+                      {/* サービス名 */}
+                      {svc.company_name && (
+                        <Typography variant="caption" sx={{ color: '#795548', fontWeight: 500, display: 'block' }}>
+                          {svc.company_name}
+                        </Typography>
+                      )}
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#212121', mb: 0.5, lineHeight: 1.3 }}>
+                        {svc.service_name}
+                      </Typography>
                       {svc.catchcopy && (
-                        <Typography variant="caption" color="primary">{svc.catchcopy}</Typography>
+                        <Typography variant="caption" sx={{ color: '#E65100', fontWeight: 600, display: 'block', mb: 0.5 }}>
+                          {svc.catchcopy}
+                        </Typography>
                       )}
                       {svc.price_range && (
-                        <Typography variant="caption" display="block" color="text.secondary">{svc.price_range}</Typography>
+                        <Typography variant="caption" sx={{ color: '#616161', display: 'block', mb: 1 }}>
+                          {svc.price_range}
+                        </Typography>
                       )}
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
-                        <OpenInNewIcon sx={{ fontSize: 12, color: 'primary.main' }} />
-                        <Typography variant="caption" color="primary">詳細を見る</Typography>
+                      {/* CTA */}
+                      <Box sx={{
+                        display: 'flex', alignItems: 'center', gap: 0.5,
+                        pt: 1, borderTop: '1px solid #FFD54F',
+                      }}>
+                        <OpenInNewIcon sx={{ fontSize: 13, color: '#1565C0' }} />
+                        <Typography variant="caption" sx={{ color: '#1565C0', fontWeight: 700 }}>
+                          シカレッジで特典・詳細を確認する
+                        </Typography>
                       </Box>
                     </Paper>
                   </Grid>
