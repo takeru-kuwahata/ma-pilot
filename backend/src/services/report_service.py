@@ -4,6 +4,9 @@ from ..models.report import Report, ReportGenerateRequest
 from datetime import datetime
 from .pdf_service import PdfService
 import uuid
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ReportService:
@@ -35,13 +38,13 @@ class ReportService:
                     pdf_bytes,
                     {'content-type': 'application/pdf'}
                 )
-                print(f'Upload response: {upload_response}')
+                logger.info('PDF uploaded: %s', upload_response)
             except Exception as upload_error:
                 raise ValueError(f'Failed to upload PDF to storage: {str(upload_error)}')
 
             # Get public URL
             file_url = self.supabase.storage.from_('reports').get_public_url(file_name)
-            print(f'Generated file URL: {file_url}')
+            logger.info('PDF file URL generated: %s', file_url)
 
             report_data = {
                 'clinic_id': request.clinic_id,
@@ -302,7 +305,7 @@ class ReportService:
                         self.supabase.storage.from_('reports').remove([file_path])
                     except Exception as storage_error:
                         # Continue even if storage deletion fails
-                        print(f'Failed to delete file from storage: {storage_error}')
+                        logger.warning('Failed to delete file from storage: %s', storage_error)
 
             # Delete report record from database
             self.supabase.table('reports').delete().eq('id', report_id).execute()

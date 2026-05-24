@@ -112,7 +112,6 @@ export default function PrintOrderHistory() {
 
   // 再注文
   const handleReorder = (order: PrintOrder) => {
-    console.log('[PrintOrderHistory] Reorder clicked', { clinicId, clinicSlug, order });
     if (!clinicSlug) {
       setError('クリニック情報が取得できません。ページをリロードしてください。');
       return;

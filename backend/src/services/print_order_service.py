@@ -306,17 +306,27 @@ class PrintOrderService:
 
         response = query.order("created_at", desc=True).execute()
 
+        if not response.data:
+            return []
+
+        # 全注文の明細を一括取得（N+1問題を解消）
+        order_ids = [row["id"] for row in response.data]
+        items_response = (
+            self.supabase.table("print_order_items")
+            .select("*")
+            .in_("order_id", order_ids)
+            .execute()
+        )
+        items_by_order: dict = {}
+        for item in (items_response.data or []):
+            oid = item["order_id"]
+            if oid not in items_by_order:
+                items_by_order[oid] = []
+            items_by_order[oid].append(PrintOrderItem(**item))
+
         orders = []
         for row in response.data:
-            # Phase 2: 各注文の明細を取得
-            items_response = (
-                self.supabase.table("print_order_items")
-                .select("*")
-                .eq("order_id", row["id"])
-                .execute()
-            )
-            items = [PrintOrderItem(**item) for item in items_response.data] if items_response.data else []
-            row["items"] = items
+            row["items"] = items_by_order.get(row["id"], [])
             orders.append(PrintOrder(**row))
 
         return orders

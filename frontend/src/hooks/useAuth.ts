@@ -32,18 +32,13 @@ export const useAuth = () => {
       setError(null);
       const response = await authService.login(data.email, data.password);
 
-      console.log('[useAuth] Login response:', response.user);
-
       // authStoreを更新
       setUser(response.user);
-
-      console.log('[useAuth] setUser called with:', response.user);
 
       setSuccessMessage('ログインしました');
 
       // ロールに応じたリダイレクト
       const user = response.user;
-      console.log('[useAuth] Navigating to:', user.role === 'system_admin' ? '/admin/dashboard' : '/clinic/dashboard');
 
       if (user.role === 'system_admin') {
         navigate('/admin/dashboard');

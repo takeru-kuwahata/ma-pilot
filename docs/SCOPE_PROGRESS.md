@@ -1,5 +1,67 @@
 # MA-Pilot 開発進捗状況
 
+---
+
+## 🔒 本番運用診断履歴
+
+### 第1回診断 (2026-05-24)
+
+**総合スコア**: 69/100 (C評価: Fair — 重要な改善後に本番運用可能)
+
+#### スコア内訳
+| カテゴリ | スコア | 主な問題 |
+|---------|--------|---------|
+| セキュリティ | 24.5/30 | CSP設定不備、トークンlocalStorage保存、CORS全ヘッダー許可 |
+| パフォーマンス | 14/20 | N+1問題（print_orders）、バンドルサイズ1.52MB |
+| 信頼性 | 11/20 | トランザクション管理完全不在（5箇所）、グローバルエラーハンドラー不在 |
+| 運用性 | 14/20 | print文10件・console.log 16件残存、/metrics未実装、バックアップ文書なし |
+| コード品質 | 5.5/10 | テストの73%がスキップ（推定カバレッジ20-40%） |
+
+#### CVSS脆弱性
+✅ Critical: 0件 / High: 0件（全て修正済み） / Medium: 0件 / Low: 0件
+
+#### ライセンス
+✅ 全依存パッケージが商用利用可能（MIT/BSD-3-Clause/Apache-2.0）
+
+---
+
+## 🔧 改善タスク（優先度順）
+
+### 🔴 フェーズ1: 1週間以内（必須）
+
+- [ ] **CSP設定修正** — unsafe-inline/unsafe-eval削除、nonceベースに移行
+  - `backend/main.py:77-84`
+- [ ] **グローバルエラーハンドラー追加** — Exception/HTTPException/ValidationError
+  - `backend/main.py`
+- [ ] **N+1問題修正** — print_order_items を IN句で一括取得
+  - `backend/src/services/print_order_service.py:310-320`
+- [ ] **CORS allow_headers制限** — ワイルドカード → ホワイトリスト
+  - `backend/main.py:117`
+- [ ] **トランザクション実装** — ユーザー登録・印刷物注文作成
+  - `backend/src/services/auth_service.py:86-142`
+  - `backend/src/services/print_order_service.py:151-287`
+- [ ] **print文/console.log除去** — 10件(backend) / 16件(frontend)
+
+### 🟡 フェーズ2: 1ヶ月以内（重要）
+
+- [ ] **JWTトークン保存変更** — localStorage → HttpOnly Cookie
+  - `frontend/src/services/api/authService.ts:24`
+- [ ] **スキップテスト実装** — test_auth.py / test_dashboard.py / test_clinics.py（50件）
+- [ ] **CSRF保護実装**
+- [ ] **/metricsエンドポイント追加** — Prometheus形式
+- [ ] **vercel.jsonセキュリティヘッダー追加**
+- [ ] **BACKUP.md作成** — バックアップ・リストア手順の詳細化
+
+### 🟢 フェーズ3: 3ヶ月以内（推奨）
+
+- [ ] **構造化ログ導入** — loguru または structlog
+- [ ] **テストカバレッジ70%達成**
+- [ ] **Redis導入** — レート制限・キャッシュの永続化
+- [ ] **バンドルサイズ最適化** — recharts/MUI個別import化
+- [ ] **インデックス追加** — service_problem_tags / partner_services
+
+---
+
 ## 1. 基本情報
 
 - **ステータス**: 本番環境デプロイ完了・ログイン問題修正完了

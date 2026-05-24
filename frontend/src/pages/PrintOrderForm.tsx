@@ -104,15 +104,12 @@ export default function PrintOrderFormPhase2() {
 
       try {
         const data = await clinicService.getClinic(clinicId);
-        console.log('[DEBUG] Clinic data fetched:', data);
         setClinicData(data);
         // 住所と電話番号を自動反映
         if (data.address) {
-          console.log('[DEBUG] Setting delivery_address:', data.address);
           setValue('delivery_address', data.address, { shouldValidate: false });
         }
         if (data.phone_number) {
-          console.log('[DEBUG] Setting daytime_contact:', data.phone_number);
           setValue('daytime_contact', data.phone_number, { shouldValidate: false });
         }
       } catch (error) {
@@ -228,12 +225,9 @@ export default function PrintOrderFormPhase2() {
 
   // 再注文データを処理（一度だけ実行）
   useEffect(() => {
-    console.log('[PrintOrderForm] Reorder data received:', reorderData);
     if (!reorderData || !reorderData.items || reorderData.items.length === 0) {
       return;
     }
-
-    console.log('[PrintOrderForm] Setting pattern to reorder and populating items');
     setPattern('reorder');
 
     // 新しいitemsを作成
@@ -258,7 +252,6 @@ export default function PrintOrderFormPhase2() {
       payment_method: undefined,
     });
 
-    console.log('[PrintOrderForm] Items populated:', newItems);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reorderData?.id]); // reorderData.idに依存させて、一度だけ実行
 
@@ -1073,7 +1066,6 @@ export default function PrintOrderFormPhase2() {
               disabled={(() => {
                 const validItemCount = watchItems?.filter(item => item?.product_type && item.product_type.trim() !== '').length || 0;
                 const isDisabled = submitting || (pattern === 'reorder' && validItemCount === 0);
-                console.log('[DEBUG] Submit button - pattern:', pattern, 'validItems:', validItemCount, 'disabled:', isDisabled);
                 return isDisabled;
               })()}
               sx={{ minWidth: 200 }}

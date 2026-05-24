@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本番運用レベル診断レポート - MA-Pilot</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif; background: #f5f7fa; color: #333; }
+        .header { background: linear-gradient(135deg, #1a237e 0%, #283593 100%); color: white; padding: 40px; text-align: center; }
+        .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .header p { font-size: 14px; opacity: 0.8; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+
+        /* 総合スコア */
+        .score-section { background: white; border-radius: 16px; padding: 40px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); text-align: center; }
+        .score-circle { width: 180px; height: 180px; border-radius: 50%; background: conic-gradient(#f57f17 0% 69%, #e0e0e0 69% 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; position: relative; }
+        .score-inner { width: 140px; height: 140px; border-radius: 50%; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .score-number { font-size: 48px; font-weight: 800; color: #f57f17; line-height: 1; }
+        .score-total { font-size: 16px; color: #666; }
+        .grade-badge { display: inline-block; background: #f57f17; color: white; padding: 8px 24px; border-radius: 24px; font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+        .grade-label { font-size: 16px; color: #666; }
+
+        /* カテゴリ別スコア */
+        .categories { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .categories { grid-template-columns: repeat(2, 1fr); } }
+        .category-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: center; }
+        .category-icon { font-size: 28px; margin-bottom: 8px; }
+        .category-name { font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 500; }
+        .category-score { font-size: 24px; font-weight: 700; }
+        .category-max { font-size: 13px; color: #999; }
+        .bar-bg { background: #e0e0e0; height: 6px; border-radius: 3px; margin-top: 10px; }
+        .bar-fill { height: 6px; border-radius: 3px; }
+        .score-a { color: #2e7d32; } .bar-a { background: #2e7d32; }
+        .score-b { color: #1565c0; } .bar-b { background: #1565c0; }
+        .score-c { color: #f57f17; } .bar-c { background: #f57f17; }
+        .score-d { color: #c62828; } .bar-d { background: #c62828; }
+
+        /* セクション共通 */
+        .section { background: white; border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .section h2 { font-size: 18px; font-weight: 700; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #e0e0e0; display: flex; align-items: center; gap: 8px; }
+        .section h3 { font-size: 15px; font-weight: 600; margin: 20px 0 12px; color: #444; }
+
+        /* テーブル */
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { background: #f5f7fa; padding: 10px 12px; text-align: left; font-weight: 600; color: #555; border-bottom: 2px solid #e0e0e0; }
+        td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+        tr:hover td { background: #fafafa; }
+
+        /* バッジ */
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .badge-ok { background: #e8f5e9; color: #2e7d32; }
+        .badge-warn { background: #fff3e0; color: #e65100; }
+        .badge-danger { background: #ffebee; color: #c62828; }
+        .badge-info { background: #e3f2fd; color: #1565c0; }
+
+        /* 問題リスト */
+        .issue-list { list-style: none; }
+        .issue-item { padding: 14px 16px; margin-bottom: 10px; border-radius: 8px; border-left: 4px solid; }
+        .issue-critical { background: #ffebee; border-color: #c62828; }
+        .issue-high { background: #fff3e0; border-color: #e65100; }
+        .issue-medium { background: #fff8e1; border-color: #f9a825; }
+        .issue-low { background: #e8f5e9; border-color: #2e7d32; }
+        .issue-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+        .issue-detail { font-size: 13px; color: #555; }
+        .issue-file { font-size: 12px; color: #888; font-family: monospace; margin-top: 4px; }
+
+        /* スケジュール */
+        .schedule-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        @media (max-width: 768px) { .schedule-grid { grid-template-columns: 1fr; } }
+        .schedule-col { background: #f9f9f9; border-radius: 8px; padding: 16px; }
+        .schedule-col h4 { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+        .schedule-item { font-size: 13px; padding: 6px 0; border-bottom: 1px solid #eee; display: flex; align-items: flex-start; gap: 8px; }
+        .check { color: #2e7d32; font-weight: 700; flex-shrink: 0; }
+        .cross { color: #c62828; font-weight: 700; flex-shrink: 0; }
+
+        /* フッター */
+        .footer { text-align: center; padding: 24px; color: #999; font-size: 13px; }
+
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🏥 本番運用レベル診断レポート</h1>
+    <p>MA-Pilot（歯科医院経営分析システム）| 診断日: 2026年5月24日 | CVSS 3.1準拠</p>
+</div>
+
+<div class="container">
+
+    <!-- 総合スコア -->
+    <div class="score-section">
+        <div class="score-circle">
+            <div class="score-inner">
+                <div class="score-number">69</div>
+                <div class="score-total">/100</div>
+            </div>
+        </div>
+        <div class="grade-badge">C評価</div>
+        <div class="grade-label">Fair — 重要な改善後に本番運用可能</div>
+        <p style="margin-top:16px; color:#666; font-size:14px;">5観点の包括的評価 | 企業本番環境（1000ユーザー規模）への納品基準</p>
+    </div>
+
+    <!-- カテゴリ別スコア -->
+    <div class="categories">
+        <div class="category-card">
+            <div class="category-icon">🔒</div>
+            <div class="category-name">セキュリティ</div>
+            <div class="category-score score-b">24.5</div>
+            <div class="category-max">/30点</div>
+            <div class="bar-bg"><div class="bar-fill bar-b" style="width:81.7%"></div></div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">⚡</div>
+            <div class="category-name">パフォーマンス</div>
+            <div class="category-score score-c">14</div>
+            <div class="category-max">/20点</div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:70%"></div></div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">🛡️</div>
+            <div class="category-name">信頼性</div>
+            <div class="category-score score-d">11</div>
+            <div class="category-max">/20点</div>
+            <div class="bar-bg"><div class="bar-fill bar-d" style="width:55%"></div></div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">🔧</div>
+            <div class="category-name">運用性</div>
+            <div class="category-score score-c">14</div>
+            <div class="category-max">/20点</div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:70%"></div></div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">📊</div>
+            <div class="category-name">コード品質</div>
+            <div class="category-score score-d">5.5</div>
+            <div class="category-max">/10点</div>
+            <div class="bar-bg"><div class="bar-fill bar-d" style="width:55%"></div></div>
+        </div>
+    </div>
+
+    <!-- 必須対応事項 -->
+    <div class="section">
+        <h2>🚨 必須対応事項（Critical / High）</h2>
+        <ul class="issue-list">
+            <li class="issue-item issue-high">
+                <div class="issue-title">🔴 [セキュリティ] CSP設定の不備 — unsafe-inline / unsafe-eval 許可</div>
+                <div class="issue-detail">Content-Security-Policyに'unsafe-inline'と'unsafe-eval'が含まれており、XSS攻撃のリスクを大幅に増加させています。nonceまたはhashベースのCSPへの移行が必要です。</div>
+                <div class="issue-file">backend/main.py:77-84</div>
+            </li>
+            <li class="issue-item issue-high">
+                <div class="issue-title">🔴 [セキュリティ] JWTトークンのlocalStorage保存</div>
+                <div class="issue-detail">アクセストークンをlocalStorageに保存しており、XSS攻撃によるトークン窃取のリスクがあります。HttpOnly Cookieまたはメモリ内保存への変更を推奨します。</div>
+                <div class="issue-file">frontend/src/services/api/authService.ts:24</div>
+            </li>
+            <li class="issue-item issue-high">
+                <div class="issue-title">🔴 [セキュリティ] CORS allow_headers='*'（全ヘッダー許可）</div>
+                <div class="issue-detail">全ヘッダーを許可するワイルドカード設定になっています。必要なヘッダーのみをホワイトリスト化してください。</div>
+                <div class="issue-file">backend/main.py:117</div>
+            </li>
+            <li class="issue-item issue-high">
+                <div class="issue-title">🔴 [信頼性] トランザクション管理が完全に不在</div>
+                <div class="issue-detail">ユーザー登録（Auth+clinics+user_metadata）、印刷物注文作成（print_orders+print_order_items）等の複数テーブル操作にトランザクション管理がなく、部分失敗時にデータ不整合が発生します。</div>
+                <div class="issue-file">backend/src/services/auth_service.py:86-142, print_order_service.py:151-287</div>
+            </li>
+            <li class="issue-item issue-high">
+                <div class="issue-title">🔴 [信頼性] グローバルエラーハンドラーが不在</div>
+                <div class="issue-detail">FastAPIアプリにグローバルなException/HTTPException/ValidationErrorハンドラーがなく、予期しないエラー時にスタックトレースが外部に露出する可能性があります。</div>
+                <div class="issue-file">backend/main.py（ハンドラー追加が必要）</div>
+            </li>
+            <li class="issue-item issue-high">
+                <div class="issue-title">🔴 [パフォーマンス] N+1問題（注文一覧API）</div>
+                <div class="issue-detail">注文一覧取得時に各注文ごとにループ内でDBクエリを実行するN+1問題が存在します。注文数に比例してクエリ数が増加します（100件=101クエリ）。order_idのIN句による一括取得に変更してください。</div>
+                <div class="issue-file">backend/src/services/print_order_service.py:310-320</div>
+            </li>
+            <li class="issue-item issue-high">
+                <div class="issue-title">🔴 [コード品質] テストの73%がスキップ状態</div>
+                <div class="issue-detail">バックエンドテストの50件がskipされており、実質的なカバレッジが20-30%程度と推定されます。test_auth.py、test_dashboard.py、test_clinics.py等の実装が必要です。</div>
+                <div class="issue-file">backend/tests/（多数のskipデコレータ）</div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- セキュリティ詳細 -->
+    <div class="section">
+        <h2>🔒 セキュリティ詳細（24.5/30点）</h2>
+
+        <h3>CVSS 3.1脆弱性評価 — 15/15点 ✅</h3>
+        <table>
+            <tr><th>パッケージ</th><th>脆弱性ID</th><th>深刻度</th><th>対応状況</th></tr>
+            <tr><td>starlette</td><td>CVE-2025-54121</td><td><span class="badge badge-warn">High</span></td><td><span class="badge badge-ok">✅ 修正済み (≥0.49.1)</span></td></tr>
+            <tr><td>starlette</td><td>CVE-2025-62727</td><td><span class="badge badge-warn">High</span></td><td><span class="badge badge-ok">✅ 修正済み (≥0.49.1)</span></td></tr>
+            <tr><td>python-multipart</td><td>CVE-2024-53981</td><td><span class="badge badge-warn">High</span></td><td><span class="badge badge-ok">✅ 修正済み (≥0.0.18)</span></td></tr>
+            <tr><td>anyio</td><td>PVE-2024-71199</td><td><span class="badge badge-info">Medium</span></td><td><span class="badge badge-ok">✅ 修正済み (≥4.4.0)</span></td></tr>
+            <tr><td>orjson</td><td>CVE-2024-27454</td><td><span class="badge badge-info">Medium</span></td><td><span class="badge badge-ok">✅ 修正済み (≥3.9.15)</span></td></tr>
+        </table>
+        <p style="margin-top:12px; font-size:13px; color:#2e7d32;">✅ 現在の依存関係にCritical/Highの未修正脆弱性は0件</p>
+
+        <h3>ライセンス確認 — 4/4点 ✅</h3>
+        <p style="font-size:14px; color:#2e7d32; margin-bottom:12px;">✅ 全依存パッケージが商用利用可能ライセンス（MIT / BSD-3-Clause / Apache-2.0）</p>
+        <table>
+            <tr><th>パッケージ</th><th>ライセンス</th><th>商用利用</th></tr>
+            <tr><td>FastAPI, React, MUI, Zustand, Recharts, Stripe等</td><td>MIT</td><td><span class="badge badge-ok">✅ 可能</span></td></tr>
+            <tr><td>Uvicorn, Starlette, Jinja2, httpx, WeasyPrint</td><td>BSD-3-Clause</td><td><span class="badge badge-ok">✅ 可能</span></td></tr>
+            <tr><td>TypeScript, python-multipart, bandit</td><td>Apache-2.0</td><td><span class="badge badge-ok">✅ 可能</span></td></tr>
+        </table>
+    </div>
+
+    <!-- パフォーマンス詳細 -->
+    <div class="section">
+        <h2>⚡ パフォーマンス詳細（14/20点）</h2>
+        <table>
+            <tr><th>評価項目</th><th>スコア</th><th>主な発見事項</th></tr>
+            <tr><td>データベース最適化</td><td><span class="badge badge-info">6/8</span></td><td>主要テーブルにインデックス設定済み。service_problem_tags、partner_servicesのインデックス不足あり</td></tr>
+            <tr><td>N+1問題</td><td><span class="badge badge-danger">1/4</span></td><td>print_order_service.py:310-320 で重大なN+1問題を検出</td></tr>
+            <tr><td>キャッシング戦略</td><td><span class="badge badge-ok">4/4</span></td><td>TTLCache実装済み、React Queryキャッシュ設定優秀（staleTime 5分）</td></tr>
+            <tr><td>バンドルサイズ</td><td><span class="badge badge-info">3/4</span></td><td>1.52MB（コード分割済み）。recharts(392KB)、MUI(368KB)が大きい</td></tr>
+        </table>
+    </div>
+
+    <!-- 信頼性詳細 -->
+    <div class="section">
+        <h2>🛡️ 信頼性詳細（11/20点）</h2>
+        <table>
+            <tr><th>評価項目</th><th>スコア</th><th>主な発見事項</th></tr>
+            <tr><td>エラーハンドリング</td><td><span class="badge badge-danger">3/7</span></td><td>グローバルハンドラー不在。ログ記録はauth.pyのみ（16ファイル中1ファイル）</td></tr>
+            <tr><td>トランザクション管理</td><td><span class="badge badge-danger">0/6</span></td><td>5箇所の複数テーブル操作が全て非トランザクション（データ不整合リスク）</td></tr>
+            <tr><td>データ整合性</td><td><span class="badge badge-ok">4/4</span></td><td>Pydanticバリデーション29箇所で完全実装、EmailStr・Field制約を活用</td></tr>
+            <tr><td>同時アクセス対応</td><td><span class="badge badge-ok">4/3</span></td><td>slowapiによる多段階レート制限（100/分〜5000/日）、JWT+RBACで完全実装</td></tr>
+        </table>
+    </div>
+
+    <!-- 運用性詳細 -->
+    <div class="section">
+        <h2>🔧 運用性詳細（14/20点）</h2>
+        <table>
+            <tr><th>評価項目</th><th>スコア</th><th>主な発見事項</th></tr>
+            <tr><td>ログ管理</td><td><span class="badge badge-info">5/8</span></td><td>標準loggingを使用（構造化ログライブラリなし）。print文10件、console.log 16件が残存</td></tr>
+            <tr><td>モニタリング設定</td><td><span class="badge badge-info">5/6</span></td><td>/healthエンドポイント実装済み。/metricsエンドポイント未実装</td></tr>
+            <tr><td>デプロイ手順</td><td><span class="badge badge-ok">4/4</span></td><td>GitHub Actions 6種類、CI/CD完全実装（pytest+vitest+lint+security+Lighthouse）</td></tr>
+            <tr><td>バックアップ</td><td><span class="badge badge-danger">0/2</span></td><td>独立したバックアップドキュメントなし（OPERATIONS_GUIDEに簡易記載のみ）</td></tr>
+        </table>
+
+        <h3>print文 / console.log 残存箇所</h3>
+        <table>
+            <tr><th>ファイル</th><th>種別</th><th>件数</th></tr>
+            <tr><td>backend/src/services/market_analysis_service.py</td><td>print()</td><td>6件</td></tr>
+            <tr><td>backend/src/services/report_service.py</td><td>print()</td><td>4件</td></tr>
+            <tr><td>frontend/src/pages/PrintOrderForm.tsx</td><td>console.log</td><td>6件</td></tr>
+            <tr><td>frontend/src/components/routing/PrivateRoute.tsx</td><td>console.log</td><td>5件</td></tr>
+            <tr><td>frontend/src/hooks/useAuth.ts</td><td>console.log</td><td>3件</td></tr>
+            <tr><td>frontend/src/pages/PrintOrderHistory.tsx</td><td>console.log</td><td>1件</td></tr>
+            <tr><td>frontend/src/utils/webVitals.ts</td><td>console.log</td><td>1件（許容範囲）</td></tr>
+        </table>
+    </div>
+
+    <!-- コード品質詳細 -->
+    <div class="section">
+        <h2>📊 コード品質詳細（5.5/10点）</h2>
+        <table>
+            <tr><th>評価項目</th><th>スコア</th><th>主な発見事項</th></tr>
+            <tr><td>テストカバレッジ</td><td><span class="badge badge-danger">1.5/4</span></td><td>バックエンド50件がスキップ。推定カバレッジ20-40%（目標70%以上）</td></tr>
+            <tr><td>型安全性</td><td><span class="badge badge-ok">2.5/3</span></td><td>TypeScript any型ゼロ ✅。Pydantic 66クラス実装。フロント90+インターフェース定義</td></tr>
+            <tr><td>ドキュメント</td><td><span class="badge badge-ok">2/2</span></td><td>74ファイル・15,000行超のドキュメント。要件定義・進捗管理・トラブルシューティング完備</td></tr>
+            <tr><td>コード保守性</td><td><span class="badge badge-ok">1.5/1</span></td><td>TODO/FIXMEが1件のみ。クリーンアーキテクチャ準拠（api/models/services分離）</td></tr>
+        </table>
+    </div>
+
+    <!-- 推奨改善スケジュール -->
+    <div class="section">
+        <h2>📅 推奨改善スケジュール（3フェーズ）</h2>
+        <div class="schedule-grid">
+            <div class="schedule-col">
+                <h4>🔴 フェーズ1: 1週間以内（必須）</h4>
+                <div class="schedule-item"><span class="cross">→</span> CSP設定の修正（unsafe-inline削除）</div>
+                <div class="schedule-item"><span class="cross">→</span> グローバルエラーハンドラー追加</div>
+                <div class="schedule-item"><span class="cross">→</span> N+1問題の修正（print_orders）</div>
+                <div class="schedule-item"><span class="cross">→</span> CORS allow_headers制限</div>
+                <div class="schedule-item"><span class="cross">→</span> トランザクション実装（登録・注文）</div>
+                <div class="schedule-item"><span class="cross">→</span> print文/console.logの除去</div>
+            </div>
+            <div class="schedule-col">
+                <h4>🟡 フェーズ2: 1ヶ月以内（重要）</h4>
+                <div class="schedule-item"><span class="cross">→</span> JWTトークン保存方式の変更</div>
+                <div class="schedule-item"><span class="cross">→</span> スキップテストの実装</div>
+                <div class="schedule-item"><span class="cross">→</span> CSRF保護の実装</div>
+                <div class="schedule-item"><span class="cross">→</span> /metricsエンドポイント追加</div>
+                <div class="schedule-item"><span class="cross">→</span> vercel.jsonセキュリティヘッダー追加</div>
+                <div class="schedule-item"><span class="cross">→</span> バックアップドキュメント作成</div>
+            </div>
+            <div class="schedule-col">
+                <h4>🟢 フェーズ3: 3ヶ月以内（推奨）</h4>
+                <div class="schedule-item"><span class="check">→</span> loguru/structlog導入</div>
+                <div class="schedule-item"><span class="check">→</span> カバレッジ70%達成</div>
+                <div class="schedule-item"><span class="check">→</span> Redis導入（レート制限・キャッシュ）</div>
+                <div class="schedule-item"><span class="check">→</span> バンドルサイズ最適化</div>
+                <div class="schedule-item"><span class="check">→</span> Sentry等エラートラッキング</div>
+                <div class="schedule-item"><span class="check">→</span> インデックス追加（2テーブル）</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 強み -->
+    <div class="section">
+        <h2>✅ 優れた実装（強み）</h2>
+        <table>
+            <tr><th>項目</th><th>詳細</th></tr>
+            <tr><td>依存関係の脆弱性管理</td><td>既知のCVEを全て修正済み。requirements.txtにコメントで修正理由を記載</td></tr>
+            <tr><td>認証・認可アーキテクチャ</td><td>JWT + RBAC（4ロール）+ RLS（Supabase）の三層防御</td></tr>
+            <tr><td>TypeScript型安全性</td><td>any型ゼロ、90+インターフェース定義、Pydantic 66クラスと型同期</td></tr>
+            <tr><td>CI/CDパイプライン</td><td>GitHub Actions 6種類（テスト・Lint・セキュリティ・Lighthouse・アクセシビリティ）</td></tr>
+            <tr><td>React Queryキャッシュ戦略</td><td>データ種別ごとのstaleTime設定（5分〜30分）、不要な再取得抑制</td></tr>
+            <tr><td>レート制限</td><td>slowapiによる多段階レート制限（エンドポイント別に適切な制限値）</td></tr>
+            <tr><td>ドキュメント充実度</td><td>15,000行超の包括的なドキュメント（要件・進捗・運用・トラブルシューティング）</td></tr>
+            <tr><td>コード構造</td><td>クリーンアーキテクチャ準拠、TODO/FIXMEが1件のみ</td></tr>
+        </table>
+    </div>
+
+    <!-- 次回診断 -->
+    <div class="section" style="background: #f0f7ff;">
+        <h2>📋 診断サマリー</h2>
+        <table>
+            <tr><th>項目</th><th>値</th></tr>
+            <tr><td>総合スコア</td><td><strong>69/100 (C評価: Fair)</strong></td></tr>
+            <tr><td>本番運用可否</td><td><span class="badge badge-warn">⚠️ 重要な改善後に運用可能</span></td></tr>
+            <tr><td>Critical問題</td><td>0件</td></tr>
+            <tr><td>High問題</td><td>7件（要対応）</td></tr>
+            <tr><td>Medium問題</td><td>6件</td></tr>
+            <tr><td>改善後予想スコア</td><td>フェーズ1完了後: 85点〜 / フェーズ2完了後: 92点〜</td></tr>
+            <tr><td>次回診断推奨日</td><td>2026年6月24日（フェーズ1完了後）</td></tr>
+        </table>
+    </div>
+
+</div>
+
+<div class="footer">
+    診断基準: CVSS 3.1準拠 | 評価モデル: 5観点100点満点 | 企業本番環境（1000ユーザー規模）納品基準<br>
+    A(90-100): 本番運用可能 / B(75-89): 軽微な改善後に可能 / C(60-74): 重要な改善が必要 / D(45-59): 大幅な改善が必要 / F(0-44): 本番運用不可
+</div>
+
+</body>
+</html>
