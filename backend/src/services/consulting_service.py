@@ -747,10 +747,13 @@ class ConsultingService:
                         recommended_services=services,
                     ))
 
-        # 優先度順にソート
+        # メモ連動提案を先頭、KPIベース提案を優先度順で後続
         priority_order = {'critical': 0, 'high': 1, 'medium': 2, 'low': 3}
-        matched.sort(key=lambda p: priority_order[p.priority])
-        return matched[:7]  # メモ提案含め最大7件
+        memo_proposals = [p for p in matched if p.pattern_id.startswith('MEMO_')]
+        kpi_proposals = [p for p in matched if not p.pattern_id.startswith('MEMO_')]
+        memo_proposals.sort(key=lambda p: priority_order[p.priority])
+        kpi_proposals.sort(key=lambda p: priority_order[p.priority])
+        return (memo_proposals + kpi_proposals)[:7]
 
     async def _get_services_for_tag(self, tag: str) -> list[PartnerService]:
         try:
