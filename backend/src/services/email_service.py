@@ -21,8 +21,8 @@ def _send_email(to_email: str, subject: str, body: str) -> None:
     """SMTPでメール送信。設定が不完全な場合はログ出力のみ。"""
     smtp_host, smtp_port, smtp_user, smtp_password, smtp_from = _get_smtp_config()
 
-    if not smtp_host or not smtp_user or not smtp_password:
-        logger.warning('SMTP設定が未完了のためメール送信をスキップします（SMTP_HOST/SMTP_USER/SMTP_PASSWORDを設定してください）')
+    if not smtp_host or not smtp_user:
+        logger.warning('SMTP設定が未完了のためメール送信をスキップします（SMTP_HOST/SMTP_USERを設定してください）')
         logger.info(f'[未送信メール] To: {to_email} | Subject: {subject}')
         return
 
@@ -41,7 +41,8 @@ def _send_email(to_email: str, subject: str, body: str) -> None:
         with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
             server.ehlo()
             server.starttls()
-            server.login(smtp_user, smtp_password)
+            if smtp_password:
+                server.login(smtp_user, smtp_password)
             server.sendmail(from_addr, [to_email], msg.as_string())
         logger.info(f'メール送信成功: To={to_email}, Subject={subject}')
     except Exception as e:
