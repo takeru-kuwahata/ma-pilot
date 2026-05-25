@@ -127,6 +127,22 @@ export const ClinicSettings = () => {
     loadClinicData();
   }, [clinicId]);
 
+  const geocodeAddress = async (address: string): Promise<{ latitude: number; longitude: number } | null> => {
+    try {
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string;
+      const encoded = encodeURIComponent(address);
+      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encoded}&key=${apiKey}`);
+      const data = await res.json();
+      if (data.status === 'OK' && data.results?.length > 0) {
+        const loc = data.results[0].geometry.location;
+        return { latitude: loc.lat, longitude: loc.lng };
+      }
+    } catch {
+      // ジオコード失敗時は座標なしで保存
+    }
+    return null;
+  };
+
   const handleSaveBasicInfo = async () => {
     try {
       setLoading(true);
@@ -139,12 +155,15 @@ export const ClinicSettings = () => {
         return;
       }
 
+      const coords = basicInfo.address ? await geocodeAddress(basicInfo.address) : null;
+
       await clinicService.updateClinic(clinicId, {
         name: basicInfo.name,
         slug: basicInfo.slug || undefined,
         postal_code: basicInfo.postalCode,
         address: basicInfo.address,
         phone_number: basicInfo.phone,
+        ...(coords && { latitude: coords.latitude, longitude: coords.longitude }),
       });
 
       setSnackbar({

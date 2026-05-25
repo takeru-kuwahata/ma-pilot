@@ -90,12 +90,6 @@ class ClinicService:
             if 'slug' in update_data:
                 await self._check_slug_unique(update_data['slug'], exclude_clinic_id=clinic_id)
 
-            # 住所が更新される場合はジオコーディングで座標も更新
-            if 'address' in update_data:
-                coords = await self._geocode_address(update_data['address'])
-                if coords:
-                    update_data['latitude'], update_data['longitude'] = coords
-
             self.supabase.table('clinics').update(update_data).eq('id', clinic_id).execute()
 
             # 更新後に再取得
