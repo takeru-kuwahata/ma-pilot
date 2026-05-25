@@ -484,7 +484,7 @@ export const MarketAnalysis = () => {
           >
             競合密度
             <Typography component="span" sx={{ fontSize: '11px', color: '#9e9e9e', display: 'block' }}>
-              ※1,000人あたりの競合院数　低いほど有利
+              ※1,000人あたりの競合院数 低いほど有利
             </Typography>
           </Typography>
           <Typography
