@@ -136,7 +136,8 @@ async function searchNearbyByDistance(
 function fetchCompetitorsViaSdk(
   latitude: number,
   longitude: number,
-  radiusKm: number
+  radiusKm: number,
+  clinicName: string
 ): Promise<CompetitorClinic[]> {
   return new Promise((resolve) => {
     if (!window.google?.maps?.places) {
@@ -149,8 +150,11 @@ function fetchCompetitorsViaSdk(
     const service = new window.google.maps.places.PlacesService(map);
     const location = new window.google.maps.LatLng(latitude, longitude);
 
-    // rankBy: DISTANCE で近い順に取得し、radiusKm以内でフィルタ
-    searchNearbyByDistance(service, location, latitude, longitude, radiusKm).then(resolve);
+    searchNearbyByDistance(service, location, latitude, longitude, radiusKm).then((results) => {
+      // 自院と同名のエントリを除外
+      const filtered = results.filter((c) => c.name !== clinicName);
+      resolve(filtered);
+    });
   });
 }
 
@@ -225,7 +229,7 @@ export const MarketAnalysis = () => {
         waited += 200;
       }
 
-      const competitors = await fetchCompetitorsViaSdk(clinic.latitude, clinic.longitude, 2);
+      const competitors = await fetchCompetitorsViaSdk(clinic.latitude, clinic.longitude, 2, clinic.name);
 
       const analysisData = await marketAnalysisService.createMarketAnalysis(
         clinic.id,
@@ -301,7 +305,7 @@ export const MarketAnalysis = () => {
             人口統計、競合分析、市場ポテンシャル
           </Typography>
         </Box>
-        {!loading && clinic && (
+        {!loading && clinic && !analysis && (
           <Button
             variant="contained"
             onClick={handleRunAnalysis}
@@ -314,7 +318,7 @@ export const MarketAnalysis = () => {
               minWidth: '160px',
             }}
           >
-            {analyzing ? '分析中...' : analysis ? '再分析' : '分析を実行'}
+            {analyzing ? '分析中...' : '分析を実行'}
           </Button>
         )}
       </Box>

@@ -119,8 +119,9 @@ class MarketAnalysisService:
             return self._generate_mock_population_data(radius_km)
 
     def _generate_mock_population_data(self, radius_km: float) -> PopulationData:
-        '''Generate mock population data'''
-        total_population = random.randint(50000, 100000)
+        '''Generate mock population data (fixed values until e-Stat integration)'''
+        # 半径2km圏の全国平均的な人口を固定値で返す（ランダム廃止）
+        total_population = 72000
         return PopulationData(
             area=f'Within {radius_km}km radius',
             total_population=total_population,
@@ -180,7 +181,12 @@ class MarketAnalysisService:
                 'analysis_date': datetime.now().isoformat()
             }
 
-            response = self.supabase.table('market_analyses').insert(analysis_data).execute()
+            # clinic_idでUPSERT（1クリニック1レコードを保証）
+            existing = self.supabase.table('market_analyses').select('id').eq('clinic_id', request.clinic_id).order('created_at', desc=True).limit(1).execute()
+            if existing.data:
+                response = self.supabase.table('market_analyses').update(analysis_data).eq('id', existing.data[0]['id']).execute()
+            else:
+                response = self.supabase.table('market_analyses').insert(analysis_data).execute()
 
             if not response.data or len(response.data) == 0:
                 raise ValueError('Failed to create market analysis')
