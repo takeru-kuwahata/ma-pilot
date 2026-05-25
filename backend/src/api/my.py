@@ -74,3 +74,19 @@ async def update_password(
         raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post('/test-email')
+async def test_email(
+    current_user: Dict[str, Any] = Depends(get_current_user),
+):
+    '''SMTPテスト送信'''
+    from ..services.email_service import _send_email
+    from ..core.config import get_settings
+    settings = get_settings()
+    to_email = current_user.get('email', 'kuwahata@idw-japan.net')
+    try:
+        _send_email(to_email, '【MA-Pilot】SMTPテスト', f'SMTPテストメールです。\nSMTP_HOST={settings.smtp_host}\nSMTP_USER={settings.smtp_user}\nSMTP_PASSWORD={"SET" if settings.smtp_password else "NOT SET"}')
+        return {'message': f'送信成功: {to_email}', 'smtp_host': settings.smtp_host, 'smtp_user': settings.smtp_user}
+    except Exception as e:
+        return {'message': f'送信失敗: {str(e)}', 'smtp_host': settings.smtp_host, 'smtp_user': settings.smtp_user}
