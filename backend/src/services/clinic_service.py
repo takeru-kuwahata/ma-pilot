@@ -12,23 +12,18 @@ class ClinicService:
         self.supabase = supabase
 
     async def _geocode_address(self, address: str) -> Optional[tuple[float, float]]:
-        '''住所から緯度経度を取得（Community Geocoder）'''
+        '''住所から緯度経度を取得（Google Maps Geocoding API）'''
         try:
+            import os
+            api_key = os.environ.get('GOOGLE_MAPS_API_KEY', '')
             encoded = urllib.parse.quote(address)
-            url = f'https://geocoder.csis.u-tokyo.ac.jp/cgi-bin/simple_geocode.cgi?charset=UTF-8&addr={encoded}'
+            url = f'https://maps.googleapis.com/maps/api/geocode/json?address={encoded}&key={api_key}'
             async with httpx.AsyncClient(timeout=10.0) as client:
                 resp = await client.get(url)
-                text = resp.text
-                # XMLから緯度経度を抽出
-                import re
-                lat_match = re.search(r'<latitude>([\d.]+)</latitude>', text)
-                lng_match = re.search(r'<longitude>([\d.]+)</longitude>', text)
-                if lat_match and lng_match:
-                    lat = float(lat_match.group(1))
-                    lng = float(lng_match.group(1))
-                    # 日本の範囲チェック
-                    if 24 <= lat <= 46 and 122 <= lng <= 154:
-                        return lat, lng
+                data = resp.json()
+                if data.get('status') == 'OK' and data.get('results'):
+                    loc = data['results'][0]['geometry']['location']
+                    return loc['lat'], loc['lng']
         except Exception:
             pass
         return None

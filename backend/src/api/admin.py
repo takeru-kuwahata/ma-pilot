@@ -256,16 +256,17 @@ async def update_admin_settings(
 
 @router.get('/geocode')
 async def geocode_address(address: str):
-    '''住所から緯度経度を取得（Community Geocoder経由）'''
+    '''住所から緯度経度を取得（Google Maps Geocoding API）'''
+    api_key = os.environ.get('GOOGLE_MAPS_API_KEY', '')
     try:
-        url = f'https://geocoder.csis.u-tokyo.ac.jp/cgi-bin/geocode.cgi?charset=UTF8&addr={address}'
+        encoded = urllib.parse.quote(address)
+        url = f'https://maps.googleapis.com/maps/api/geocode/json?address={encoded}&key={api_key}'
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(url)
-        root = ET.fromstring(response.text)
-        lat = root.findtext('.//latitude')
-        lng = root.findtext('.//longitude')
-        if lat and lng and float(lat) != 0:
-            return {'latitude': float(lat), 'longitude': float(lng)}
+        data = response.json()
+        if data.get('status') == 'OK' and data.get('results'):
+            loc = data['results'][0]['geometry']['location']
+            return {'latitude': loc['lat'], 'longitude': loc['lng']}
         return {'latitude': 35.6762, 'longitude': 139.6503}
     except Exception:
         return {'latitude': 35.6762, 'longitude': 139.6503}
@@ -384,16 +385,15 @@ async def import_wordpress_users(
             lat, lng = 35.6762, 139.6503
             if address_str:
                 try:
+                    maps_key = os.environ.get('GOOGLE_MAPS_API_KEY', '')
                     encoded = urllib.parse.quote(address_str)
-                    geo_url = f'https://geocoder.csis.u-tokyo.ac.jp/cgi-bin/simple_geocode.cgi?charset=UTF-8&addr={encoded}'
+                    geo_url = f'https://maps.googleapis.com/maps/api/geocode/json?address={encoded}&key={maps_key}'
                     async with httpx.AsyncClient(timeout=10.0) as geo_client:
                         geo_resp = await geo_client.get(geo_url)
-                    lat_m = re.search(r'<latitude>([\d.]+)</latitude>', geo_resp.text)
-                    lng_m = re.search(r'<longitude>([\d.]+)</longitude>', geo_resp.text)
-                    if lat_m and lng_m:
-                        _lat, _lng = float(lat_m.group(1)), float(lng_m.group(1))
-                        if 24 <= _lat <= 46 and 122 <= _lng <= 154:
-                            lat, lng = _lat, _lng
+                    geo_data = geo_resp.json()
+                    if geo_data.get('status') == 'OK' and geo_data.get('results'):
+                        loc = geo_data['results'][0]['geometry']['location']
+                        lat, lng = loc['lat'], loc['lng']
                 except Exception:
                     pass
 
