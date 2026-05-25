@@ -1,5 +1,6 @@
 import httpx
 import urllib.parse
+import os
 from supabase import Client
 from typing import Optional
 from ..models.clinic import Clinic, ClinicCreate, ClinicUpdate
@@ -14,7 +15,6 @@ class ClinicService:
     async def _geocode_address(self, address: str) -> Optional[tuple[float, float]]:
         '''住所から緯度経度を取得（Google Maps Geocoding API）'''
         try:
-            import os
             api_key = os.environ.get('GOOGLE_MAPS_API_KEY', '')
             encoded = urllib.parse.quote(address)
             url = f'https://maps.googleapis.com/maps/api/geocode/json?address={encoded}&key={api_key}'

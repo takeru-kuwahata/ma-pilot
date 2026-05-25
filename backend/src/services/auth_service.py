@@ -4,6 +4,7 @@ from ..models.user import User, UserRole
 import httpx
 import urllib.parse
 import re
+import os
 
 
 class AuthService:
