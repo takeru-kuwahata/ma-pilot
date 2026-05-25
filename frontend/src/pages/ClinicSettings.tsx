@@ -130,15 +130,17 @@ export const ClinicSettings = () => {
   const geocodeAddress = async (address: string): Promise<{ latitude: number; longitude: number } | null> => {
     try {
       const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string;
+      console.log('[geocode] apiKey:', apiKey ? 'SET' : 'NOT SET', 'address:', address);
       const encoded = encodeURIComponent(address);
       const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encoded}&key=${apiKey}`);
       const data = await res.json();
+      console.log('[geocode] status:', data.status, 'results:', data.results?.length);
       if (data.status === 'OK' && data.results?.length > 0) {
         const loc = data.results[0].geometry.location;
         return { latitude: loc.lat, longitude: loc.lng };
       }
-    } catch {
-      // ジオコード失敗時は座標なしで保存
+    } catch (e) {
+      console.error('[geocode] error:', e);
     }
     return null;
   };
