@@ -245,7 +245,7 @@ export const MarketAnalysis = () => {
     population: analysis.population_data.total_population,
     agingRate: (analysis.population_data.age_groups.age65Plus / analysis.population_data.total_population) * 100,
     competitorCount: analysis.competitors.length,
-    marketPotential: Math.round(analysis.market_share * 100)
+    marketPotential: Math.round(analysis.market_share)
   } : {
     population: 0,
     agingRate: 0,
@@ -272,7 +272,10 @@ export const MarketAnalysis = () => {
   ] : [];
 
   return (
-    <>
+    <LoadScript
+      googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string}
+      libraries={['places']}
+    >
       {/* ページヘッダー */}
       <Box sx={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box>
@@ -475,7 +478,7 @@ export const MarketAnalysis = () => {
           >
             市場ポテンシャル
             <Typography component="span" sx={{ fontSize: '11px', color: '#9e9e9e', display: 'block' }}>
-              ※100÷競合院数（高いほど有利）
+              ※100÷(競合院数+1)　高いほど有利
             </Typography>
           </Typography>
           <Typography
@@ -538,18 +541,13 @@ export const MarketAnalysis = () => {
           </Box>
         ) : clinic && analysis ? (
           <>
-            <LoadScript
-              googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string}
-              libraries={['places']}
-            >
-              <GoogleMap
-                clinicLatitude={clinic.latitude}
-                clinicLongitude={clinic.longitude}
-                clinicName={clinic.name}
-                competitors={analysis.competitors}
-                radiusKm={analysis.radius_km}
-              />
-            </LoadScript>
+            <GoogleMap
+              clinicLatitude={clinic.latitude}
+              clinicLongitude={clinic.longitude}
+              clinicName={clinic.name}
+              competitors={analysis.competitors}
+              radiusKm={analysis.radius_km}
+            />
             <Typography sx={{ fontSize: '12px', color: '#d32f2f', marginTop: '8px' }}>
               ※ 競合医院の表示はGoogleマップのデータに基づいています。登録状況によっては一部の医院が表示されない場合があります。表示件数・位置情報の完全な正確性は保証できません。
             </Typography>
@@ -683,6 +681,6 @@ export const MarketAnalysis = () => {
           </Box>
         </Paper>
       </Box>
-    </>
+    </LoadScript>
   );
 };
