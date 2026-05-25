@@ -18,7 +18,7 @@ interface MarketStats {
   population: number;
   agingRate: number;
   competitorCount: number;
-  marketPotential: number;
+  competitorDensity: number;
 }
 
 interface DemographicData {
@@ -245,12 +245,14 @@ export const MarketAnalysis = () => {
     population: analysis.population_data.total_population,
     agingRate: (analysis.population_data.age_groups.age65Plus / analysis.population_data.total_population) * 100,
     competitorCount: analysis.competitors.length,
-    marketPotential: Math.round(analysis.market_share)
+    competitorDensity: analysis.population_data.total_population > 0
+      ? Math.round((analysis.competitors.length / analysis.population_data.total_population) * 1000 * 10) / 10
+      : 0,
   } : {
     population: 0,
     agingRate: 0,
     competitorCount: 0,
-    marketPotential: 0
+    competitorDensity: 0,
   };
 
   const demographics: DemographicData[] = analysis ? [
@@ -476,9 +478,9 @@ export const MarketAnalysis = () => {
               marginBottom: '8px',
             }}
           >
-            市場ポテンシャル
+            競合密度
             <Typography component="span" sx={{ fontSize: '11px', color: '#9e9e9e', display: 'block' }}>
-              ※100÷(競合院数+1)　高いほど有利
+              ※1,000人あたりの競合院数　低いほど有利
             </Typography>
           </Typography>
           <Typography
@@ -488,7 +490,7 @@ export const MarketAnalysis = () => {
               color: '#424242',
             }}
           >
-            {loading ? '...' : stats.marketPotential}
+            {loading ? '...' : stats.competitorDensity.toFixed(1)}
             <Typography
               component="span"
               sx={{
@@ -497,7 +499,7 @@ export const MarketAnalysis = () => {
                 marginLeft: '4px',
               }}
             >
-              点
+              院/千人
             </Typography>
           </Typography>
         </Paper>
