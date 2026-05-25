@@ -9,6 +9,7 @@ import {
   Alert,
 } from '@mui/material';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
+import { LoadScript } from '@react-google-maps/api';
 import { marketAnalysisService, clinicService } from '../services/api';
 import { GoogleMap } from '../components/GoogleMap';
 import type { MarketAnalysis as MarketAnalysisType, Clinic, CompetitorClinic } from '../types';
@@ -537,13 +538,18 @@ export const MarketAnalysis = () => {
           </Box>
         ) : clinic && analysis ? (
           <>
-            <GoogleMap
-              clinicLatitude={clinic.latitude}
-              clinicLongitude={clinic.longitude}
-              clinicName={clinic.name}
-              competitors={analysis.competitors}
-              radiusKm={analysis.radius_km}
-            />
+            <LoadScript
+              googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string}
+              libraries={['places']}
+            >
+              <GoogleMap
+                clinicLatitude={clinic.latitude}
+                clinicLongitude={clinic.longitude}
+                clinicName={clinic.name}
+                competitors={analysis.competitors}
+                radiusKm={analysis.radius_km}
+              />
+            </LoadScript>
             <Typography sx={{ fontSize: '12px', color: '#d32f2f', marginTop: '8px' }}>
               ※ 競合医院の表示はGoogleマップのデータに基づいています。登録状況によっては一部の医院が表示されない場合があります。表示件数・位置情報の完全な正確性は保証できません。
             </Typography>
@@ -602,30 +608,24 @@ export const MarketAnalysis = () => {
                 <Box
                   key={index}
                   sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '12px',
+                    padding: '10px 12px',
                     borderBottom:
                       index < analysis.competitors.length - 1 ? '1px solid #e0e0e0' : 'none',
                   }}
                 >
-                  <Typography
-                    sx={{
-                      fontSize: '14px',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {competitor.name}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '14px',
-                      color: '#616161',
-                    }}
-                  >
-                    {competitor.distance.toFixed(1)}km
-                  </Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                    <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>
+                      {competitor.name}
+                    </Typography>
+                    <Typography sx={{ fontSize: '13px', color: '#616161', whiteSpace: 'nowrap', ml: 1 }}>
+                      {competitor.distance.toFixed(1)}km
+                    </Typography>
+                  </Box>
+                  {competitor.address && (
+                    <Typography sx={{ fontSize: '12px', color: '#9e9e9e', mt: 0.25 }}>
+                      {competitor.address}
+                    </Typography>
+                  )}
                 </Box>
               ))
             ) : (
