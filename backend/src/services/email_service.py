@@ -1,8 +1,6 @@
 """メール送信サービス"""
 import logging
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import os
 from typing import Optional
 from datetime import datetime
 from supabase import Client
@@ -10,40 +8,25 @@ from supabase import Client
 logger = logging.getLogger(__name__)
 
 
-def _get_smtp_config():
-    """SMTP設定を取得（循環インポート回避のため遅延import）"""
-    from src.core.config import get_settings
-    s = get_settings()
-    return s.smtp_host, s.smtp_port, s.smtp_user, s.smtp_password, s.smtp_from
-
-
 def _send_email(to_email: str, subject: str, body: str) -> None:
-    """SMTPでメール送信。設定が不完全な場合はログ出力のみ。"""
-    smtp_host, smtp_port, smtp_user, smtp_password, smtp_from = _get_smtp_config()
+    """Resend経由でメール送信。APIキー未設定の場合はログ出力のみ。"""
+    api_key = os.environ.get('RESEND_API_KEY', '')
+    from_email = os.environ.get('RESEND_FROM_EMAIL', 'dr@medical-advance.com')
 
-    if not smtp_host or not smtp_user:
-        logger.warning('SMTP設定が未完了のためメール送信をスキップします（SMTP_HOST/SMTP_USERを設定してください）')
+    if not api_key:
+        logger.warning('RESEND_API_KEYが未設定のためメール送信をスキップします')
         logger.info(f'[未送信メール] To: {to_email} | Subject: {subject}')
         return
 
-    from_addr = smtp_from or smtp_user
-    from email.header import Header
-    from email.utils import formataddr
-    display_from = formataddr((str(Header('株式会社メディカルアドバンス', 'utf-8')), from_addr))
-
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = subject
-    msg['From'] = display_from
-    msg['To'] = to_email
-    msg.attach(MIMEText(body, 'plain', 'utf-8'))
-
     try:
-        with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
-            server.ehlo()
-            server.starttls()
-            if smtp_password:
-                server.login(smtp_user, smtp_password)
-            server.sendmail(from_addr, [to_email], msg.as_string())
+        import resend
+        resend.api_key = api_key
+        resend.Emails.send({
+            'from': f'株式会社メディカルアドバンス <{from_email}>',
+            'to': [to_email],
+            'subject': subject,
+            'text': body,
+        })
         logger.info(f'メール送信成功: To={to_email}, Subject={subject}')
     except Exception as e:
         logger.error(f'メール送信失敗: To={to_email}, Error={e}')
