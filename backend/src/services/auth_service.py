@@ -177,6 +177,16 @@ class AuthService:
             service_role_key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '') or os.environ.get('SUPABASE_KEY', '')
             frontend_url = os.environ.get('FRONTEND_URL', 'https://ma-pilot.vercel.app')
 
+            # クリニック名を取得
+            clinic_name = 'クリニック'
+            if clinic_id:
+                try:
+                    clinic_resp = self.supabase.table('clinics').select('name').eq('id', clinic_id).single().execute()
+                    if clinic_resp.data:
+                        clinic_name = clinic_resp.data['name']
+                except Exception:
+                    pass
+
             existing_user_id = None
             invite_link = None
 
@@ -253,8 +263,8 @@ class AuthService:
 
             # Resendで招待メール送信
             from ..services.email_service import _send_email
-            subject = '【MA-Pilot】スタッフ招待のご案内'
-            body = f"""MA-Pilotへ招待されました。
+            subject = f'【MA-Pilot】{clinic_name}のスタッフ招待のご案内'
+            body = f"""MA-Pilot（{clinic_name}）のスタッフとして招待されました。
 
 以下のリンクをクリックしてパスワードを設定し、ログインしてください。
 
