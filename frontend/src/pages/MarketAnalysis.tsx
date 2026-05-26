@@ -249,8 +249,8 @@ export const MarketAnalysis = () => {
     population: analysis.population_data.total_population,
     agingRate: (analysis.population_data.age_groups.age65Plus / analysis.population_data.total_population) * 100,
     competitorCount: analysis.competitors.length,
-    competitorDensity: analysis.population_data.total_population > 0
-      ? Math.round((analysis.competitors.length / analysis.population_data.total_population) * 1000 * 10) / 10
+    competitorDensity: analysis.competitors.length > 0
+      ? Math.round(analysis.population_data.total_population / analysis.competitors.length)
       : 0,
   } : {
     population: 0,
@@ -484,7 +484,7 @@ export const MarketAnalysis = () => {
           >
             競合密度
             <Typography component="span" sx={{ fontSize: '11px', color: '#9e9e9e', display: 'block' }}>
-              ※1,000人あたりの競合院数 低いほど有利
+              ※1院あたりの人口 高いほど有利
             </Typography>
           </Typography>
           <Typography
@@ -494,7 +494,7 @@ export const MarketAnalysis = () => {
               color: '#424242',
             }}
           >
-            {loading ? '...' : stats.competitorDensity.toFixed(1)}
+            {loading ? '...' : stats.competitorDensity.toLocaleString()}
             <Typography
               component="span"
               sx={{
@@ -503,7 +503,7 @@ export const MarketAnalysis = () => {
                 marginLeft: '4px',
               }}
             >
-              院/千人
+              人/院
             </Typography>
           </Typography>
         </Paper>

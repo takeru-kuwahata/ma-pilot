@@ -25,6 +25,7 @@ export const GoogleMap = ({
   radiusKm
 }: GoogleMapProps) => {
   const [selectedCompetitor, setSelectedCompetitor] = useState<CompetitorClinic | null>(null);
+  const [hoveredCompetitor, setHoveredCompetitor] = useState<CompetitorClinic | null>(null);
 
   const center = { lat: clinicLatitude, lng: clinicLongitude };
 
@@ -67,9 +68,23 @@ export const GoogleMap = ({
           position={{ lat: competitor.latitude, lng: competitor.longitude }}
           title={competitor.name}
           icon={{ url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png' }}
-          onClick={() => setSelectedCompetitor(competitor)}
+          onClick={() => { setSelectedCompetitor(competitor); setHoveredCompetitor(null); }}
+          onMouseOver={() => setHoveredCompetitor(competitor)}
+          onMouseOut={() => setHoveredCompetitor(null)}
         />
       ))}
+
+      {/* ホバー時のInfoWindow（クリック時は非表示） */}
+      {hoveredCompetitor && !selectedCompetitor && (
+        <InfoWindow
+          position={{ lat: hoveredCompetitor.latitude, lng: hoveredCompetitor.longitude }}
+          options={{ disableAutoPan: true }}
+        >
+          <Typography sx={{ fontSize: '13px', fontWeight: 600, padding: '2px 4px' }}>
+            {hoveredCompetitor.name}
+          </Typography>
+        </InfoWindow>
+      )}
 
       {/* クリック時のInfoWindow */}
       {selectedCompetitor && (
