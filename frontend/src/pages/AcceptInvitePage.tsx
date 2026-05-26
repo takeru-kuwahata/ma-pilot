@@ -20,10 +20,11 @@ export const AcceptInvitePage = () => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const tokenHash = params.get('token_hash');
-    const type = params.get('type');
+    // ハッシュ形式（#token_hash=...）とクエリパラメータ形式（?token_hash=...）の両方に対応
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const queryParams = new URLSearchParams(window.location.search);
+    const tokenHash = hashParams.get('token_hash') || queryParams.get('token_hash');
+    const type = hashParams.get('type') || queryParams.get('type');
 
     if (tokenHash && type === 'invite') {
       supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'invite' }).then(({ error: verifyError }) => {

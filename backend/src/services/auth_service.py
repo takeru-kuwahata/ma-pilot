@@ -233,8 +233,9 @@ class AuthService:
                 else:
                     gen_data = gen_resp.json()
                     user_id = gen_data.get('user', {}).get('id') or gen_data.get('id')
-                    # action_link をそのまま使う（Supabase が正しいリダイレクト付きで生成）
-                    invite_link = gen_data.get('action_link') or gen_data.get('hashed_token')
+                    # hashed_token を使ってフロントエンドURLを直接組み立てる
+                    hashed_token = gen_data.get('hashed_token', '')
+                    invite_link = f'{frontend_url}/accept-invite?token_hash={hashed_token}&type=invite'
 
             user_id = existing_user_id if existing_user_id else user_id
 
