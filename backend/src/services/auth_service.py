@@ -169,35 +169,38 @@ class AuthService:
             logger.error('Registration rollback failed for user_id=%s: %s', user_id, rollback_err)
 
     async def invite_user(self, email: str, role: UserRole, clinic_id: Optional[str] = None, password: Optional[str] = None) -> dict:
-        '''Invite a new staff user via Supabase invitation email'''
+        '''Invite a new staff user: generate invite link via Supabase, send email via Resend'''
         import httpx
         import os
-        import json
         try:
             supabase_url = os.environ.get('SUPABASE_URL', '')
             service_role_key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '') or os.environ.get('SUPABASE_KEY', '')
+            frontend_url = os.environ.get('FRONTEND_URL', 'https://ma-pilot.vercel.app')
 
-            # Supabase Admin招待API（招待メールを送信）
             existing_user_id = None
+            invite_link = None
+
             async with httpx.AsyncClient() as client:
-                resp = await client.post(
-                    f'{supabase_url}/auth/v1/invite',
+                # generateLink でトークン生成（メール送信なし）
+                gen_resp = await client.post(
+                    f'{supabase_url}/auth/v1/admin/generate_link',
                     headers={
                         'apikey': service_role_key,
                         'Authorization': f'Bearer {service_role_key}',
                         'Content-Type': 'application/json',
                     },
-                    json={'email': email},
+                    json={
+                        'type': 'invite',
+                        'email': email,
+                        'redirect_to': f'{frontend_url}/accept-invite',
+                    },
                     timeout=15,
                 )
-                if resp.status_code == 429:
-                    raise ValueError('メール送信の上限に達しました。しばらく時間を置いてから再試行してください。')
-                if resp.status_code not in (200, 201):
-                    err = resp.json() if resp.text else {}
-                    if err.get('error_code') == 'email_address_invalid':
-                        raise ValueError(f'メールアドレスの形式が無効です: {email}')
-                    if err.get('error_code') == 'email_exists':
-                        # 既存ユーザー → Auth内のIDを検索してスタッフとして紐付け
+
+                if gen_resp.status_code == 422:
+                    err = gen_resp.json() if gen_resp.text else {}
+                    # 既存ユーザーの場合はスタッフとして紐付けのみ行う
+                    if 'already been registered' in str(err):
                         search_resp = await client.get(
                             f'{supabase_url}/auth/v1/admin/users',
                             headers={
@@ -213,16 +216,23 @@ class AuthService:
                             raise ValueError(f'このメールアドレスはすでに登録されています: {email}')
                         existing_user_id = found[0]['id']
                     else:
-                        raise ValueError(f'招待メール送信に失敗しました（{resp.status_code}）')
+                        raise ValueError(f'招待リンク生成に失敗しました: {err}')
+                elif gen_resp.status_code not in (200, 201):
+                    err = gen_resp.json() if gen_resp.text else {}
+                    raise ValueError(f'招待リンク生成に失敗しました（{gen_resp.status_code}）: {err}')
+                else:
+                    gen_data = gen_resp.json()
+                    user_id = gen_data.get('user', {}).get('id') or gen_data.get('id')
+                    # action_link をそのまま使う（Supabase が正しいリダイレクト付きで生成）
+                    invite_link = gen_data.get('action_link') or gen_data.get('hashed_token')
 
-                user_id = existing_user_id if existing_user_id else resp.json()['id']
+            user_id = existing_user_id if existing_user_id else user_id
 
             # user_metadataにclinic_idとroleを登録
             existing_meta = self.supabase.table('user_metadata').select('user_id,role').eq('user_id', user_id).execute()
             if existing_meta.data:
                 current_role = existing_meta.data[0].get('role', '')
                 if current_role == 'system_admin':
-                    # system_adminのroleは絶対に上書きしない
                     raise ValueError(f'このメールアドレスはシステム管理者アカウントのため、スタッフとして招待できません: {email}')
                 self.supabase.table('user_metadata').update({
                     'role': role,
@@ -240,6 +250,23 @@ class AuthService:
                     'message': f'既存アカウントをスタッフとして追加しました（{email}）',
                     'invite_token': user_id
                 }
+
+            # Resendで招待メール送信
+            from ..services.email_service import _send_email
+            subject = '【MA-Pilot】スタッフ招待のご案内'
+            body = f"""MA-Pilotへ招待されました。
+
+以下のリンクをクリックしてパスワードを設定し、ログインしてください。
+
+招待リンク: {invite_link}
+
+※このリンクは24時間有効です。
+
+---
+株式会社メディカルアドバンス
+---"""
+            _send_email(email, subject, body)
+
             return {
                 'message': f'招待メールを送信しました（{email}）',
                 'invite_token': user_id
