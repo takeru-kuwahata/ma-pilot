@@ -550,7 +550,6 @@ export const MarketAnalysis = () => {
             <GoogleMap
               clinicLatitude={clinic.latitude}
               clinicLongitude={clinic.longitude}
-              clinicName={clinic.name}
               competitors={analysis.competitors}
               radiusKm={analysis.radius_km}
             />

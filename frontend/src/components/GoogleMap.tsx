@@ -6,7 +6,7 @@ import type { CompetitorClinic } from '../types';
 interface GoogleMapProps {
   clinicLatitude: number;
   clinicLongitude: number;
-  clinicName: string;
+
   competitors: CompetitorClinic[];
   radiusKm: number;
 }
@@ -20,7 +20,6 @@ const mapContainerStyle = {
 export const GoogleMap = ({
   clinicLatitude,
   clinicLongitude,
-  clinicName,
   competitors,
   radiusKm
 }: GoogleMapProps) => {
@@ -50,13 +49,6 @@ export const GoogleMap = ({
         fullscreenControl: true,
       }}
     >
-      {/* 自院マーカー（青） */}
-      <Marker
-        position={center}
-        title={clinicName}
-        icon={{ url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png' }}
-      />
-
       {/* 商圏サークル */}
       <Circle center={center} options={circleOptions} />
 
