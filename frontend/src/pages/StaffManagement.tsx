@@ -321,8 +321,8 @@ export const StaffManagement = () => {
           </Button>
         </Box>
 
-        <TableContainer>
-          <Table>
+        <TableContainer sx={{ overflowX: 'auto' }}>
+          <Table sx={{ minWidth: 500 }}>
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>

@@ -272,7 +272,7 @@ export const Reports = () => {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
           gap: '24px',
           marginBottom: '24px',
         }}
@@ -369,8 +369,8 @@ export const Reports = () => {
         >
           レポート生成履歴
         </Typography>
-        <TableContainer>
-          <Table>
+        <TableContainer sx={{ overflowX: 'auto' }}>
+          <Table sx={{ minWidth: 600 }}>
             <TableHead>
               <TableRow>
                 <TableCell

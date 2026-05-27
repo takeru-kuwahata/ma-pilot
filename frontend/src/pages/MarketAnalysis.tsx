@@ -341,7 +341,7 @@ export const MarketAnalysis = () => {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
           gap: '16px',
           marginBottom: '24px',
         }}
@@ -580,7 +580,7 @@ export const MarketAnalysis = () => {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
+          gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, 1fr)' },
           gap: '24px',
         }}
       >
