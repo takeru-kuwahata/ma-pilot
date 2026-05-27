@@ -25,7 +25,6 @@ export const GoogleMap = ({
   radiusKm
 }: GoogleMapProps) => {
   const [selectedCompetitor, setSelectedCompetitor] = useState<CompetitorClinic | null>(null);
-  const [hoveredCompetitor, setHoveredCompetitor] = useState<CompetitorClinic | null>(null);
 
   const center = { lat: clinicLatitude, lng: clinicLongitude };
 
@@ -61,30 +60,16 @@ export const GoogleMap = ({
       {/* 商圏サークル */}
       <Circle center={center} options={circleOptions} />
 
-      {/* 競合マーカー（赤） */}
+      {/* 競合マーカー（赤）- クリックでクリニック名表示 */}
       {competitors.map((competitor, index) => (
         <Marker
           key={index}
           position={{ lat: competitor.latitude, lng: competitor.longitude }}
           title={competitor.name}
           icon={{ url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png' }}
-          onClick={() => { setSelectedCompetitor(competitor); setHoveredCompetitor(null); }}
-          onMouseOver={() => setHoveredCompetitor(competitor)}
-          onMouseOut={() => setHoveredCompetitor(null)}
+          onClick={() => setSelectedCompetitor(competitor)}
         />
       ))}
-
-      {/* ホバー時のInfoWindow（クリック時は非表示） */}
-      {hoveredCompetitor && !selectedCompetitor && (
-        <InfoWindow
-          position={{ lat: hoveredCompetitor.latitude, lng: hoveredCompetitor.longitude }}
-          options={{ disableAutoPan: true }}
-        >
-          <Typography sx={{ fontSize: '13px', fontWeight: 600, padding: '2px 4px' }}>
-            {hoveredCompetitor.name}
-          </Typography>
-        </InfoWindow>
-      )}
 
       {/* クリック時のInfoWindow */}
       {selectedCompetitor && (
