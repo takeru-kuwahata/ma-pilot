@@ -153,6 +153,7 @@ class DashboardService:
         # New Patients (初診数)
         current_new_patients = current.get('first_visit_patients', 0)
         prev_new_patients = previous.get('first_visit_patients', 0) if previous else 0
+        ly_new_patients = last_year.get('first_visit_patients', 0) if last_year else 0
 
         kpis.append(DashboardKpi(
             id=str(uuid.uuid4()),
@@ -162,7 +163,46 @@ class DashboardService:
             comparison=KpiComparison(
                 trend=self._calculate_trend(current_new_patients, prev_new_patients) if previous else 'neutral',
                 month_over_month=self._calculate_percentage_change(current_new_patients, prev_new_patients) if previous else 0,
-                year_over_year=0  # Simplified
+                year_over_year=self._calculate_percentage_change(current_new_patients, ly_new_patients) if last_year else 0
+            )
+        ))
+
+        # Fixed Cost (固定費)
+        current_fixed = current.get('fixed_cost', 0)
+        prev_fixed = previous.get('fixed_cost', 0) if previous else 0
+        ly_fixed = last_year.get('fixed_cost', 0) if last_year else 0
+
+        kpis.append(DashboardKpi(
+            id=str(uuid.uuid4()),
+            label='固定費',
+            value=current_fixed,
+            unit='¥',
+            comparison=KpiComparison(
+                trend=self._calculate_trend(current_fixed, prev_fixed) if previous else 'neutral',
+                month_over_month=self._calculate_percentage_change(current_fixed, prev_fixed) if previous else 0,
+                year_over_year=self._calculate_percentage_change(current_fixed, ly_fixed) if last_year else 0
+            )
+        ))
+
+        # Variable Cost Rate (変動費率 = 材料費÷売上)
+        current_material = current.get('material_cost', 0)
+        current_variable_rate = round((current_material / current_revenue * 100), 1) if current_revenue > 0 else 0
+        prev_material = previous.get('material_cost', 0) if previous else 0
+        prev_revenue_val = previous.get('total_revenue', 0) if previous else 0
+        prev_variable_rate = round((prev_material / prev_revenue_val * 100), 1) if prev_revenue_val > 0 else 0
+        ly_material = last_year.get('material_cost', 0) if last_year else 0
+        ly_revenue_val = last_year.get('total_revenue', 0) if last_year else 0
+        ly_variable_rate = round((ly_material / ly_revenue_val * 100), 1) if ly_revenue_val > 0 else 0
+
+        kpis.append(DashboardKpi(
+            id=str(uuid.uuid4()),
+            label='変動費率',
+            value=current_variable_rate,
+            unit='%',
+            comparison=KpiComparison(
+                trend='positive' if current_variable_rate <= prev_variable_rate else 'negative' if previous else 'neutral',
+                month_over_month=current_variable_rate - prev_variable_rate if previous else 0,
+                year_over_year=current_variable_rate - ly_variable_rate if last_year else 0
             )
         ))
 
@@ -212,8 +252,8 @@ class DashboardService:
             # Calculate self-pay rate
             self_pay_rate = (data['self_pay_revenue'] / total_revenue * 100) if total_revenue > 0 else 0
 
-            # Simplified unit utilization (placeholder calculation)
-            unit_utilization = min(100, (data['treatment_count'] / 200 * 100)) if data['treatment_count'] > 0 else 0
+            # Variable cost rate (材料費 ÷ 売上)
+            variable_cost_rate = (data['material_cost'] / total_revenue * 100) if total_revenue > 0 else 0
 
             trends.append(MonthlyTrendData(
                 year_month=data['year_month'],
@@ -221,7 +261,7 @@ class DashboardService:
                 operating_profit=operating_profit,
                 new_patients=data.get('first_visit_patients', 0),
                 returning_patients=data['returning_patients'],
-                unit_utilization=unit_utilization,
+                unit_utilization=variable_cost_rate,
                 self_pay_rate=self_pay_rate
             ))
 

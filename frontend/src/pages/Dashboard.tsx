@@ -29,13 +29,14 @@ const KpiCard = ({ kpi }: { kpi: DashboardKpi }) => {
   const isPositive = kpi.comparison.trend === 'positive';
   const trendColor = isPositive ? '#388E3C' : '#D32F2F';
   const TrendIcon = isPositive ? TrendingUpIcon : TrendingDownIcon;
+  const yoyValue = kpi.comparison.year_over_year;
+  const yoyPositive = yoyValue >= 0;
 
-  // 値のフォーマット
   const formatValue = () => {
     if (kpi.unit === '¥') {
       return `¥${kpi.value.toLocaleString()}`;
     } else if (kpi.unit === '%') {
-      return `${kpi.value}%`;
+      return `${kpi.value.toFixed(1)}%`;
     } else {
       return `${kpi.value.toLocaleString()}${kpi.unit}`;
     }
@@ -43,15 +44,13 @@ const KpiCard = ({ kpi }: { kpi: DashboardKpi }) => {
 
   return (
     <Paper sx={{ p: 2, height: '100%' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-          {kpi.label}
-        </Typography>
-      </Box>
+      <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 2 }}>
+        {kpi.label}
+      </Typography>
       <Typography variant="h4" sx={{ fontWeight: 600, mb: 1 }}>
         {formatValue()}
       </Typography>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
         <TrendIcon sx={{ fontSize: 16, color: trendColor }} />
         <Typography variant="caption" sx={{ color: trendColor, fontWeight: 600 }}>
           {isPositive ? '+' : ''}{kpi.comparison.month_over_month.toFixed(1)}%
@@ -60,6 +59,16 @@ const KpiCard = ({ kpi }: { kpi: DashboardKpi }) => {
           前月比
         </Typography>
       </Box>
+      {yoyValue !== 0 && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <Typography variant="caption" sx={{ color: yoyPositive ? '#388E3C' : '#D32F2F', fontWeight: 600 }}>
+            {yoyPositive ? '+' : ''}{yoyValue.toFixed(1)}%
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            前年同月比
+          </Typography>
+        </Box>
+      )}
     </Paper>
   );
 };
@@ -598,31 +607,31 @@ export const Dashboard = () => {
           </Grid>
         </Grid>
 
-        {/* 稼働率・自費率推移グラフ */}
+        {/* 変動費率・自費率推移グラフ */}
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
             <Paper sx={{ p: 3 }}>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
-                ユニット稼働率推移（直近6ヶ月）
+                変動費率推移（直近6ヶ月）
               </Typography>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart
                   data={(data.trends || []).map((t) => ({
                     month: (t?.year_month || '0000-00').substring(5, 7) + '月',
-                    稼働率: t?.unit_utilization ?? 0,
+                    変動費率: Math.round((t?.unit_utilization ?? 0) * 10) / 10,
                   }))}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip formatter={(value: number) => [Number(value).toFixed(1), '']} />
+                  <YAxis tick={{ fontSize: 12 }} unit="%" />
+                  <Tooltip formatter={(value: number) => [`${Number(value).toFixed(1)}%`, '']} />
                   <Legend />
                   <Line
                     type="monotone"
-                    dataKey="稼働率"
+                    dataKey="変動費率"
                     stroke="#388E3C"
                     strokeWidth={2}
-                    name="稼働率（%）"
+                    name="変動費率（%）"
                     dot={{ r: 4 }}
                   />
                 </LineChart>
