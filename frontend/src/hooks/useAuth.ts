@@ -37,10 +37,14 @@ export const useAuth = () => {
 
       setSuccessMessage('ログインしました');
 
-      // ロールに応じたリダイレクト
+      // セッション切れ前のページに戻る、なければロールに応じたデフォルトへ
       const user = response.user;
+      const redirectTo = sessionStorage.getItem('redirectAfterLogin');
+      sessionStorage.removeItem('redirectAfterLogin');
 
-      if (user.role === 'system_admin') {
+      if (redirectTo) {
+        navigate(redirectTo);
+      } else if (user.role === 'system_admin') {
         navigate('/admin/dashboard');
       } else {
         navigate('/clinic/dashboard');

@@ -20,6 +20,10 @@ export async function handleResponse<T>(response: Response): Promise<T> {
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');
       localStorage.removeItem('selectedClinicId');
+      const currentPath = window.location.pathname + window.location.search;
+      if (currentPath !== '/login') {
+        sessionStorage.setItem('redirectAfterLogin', currentPath);
+      }
       window.location.href = '/login';
       // リダイレクト後はエラーをthrowせずに空のPromiseを返す
       return new Promise(() => {}) as Promise<T>;
