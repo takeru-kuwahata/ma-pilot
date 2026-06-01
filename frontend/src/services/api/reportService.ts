@@ -16,9 +16,7 @@ interface GenerateReportRequest {
   type: ReportType;
   format: ReportFormat;
   title: string;
-  year_month?: string;
-  start_date?: string;
-  end_date?: string;
+  parameters?: Record<string, string>;
 }
 
 export const reportService = {

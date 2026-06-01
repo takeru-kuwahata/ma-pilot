@@ -24,8 +24,12 @@ import {
   PieChart as PieChartIcon,
   Timeline as TimelineIcon,
 } from '@mui/icons-material';
-import { reportService, clinicService } from '../services/api';
+import { reportService, clinicService, monthlyDataService } from '../services/api';
 import type { Report, Clinic } from '../types';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 
 interface ReportTemplate {
   id: string;
@@ -44,6 +48,8 @@ export const Reports = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const [availableMonths, setAvailableMonths] = useState<string[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
 
   const reportTemplates: ReportTemplate[] = [
     {
@@ -86,9 +92,24 @@ export const Reports = () => {
   useEffect(() => {
     if (clinic?.id) {
       loadReports();
+      loadAvailableMonths(clinic.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clinic?.id]);
+
+  const loadAvailableMonths = async (clinicId: string) => {
+    try {
+      const data = await monthlyDataService.getMonthlyData(clinicId);
+      const months = data
+        .map((d) => d.year_month)
+        .filter((ym): ym is string => !!ym)
+        .sort((a, b) => b.localeCompare(a));
+      setAvailableMonths(months);
+      if (months.length > 0) setSelectedMonth(months[0]);
+    } catch (error) {
+      console.error('Failed to load available months:', error);
+    }
+  };
 
   const loadReports = async () => {
     if (!clinic?.id) {
@@ -135,14 +156,23 @@ export const Reports = () => {
       // テンプレートIDに応じてレポートタイプを決定
       let reportType: 'monthly' | 'market_analysis' | 'simulation';
       let title: string;
+      let parameters: Record<string, string> | undefined;
 
-      // JST現在日時で年月を生成
+      // JST現在日時で年月を生成（診療圏・シミュレーション用）
       const now = new Date(Date.now() + 9 * 60 * 60 * 1000);
       const ym = `${now.getUTCFullYear()}年${now.getUTCMonth() + 1}月`;
 
       if (templateId === '1') {
+        if (!selectedMonth) {
+          setSnackbarMessage('対象月を選択してください');
+          setSnackbarSeverity('error');
+          setSnackbarOpen(true);
+          return;
+        }
         reportType = 'monthly';
-        title = `月次経営レポート（${ym}）`;
+        const [y, m] = selectedMonth.split('-');
+        title = `月次経営レポート（${y}年${parseInt(m)}月）`;
+        parameters = { year_month: selectedMonth };
       } else if (templateId === '2') {
         reportType = 'market_analysis';
         title = `診療圏分析レポート（${ym}）`;
@@ -162,6 +192,7 @@ export const Reports = () => {
         type: reportType,
         format: 'pdf',
         title: title,
+        parameters,
       });
 
       setSnackbarMessage('レポートを生成しました');
@@ -334,6 +365,29 @@ export const Reports = () => {
             >
               {template.description}
             </Typography>
+            {template.id === '1' && (
+              <FormControl fullWidth size="small" sx={{ marginBottom: '12px' }}>
+                <InputLabel>対象月</InputLabel>
+                <Select
+                  value={selectedMonth}
+                  label="対象月"
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                  disabled={availableMonths.length === 0}
+                >
+                  {availableMonths.map((ym) => {
+                    const [y, m] = ym.split('-');
+                    return (
+                      <MenuItem key={ym} value={ym}>
+                        {y}年{parseInt(m)}月
+                      </MenuItem>
+                    );
+                  })}
+                  {availableMonths.length === 0 && (
+                    <MenuItem value="" disabled>月次データがありません</MenuItem>
+                  )}
+                </Select>
+              </FormControl>
+            )}
             <Box
               sx={{
                 display: 'flex',
@@ -354,7 +408,7 @@ export const Reports = () => {
               <IconButton
                 size="small"
                 onClick={() => handleGenerateReport(template.id)}
-                disabled={generating}
+                disabled={generating || (template.id === '1' && !selectedMonth)}
                 sx={{
                   color: '#616161',
                   '&:hover': {

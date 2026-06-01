@@ -69,13 +69,45 @@ class ReportService:
 
     async def _generate_monthly_report_pdf(self, request: ReportGenerateRequest) -> bytes:
         '''Generate monthly report PDF'''
-        # Get latest monthly data for the clinic
-        response = self.supabase.table('monthly_data').select('*').eq(
-            'clinic_id', request.clinic_id
-        ).order('year_month', desc=True).limit(2).execute()
+        target_ym = (request.parameters or {}).get('year_month')
 
-        if not response.data or len(response.data) == 0:
-            raise ValueError('No monthly data found')
+        if target_ym:
+            # 指定月のデータを取得
+            cur_res = self.supabase.table('monthly_data').select('*').eq(
+                'clinic_id', request.clinic_id
+            ).eq('year_month', target_ym).limit(1).execute()
+            if not cur_res.data:
+                raise ValueError(f'No monthly data found for {target_ym}')
+            current_month = cur_res.data[0]
+
+            # 前月を計算して取得
+            try:
+                y, m = int(target_ym[:4]), int(target_ym[5:7])
+                m -= 1
+                if m == 0:
+                    y -= 1
+                    m = 12
+                prev_ym = f'{y:04d}-{m:02d}'
+            except Exception:
+                prev_ym = None
+
+            previous_month = None
+            if prev_ym:
+                prev_res = self.supabase.table('monthly_data').select('*').eq(
+                    'clinic_id', request.clinic_id
+                ).eq('year_month', prev_ym).limit(1).execute()
+                if prev_res.data:
+                    previous_month = prev_res.data[0]
+        else:
+            # 指定なし: 最新2件を取得
+            response = self.supabase.table('monthly_data').select('*').eq(
+                'clinic_id', request.clinic_id
+            ).order('year_month', desc=True).limit(2).execute()
+
+            if not response.data or len(response.data) == 0:
+                raise ValueError('No monthly data found')
+            current_month = response.data[0]
+            previous_month = response.data[1] if len(response.data) > 1 else None
 
         current_month = response.data[0]
         previous_month = response.data[1] if len(response.data) > 1 else None
