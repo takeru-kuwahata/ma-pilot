@@ -5,8 +5,6 @@ import base64
 from typing import Optional, List, Dict
 from datetime import datetime
 from supabase import Client
-import httpx
-
 logger = logging.getLogger(__name__)
 
 
@@ -45,16 +43,10 @@ def _send_email(
         raise
 
 
-def _fetch_attachment(file_url: str, filename: str) -> Optional[Dict]:
-    """URLからファイルをダウンロードしてResend用添付データを返す。失敗時はNone。"""
-    try:
-        response = httpx.get(file_url, timeout=30, follow_redirects=True)
-        response.raise_for_status()
-        content_b64 = base64.b64encode(response.content).decode('utf-8')
-        return {'filename': filename, 'content': content_b64}
-    except Exception as e:
-        logger.warning(f'添付ファイルのダウンロード失敗（URLリンクのみ送信）: {file_url} / {e}')
-        return None
+def _make_attachment(file_bytes: bytes, filename: str) -> Dict:
+    """ファイルbytesからResend用添付データを作成する。"""
+    content_b64 = base64.b64encode(file_bytes).decode('utf-8')
+    return {'filename': filename, 'content': content_b64}
 
 
 class EmailService:
@@ -182,11 +174,14 @@ MA-Pilot 印刷物受注システム
         clinic_email: str,
         filename: str,
         file_url: str,
+        file_bytes: Optional[bytes] = None,
     ) -> None:
         """添付ファイルアップロード後に注文者・スタッフ両方へファイルを添付して通知"""
-        # ファイルをダウンロードしてBase64化
-        attachment = _fetch_attachment(file_url, filename)
-        attachments = [attachment] if attachment else None
+        # アップロード済みbytesがあればそのまま使用（URL経由ダウンロード不要）
+        if file_bytes:
+            attachments = [_make_attachment(file_bytes, filename)]
+        else:
+            attachments = None
 
         # 注文者への通知
         clinic_subject = '【MA-Pilot】添付ファイルを受け付けました'

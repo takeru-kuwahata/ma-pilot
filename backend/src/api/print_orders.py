@@ -298,6 +298,7 @@ async def upload_order_attachment(
                 clinic_email=order.email,
                 filename=file.filename,
                 file_url=public_url,
+                file_bytes=file_bytes,
             )
         except Exception:
             pass
