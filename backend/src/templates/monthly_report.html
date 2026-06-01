@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>{{ title }}</title>
+    <title>{{ report_period }} 月次経営レポート</title>
     <style>
         @font-face {
             font-family: 'Noto Sans JP';
@@ -31,14 +31,29 @@
             border-bottom: 3px solid #FF6B35;
             padding-bottom: 20px;
         }
-        .header h1 {
+        .header .period-label {
+            font-size: 14px;
             color: #FF6B35;
-            margin: 0;
-            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 4px;
         }
-        .header .subtitle {
+        .header h1 {
+            color: #424242;
+            margin: 0;
+            font-size: 26px;
+        }
+        .header .meta {
             color: #666;
             margin-top: 10px;
+            font-size: 13px;
+        }
+        .comparison-note {
+            background: #FFF3EE;
+            border-left: 4px solid #FF6B35;
+            padding: 10px 14px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #555;
         }
         .section {
             margin-bottom: 30px;
@@ -68,19 +83,15 @@
         }
         .kpi-card .value {
             color: #424242;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
         }
         .kpi-card .change {
             font-size: 12px;
             margin-top: 5px;
         }
-        .kpi-card .change.positive {
-            color: #4CAF50;
-        }
-        .kpi-card .change.negative {
-            color: #F44336;
-        }
+        .kpi-card .change.positive { color: #4CAF50; }
+        .kpi-card .change.negative { color: #F44336; }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -96,9 +107,7 @@
             padding: 10px;
             border-bottom: 1px solid #ddd;
         }
-        table tr:nth-child(even) {
-            background: #f9f9f9;
-        }
+        table tr:nth-child(even) { background: #f9f9f9; }
         .footer {
             margin-top: 40px;
             padding-top: 20px;
@@ -111,23 +120,34 @@
 </head>
 <body>
     <div class="header">
-        <h1>{{ title }}</h1>
-        <div class="subtitle">
-            {{ clinic_name }}<br>
-            {% if report_period %}対象期間: {{ report_period }}<br>{% endif %}
-            生成日時: {{ generated_at }}
+        <div class="period-label">{{ report_period }}</div>
+        <h1>月次経営レポート</h1>
+        <div class="meta">
+            {{ clinic_name }}　／　レポート作成日時: {{ generated_at }}
         </div>
     </div>
 
+    {% if prev_period %}
+    <div class="comparison-note">
+        このレポートは <strong>{{ report_period }}</strong> の経営データを集計したものです。
+        前月比の数値は <strong>{{ prev_period }}</strong> との比較です。
+    </div>
+    {% else %}
+    <div class="comparison-note">
+        このレポートは <strong>{{ report_period }}</strong> の経営データを集計したものです。
+        前月データがないため前月比は表示していません。
+    </div>
+    {% endif %}
+
     <div class="section">
-        <h2>主要KPI</h2>
+        <h2>主要KPI（{{ report_period }}）</h2>
         <div class="kpi-grid">
             <div class="kpi-card">
                 <div class="label">総売上</div>
                 <div class="value">¥{{ "{:,}".format(total_revenue) }}</div>
                 {% if revenue_change is not none %}
                 <div class="change {{ 'positive' if revenue_change >= 0 else 'negative' }}">
-                    {{ '+' if revenue_change >= 0 else '' }}{{ "{:.1f}".format(revenue_change) }}% (前月比)
+                    {{ '+' if revenue_change >= 0 else '' }}{{ "{:.1f}".format(revenue_change) }}%（{{ prev_period }}比）
                 </div>
                 {% endif %}
             </div>
@@ -136,7 +156,7 @@
                 <div class="value">¥{{ "{:,}".format(operating_profit) }}</div>
                 {% if profit_change is not none %}
                 <div class="change {{ 'positive' if profit_change >= 0 else 'negative' }}">
-                    {{ '+' if profit_change >= 0 else '' }}{{ "{:.1f}".format(profit_change) }}% (前月比)
+                    {{ '+' if profit_change >= 0 else '' }}{{ "{:.1f}".format(profit_change) }}%（{{ prev_period }}比）
                 </div>
                 {% endif %}
             </div>
@@ -151,7 +171,7 @@
                 <div class="value">{{ "{:,}".format(total_patients) }}人</div>
                 {% if patient_change is not none %}
                 <div class="change {{ 'positive' if patient_change >= 0 else 'negative' }}">
-                    {{ '+' if patient_change >= 0 else '' }}{{ "{:.1f}".format(patient_change) }}% (前月比)
+                    {{ '+' if patient_change >= 0 else '' }}{{ "{:.1f}".format(patient_change) }}%（{{ prev_period }}比）
                 </div>
                 {% endif %}
             </div>
@@ -166,8 +186,46 @@
         </div>
     </div>
 
+    {% if prev_period %}
     <div class="section">
-        <h2>収益詳細</h2>
+        <h2>前月比較（{{ prev_period }} → {{ report_period }}）</h2>
+        <table>
+            <tr>
+                <th>項目</th>
+                <th style="text-align: right;">{{ prev_period }}</th>
+                <th style="text-align: right;">{{ report_period }}</th>
+                <th style="text-align: right;">増減</th>
+            </tr>
+            <tr>
+                <td>総売上</td>
+                <td style="text-align: right;">¥{{ "{:,}".format(prev_total_revenue) }}</td>
+                <td style="text-align: right;">¥{{ "{:,}".format(total_revenue) }}</td>
+                <td style="text-align: right; color: {{ '#4CAF50' if total_revenue >= prev_total_revenue else '#F44336' }};">
+                    {{ '+' if total_revenue >= prev_total_revenue else '' }}¥{{ "{:,}".format(total_revenue - prev_total_revenue) }}
+                </td>
+            </tr>
+            <tr>
+                <td>営業利益</td>
+                <td style="text-align: right;">¥{{ "{:,}".format(prev_operating_profit) }}</td>
+                <td style="text-align: right;">¥{{ "{:,}".format(operating_profit) }}</td>
+                <td style="text-align: right; color: {{ '#4CAF50' if operating_profit >= prev_operating_profit else '#F44336' }};">
+                    {{ '+' if operating_profit >= prev_operating_profit else '' }}¥{{ "{:,}".format(operating_profit - prev_operating_profit) }}
+                </td>
+            </tr>
+            <tr>
+                <td>総患者数</td>
+                <td style="text-align: right;">{{ "{:,}".format(prev_total_patients) }}人</td>
+                <td style="text-align: right;">{{ "{:,}".format(total_patients) }}人</td>
+                <td style="text-align: right; color: {{ '#4CAF50' if total_patients >= prev_total_patients else '#F44336' }};">
+                    {{ '+' if total_patients >= prev_total_patients else '' }}{{ "{:,}".format(total_patients - prev_total_patients) }}人
+                </td>
+            </tr>
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <h2>収益内訳（{{ report_period }}）</h2>
         <table>
             <tr>
                 <th>項目</th>
@@ -198,7 +256,7 @@
     </div>
 
     <div class="section">
-        <h2>コスト詳細</h2>
+        <h2>コスト内訳（{{ report_period }}）</h2>
         <table>
             <tr>
                 <th>項目</th>

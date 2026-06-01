@@ -91,8 +91,8 @@ class PdfService:
 
     def generate_monthly_report_pdf(
         self,
-        title: str,
         clinic_name: str,
+        report_period: str,
         total_revenue: int,
         operating_profit: int,
         profit_margin: float,
@@ -105,7 +105,10 @@ class PdfService:
         variable_cost: int,
         fixed_cost: int,
         total_cost: int,
-        report_period: str = '',
+        prev_period: Optional[str] = None,
+        prev_total_revenue: int = 0,
+        prev_operating_profit: int = 0,
+        prev_total_patients: int = 0,
         revenue_change: Optional[float] = None,
         profit_change: Optional[float] = None,
         patient_change: Optional[float] = None,
@@ -138,9 +141,9 @@ class PdfService:
         template = self.env.get_template("monthly_report.html")
 
         context = {
-            "title": title,
             "clinic_name": clinic_name,
             "report_period": report_period,
+            "prev_period": prev_period,
             "generated_at": datetime.now(JST).strftime("%Y年%m月%d日 %H:%M"),
             "total_revenue": total_revenue,
             "operating_profit": operating_profit,
@@ -154,6 +157,9 @@ class PdfService:
             "variable_cost": variable_cost,
             "fixed_cost": fixed_cost,
             "total_cost": total_cost,
+            "prev_total_revenue": prev_total_revenue,
+            "prev_operating_profit": prev_operating_profit,
+            "prev_total_patients": prev_total_patients,
             "revenue_change": revenue_change,
             "profit_change": profit_change,
             "patient_change": patient_change,

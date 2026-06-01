@@ -147,8 +147,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>{{ title }}</h1>
-        <p>{{ clinic_name }}{% if report_period %} ／ 対象期間：{{ report_period }}{% endif %} ／ 生成日時：{{ generated_at }} ／ 分析半径：{{ radius_km }}km</p>
+        <h1>診療圏分析レポート</h1>
+        <p>{{ clinic_name }} ／ 分析実施: {{ report_period }} ／ 分析半径: {{ radius_km }}km ／ レポート作成日時: {{ generated_at }}</p>
     </div>
 
     <!-- KPI -->

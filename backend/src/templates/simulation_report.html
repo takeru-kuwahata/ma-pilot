@@ -112,11 +112,10 @@
 </head>
 <body>
     <div class="header">
-        <h1>{{ title }}</h1>
+        <h1>シミュレーション結果レポート</h1>
         <div class="subtitle">
             {{ clinic_name }}<br>
-            {% if report_period %}対象期間: {{ report_period }}<br>{% endif %}
-            生成日時: {{ generated_at }}
+            シミュレーション実施: {{ report_period }}　／　レポート作成日時: {{ generated_at }}
         </div>
     </div>
 

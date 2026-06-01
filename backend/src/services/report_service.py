@@ -116,19 +116,26 @@ class ReportService:
             prev_patients = previous_month.get('total_patients') or 0
             patient_change = ((total_patients - prev_patients) / prev_patients * 100) if prev_patients > 0 else 0
 
-        # Format year_month for display (e.g. "2026-03" -> "2026年3月")
-        raw_ym = current_month.get('year_month', '')
-        try:
-            parts = str(raw_ym).split('-')
-            report_period = f"{parts[0]}年{int(parts[1])}月" if len(parts) >= 2 else str(raw_ym)
-        except Exception:
-            report_period = str(raw_ym)
+        def fmt_ym(raw):
+            try:
+                parts = str(raw).split('-')
+                return f"{parts[0]}年{int(parts[1])}月" if len(parts) >= 2 else str(raw)
+            except Exception:
+                return str(raw)
+
+        report_period = fmt_ym(current_month.get('year_month', ''))
+        prev_period = fmt_ym(previous_month.get('year_month', '')) if previous_month else None
+
+        # Previous month values for comparison table
+        prev_total_revenue = previous_month['total_revenue'] if previous_month else 0
+        prev_operating_profit = int(previous_month['total_revenue'] - (previous_month.get('personnel_cost', 0) + previous_month.get('material_cost', 0) + previous_month.get('fixed_cost', 0) + previous_month.get('other_cost', 0))) if previous_month else 0
+        prev_total_patients = (previous_month.get('total_patients') or 0) if previous_month else 0
 
         # Generate PDF
         pdf_bytes = self.pdf_service.generate_monthly_report_pdf(
-            title=request.title,
             clinic_name=clinic_name,
             report_period=report_period,
+            prev_period=prev_period,
             total_revenue=total_revenue,
             operating_profit=int(operating_profit),
             profit_margin=profit_margin,
@@ -141,6 +148,9 @@ class ReportService:
             variable_cost=int(variable_cost),
             fixed_cost=fixed_cost,
             total_cost=int(total_cost),
+            prev_total_revenue=prev_total_revenue,
+            prev_operating_profit=prev_operating_profit,
+            prev_total_patients=prev_total_patients,
             revenue_change=revenue_change,
             profit_change=profit_change,
             patient_change=patient_change,
