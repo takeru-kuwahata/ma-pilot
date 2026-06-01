@@ -1,10 +1,11 @@
 """PDF生成サービス（WeasyPrint）"""
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
 from jinja2 import Environment, FileSystemLoader
 from weasyprint import HTML
-import tempfile
+
+JST = timezone(timedelta(hours=9))
 
 
 class PdfService:
@@ -54,7 +55,7 @@ class PdfService:
 
         # データ準備
         context = {
-            "issue_date": datetime.now().strftime("%Y年%m月%d日"),
+            "issue_date": datetime.now(JST).strftime("%Y年%m月%d日"),
             "order_id": order_id,
             "clinic_name": clinic_name,
             "email": email,
@@ -104,6 +105,7 @@ class PdfService:
         variable_cost: int,
         fixed_cost: int,
         total_cost: int,
+        report_period: str = '',
         revenue_change: Optional[float] = None,
         profit_change: Optional[float] = None,
         patient_change: Optional[float] = None,
@@ -138,7 +140,8 @@ class PdfService:
         context = {
             "title": title,
             "clinic_name": clinic_name,
-            "generated_at": datetime.now().strftime("%Y年%m月%d日 %H:%M"),
+            "report_period": report_period,
+            "generated_at": datetime.now(JST).strftime("%Y年%m月%d日 %H:%M"),
             "total_revenue": total_revenue,
             "operating_profit": operating_profit,
             "profit_margin": profit_margin,
@@ -166,7 +169,8 @@ class PdfService:
         self,
         title: str,
         clinic_name: str,
-        target_revenue: int,
+        report_period: str = '',
+        target_revenue: int = 0,
         target_profit: int,
         profit_margin: float,
         current_revenue: int,
@@ -208,7 +212,8 @@ class PdfService:
         context = {
             "title": title,
             "clinic_name": clinic_name,
-            "generated_at": datetime.now().strftime("%Y年%m月%d日 %H:%M"),
+            "report_period": report_period,
+            "generated_at": datetime.now(JST).strftime("%Y年%m月%d日 %H:%M"),
             "target_revenue": target_revenue,
             "target_profit": target_profit,
             "profit_margin": profit_margin,
@@ -234,7 +239,8 @@ class PdfService:
         self,
         title: str,
         clinic_name: str,
-        radius_km: float,
+        report_period: str = '',
+        radius_km: float = 0.0,
         total_population: int,
         age0_14: int,
         age15_64: int,
@@ -253,7 +259,8 @@ class PdfService:
         context = {
             "title": title,
             "clinic_name": clinic_name,
-            "generated_at": datetime.now().strftime("%Y年%m月%d日 %H:%M"),
+            "report_period": report_period,
+            "generated_at": datetime.now(JST).strftime("%Y年%m月%d日 %H:%M"),
             "radius_km": radius_km,
             "total_population": total_population,
             "age0_14": age0_14,

@@ -148,7 +148,7 @@
 <body>
     <div class="header">
         <h1>{{ title }}</h1>
-        <p>{{ clinic_name }} ／ 生成日時：{{ generated_at }} ／ 分析半径：{{ radius_km }}km</p>
+        <p>{{ clinic_name }}{% if report_period %} ／ 対象期間：{{ report_period }}{% endif %} ／ 生成日時：{{ generated_at }} ／ 分析半径：{{ radius_km }}km</p>
     </div>
 
     <!-- KPI -->

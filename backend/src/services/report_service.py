@@ -1,10 +1,12 @@
 from supabase import Client
 from typing import List
 from ..models.report import Report, ReportGenerateRequest
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from .pdf_service import PdfService
 import uuid
 import logging
+
+JST = timezone(timedelta(hours=9))
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +53,7 @@ class ReportService:
                 'type': request.type,
                 'format': request.format,
                 'title': request.title,
-                'generated_at': datetime.now().isoformat(),
+                'generated_at': datetime.now(JST).isoformat(),
                 'file_url': file_url
             }
 
@@ -114,10 +116,19 @@ class ReportService:
             prev_patients = previous_month.get('total_patients') or 0
             patient_change = ((total_patients - prev_patients) / prev_patients * 100) if prev_patients > 0 else 0
 
+        # Format year_month for display (e.g. "2026-03" -> "2026年3月")
+        raw_ym = current_month.get('year_month', '')
+        try:
+            parts = str(raw_ym).split('-')
+            report_period = f"{parts[0]}年{int(parts[1])}月" if len(parts) >= 2 else str(raw_ym)
+        except Exception:
+            report_period = str(raw_ym)
+
         # Generate PDF
         pdf_bytes = self.pdf_service.generate_monthly_report_pdf(
             title=request.title,
             clinic_name=clinic_name,
+            report_period=report_period,
             total_revenue=total_revenue,
             operating_profit=int(operating_profit),
             profit_margin=profit_margin,
@@ -180,10 +191,19 @@ class ReportService:
         material_cost_rate = sim_input.get('assumed_material_cost_rate', 0)
         fixed_cost = sim_input.get('assumed_fixed_cost', 0)
 
+        # Format simulation date for display
+        sim_created = simulation.get('created_at', '')
+        try:
+            parts = str(sim_created)[:7].split('-')
+            sim_period = f"{parts[0]}年{int(parts[1])}月作成" if len(parts) >= 2 else str(sim_created)[:7]
+        except Exception:
+            sim_period = str(sim_created)[:7]
+
         # Generate PDF
         pdf_bytes = self.pdf_service.generate_simulation_report_pdf(
             title=request.title,
             clinic_name=clinic_name,
+            report_period=sim_period,
             target_revenue=target_revenue,
             target_profit=target_profit,
             profit_margin=profit_margin,
@@ -240,9 +260,18 @@ class ReportService:
         estimated_potential = analysis.get('estimated_potential_patients', 0)
         market_share = analysis.get('market_share', 0)
 
+        # Format analysis date for display
+        analysis_created = analysis.get('created_at', '')
+        try:
+            parts = str(analysis_created)[:7].split('-')
+            analysis_period = f"{parts[0]}年{int(parts[1])}月調査" if len(parts) >= 2 else str(analysis_created)[:7]
+        except Exception:
+            analysis_period = str(analysis_created)[:7]
+
         pdf_bytes = self.pdf_service.generate_market_analysis_report_pdf(
             title=request.title,
             clinic_name=clinic_name,
+            report_period=analysis_period,
             radius_km=radius_km,
             total_population=total_population,
             age0_14=age0_14,

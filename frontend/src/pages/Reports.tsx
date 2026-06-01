@@ -106,10 +106,16 @@ export const Reports = () => {
     }
   };
 
-  const handleDownload = async (reportId: string) => {
+  const handleDownload = async (reportId: string, title?: string) => {
     try {
       const fileUrl = await reportService.downloadReport(reportId);
-      window.open(fileUrl, '_blank');
+      const a = document.createElement('a');
+      a.href = fileUrl;
+      a.download = title ? `${title}.pdf` : 'report.pdf';
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch (error) {
       console.error('Failed to download report:', error);
     }
@@ -130,15 +136,19 @@ export const Reports = () => {
       let reportType: 'monthly' | 'market_analysis' | 'simulation';
       let title: string;
 
+      // JST現在日時で年月を生成
+      const now = new Date(Date.now() + 9 * 60 * 60 * 1000);
+      const ym = `${now.getUTCFullYear()}年${now.getUTCMonth() + 1}月`;
+
       if (templateId === '1') {
         reportType = 'monthly';
-        title = '月次経営レポート';
+        title = `月次経営レポート（${ym}）`;
       } else if (templateId === '2') {
         reportType = 'market_analysis';
-        title = '診療圏分析レポート';
+        title = `診療圏分析レポート（${ym}）`;
       } else if (templateId === '3') {
         reportType = 'simulation';
-        title = 'シミュレーション結果レポート';
+        title = `シミュレーション結果レポート（${ym}）`;
       } else {
         setSnackbarMessage('不明なテンプレートです');
         setSnackbarSeverity('error');
@@ -162,14 +172,26 @@ export const Reports = () => {
       await loadReports();
 
       // 生成したレポートを自動ダウンロード
-      await handleDownload(report.id);
+      await handleDownload(report.id, report.title);
     } catch (error) {
       console.error('Failed to generate report:', error);
       const isTimeout = error instanceof Error && error.name === 'AbortError';
-      setSnackbarMessage(isTimeout
-        ? 'レポート生成がタイムアウトしました。しばらく待ってから再度お試しください。'
-        : 'レポート生成に失敗しました。月次データが登録されているか確認してください。'
-      );
+      let errorMsg = 'レポート生成に失敗しました。';
+      if (isTimeout) {
+        errorMsg = 'レポート生成がタイムアウトしました。しばらく待ってから再度お試しください。';
+      } else if (error instanceof Error) {
+        const msg = error.message.toLowerCase();
+        if (msg.includes('no monthly data') || msg.includes('monthly_data')) {
+          errorMsg = 'レポート生成に失敗しました。基礎データ管理から月次データを登録してください。';
+        } else if (msg.includes('no simulation') || msg.includes('simulation')) {
+          errorMsg = 'レポート生成に失敗しました。先にシミュレーションを実行してください。';
+        } else if (msg.includes('no market analysis') || msg.includes('market_analy')) {
+          errorMsg = 'レポート生成に失敗しました。先に診療圏分析を実行してください。';
+        } else {
+          errorMsg = `レポート生成に失敗しました。${error.message}`;
+        }
+      }
+      setSnackbarMessage(errorMsg);
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
     } finally {
@@ -462,7 +484,7 @@ export const Reports = () => {
                     <TableCell>
                       <IconButton
                         size="small"
-                        onClick={() => handleDownload(report.id)}
+                        onClick={() => handleDownload(report.id, report.title)}
                         sx={{
                           color: '#616161',
                           '&:hover': {

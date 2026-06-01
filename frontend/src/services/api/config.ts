@@ -32,11 +32,14 @@ export async function handleResponse<T>(response: Response): Promise<T> {
       error: 'Unknown Error',
       message: response.statusText
     }));
-    throw new ApiError(
+    const apiError = new ApiError(
       response.status,
       error.message || error.detail || 'Request failed',
       error.error
     );
+    // バックエンドの詳細エラーをdetailとして保持
+    (apiError as ApiError & { detail?: string }).detail = error.detail;
+    throw apiError;
   }
   return response.json();
 }
