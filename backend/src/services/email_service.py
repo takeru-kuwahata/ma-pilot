@@ -1,15 +1,24 @@
 """メール送信サービス"""
 import logging
 import os
-from typing import Optional
+import base64
+from typing import Optional, List, Dict
 from datetime import datetime
 from supabase import Client
+import httpx
 
 logger = logging.getLogger(__name__)
 
 
-def _send_email(to_email: str, subject: str, body: str) -> None:
-    """Resend経由でメール送信。APIキー未設定の場合はログ出力のみ。"""
+def _send_email(
+    to_email: str,
+    subject: str,
+    body: str,
+    attachments: Optional[List[Dict]] = None,
+) -> None:
+    """Resend経由でメール送信。APIキー未設定の場合はログ出力のみ。
+    attachments: [{'filename': 'foo.pdf', 'content': <base64文字列>}, ...]
+    """
     api_key = os.environ.get('RESEND_API_KEY', '')
     from_email = os.environ.get('RESEND_FROM_EMAIL', 'dr@medical-advance.com')
 
@@ -21,16 +30,31 @@ def _send_email(to_email: str, subject: str, body: str) -> None:
     try:
         import resend
         resend.api_key = api_key
-        resend.Emails.send({
+        payload: Dict = {
             'from': f'株式会社メディカルアドバンス <{from_email}>',
             'to': [to_email],
             'subject': subject,
             'text': body,
-        })
+        }
+        if attachments:
+            payload['attachments'] = attachments
+        resend.Emails.send(payload)
         logger.info(f'メール送信成功: To={to_email}, Subject={subject}')
     except Exception as e:
         logger.error(f'メール送信失敗: To={to_email}, Error={e}')
         raise
+
+
+def _fetch_attachment(file_url: str, filename: str) -> Optional[Dict]:
+    """URLからファイルをダウンロードしてResend用添付データを返す。失敗時はNone。"""
+    try:
+        response = httpx.get(file_url, timeout=30, follow_redirects=True)
+        response.raise_for_status()
+        content_b64 = base64.b64encode(response.content).decode('utf-8')
+        return {'filename': filename, 'content': content_b64}
+    except Exception as e:
+        logger.warning(f'添付ファイルのダウンロード失敗（URLリンクのみ送信）: {file_url} / {e}')
+        return None
 
 
 class EmailService:
@@ -159,7 +183,11 @@ MA-Pilot 印刷物受注システム
         filename: str,
         file_url: str,
     ) -> None:
-        """添付ファイルアップロード後に注文者・スタッフ両方へURLを通知"""
+        """添付ファイルアップロード後に注文者・スタッフ両方へファイルを添付して通知"""
+        # ファイルをダウンロードしてBase64化
+        attachment = _fetch_attachment(file_url, filename)
+        attachments = [attachment] if attachment else None
+
         # 注文者への通知
         clinic_subject = '【MA-Pilot】添付ファイルを受け付けました'
         clinic_body = f"""{clinic_name} 様
@@ -168,7 +196,6 @@ MA-Pilot 印刷物受注システム
 
 ■添付ファイル
 ファイル名: {filename}
-URL: {file_url}
 
 担当者が確認次第ご連絡いたします。
 
@@ -176,7 +203,7 @@ URL: {file_url}
 株式会社メディカルアドバンス
 ---
 """
-        _send_email(clinic_email, clinic_subject, clinic_body)
+        _send_email(clinic_email, clinic_subject, clinic_body, attachments=attachments)
 
         # スタッフへの通知
         staff_subject = f'【添付ファイル】{clinic_name} 様 注文番号: {order_id}'
@@ -189,14 +216,13 @@ URL: {file_url}
 
 ■添付ファイル
 ファイル名: {filename}
-URL: {file_url}
 
 ---
 MA-Pilot 印刷物受注システム
 ---
 """
         staff_email = self.get_print_order_email()
-        _send_email(staff_email, staff_subject, staff_body)
+        _send_email(staff_email, staff_subject, staff_body, attachments=attachments)
 
     async def send_welcome_email(
         self,
