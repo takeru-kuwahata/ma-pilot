@@ -24,7 +24,7 @@
         }
         .header {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             border-bottom: 3px solid #FF6B35;
             padding-bottom: 16px;
         }
@@ -33,51 +33,63 @@
         .sim-title-box {
             background: #FFF3EE;
             border-left: 4px solid #FF6B35;
-            padding: 12px 16px;
-            margin-bottom: 24px;
-            font-size: 15px;
+            padding: 10px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
             font-weight: bold;
             color: #333;
         }
-        .purpose-box {
+        .note-box {
             background: #f5f5f5;
-            border-radius: 8px;
-            padding: 14px 16px;
-            margin-bottom: 24px;
-            font-size: 13px;
-            color: #555;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #666;
         }
-        .purpose-box .purpose-title {
-            font-weight: bold;
-            color: #FF6B35;
-            margin-bottom: 6px;
-            font-size: 14px;
-        }
-        .section { margin-bottom: 28px; }
+        .section { margin-bottom: 24px; }
         .section h2 {
             color: #424242;
             border-left: 4px solid #FF6B35;
             padding-left: 10px;
-            margin-bottom: 14px;
-            font-size: 16px;
+            margin-bottom: 12px;
+            font-size: 15px;
         }
-        .kpi-grid {
+        .compare-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             margin-bottom: 16px;
         }
-        .kpi-card {
+        .compare-card {
             background: #f5f5f5;
-            padding: 14px;
+            padding: 12px;
             border-radius: 8px;
             text-align: center;
         }
-        .kpi-card .label { color: #666; font-size: 11px; margin-bottom: 6px; }
-        .kpi-card .value { color: #424242; font-size: 20px; font-weight: bold; }
-        .kpi-card .sub { color: #888; font-size: 11px; margin-top: 4px; }
-        .kpi-card.highlight { background: #FFF3EE; border: 1px solid #FF6B35; }
-        .kpi-card.highlight .value { color: #FF6B35; }
+        .compare-card .label { color: #666; font-size: 11px; margin-bottom: 4px; }
+        .compare-card .current { color: #888; font-size: 13px; }
+        .compare-card .arrow { color: #999; font-size: 11px; margin: 2px 0; }
+        .compare-card .estimated { color: #FF6B35; font-size: 19px; font-weight: bold; }
+        .compare-card .change { font-size: 12px; margin-top: 4px; font-weight: bold; }
+        .change.positive { color: #4CAF50; }
+        .change.negative { color: #F44336; }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .kpi-card {
+            background: #FFF3EE;
+            border: 1px solid #FF6B35;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .kpi-card .label { color: #666; font-size: 11px; margin-bottom: 4px; }
+        .kpi-card .value { color: #FF6B35; font-size: 22px; font-weight: bold; }
+        .kpi-card .sub { color: #888; font-size: 11px; margin-top: 3px; }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -87,19 +99,16 @@
         table th {
             background: #FF6B35;
             color: white;
-            padding: 9px 10px;
+            padding: 8px 10px;
             text-align: left;
         }
-        table td {
-            padding: 9px 10px;
-            border-bottom: 1px solid #ddd;
-        }
+        table td { padding: 8px 10px; border-bottom: 1px solid #ddd; }
         table tr:nth-child(even) { background: #f9f9f9; }
         .strategies { margin: 0; padding-left: 18px; }
-        .strategies li { margin-bottom: 6px; font-size: 13px; color: #444; }
+        .strategies li { margin-bottom: 5px; font-size: 13px; color: #444; }
         .footer {
-            margin-top: 36px;
-            padding-top: 16px;
+            margin-top: 32px;
+            padding-top: 14px;
             border-top: 1px solid #ddd;
             text-align: center;
             color: #666;
@@ -116,92 +125,89 @@
     </div>
 
     {% if sim_title %}
-    <div class="sim-title-box">
-        シミュレーション名：{{ sim_title }}
-    </div>
+    <div class="sim-title-box">シミュレーション名：{{ sim_title }}</div>
     {% endif %}
 
-    <div class="purpose-box">
-        <div class="purpose-title">このシミュレーションの目的</div>
-        月間売上目標 <strong>¥{{ "{:,}".format(target_revenue) }}</strong>、
-        営業利益目標 <strong>¥{{ "{:,}".format(target_profit) }}</strong> を達成するために
-        必要な条件を試算しました。
+    <div class="note-box">
+        このシミュレーションは、<strong>{{ current_period }}の実績データ</strong>を基準として、
+        各項目の変動率を設定した場合の予測値を算出したものです。
+        左列の「現状（{{ current_period }}）」が実績値、右列の「予測値」がシミュレーション後の値です。
     </div>
 
     <div class="section">
-        <h2>目標達成に必要な数値</h2>
-        <div class="kpi-grid">
-            <div class="kpi-card highlight">
-                <div class="label">必要患者数（月間）</div>
-                <div class="value">{{ "{:,}".format(required_patients) }}人</div>
-                <div class="sub">この患者数の確保が必要</div>
+        <h2>現状 vs 予測値の比較</h2>
+        <div class="compare-grid">
+            <div class="compare-card">
+                <div class="label">月間売上</div>
+                <div class="current">現状: ¥{{ "{:,}".format(current_revenue) }}</div>
+                <div class="arrow">↓</div>
+                <div class="estimated">¥{{ "{:,}".format(estimated_revenue) }}</div>
+                <div class="change {{ 'positive' if revenue_change >= 0 else 'negative' }}">
+                    {{ '+' if revenue_change >= 0 else '' }}¥{{ "{:,}".format(revenue_change) }}
+                </div>
             </div>
-            <div class="kpi-card highlight">
-                <div class="label">必要診療件数（月間）</div>
-                <div class="value">{{ "{:,}".format(required_treatments) }}件</div>
-                <div class="sub">この診療件数が目安</div>
+            <div class="compare-card">
+                <div class="label">月間営業利益</div>
+                <div class="current">現状: ¥{{ "{:,}".format(current_profit) }}</div>
+                <div class="arrow">↓</div>
+                <div class="estimated">¥{{ "{:,}".format(estimated_profit) }}</div>
+                <div class="change {{ 'positive' if profit_change >= 0 else 'negative' }}">
+                    {{ '+' if profit_change >= 0 else '' }}¥{{ "{:,}".format(profit_change) }}
+                </div>
             </div>
-            <div class="kpi-card highlight">
-                <div class="label">想定利益率</div>
-                <div class="value">{{ "{:.1f}".format(profit_margin) }}%</div>
-                <div class="sub">前提条件から算出</div>
+            <div class="compare-card">
+                <div class="label">利益率（予測）</div>
+                <div class="current">現状: —</div>
+                <div class="arrow">↓</div>
+                <div class="estimated">{{ "{:.1f}".format(profit_margin) }}%</div>
+                <div class="change">シミュレーション後</div>
             </div>
         </div>
     </div>
 
     <div class="section">
-        <h2>試算結果</h2>
-        <table>
-            <tr>
-                <th>項目</th>
-                <th style="text-align: right;">目標値（入力）</th>
-                <th style="text-align: right;">試算値（結果）</th>
-            </tr>
-            <tr>
-                <td>月間売上</td>
-                <td style="text-align: right;">¥{{ "{:,}".format(target_revenue) }}</td>
-                <td style="text-align: right;">¥{{ "{:,}".format(estimated_revenue) }}</td>
-            </tr>
-            <tr>
-                <td>月間営業利益</td>
-                <td style="text-align: right;">¥{{ "{:,}".format(target_profit) }}</td>
-                <td style="text-align: right;">¥{{ "{:,}".format(estimated_profit) }}</td>
-            </tr>
-            <tr>
-                <td>利益率</td>
-                <td style="text-align: right;">—</td>
-                <td style="text-align: right;">{{ "{:.1f}".format(profit_margin) }}%</td>
-            </tr>
-        </table>
+        <h2>予測値を実現するために必要な患者数・診療件数</h2>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="label">必要患者数（月間）</div>
+                <div class="value">{{ "{:,}".format(required_patients) }}人</div>
+                <div class="sub">現状 {{ "{:,}".format(current_patients) }}人 → この人数が必要</div>
+            </div>
+            <div class="kpi-card">
+                <div class="label">必要診療件数（月間）</div>
+                <div class="value">{{ "{:,}".format(required_treatments) }}件</div>
+                <div class="sub">患者数 × 1.2 を目安として算出</div>
+            </div>
+        </div>
     </div>
 
     <div class="section">
-        <h2>前提条件（シミュレーション設定値）</h2>
+        <h2>シミュレーションの設定条件</h2>
         <table>
             <tr>
                 <th>設定項目</th>
                 <th style="text-align: right;">設定値</th>
-                <th>説明</th>
+                <th>内容</th>
             </tr>
             <tr>
-                <td>平均患者単価</td>
+                <td>平均患者単価（予測）</td>
                 <td style="text-align: right;">¥{{ "{:,}".format(avg_revenue_per_patient) }}</td>
-                <td>1患者あたりの平均売上</td>
+                <td>変動後の1患者あたり平均売上</td>
             </tr>
             <tr>
-                <td>人件費率</td>
+                <td>人件費率（予測）</td>
                 <td style="text-align: right;">{{ "{:.1f}".format(personnel_cost_rate) }}%</td>
                 <td>売上に対する人件費の割合</td>
             </tr>
             <tr>
-                <td>材料費率</td>
+                <td>材料費率（予測）</td>
                 <td style="text-align: right;">{{ "{:.1f}".format(material_cost_rate) }}%</td>
                 <td>売上に対する材料費の割合</td>
             </tr>
             <tr>
-                <td>固定費（月額）</td>
+                <td>固定費（月額・予測）</td>
                 <td style="text-align: right;">¥{{ "{:,}".format(fixed_cost) }}</td>
-                <td>家賃・光熱費など毎月固定でかかるコスト</td>
+                <td>変動後の家賃・光熱費など月固定コスト</td>
             </tr>
         </table>
     </div>

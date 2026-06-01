@@ -211,11 +211,7 @@ class ReportService:
         sim_result = simulation.get('result', {})
         sim_title = simulation.get('title', '')
 
-        # 目標値（入力）
-        target_revenue = sim_input.get('target_revenue', 0)
-        target_profit = sim_input.get('target_profit', 0)
-
-        # 結果値（計算済み）
+        # 予測値（変動率適用後）
         estimated_revenue = sim_result.get('estimated_revenue', 0)
         estimated_profit = sim_result.get('estimated_profit', 0)
         profit_margin = sim_result.get('profit_margin', 0)
@@ -228,6 +224,32 @@ class ReportService:
         personnel_cost_rate = sim_input.get('assumed_personnel_cost_rate', 0)
         material_cost_rate = sim_input.get('assumed_material_cost_rate', 0)
         fixed_cost = sim_input.get('assumed_fixed_cost', 0)
+
+        # 現在値（最新月次データから取得）
+        current_revenue = 0
+        current_profit = 0
+        current_patients = 0
+        current_period = ''
+        monthly_res = self.supabase.table('monthly_data').select('*').eq(
+            'clinic_id', request.clinic_id
+        ).order('year_month', desc=True).limit(1).execute()
+        if monthly_res.data:
+            md = monthly_res.data[0]
+            current_revenue = md.get('total_revenue', 0) or 0
+            current_patients = md.get('total_patients', 0) or 0
+            pc = (md.get('personnel_cost', 0) or 0) + (md.get('material_cost', 0) or 0)
+            fc = md.get('fixed_cost', 0) or 0
+            oc = md.get('other_cost', 0) or 0
+            current_profit = current_revenue - pc - fc - oc
+            raw_ym = md.get('year_month', '')
+            try:
+                parts = str(raw_ym).split('-')
+                current_period = f"{parts[0]}年{int(parts[1])}月" if len(parts) >= 2 else str(raw_ym)
+            except Exception:
+                current_period = str(raw_ym)
+
+        revenue_change = int(estimated_revenue) - int(current_revenue)
+        profit_change = int(estimated_profit) - int(current_profit)
 
         # Format simulation date for display
         sim_created = simulation.get('created_at', '')
@@ -243,11 +265,15 @@ class ReportService:
             clinic_name=clinic_name,
             sim_title=sim_title,
             report_period=sim_period,
-            target_revenue=int(target_revenue),
-            target_profit=int(target_profit),
+            current_period=current_period,
+            current_revenue=int(current_revenue),
+            current_profit=int(current_profit),
+            current_patients=int(current_patients),
             estimated_revenue=int(estimated_revenue),
             estimated_profit=int(estimated_profit),
             profit_margin=profit_margin,
+            revenue_change=revenue_change,
+            profit_change=profit_change,
             required_patients=required_patients,
             required_treatments=required_treatments,
             avg_revenue_per_patient=int(avg_revenue_per_patient),
