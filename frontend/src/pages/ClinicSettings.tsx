@@ -106,10 +106,10 @@ export const ClinicSettings = () => {
         });
 
         setBusinessInfo({
-          chairs: 0,
-          dentists: 0,
-          hygienists: 0,
-          partTimeStaff: 0,
+          chairs: clinic.dental_chairs ?? 0,
+          dentists: clinic.full_time_dentists ?? 0,
+          hygienists: clinic.full_time_hygienists ?? 0,
+          partTimeStaff: clinic.part_time_staff ?? 0,
         });
 
         setLoadingData(false);
@@ -193,12 +193,19 @@ export const ClinicSettings = () => {
   };
 
   const handleSaveBusinessInfo = async () => {
+    if (!clinicId) return;
     try {
       setLoading(true);
+      await clinicService.updateClinic(clinicId, {
+        dental_chairs: businessInfo.chairs,
+        full_time_dentists: businessInfo.dentists,
+        full_time_hygienists: businessInfo.hygienists,
+        part_time_staff: businessInfo.partTimeStaff,
+      });
       setSnackbar({
         open: true,
-        message: '経営情報の保存機能は開発中です',
-        severity: 'error'
+        message: '経営情報を保存しました',
+        severity: 'success'
       });
     } catch (error) {
       console.error('Failed to save business info:', error);

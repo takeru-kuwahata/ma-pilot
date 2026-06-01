@@ -32,6 +32,10 @@ export interface Clinic {
   owner_id: string;
   is_active: boolean;
   openhouse_status: OpenhouseStatus;
+  dental_chairs?: number | null;
+  full_time_dentists?: number | null;
+  full_time_hygienists?: number | null;
+  part_time_staff?: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -192,11 +196,15 @@ export interface MonthlyDataFormData {
 }
 
 export interface ClinicFormData {
-  name: string;
+  name?: string;
   slug?: string;
-  postal_code: string;
-  address: string;
-  phone_number: string;
+  postal_code?: string;
+  address?: string;
+  phone_number?: string;
+  dental_chairs?: number | null;
+  full_time_dentists?: number | null;
+  full_time_hygienists?: number | null;
+  part_time_staff?: number | null;
 }
 
 // ============================================

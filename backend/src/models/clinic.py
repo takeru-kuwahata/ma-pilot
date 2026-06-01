@@ -16,6 +16,11 @@ class Clinic(BaseModel):
     owner_id: str
     is_active: bool
     openhouse_status: str = 'none'  # 'none' | 'scheduled' | 'completed'
+    # 経営情報
+    dental_chairs: Optional[int] = None
+    full_time_dentists: Optional[int] = None
+    full_time_hygienists: Optional[int] = None
+    part_time_staff: Optional[int] = None
     created_at: datetime
     updated_at: datetime
 
@@ -41,6 +46,11 @@ class ClinicUpdate(BaseModel):
     phone_number: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    # 経営情報
+    dental_chairs: Optional[int] = None
+    full_time_dentists: Optional[int] = None
+    full_time_hygienists: Optional[int] = None
+    part_time_staff: Optional[int] = None
 
 
 class ClinicResponse(BaseModel):
