@@ -100,17 +100,14 @@ class ReportService:
                     previous_month = prev_res.data[0]
         else:
             # 指定なし: 最新2件を取得
-            response = self.supabase.table('monthly_data').select('*').eq(
+            all_res = self.supabase.table('monthly_data').select('*').eq(
                 'clinic_id', request.clinic_id
             ).order('year_month', desc=True).limit(2).execute()
 
-            if not response.data or len(response.data) == 0:
+            if not all_res.data or len(all_res.data) == 0:
                 raise ValueError('No monthly data found')
-            current_month = response.data[0]
-            previous_month = response.data[1] if len(response.data) > 1 else None
-
-        current_month = response.data[0]
-        previous_month = response.data[1] if len(response.data) > 1 else None
+            current_month = all_res.data[0]
+            previous_month = all_res.data[1] if len(all_res.data) > 1 else None
 
         # Get clinic info
         clinic_response = self.supabase.table('clinics').select('name').eq(
@@ -209,25 +206,24 @@ class ReportService:
 
         clinic_name = clinic_response.data['name'] if clinic_response.data else 'クリニック'
 
-        # Extract simulation data from nested input/result fields
+        # Extract simulation data
         sim_input = simulation.get('input', {})
         sim_result = simulation.get('result', {})
+        sim_title = simulation.get('title', '')
 
-        target_revenue = sim_result.get('estimated_revenue', sim_input.get('target_revenue', 0))
-        target_profit = sim_result.get('estimated_profit', sim_input.get('target_profit', 0))
+        # 目標値（入力）
+        target_revenue = sim_input.get('target_revenue', 0)
+        target_profit = sim_input.get('target_profit', 0)
+
+        # 結果値（計算済み）
+        estimated_revenue = sim_result.get('estimated_revenue', 0)
+        estimated_profit = sim_result.get('estimated_profit', 0)
         profit_margin = sim_result.get('profit_margin', 0)
+        required_patients = sim_result.get('required_patients', 0)
+        required_treatments = sim_result.get('required_treatments', 0)
+        strategies = sim_result.get('strategies', [])
 
-        # current values not stored directly; use 0 as fallback
-        current_revenue = 0
-        current_profit = 0
-
-        revenue_change_amount = target_revenue - current_revenue
-        revenue_change_rate = 0
-
-        profit_change_amount = target_profit - current_profit
-        profit_change_rate = 0
-
-        # Get parameters from input field
+        # 前提条件
         avg_revenue_per_patient = sim_input.get('assumed_average_revenue_per_patient', 0)
         personnel_cost_rate = sim_input.get('assumed_personnel_cost_rate', 0)
         material_cost_rate = sim_input.get('assumed_material_cost_rate', 0)
@@ -236,29 +232,29 @@ class ReportService:
         # Format simulation date for display
         sim_created = simulation.get('created_at', '')
         try:
-            parts = str(sim_created)[:7].split('-')
-            sim_period = f"{parts[0]}年{int(parts[1])}月作成" if len(parts) >= 2 else str(sim_created)[:7]
+            parts = str(sim_created)[:10].split('-')
+            sim_period = f"{parts[0]}年{int(parts[1])}月{int(parts[2])}日" if len(parts) >= 3 else str(sim_created)[:10]
         except Exception:
-            sim_period = str(sim_created)[:7]
+            sim_period = str(sim_created)[:10]
 
         # Generate PDF
         pdf_bytes = self.pdf_service.generate_simulation_report_pdf(
             title=request.title,
             clinic_name=clinic_name,
+            sim_title=sim_title,
             report_period=sim_period,
-            target_revenue=target_revenue,
-            target_profit=target_profit,
+            target_revenue=int(target_revenue),
+            target_profit=int(target_profit),
+            estimated_revenue=int(estimated_revenue),
+            estimated_profit=int(estimated_profit),
             profit_margin=profit_margin,
-            current_revenue=current_revenue,
-            current_profit=current_profit,
-            revenue_change_amount=revenue_change_amount,
-            revenue_change_rate=revenue_change_rate,
-            profit_change_amount=profit_change_amount,
-            profit_change_rate=profit_change_rate,
-            avg_revenue_per_patient=avg_revenue_per_patient,
+            required_patients=required_patients,
+            required_treatments=required_treatments,
+            avg_revenue_per_patient=int(avg_revenue_per_patient),
             personnel_cost_rate=personnel_cost_rate,
             material_cost_rate=material_cost_rate,
-            fixed_cost=fixed_cost,
+            fixed_cost=int(fixed_cost),
+            strategies=strategies,
         )
 
         return pdf_bytes
