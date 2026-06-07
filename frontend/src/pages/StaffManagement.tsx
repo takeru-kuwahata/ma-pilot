@@ -221,9 +221,9 @@ export const StaffManagement = () => {
       case 'clinic_editor':
         return { backgroundColor: '#E3F2FD', color: '#1976D2' };
       case 'clinic_viewer':
-        return { backgroundColor: '#F5F5F5', color: '#616161' };
+        return { backgroundColor: '#F5F5F5', color: '#555555' };
       default:
-        return { backgroundColor: '#F5F5F5', color: '#616161' };
+        return { backgroundColor: '#F5F5F5', color: '#555555' };
     }
   };
 
@@ -257,7 +257,7 @@ export const StaffManagement = () => {
         <Typography
           variant="body2"
           sx={{
-            color: '#616161',
+            color: '#555555',
             fontSize: '14px',
           }}
         >
@@ -325,19 +325,19 @@ export const StaffManagement = () => {
           <Table sx={{ minWidth: 500 }}>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>
                   名前
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>
                   メールアドレス
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>
                   権限
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>
                   登録日
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>
                   操作
                 </TableCell>
               </TableRow>
@@ -356,7 +356,7 @@ export const StaffManagement = () => {
                       label={getRoleLabel(staff.role)}
                       sx={{
                         ...getRoleColor(staff.role),
-                        fontSize: '12px',
+                        fontSize: '13px',
                         fontWeight: 600,
                         height: '24px',
                       }}
@@ -370,7 +370,7 @@ export const StaffManagement = () => {
                       size="small"
                       onClick={() => handleEditStaff(staff)}
                       sx={{
-                        color: '#616161',
+                        color: '#555555',
                         '&:hover': {
                           color: '#FF6B35',
                         },
@@ -383,7 +383,7 @@ export const StaffManagement = () => {
                         size="small"
                         onClick={() => handleDeleteStaff(staff.id)}
                         sx={{
-                          color: '#616161',
+                          color: '#555555',
                           '&:hover': {
                             color: '#FF6B35',
                           },
@@ -466,7 +466,7 @@ export const StaffManagement = () => {
             onClick={() => setInviteDialogOpen(false)}
             disabled={inviteLoading}
             sx={{
-              color: '#616161',
+              color: '#555555',
               '&:hover': {
                 backgroundColor: '#F5F5F5',
               },
@@ -575,7 +575,7 @@ export const StaffManagement = () => {
             }}
             disabled={editLoading}
             sx={{
-              color: '#616161',
+              color: '#555555',
               '&:hover': {
                 backgroundColor: '#F5F5F5',
               },

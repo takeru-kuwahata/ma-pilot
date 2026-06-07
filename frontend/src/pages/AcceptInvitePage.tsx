@@ -98,7 +98,7 @@ export const AcceptInvitePage = () => {
             MA-Pilot
           </Typography>
           <Typography
-            sx={{ textAlign: 'center', fontSize: '0.95rem', color: '#666', mb: 3 }}
+            sx={{ textAlign: 'center', fontSize: '0.95rem', color: '#555555', mb: 3 }}
           >
             招待を承認しました。
             <br />
@@ -114,7 +114,7 @@ export const AcceptInvitePage = () => {
           {!ready ? (
             <Box sx={{ textAlign: 'center', py: 4 }}>
               <CircularProgress size={32} sx={{ color: '#FF6B35' }} />
-              <Typography sx={{ mt: 2, fontSize: '0.875rem', color: '#666' }}>
+              <Typography sx={{ mt: 2, fontSize: '0.875rem', color: '#555555' }}>
                 認証情報を確認中...
               </Typography>
             </Box>

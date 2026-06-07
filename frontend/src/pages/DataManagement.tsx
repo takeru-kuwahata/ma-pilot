@@ -369,7 +369,7 @@ export const DataManagement = () => {
         <Typography
           variant="body2"
           sx={{
-            color: '#616161',
+            color: '#555555',
             fontSize: '14px',
           }}
         >
@@ -416,7 +416,7 @@ export const DataManagement = () => {
           <Typography
             variant="body2"
             sx={{
-              color: '#616161',
+              color: '#555555',
               fontSize: '14px',
               marginBottom: '16px',
             }}
@@ -476,7 +476,7 @@ export const DataManagement = () => {
           <Typography
             variant="body2"
             sx={{
-              color: '#616161',
+              color: '#555555',
               fontSize: '14px',
               marginBottom: '16px',
             }}
@@ -616,7 +616,7 @@ export const DataManagement = () => {
                     padding: '12px',
                     fontWeight: 600,
                     fontSize: '14px',
-                    color: '#616161',
+                    color: '#555555',
                     borderBottom: '1px solid #e0e0e0',
                   }}
                 >
@@ -627,7 +627,7 @@ export const DataManagement = () => {
                     padding: '12px',
                     fontWeight: 600,
                     fontSize: '14px',
-                    color: '#616161',
+                    color: '#555555',
                     borderBottom: '1px solid #e0e0e0',
                   }}
                 >
@@ -638,28 +638,28 @@ export const DataManagement = () => {
                     padding: '12px',
                     fontWeight: 600,
                     fontSize: '14px',
-                    color: '#616161',
+                    color: '#555555',
                     borderBottom: '1px solid #e0e0e0',
                   }}
                 >
                   営業利益
                 </TableCell>
-                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#555555', borderBottom: '1px solid #e0e0e0' }}>
                   初診
                 </TableCell>
-                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#555555', borderBottom: '1px solid #e0e0e0' }}>
                   再初診
                 </TableCell>
-                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#555555', borderBottom: '1px solid #e0e0e0' }}>
                   再診
                 </TableCell>
-                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#555555', borderBottom: '1px solid #e0e0e0' }}>
                   他
                 </TableCell>
-                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#555555', borderBottom: '1px solid #e0e0e0' }}>
                   総患者数
                 </TableCell>
-                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#616161', borderBottom: '1px solid #e0e0e0' }}>
+                <TableCell sx={{ padding: '12px', fontWeight: 600, fontSize: '14px', color: '#555555', borderBottom: '1px solid #e0e0e0' }}>
                   データソース
                 </TableCell>
                 <TableCell
@@ -667,7 +667,7 @@ export const DataManagement = () => {
                     padding: '12px',
                     fontWeight: 600,
                     fontSize: '14px',
-                    color: '#616161',
+                    color: '#555555',
                     borderBottom: '1px solid #e0e0e0',
                   }}
                 >

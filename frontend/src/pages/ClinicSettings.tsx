@@ -274,7 +274,7 @@ export const ClinicSettings = () => {
         <Typography variant="h4" sx={{ fontSize: '32px', fontWeight: 500, marginBottom: '8px' }}>
           医院設定
         </Typography>
-        <Typography variant="body2" sx={{ color: '#616161', fontSize: '14px' }}>
+        <Typography variant="body2" sx={{ color: '#555555', fontSize: '14px' }}>
           医院の基本情報と経営情報の管理
         </Typography>
       </Box>

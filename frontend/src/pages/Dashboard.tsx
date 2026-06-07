@@ -238,7 +238,7 @@ const ProposalCard = ({
                         </Typography>
                       )}
                       {svc.price_range && (
-                        <Typography variant="caption" sx={{ color: '#616161', display: 'block', mb: 1 }}>
+                        <Typography variant="caption" sx={{ color: '#555555', display: 'block', mb: 1 }}>
                           {svc.price_range}
                         </Typography>
                       )}
@@ -289,7 +289,7 @@ const GamificationCard = ({ data }: { data: GamificationData }) => {
           <Typography variant="h4" sx={{ fontWeight: 700, color: RANK_COLOR[data.current_rank] }}>
             {data.total_score}点
           </Typography>
-          <Typography variant="caption" sx={{ color: '#616161' }}>経営健診スコア</Typography>
+          <Typography variant="caption" sx={{ color: '#555555' }}>経営健診スコア</Typography>
         </Box>
       </Box>
 
@@ -310,7 +310,7 @@ const GamificationCard = ({ data }: { data: GamificationData }) => {
       <ResponsiveContainer width="100%" height={220}>
         <RadarChart data={radarData} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
           <PolarGrid />
-          <PolarAngleAxis dataKey="subject" tick={{ fontSize: 12 }} />
+          <PolarAngleAxis dataKey="subject" tick={{ fontSize: '13px' }} />
           <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
           <Radar name="前月" dataKey="prev" stroke="#BDBDBD" fill="#BDBDBD" fillOpacity={0.2} strokeDasharray="4 2" />
           <Radar name="今月" dataKey="value" stroke="#1976D2" fill="#1976D2" fillOpacity={0.35} />
@@ -561,8 +561,8 @@ export const Dashboard = () => {
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
+                  <XAxis dataKey="month" tick={{ fontSize: '13px' }} />
+                  <YAxis tick={{ fontSize: '13px' }} />
                   <Tooltip formatter={(value: number) => [Number(value).toFixed(1), '']} />
                   <Legend />
                   <Line
@@ -595,8 +595,8 @@ export const Dashboard = () => {
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={patientChartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
+                  <XAxis dataKey="month" tick={{ fontSize: '13px' }} />
+                  <YAxis tick={{ fontSize: '13px' }} />
                   <Tooltip formatter={(value: number) => [Number(value).toFixed(1), '']} />
                   <Legend />
                   <Bar dataKey="新患" fill="#FF6B35" name="新患（人）" />
@@ -622,8 +622,8 @@ export const Dashboard = () => {
                   }))}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} unit="%" />
+                  <XAxis dataKey="month" tick={{ fontSize: '13px' }} />
+                  <YAxis tick={{ fontSize: '13px' }} unit="%" />
                   <Tooltip formatter={(value: number) => [`${Number(value).toFixed(1)}%`, '']} />
                   <Legend />
                   <Line
@@ -652,8 +652,8 @@ export const Dashboard = () => {
                   }))}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
+                  <XAxis dataKey="month" tick={{ fontSize: '13px' }} />
+                  <YAxis tick={{ fontSize: '13px' }} />
                   <Tooltip formatter={(value: number) => [Number(value).toFixed(1), '']} />
                   <Legend />
                   <Line

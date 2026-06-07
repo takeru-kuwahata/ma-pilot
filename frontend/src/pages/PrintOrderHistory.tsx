@@ -162,7 +162,7 @@ export default function PrintOrderHistory() {
           </Grid>
         </Box>
 
-        <Typography variant="body2" sx={{ color: '#9e9e9e', fontSize: '12px', mb: 3, px: 0.5 }}>
+        <Typography variant="body2" sx={{ color: '#767676', fontSize: '13px', mb: 3, px: 0.5 }}>
           ※物価の高騰や原材料費の変動により、予告なく価格が変更となる場合がございます。あらかじめご了承ください。
         </Typography>
 

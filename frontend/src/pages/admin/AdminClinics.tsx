@@ -458,7 +458,7 @@ export const AdminClinics = () => {
     textTransform: 'none' as const,
     ...(active
       ? { backgroundColor: '#FF6B35', color: '#ffffff', '&:hover': { backgroundColor: '#E55A2B' } }
-      : { borderColor: '#e0e0e0', color: '#616161', '&:hover': { borderColor: '#FF6B35' } }),
+      : { borderColor: '#e0e0e0', color: '#555555', '&:hover': { borderColor: '#FF6B35' } }),
   });
 
   return (
@@ -468,7 +468,7 @@ export const AdminClinics = () => {
         <Typography variant="h4" sx={{ fontSize: '32px', fontWeight: 500, marginBottom: '8px' }}>
           医院アカウント管理
         </Typography>
-        <Typography variant="body2" sx={{ color: '#616161', fontSize: '14px' }}>
+        <Typography variant="body2" sx={{ color: '#555555', fontSize: '14px' }}>
           登録医院の閲覧・編集・ステータス管理
         </Typography>
       </Box>
@@ -485,7 +485,7 @@ export const AdminClinics = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ color: '#9e9e9e' }} />
+                  <SearchIcon sx={{ color: '#767676' }} />
                 </InputAdornment>
               ),
             }}
@@ -547,7 +547,7 @@ export const AdminClinics = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>
                   <TableSortLabel
                     active={sortKey === 'name'}
                     direction={sortKey === 'name' ? sortOrder : 'asc'}
@@ -556,8 +556,8 @@ export const AdminClinics = () => {
                     医院名
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>住所</TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>住所</TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>
                   <TableSortLabel
                     active={sortKey === 'createdAt'}
                     direction={sortKey === 'createdAt' ? sortOrder : 'asc'}
@@ -566,8 +566,8 @@ export const AdminClinics = () => {
                     登録日
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>プラン</TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>プラン</TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>
                   <TableSortLabel
                     active={sortKey === 'status'}
                     direction={sortKey === 'status' ? sortOrder : 'asc'}
@@ -576,7 +576,7 @@ export const AdminClinics = () => {
                     ステータス
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>
                   <TableSortLabel
                     active={sortKey === 'openhouse'}
                     direction={sortKey === 'openhouse' ? sortOrder : 'asc'}
@@ -585,7 +585,7 @@ export const AdminClinics = () => {
                     内覧会
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#616161' }}>操作</TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '14px', color: '#555555' }}>操作</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -623,7 +623,7 @@ export const AdminClinics = () => {
                       <IconButton size="small" onClick={() => handleView(clinic)} title="この医院として操作する" sx={{ color: '#FF6B35', '&:hover': { color: '#E55A2B' } }}>
                         <VisibilityIcon />
                       </IconButton>
-                      <IconButton size="small" onClick={() => handleEdit(clinic)} title="編集" sx={{ color: '#616161', '&:hover': { color: '#FF6B35' } }}>
+                      <IconButton size="small" onClick={() => handleEdit(clinic)} title="編集" sx={{ color: '#555555', '&:hover': { color: '#FF6B35' } }}>
                         <EditIcon />
                       </IconButton>
                       {!isActive ? (
@@ -631,14 +631,14 @@ export const AdminClinics = () => {
                           <PlayArrowIcon />
                         </IconButton>
                       ) : (
-                        <IconButton size="small" onClick={() => handleToggleStatus(clinic.id, isActive)} title="停止" sx={{ color: '#616161', '&:hover': { color: '#FF6B35' } }}>
+                        <IconButton size="small" onClick={() => handleToggleStatus(clinic.id, isActive)} title="停止" sx={{ color: '#555555', '&:hover': { color: '#FF6B35' } }}>
                           <BlockIcon />
                         </IconButton>
                       )}
-                      <IconButton size="small" onClick={() => { setPasswordTarget(clinic); setNewPassword(''); }} title="パスワード変更" sx={{ color: '#bdbdbd', '&:hover': { color: '#1976D2' } }}>
+                      <IconButton size="small" onClick={() => { setPasswordTarget(clinic); setNewPassword(''); }} title="パスワード変更" sx={{ color: '#767676', '&:hover': { color: '#1976D2' } }}>
                         <KeyIcon />
                       </IconButton>
-                      <IconButton size="small" onClick={() => setDeleteTarget(clinic)} title="削除" sx={{ color: '#bdbdbd', '&:hover': { color: '#F44336' } }}>
+                      <IconButton size="small" onClick={() => setDeleteTarget(clinic)} title="削除" sx={{ color: '#767676', '&:hover': { color: '#F44336' } }}>
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -651,7 +651,7 @@ export const AdminClinics = () => {
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography sx={{ fontSize: '14px', color: '#616161' }}>表示件数：</Typography>
+            <Typography sx={{ fontSize: '14px', color: '#555555' }}>表示件数：</Typography>
             <Select
               value={itemsPerPage}
               onChange={(e) => { setItemsPerPage(Number(e.target.value)); setPage(1); }}
@@ -662,7 +662,7 @@ export const AdminClinics = () => {
                 <MenuItem key={n} value={n} sx={{ fontSize: '14px' }}>{n}件</MenuItem>
               ))}
             </Select>
-            <Typography sx={{ fontSize: '14px', color: '#616161' }}>
+            <Typography sx={{ fontSize: '14px', color: '#555555' }}>
               全{filteredClinics.length}件
             </Typography>
           </Box>
@@ -682,7 +682,7 @@ export const AdminClinics = () => {
       <Dialog open={passwordTarget !== null} onClose={() => { setPasswordTarget(null); setNewPassword(''); }} maxWidth="xs" fullWidth>
         <DialogTitle>パスワードを変更</DialogTitle>
         <DialogContent>
-          <Typography sx={{ fontSize: '13px', color: '#616161', mb: 2 }}>
+          <Typography sx={{ fontSize: '13px', color: '#555555', mb: 2 }}>
             <strong>{passwordTarget?.name}</strong> のパスワードを変更します。
           </Typography>
           <TextField
@@ -698,7 +698,7 @@ export const AdminClinics = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => { setPasswordTarget(null); setNewPassword(''); }} sx={{ color: '#616161' }} disabled={savingPassword}>
+          <Button onClick={() => { setPasswordTarget(null); setNewPassword(''); }} sx={{ color: '#555555' }} disabled={savingPassword}>
             キャンセル
           </Button>
           <Button
@@ -718,7 +718,7 @@ export const AdminClinics = () => {
         <DialogTitle>WordPressユーザーCSVインポート</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-            <Typography sx={{ fontSize: '13px', color: '#616161' }}>
+            <Typography sx={{ fontSize: '13px', color: '#555555' }}>
               CSVファイルの列：<strong>email, display_name, clinic_name, password, postal_code, address, phone_number, openhouse_status</strong>
               <br />※ email と clinic_name は必須。password が空の場合はログイン不可アカウントになります。
             </Typography>
@@ -760,7 +760,7 @@ export const AdminClinics = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => { setImportDialogOpen(false); setImportResult(null); }} sx={{ color: '#616161' }}>
+          <Button onClick={() => { setImportDialogOpen(false); setImportResult(null); }} sx={{ color: '#555555' }}>
             閉じる
           </Button>
         </DialogActions>
@@ -776,7 +776,7 @@ export const AdminClinics = () => {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteTarget(null)} sx={{ color: '#616161' }} disabled={deleting}>
+          <Button onClick={() => setDeleteTarget(null)} sx={{ color: '#555555' }} disabled={deleting}>
             キャンセル
           </Button>
           <Button
@@ -853,7 +853,7 @@ export const AdminClinics = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditClinic(null)} sx={{ color: '#616161' }} disabled={savingEdit}>
+          <Button onClick={() => setEditClinic(null)} sx={{ color: '#555555' }} disabled={savingEdit}>
             キャンセル
           </Button>
           <Button
@@ -935,7 +935,7 @@ export const AdminClinics = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} sx={{ color: '#616161' }}>キャンセル</Button>
+          <Button onClick={handleCloseDialog} sx={{ color: '#555555' }}>キャンセル</Button>
           <Button
             onClick={handleCreateClinic}
             variant="contained"

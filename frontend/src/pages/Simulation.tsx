@@ -277,7 +277,7 @@ export const Simulation = () => {
         <Typography
           variant="body2"
           sx={{
-            color: '#616161',
+            color: '#555555',
             fontSize: '14px',
           }}
         >
@@ -641,7 +641,7 @@ export const Simulation = () => {
               <Typography
                 sx={{
                   fontSize: '14px',
-                  color: '#616161',
+                  color: '#555555',
                   marginBottom: '8px',
                 }}
               >
@@ -670,7 +670,7 @@ export const Simulation = () => {
             <Typography
               sx={{
                 fontSize: '14px',
-                color: '#616161',
+                color: '#555555',
                 marginBottom: '8px',
               }}
             >
@@ -699,7 +699,7 @@ export const Simulation = () => {
             <Typography
               sx={{
                 fontSize: '14px',
-                color: '#616161',
+                color: '#555555',
                 marginBottom: '8px',
               }}
             >
@@ -717,7 +717,7 @@ export const Simulation = () => {
                 component="span"
                 sx={{
                   fontSize: '14px',
-                  color: '#616161',
+                  color: '#555555',
                   marginLeft: '4px',
                 }}
               >
@@ -746,7 +746,7 @@ export const Simulation = () => {
             <Typography
               sx={{
                 fontSize: '14px',
-                color: '#616161',
+                color: '#555555',
                 marginBottom: '8px',
               }}
             >
@@ -775,7 +775,7 @@ export const Simulation = () => {
             <Typography
               sx={{
                 fontSize: '14px',
-                color: '#616161',
+                color: '#555555',
                 marginBottom: '8px',
               }}
             >
@@ -804,7 +804,7 @@ export const Simulation = () => {
             <Typography
               sx={{
                 fontSize: '14px',
-                color: '#616161',
+                color: '#555555',
                 marginBottom: '8px',
               }}
             >
@@ -823,7 +823,7 @@ export const Simulation = () => {
                 component="span"
                 sx={{
                   fontSize: '14px',
-                  color: '#616161',
+                  color: '#555555',
                   marginLeft: '4px',
                 }}
               >
@@ -863,13 +863,13 @@ export const Simulation = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#616161',
+            color: '#555555',
             fontSize: '16px',
             gap: '16px',
           }}
         >
-          <ShowChartIcon sx={{ fontSize: '48px', color: '#9e9e9e' }} />
-          <Typography sx={{ fontSize: '16px', color: '#616161' }}>
+          <ShowChartIcon sx={{ fontSize: '48px', color: '#767676' }} />
+          <Typography sx={{ fontSize: '16px', color: '#555555' }}>
             推移予測グラフ（準備中）
           </Typography>
         </Box>

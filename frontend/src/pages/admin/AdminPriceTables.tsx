@@ -254,7 +254,7 @@ export default function AdminPriceTables() {
               <Typography variant="subtitle1" fontWeight="bold" color="white">
                 {productType}
               </Typography>
-              <Chip label={`${rows.length}件`} size="small" sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white', height: 20, fontSize: '11px' }} />
+              <Chip label={`${rows.length}件`} size="small" sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white', height: 20, fontSize: '13px' }} />
             </Box>
 
             <TableContainer>
@@ -285,7 +285,7 @@ export default function AdminPriceTables() {
                           label={row.design_fee_included ? '込み' : '別途'}
                           size="small"
                           color={row.design_fee_included ? 'primary' : 'default'}
-                          sx={{ height: 20, fontSize: '11px' }}
+                          sx={{ height: 20, fontSize: '13px' }}
                         />
                       </TableCell>
                       <TableCell align="right">{row.delivery_days}営業日後</TableCell>
@@ -332,7 +332,7 @@ export default function AdminPriceTables() {
                 {PRODUCT_TYPE_OPTIONS.map((opt) => (
                   <MenuItem key={opt} value={opt}>{opt}</MenuItem>
                 ))}
-                <MenuItem value="__custom__" disabled sx={{ color: 'text.secondary', fontSize: '12px' }}>
+                <MenuItem value="__custom__" disabled sx={{ color: 'text.secondary', fontSize: '13px' }}>
                   ── 以下は直接入力 ──
                 </MenuItem>
               </Select>

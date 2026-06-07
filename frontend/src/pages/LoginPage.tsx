@@ -144,7 +144,7 @@ export const LoginPage = () => {
               '& .MuiTab-root': {
                 fontSize: '1rem',
                 fontWeight: 500,
-                color: '#757575',
+                color: '#555555',
                 textTransform: 'none',
                 '&.Mui-selected': {
                   color: '#FF6B35',
@@ -307,7 +307,7 @@ export const LoginPage = () => {
                 sx={{ '& .MuiOutlinedInput-root': { '&.Mui-focused fieldset': { borderColor: '#FF6B35' } }, '& .MuiInputLabel-root.Mui-focused': { color: '#FF6B35' } }}
               />
               <Box sx={{ mt: 2, mb: 1, borderTop: '1px solid #e0e0e0', pt: 2 }}>
-                <Typography sx={{ fontSize: '0.8rem', color: '#888', mb: 1 }}>医院情報</Typography>
+                <Typography sx={{ fontSize: '0.8rem', color: '#767676', mb: 1 }}>医院情報</Typography>
               </Box>
               <TextField
                 fullWidth
@@ -381,7 +381,7 @@ export const LoginPage = () => {
               <Typography
                 sx={{
                   fontSize: '0.875rem',
-                  color: '#666',
+                  color: '#555555',
                   mb: 2,
                   lineHeight: 1.5,
                 }}

@@ -298,7 +298,7 @@ export const MarketAnalysis = () => {
           <Typography
             variant="body2"
             sx={{
-              color: '#616161',
+              color: '#555555',
               fontSize: '14px',
             }}
           >
@@ -358,7 +358,7 @@ export const MarketAnalysis = () => {
           <Typography
             sx={{
               fontSize: '14px',
-              color: '#616161',
+              color: '#555555',
               marginBottom: '8px',
             }}
           >
@@ -376,7 +376,7 @@ export const MarketAnalysis = () => {
               component="span"
               sx={{
                 fontSize: '14px',
-                color: '#616161',
+                color: '#555555',
                 marginLeft: '4px',
               }}
             >
@@ -397,12 +397,12 @@ export const MarketAnalysis = () => {
           <Typography
             sx={{
               fontSize: '14px',
-              color: '#616161',
+              color: '#555555',
               marginBottom: '8px',
             }}
           >
             高齢化率
-            <Typography component="span" sx={{ fontSize: '11px', color: '#9e9e9e', display: 'block' }}>
+            <Typography component="span" sx={{ fontSize: '13px', color: '#767676', display: 'block' }}>
               ※65歳以上
             </Typography>
           </Typography>
@@ -418,7 +418,7 @@ export const MarketAnalysis = () => {
               component="span"
               sx={{
                 fontSize: '14px',
-                color: '#616161',
+                color: '#555555',
                 marginLeft: '4px',
               }}
             >
@@ -439,7 +439,7 @@ export const MarketAnalysis = () => {
           <Typography
             sx={{
               fontSize: '14px',
-              color: '#616161',
+              color: '#555555',
               marginBottom: '8px',
             }}
           >
@@ -457,7 +457,7 @@ export const MarketAnalysis = () => {
               component="span"
               sx={{
                 fontSize: '14px',
-                color: '#616161',
+                color: '#555555',
                 marginLeft: '4px',
               }}
             >
@@ -478,12 +478,12 @@ export const MarketAnalysis = () => {
           <Typography
             sx={{
               fontSize: '14px',
-              color: '#616161',
+              color: '#555555',
               marginBottom: '8px',
             }}
           >
             競合密度
-            <Typography component="span" sx={{ fontSize: '11px', color: '#9e9e9e', display: 'block' }}>
+            <Typography component="span" sx={{ fontSize: '13px', color: '#767676', display: 'block' }}>
               ※1院あたりの人口 高いほど有利
             </Typography>
           </Typography>
@@ -499,7 +499,7 @@ export const MarketAnalysis = () => {
               component="span"
               sx={{
                 fontSize: '14px',
-                color: '#616161',
+                color: '#555555',
                 marginLeft: '4px',
               }}
             >
@@ -541,7 +541,7 @@ export const MarketAnalysis = () => {
               justifyContent: 'center',
             }}
           >
-            <Typography sx={{ fontSize: '14px', color: '#616161' }}>
+            <Typography sx={{ fontSize: '14px', color: '#555555' }}>
               地図を読み込み中...
             </Typography>
           </Box>
@@ -553,7 +553,7 @@ export const MarketAnalysis = () => {
               competitors={analysis.competitors}
               radiusKm={analysis.radius_km}
             />
-            <Typography sx={{ fontSize: '12px', color: '#d32f2f', marginTop: '8px' }}>
+            <Typography sx={{ fontSize: '13px', color: '#d32f2f', marginTop: '8px' }}>
               ※ 競合医院の表示はGoogleマップのデータに基づいています。登録状況によっては一部の医院が表示されない場合があります。表示件数・位置情報の完全な正確性は保証できません。
             </Typography>
           </>
@@ -569,7 +569,7 @@ export const MarketAnalysis = () => {
               justifyContent: 'center',
             }}
           >
-            <Typography sx={{ fontSize: '14px', color: '#616161' }}>
+            <Typography sx={{ fontSize: '14px', color: '#555555' }}>
               データがありません
             </Typography>
           </Box>
@@ -620,12 +620,12 @@ export const MarketAnalysis = () => {
                     <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>
                       {competitor.name}
                     </Typography>
-                    <Typography sx={{ fontSize: '13px', color: '#616161', whiteSpace: 'nowrap', ml: 1 }}>
+                    <Typography sx={{ fontSize: '13px', color: '#555555', whiteSpace: 'nowrap', ml: 1 }}>
                       {competitor.distance.toFixed(1)}km
                     </Typography>
                   </Box>
                   {competitor.address && (
-                    <Typography sx={{ fontSize: '12px', color: '#9e9e9e', mt: 0.25 }}>
+                    <Typography sx={{ fontSize: '13px', color: '#767676', mt: 0.25 }}>
                       {competitor.address}
                     </Typography>
                   )}

@@ -272,7 +272,7 @@ export const Reports = () => {
         <Typography
           variant="body2"
           sx={{
-            color: '#616161',
+            color: '#555555',
             fontSize: '14px',
           }}
         >
@@ -357,7 +357,7 @@ export const Reports = () => {
             </Typography>
             <Typography
               sx={{
-                color: '#616161',
+                color: '#555555',
                 fontSize: '14px',
                 marginBottom: '16px',
                 lineHeight: 1.5,
@@ -399,8 +399,8 @@ export const Reports = () => {
             >
               <Typography
                 sx={{
-                  fontSize: '12px',
-                  color: '#9e9e9e',
+                  fontSize: '13px',
+                  color: '#767676',
                 }}
               >
                 {template.format}
@@ -410,7 +410,7 @@ export const Reports = () => {
                 onClick={() => handleGenerateReport(template.id)}
                 disabled={generating || (template.id === '1' && !selectedMonth)}
                 sx={{
-                  color: '#616161',
+                  color: '#555555',
                   '&:hover': {
                     color: '#FF6B35',
                   },
@@ -453,7 +453,7 @@ export const Reports = () => {
                   sx={{
                     fontWeight: 600,
                     fontSize: '14px',
-                    color: '#616161',
+                    color: '#555555',
                   }}
                 >
                   レポート名
@@ -462,7 +462,7 @@ export const Reports = () => {
                   sx={{
                     fontWeight: 600,
                     fontSize: '14px',
-                    color: '#616161',
+                    color: '#555555',
                   }}
                 >
                   生成日時
@@ -471,7 +471,7 @@ export const Reports = () => {
                   sx={{
                     fontWeight: 600,
                     fontSize: '14px',
-                    color: '#616161',
+                    color: '#555555',
                   }}
                 >
                   対象期間
@@ -480,7 +480,7 @@ export const Reports = () => {
                   sx={{
                     fontWeight: 600,
                     fontSize: '14px',
-                    color: '#616161',
+                    color: '#555555',
                   }}
                 >
                   ステータス
@@ -489,7 +489,7 @@ export const Reports = () => {
                   sx={{
                     fontWeight: 600,
                     fontSize: '14px',
-                    color: '#616161',
+                    color: '#555555',
                   }}
                 >
                   操作
@@ -529,7 +529,7 @@ export const Reports = () => {
                         sx={{
                           backgroundColor: '#E8F5E9',
                           color: '#2E7D32',
-                          fontSize: '12px',
+                          fontSize: '13px',
                           fontWeight: 600,
                           height: '24px',
                         }}
@@ -540,7 +540,7 @@ export const Reports = () => {
                         size="small"
                         onClick={() => handleDownload(report.id, report.title)}
                         sx={{
-                          color: '#616161',
+                          color: '#555555',
                           '&:hover': {
                             color: '#FF6B35',
                           },
@@ -552,7 +552,7 @@ export const Reports = () => {
                         size="small"
                         onClick={() => handleDelete(report.id)}
                         sx={{
-                          color: '#616161',
+                          color: '#555555',
                           '&:hover': {
                             color: '#FF6B35',
                           },

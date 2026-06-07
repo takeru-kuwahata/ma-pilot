@@ -81,7 +81,7 @@ export const ClinicMySettings = () => {
         <Typography variant="h4" sx={{ fontSize: '32px', fontWeight: 500, marginBottom: '8px' }}>
           マイページ設定
         </Typography>
-        <Typography variant="body2" sx={{ color: '#616161', fontSize: '14px' }}>
+        <Typography variant="body2" sx={{ color: '#555555', fontSize: '14px' }}>
           {user?.email}
         </Typography>
       </Box>
