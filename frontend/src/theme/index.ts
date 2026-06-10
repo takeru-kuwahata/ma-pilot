@@ -79,29 +79,35 @@ export const theme = createTheme({
       '"Yu Gothic"',
       'sans-serif',
     ].join(','),
-    fontSize: 15, // ベースフォントサイズ（日本語BtoBサービス標準）
+    // htmlFontSize: ブラウザデフォルト16pxを基準にremを計算
+    // 15px = 0.9375rem, 13px = 0.8125rem, 18px = 1.125rem, 24px = 1.5rem
+    htmlFontSize: 16,
+    fontSize: 15,
 
-    // ページタイトル: 24px
-    h4: { fontSize: '24px', fontWeight: 600, color: '#1a1a1a', lineHeight: 1.4 },
-    // セクション見出し: 18px
-    h6: { fontSize: '18px', fontWeight: 600, color: '#1a1a1a', lineHeight: 1.4 },
-    // 本文: 15px
-    body1: { fontSize: '15px', fontWeight: 400, color: '#333333', lineHeight: 1.7 },
-    // 補足・説明文: 13px（最小サイズ）
-    body2: { fontSize: '13px', fontWeight: 400, color: '#555555', lineHeight: 1.6 },
-    // ラベル・キャプション: 13px
-    caption: { fontSize: '13px', fontWeight: 400, color: '#555555', lineHeight: 1.5 },
-    // ボタン
-    button: { fontSize: '15px', fontWeight: 600 },
+    // ===== rem適用（OS・ブラウザのフォントサイズ設定に追従） =====
+    // ページタイトル: 24px相当
+    h4: { fontSize: '1.5rem', fontWeight: 600, color: '#1a1a1a', lineHeight: 1.4 },
+    // セクション見出し: 18px相当
+    h6: { fontSize: '1.125rem', fontWeight: 600, color: '#1a1a1a', lineHeight: 1.4 },
+    // サブ見出し: 20px相当
+    h5: { fontSize: '1.25rem', fontWeight: 600, color: '#1a1a1a' },
+    // 本文: 15px相当 ← OS設定に追従する最重要テキスト
+    body1: { fontSize: '0.9375rem', fontWeight: 400, color: '#333333', lineHeight: 1.7 },
+    // 補足・説明文: 13px相当（最小サイズ）
+    body2: { fontSize: '0.8125rem', fontWeight: 400, color: '#555555', lineHeight: 1.6 },
+    // ラベル・キャプション: 13px相当
+    caption: { fontSize: '0.8125rem', fontWeight: 400, color: '#555555', lineHeight: 1.5 },
+    // ボタン: 15px相当
+    button: { fontSize: '0.9375rem', fontWeight: 600 },
+    // サブタイトル
+    subtitle1: { fontSize: '0.9375rem', fontWeight: 600, color: '#333333' },
+    subtitle2: { fontSize: '0.8125rem', fontWeight: 600, color: '#555555' },
+    overline: { fontSize: '0.8125rem', fontWeight: 600, color: '#555555', letterSpacing: '0.05em' },
 
-    // 未使用だが定義が必要なvariant
+    // ===== px維持（KPI数値・大見出し：固定グリッド内のため崩れ防止） =====
     h1: { fontSize: '32px', fontWeight: 700, color: '#1a1a1a' },
     h2: { fontSize: '28px', fontWeight: 700, color: '#1a1a1a' },
     h3: { fontSize: '24px', fontWeight: 600, color: '#1a1a1a' },
-    h5: { fontSize: '20px', fontWeight: 600, color: '#1a1a1a' },
-    subtitle1: { fontSize: '15px', fontWeight: 600, color: '#333333' },
-    subtitle2: { fontSize: '13px', fontWeight: 600, color: '#555555' },
-    overline: { fontSize: '13px', fontWeight: 600, color: '#555555', letterSpacing: '0.05em' },
   },
   components: {
     // ===== ボタン =====
@@ -120,7 +126,7 @@ export const theme = createTheme({
       },
     },
 
-    // ===== テーブル =====
+    // ===== テーブル（px維持：固定幅列との整合性のため） =====
     MuiTableCell: {
       styleOverrides: {
         head: {
@@ -135,17 +141,17 @@ export const theme = createTheme({
       },
     },
 
-    // ===== テキストフィールド =====
+    // ===== テキストフィールド（rem：入力欄はOS設定追従が重要） =====
     MuiTextField: {
       defaultProps: { variant: 'outlined' },
       styleOverrides: {
         root: {
           '& .MuiInputBase-input': {
-            fontSize: '15px',
+            fontSize: '0.9375rem',
             color: '#1a1a1a',
           },
           '& .MuiInputLabel-root': {
-            fontSize: '15px',
+            fontSize: '0.9375rem',
             color: '#555555',
           },
           '& .MuiInputBase-input::placeholder': {
@@ -159,17 +165,17 @@ export const theme = createTheme({
       },
     },
 
-    // ===== セレクト =====
+    // ===== セレクト（rem） =====
     MuiSelect: {
       styleOverrides: {
         select: {
-          fontSize: '15px',
+          fontSize: '0.9375rem',
           color: '#1a1a1a',
         },
       },
     },
 
-    // ===== Chip =====
+    // ===== Chip（px維持：height固定との整合性のため） =====
     MuiChip: {
       styleOverrides: {
         root: {
@@ -214,30 +220,30 @@ export const theme = createTheme({
       },
     },
 
-    // ===== Tooltip =====
+    // ===== Tooltip（rem） =====
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          fontSize: '13px',
+          fontSize: '0.8125rem',
         },
       },
     },
 
-    // ===== FormHelperText（入力補足） =====
+    // ===== FormHelperText（rem：入力補足はOS設定追従が重要） =====
     MuiFormHelperText: {
       styleOverrides: {
         root: {
-          fontSize: '13px',
+          fontSize: '0.8125rem',
           color: '#555555',
         },
       },
     },
 
-    // ===== MenuItem =====
+    // ===== MenuItem（rem） =====
     MuiMenuItem: {
       styleOverrides: {
         root: {
-          fontSize: '15px',
+          fontSize: '0.9375rem',
           color: '#1a1a1a',
         },
       },
