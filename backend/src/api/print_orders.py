@@ -102,7 +102,7 @@ async def delete_price_table(
     """価格表を削除"""
     try:
         service.delete_price_table(price_table_id)
-        return ApiResponse(message="価格表を削除しました")
+        return ApiResponse(data=None, message="価格表を削除しました")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -287,7 +287,7 @@ async def send_order_emails(
                 logger.info('添付ファイル受信: %s (%d bytes)', attachment.filename, len(file_bytes))
 
         service.send_order_emails(order, attachments=attachments)
-        return ApiResponse(message="メールを送信しました")
+        return ApiResponse(data=None, message="メールを送信しました")
     except HTTPException:
         raise
     except Exception as e:
@@ -307,7 +307,7 @@ async def cancel_print_order(
             raise HTTPException(status_code=404, detail="注文が見つかりません")
         supabase = get_supabase_client()
         supabase.table("print_orders").delete().eq("id", order_id).execute()
-        return ApiResponse(message="注文をキャンセルしました")
+        return ApiResponse(data=None, message="注文をキャンセルしました")
     except HTTPException:
         raise
     except Exception as e:
