@@ -60,6 +60,9 @@ def _send_email_with_resend_api(
     }
     if attachments:
         payload['attachments'] = attachments
+        logger.info(f'添付ファイル付きメール送信: {[a["filename"] for a in attachments]}')
+    else:
+        logger.info('添付ファイルなしでメール送信')
 
     resp = httpx.post(
         'https://api.resend.com/emails',

@@ -286,6 +286,7 @@ async def send_order_emails(
                 attachments = [{'filename': attachment.filename, 'content': content_b64}]
                 logger.info('添付ファイル受信: %s (%d bytes)', attachment.filename, len(file_bytes))
 
+        logger.info('send_order_emails呼び出し: order_id=%s, attachments=%d件', order_id, len(attachments))
         service.send_order_emails(order, attachments=attachments)
         return ApiResponse(data=None, message="メールを送信しました")
     except HTTPException:
