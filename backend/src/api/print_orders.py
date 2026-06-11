@@ -274,17 +274,20 @@ async def send_order_emails(
             raise HTTPException(status_code=404, detail="注文が見つかりません")
 
         # 添付ファイルがある場合のみmultipart/form-dataで受け取る
+        import base64
         attachments = []
         content_type = request.headers.get('content-type', '')
         if 'multipart/form-data' in content_type:
-            import base64
-            form = await request.form()
-            attachment = form.get('attachment')
-            if attachment and hasattr(attachment, 'filename') and attachment.filename:
-                file_bytes = await attachment.read()
-                content_b64 = base64.b64encode(file_bytes).decode('utf-8')
-                attachments = [{'filename': attachment.filename, 'content': content_b64}]
-                logger.info('添付ファイル受信: %s (%d bytes)', attachment.filename, len(file_bytes))
+            try:
+                form = await request.form()
+                attachment = form.get('attachment')
+                if attachment and hasattr(attachment, 'filename') and attachment.filename:
+                    file_bytes = await attachment.read()
+                    content_b64 = base64.b64encode(file_bytes).decode('utf-8')
+                    attachments = [{'filename': attachment.filename, 'content': content_b64}]
+                    logger.info('添付ファイル受信: %s (%d bytes)', attachment.filename, len(file_bytes))
+            except Exception as form_err:
+                logger.warning('添付ファイル読み取り失敗（添付なしで送信）: %s', form_err)
 
         logger.info('send_order_emails呼び出し: order_id=%s, attachments=%d件', order_id, len(attachments))
         service.send_order_emails(order, attachments=attachments)
@@ -292,7 +295,7 @@ async def send_order_emails(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error('send_order_emails エラー: %s', e)
+        logger.error('send_order_emails エラー: %s', e, exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -332,7 +335,13 @@ async def upload_order_attachment(
             raise HTTPException(status_code=400, detail="PDF・JPG・PNGのみアップロード可能です")
 
         file_bytes = await file.read()
-        storage_path = f"print_order_attachments/{order_id}/{file.filename}"
+        # 日本語ファイル名はStorage URLで400エラーになるためASCII安全な名前に変換
+        import unicodedata
+        safe_name = unicodedata.normalize('NFKD', file.filename).encode('ascii', 'ignore').decode('ascii')
+        if not safe_name or safe_name.strip() in ('.', ''):
+            ext = file.filename.rsplit('.', 1)[-1] if '.' in file.filename else 'bin'
+            safe_name = f"attachment.{ext}"
+        storage_path = f"print_order_attachments/{order_id}/{safe_name}"
 
         supabase = get_supabase_client()
         supabase.storage.from_("attachments").upload(
