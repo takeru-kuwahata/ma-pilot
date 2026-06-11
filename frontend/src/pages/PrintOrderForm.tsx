@@ -307,7 +307,7 @@ export default function PrintOrderFormPhase2() {
 
       const result = await printOrderService.createPrintOrder(orderData);
 
-      // 添付ファイルがあればアップロード
+      // 添付ファイルがあればアップロード（メールはこの後まとめて送る）
       if (attachmentFile) {
         try {
           await printOrderService.uploadOrderAttachment(result.id, attachmentFile);
@@ -319,14 +319,20 @@ export default function PrintOrderFormPhase2() {
 
       setSubmittedOrderId(result.id);
 
-      // クレジットカード払いの場合はStripe決済モーダルを表示（メールは決済完了後に送信）
-      // それ以外はすぐに成功モーダルを表示（メールは既にバックエンドで送信済み）
+      // クレジットカード払いの場合はStripe決済モーダルを表示
+      // （メールはStripe決済完了後のonSuccessで送信）
       if (data.payment_method === 'stripe') {
         setStripeModalOpen(true);
         return; // フォームリセットはStripe完了後に行う
-      } else {
-        setSuccessModalOpen(true);
       }
+
+      // 振込・その他: 添付ファイル込みで注文受付メールを1通送信
+      try {
+        await printOrderService.sendOrderEmails(result.id);
+      } catch {
+        // メール失敗してもUIは成功扱い
+      }
+      setSuccessModalOpen(true);
       reset({
         clinic_id: clinicId || '',
         clinic_name: clinicName || '',

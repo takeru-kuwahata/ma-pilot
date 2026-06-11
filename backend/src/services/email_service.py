@@ -115,6 +115,7 @@ class EmailService:
         estimated_price: Optional[int],
         items_text: Optional[str] = None,
         pattern: Optional[str] = None,
+        attachments: Optional[List[Dict]] = None,
     ) -> None:
         """クリニックへの注文受付メール送信"""
         subject = '【MA-Pilot】印刷物ご注文を受け付けました'
@@ -150,7 +151,7 @@ class EmailService:
 株式会社メディカルアドバンス
 ---
 """
-        _send_email(email, subject, body)
+        _send_email(email, subject, body, attachments=attachments)
 
     def send_order_notification_to_staff(
         self,
@@ -161,6 +162,7 @@ class EmailService:
         quantity: Optional[int],
         pattern: str,
         notes: Optional[str],
+        attachments: Optional[List[Dict]] = None,
     ) -> None:
         """京葉広告スタッフへの受注通知メール送信"""
         pattern_str = pattern.value if hasattr(pattern, 'value') else str(pattern)
@@ -199,7 +201,7 @@ MA-Pilot 印刷物受注システム
 ---
 """
         staff_email = self.get_print_order_email()
-        _send_email(staff_email, subject, body)
+        _send_email(staff_email, subject, body, attachments=attachments)
 
     def send_attachment_notification(
         self,

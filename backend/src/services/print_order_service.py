@@ -249,18 +249,16 @@ class PrintOrderService:
         # 注文データを再取得（明細含む）
         created_order = self.get_order_by_id(order_id)
 
-        # Stripe決済の場合はメール送信を後回し（決済完了後にsend_order_emails()を呼ぶ）
-        payment_method = getattr(order_data, 'payment_method', None)
-        if payment_method and str(payment_method) == 'stripe':
-            logger.info('Stripe決済のためメール送信をスキップ（決済完了後に送信）: order_id=%s', order_id)
-            return created_order
-
-        self.send_order_emails(created_order, order_data)
+        # メール送信はフロントエンドから send_order_emails() を呼び出すタイミングで行う
+        # （添付ファイルと注文受付を1通にまとめるため）
         return created_order
 
     def send_order_emails(self, created_order, order_data=None) -> None:
-        """注文受付メールをクリニック・スタッフ両方に送信する。"""
+        """注文受付メールをクリニック・スタッフ両方に送信する。
+        Supabase Storageに添付ファイルがあれば取得してメールに添付する。
+        """
         try:
+            # 商品明細テキスト生成
             if order_data and order_data.items and len(order_data.items) > 0:
                 items_lines = "\n".join(
                     f"  - {item.product_type}：{item.quantity}枚"
@@ -280,6 +278,9 @@ class PrintOrderService:
                 items_text = None
                 product_summary = "（商品・数量は担当者と相談）"
 
+            # Supabase StorageからこのorderのIDに紐づく添付ファイルを取得
+            attachments = self._fetch_order_attachments(created_order.id)
+
             pattern_str = created_order.pattern.value if hasattr(created_order.pattern, 'value') else str(created_order.pattern)
 
             self.email_service.send_order_confirmation_to_clinic(
@@ -291,6 +292,7 @@ class PrintOrderService:
                 estimated_price=created_order.estimated_price,
                 items_text=items_text if items_text else product_summary,
                 pattern=pattern_str,
+                attachments=attachments,
             )
 
             self.email_service.send_order_notification_to_staff(
@@ -301,9 +303,48 @@ class PrintOrderService:
                 quantity=None,
                 pattern=created_order.pattern,
                 notes=created_order.notes,
+                attachments=attachments,
             )
         except Exception as e:
             logger.error('メール送信エラー: %s', e)
+
+    def _fetch_order_attachments(self, order_id: str) -> list:
+        """Supabase StorageからこのorderのIDに紐づく添付ファイルをダウンロードして返す。
+        Returns: [{'filename': '...', 'content': '<base64>'}] or []
+        """
+        import base64
+        import httpx
+
+        try:
+            folder = f"print_order_attachments/{order_id}"
+            files = self.supabase.storage.from_("attachments").list(folder)
+            if not files:
+                return []
+
+            result = []
+            for f in files:
+                filename = f.get('name', '')
+                if not filename:
+                    continue
+                storage_path = f"{folder}/{filename}"
+                try:
+                    # Supabase StorageのsignedURLを取得（60秒有効）
+                    signed = self.supabase.storage.from_("attachments").create_signed_url(storage_path, 60)
+                    signed_url = signed.get('signedURL') or signed.get('signedUrl') or ''
+                    if not signed_url:
+                        logger.warning('signed URL取得失敗: %s', storage_path)
+                        continue
+                    resp = httpx.get(signed_url, timeout=30, follow_redirects=True)
+                    resp.raise_for_status()
+                    content_b64 = base64.b64encode(resp.content).decode('utf-8')
+                    result.append({'filename': filename, 'content': content_b64})
+                    logger.info('添付ファイル取得成功: %s (%d bytes)', filename, len(resp.content))
+                except Exception as e:
+                    logger.warning('添付ファイル取得失敗（スキップ）: %s / %s', storage_path, e)
+            return result
+        except Exception as e:
+            logger.warning('添付ファイル一覧取得失敗: %s', e)
+            return []
 
     def get_orders(
         self,
