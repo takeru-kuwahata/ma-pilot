@@ -261,18 +261,30 @@ async def download_estimate_pdf(
 @router.post("/print-orders/{order_id}/send-emails", response_model=ApiResponse)
 async def send_order_emails(
     order_id: str,
+    attachment: Optional[UploadFile] = File(None),
     service: PrintOrderService = Depends(get_print_order_service),
 ):
-    """Stripe決済完了後に注文受付メールを送信する"""
+    """注文受付メールを送信する（添付ファイルがあれば1通にまとめる）"""
     try:
         order = service.get_order_by_id(order_id)
         if not order:
             raise HTTPException(status_code=404, detail="注文が見つかりません")
-        service.send_order_emails(order)
+
+        # 添付ファイルがあればBase64変換
+        attachments = []
+        if attachment and attachment.filename:
+            import base64
+            file_bytes = await attachment.read()
+            content_b64 = base64.b64encode(file_bytes).decode('utf-8')
+            attachments = [{'filename': attachment.filename, 'content': content_b64}]
+            logger.info('添付ファイル受信: %s (%d bytes)', attachment.filename, len(file_bytes))
+
+        service.send_order_emails(order, attachments=attachments)
         return ApiResponse(message="メールを送信しました")
     except HTTPException:
         raise
     except Exception as e:
+        logger.error('send_order_emails エラー: %s', e)
         raise HTTPException(status_code=500, detail=str(e))
 
 

@@ -307,14 +307,13 @@ export default function PrintOrderFormPhase2() {
 
       const result = await printOrderService.createPrintOrder(orderData);
 
-      // 添付ファイルがあればアップロード（メールはこの後まとめて送る）
+      // 添付ファイルをStorageに保存（履歴参照用）
       if (attachmentFile) {
         try {
           await printOrderService.uploadOrderAttachment(result.id, attachmentFile);
         } catch {
           // 添付失敗してもフォーム送信は成功扱い
         }
-        setAttachmentFile(null);
       }
 
       setSubmittedOrderId(result.id);
@@ -322,16 +321,18 @@ export default function PrintOrderFormPhase2() {
       // クレジットカード払いの場合はStripe決済モーダルを表示
       // （メールはStripe決済完了後のonSuccessで送信）
       if (data.payment_method === 'stripe') {
+        // attachmentFileをStripe完了まで保持するため setAttachmentFile はしない
         setStripeModalOpen(true);
-        return; // フォームリセットはStripe完了後に行う
+        return;
       }
 
       // 振込・その他: 添付ファイル込みで注文受付メールを1通送信
       try {
-        await printOrderService.sendOrderEmails(result.id);
+        await printOrderService.sendOrderEmails(result.id, attachmentFile);
       } catch {
         // メール失敗してもUIは成功扱い
       }
+      setAttachmentFile(null);
       setSuccessModalOpen(true);
       reset({
         clinic_id: clinicId || '',
@@ -467,12 +468,13 @@ export default function PrintOrderFormPhase2() {
                 orderId={submittedOrderId}
                 amount={totalAmount}
                 onSuccess={async () => {
-                  // 決済完了後にメール送信してからフォームリセット
+                  // 決済完了後に添付ファイル込みでメール送信してからフォームリセット
                   try {
-                    await printOrderService.sendOrderEmails(submittedOrderId);
+                    await printOrderService.sendOrderEmails(submittedOrderId, attachmentFile);
                   } catch {
                     // メール失敗してもUIは成功扱い
                   }
+                  setAttachmentFile(null);
                   setStripeModalOpen(false);
                   setSuccessModalOpen(true);
                   reset({

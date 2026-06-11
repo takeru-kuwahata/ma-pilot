@@ -253,98 +253,54 @@ class PrintOrderService:
         # （添付ファイルと注文受付を1通にまとめるため）
         return created_order
 
-    def send_order_emails(self, created_order, order_data=None) -> None:
+    def send_order_emails(self, created_order, order_data=None, attachments: list = None) -> None:
         """注文受付メールをクリニック・スタッフ両方に送信する。
-        Supabase Storageに添付ファイルがあれば取得してメールに添付する。
+        attachments: [{'filename': '...', 'content': '<base64>'}] 形式のリスト（任意）
         """
-        try:
-            # 商品明細テキスト生成
-            if order_data and order_data.items and len(order_data.items) > 0:
-                items_lines = "\n".join(
-                    f"  - {item.product_type}：{item.quantity}枚"
-                    for item in order_data.items
-                )
-                items_text = f"■商品明細\n{items_lines}"
-                product_summary = items_text
-            elif order_data:
-                items_text = None
-                if order_data.product_type and order_data.quantity:
-                    product_summary = f"■商品情報\n  - {order_data.product_type}：{order_data.quantity}枚（参考）"
-                elif order_data.product_type:
-                    product_summary = f"■商品情報\n  - {order_data.product_type}（数量未定）"
-                else:
-                    product_summary = "（商品・数量は担当者と相談）"
+        # 商品明細テキスト生成
+        if order_data and order_data.items and len(order_data.items) > 0:
+            items_lines = "\n".join(
+                f"  - {item.product_type}：{item.quantity}枚"
+                for item in order_data.items
+            )
+            items_text = f"■商品明細\n{items_lines}"
+            product_summary = items_text
+        elif order_data:
+            items_text = None
+            if order_data.product_type and order_data.quantity:
+                product_summary = f"■商品情報\n  - {order_data.product_type}：{order_data.quantity}枚（参考）"
+            elif order_data.product_type:
+                product_summary = f"■商品情報\n  - {order_data.product_type}（数量未定）"
             else:
-                items_text = None
                 product_summary = "（商品・数量は担当者と相談）"
+        else:
+            items_text = None
+            product_summary = "（商品・数量は担当者と相談）"
 
-            # Supabase StorageからこのorderのIDに紐づく添付ファイルを取得
-            attachments = self._fetch_order_attachments(created_order.id)
+        pattern_str = created_order.pattern.value if hasattr(created_order.pattern, 'value') else str(created_order.pattern)
 
-            pattern_str = created_order.pattern.value if hasattr(created_order.pattern, 'value') else str(created_order.pattern)
+        self.email_service.send_order_confirmation_to_clinic(
+            order_id=created_order.id,
+            clinic_name=created_order.clinic_name,
+            email=created_order.email,
+            product_type=product_summary,
+            quantity=None,
+            estimated_price=created_order.estimated_price,
+            items_text=items_text if items_text else product_summary,
+            pattern=pattern_str,
+            attachments=attachments or [],
+        )
 
-            self.email_service.send_order_confirmation_to_clinic(
-                order_id=created_order.id,
-                clinic_name=created_order.clinic_name,
-                email=created_order.email,
-                product_type=product_summary,
-                quantity=None,
-                estimated_price=created_order.estimated_price,
-                items_text=items_text if items_text else product_summary,
-                pattern=pattern_str,
-                attachments=attachments,
-            )
-
-            self.email_service.send_order_notification_to_staff(
-                order_id=created_order.id,
-                clinic_name=created_order.clinic_name,
-                clinic_email=created_order.email,
-                product_type=product_summary,
-                quantity=None,
-                pattern=created_order.pattern,
-                notes=created_order.notes,
-                attachments=attachments,
-            )
-        except Exception as e:
-            logger.error('メール送信エラー: %s', e)
-
-    def _fetch_order_attachments(self, order_id: str) -> list:
-        """Supabase StorageからこのorderのIDに紐づく添付ファイルをダウンロードして返す。
-        Returns: [{'filename': '...', 'content': '<base64>'}] or []
-        """
-        import base64
-        import httpx
-
-        try:
-            folder = f"print_order_attachments/{order_id}"
-            files = self.supabase.storage.from_("attachments").list(folder)
-            if not files:
-                return []
-
-            result = []
-            for f in files:
-                filename = f.get('name', '')
-                if not filename:
-                    continue
-                storage_path = f"{folder}/{filename}"
-                try:
-                    # Supabase StorageのsignedURLを取得（60秒有効）
-                    signed = self.supabase.storage.from_("attachments").create_signed_url(storage_path, 60)
-                    signed_url = signed.get('signedURL') or signed.get('signedUrl') or ''
-                    if not signed_url:
-                        logger.warning('signed URL取得失敗: %s', storage_path)
-                        continue
-                    resp = httpx.get(signed_url, timeout=30, follow_redirects=True)
-                    resp.raise_for_status()
-                    content_b64 = base64.b64encode(resp.content).decode('utf-8')
-                    result.append({'filename': filename, 'content': content_b64})
-                    logger.info('添付ファイル取得成功: %s (%d bytes)', filename, len(resp.content))
-                except Exception as e:
-                    logger.warning('添付ファイル取得失敗（スキップ）: %s / %s', storage_path, e)
-            return result
-        except Exception as e:
-            logger.warning('添付ファイル一覧取得失敗: %s', e)
-            return []
+        self.email_service.send_order_notification_to_staff(
+            order_id=created_order.id,
+            clinic_name=created_order.clinic_name,
+            clinic_email=created_order.email,
+            product_type=product_summary,
+            quantity=None,
+            pattern=created_order.pattern,
+            notes=created_order.notes,
+            attachments=attachments or [],
+        )
 
     def get_orders(
         self,

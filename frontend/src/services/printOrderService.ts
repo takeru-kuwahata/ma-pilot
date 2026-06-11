@@ -263,11 +263,15 @@ export const uploadOrderAttachment = async (
 /**
  * 見積もりPDFダウンロード
  */
-/** Stripe決済完了後に注文受付メールを送信 */
-export const sendOrderEmails = async (orderId: string): Promise<void> => {
+/** 注文受付メール送信（添付ファイルがあれば1通にまとめる） */
+export const sendOrderEmails = async (orderId: string, attachmentFile?: File | null): Promise<void> => {
+  const formData = new FormData();
+  if (attachmentFile) {
+    formData.append('attachment', attachmentFile);
+  }
   const response = await fetch(
     `${API_BASE_URL}/api/print-orders/${orderId}/send-emails`,
-    { method: 'POST' }
+    { method: 'POST', body: formData }
   );
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
