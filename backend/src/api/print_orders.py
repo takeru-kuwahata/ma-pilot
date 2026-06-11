@@ -258,6 +258,43 @@ async def download_estimate_pdf(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/print-orders/{order_id}/send-emails", response_model=ApiResponse)
+async def send_order_emails(
+    order_id: str,
+    service: PrintOrderService = Depends(get_print_order_service),
+):
+    """Stripe決済完了後に注文受付メールを送信する"""
+    try:
+        order = service.get_order_by_id(order_id)
+        if not order:
+            raise HTTPException(status_code=404, detail="注文が見つかりません")
+        service.send_order_emails(order)
+        return ApiResponse(message="メールを送信しました")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/print-orders/{order_id}/cancel", response_model=ApiResponse)
+async def cancel_print_order(
+    order_id: str,
+    service: PrintOrderService = Depends(get_print_order_service),
+):
+    """Stripe決済キャンセル時に未決済注文を削除する"""
+    try:
+        order = service.get_order_by_id(order_id)
+        if not order:
+            raise HTTPException(status_code=404, detail="注文が見つかりません")
+        supabase = get_supabase_client()
+        supabase.table("print_orders").delete().eq("id", order_id).execute()
+        return ApiResponse(message="注文をキャンセルしました")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/print-orders/{order_id}/attachment", response_model=ApiResponse)
 async def upload_order_attachment(
     order_id: str,

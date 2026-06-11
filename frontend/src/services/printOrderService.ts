@@ -263,6 +263,30 @@ export const uploadOrderAttachment = async (
 /**
  * 見積もりPDFダウンロード
  */
+/** Stripe決済完了後に注文受付メールを送信 */
+export const sendOrderEmails = async (orderId: string): Promise<void> => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/print-orders/${orderId}/send-emails`,
+    { method: 'POST' }
+  );
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.detail || 'メール送信に失敗しました');
+  }
+};
+
+/** Stripe決済キャンセル時に未決済注文を削除 */
+export const cancelPrintOrder = async (orderId: string): Promise<void> => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/print-orders/${orderId}/cancel`,
+    { method: 'DELETE' }
+  );
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.detail || '注文のキャンセルに失敗しました');
+  }
+};
+
 export const downloadEstimatePdf = async (orderId: string): Promise<Blob> => {
   const response = await fetch(
     `${API_BASE_URL}/api/print-orders/${orderId}/estimate-pdf`,

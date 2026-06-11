@@ -114,6 +114,7 @@ class EmailService:
         quantity: Optional[int],
         estimated_price: Optional[int],
         items_text: Optional[str] = None,
+        pattern: Optional[str] = None,
     ) -> None:
         """クリニックへの注文受付メール送信"""
         subject = '【MA-Pilot】印刷物ご注文を受け付けました'
@@ -123,6 +124,15 @@ class EmailService:
             items_section = f"\n{product_type}"
         else:
             items_section = ''
+
+        # patternに応じてメッセージを変更
+        # reorder（再注文）: その場で完結→見積り不要
+        # consultation（相談）・new_order（新規）: 改めてお見積りを送る
+        if pattern == 'reorder':
+            followup_msg = '内容を確認の上、製作を進めさせていただきます。'
+        else:
+            followup_msg = '新規作成・修正がある場合は、改めてお見積りをお送りいたします。'
+
         body = f"""{clinic_name} 様
 
 この度は、印刷物のご注文をいただきありがとうございます。
@@ -132,8 +142,7 @@ class EmailService:
 注文番号: {order_id}{items_section}
 見積金額: {f'¥{estimated_price:,}' if estimated_price else '未算出'}
 
-担当者より正式なお見積りをメールにてご連絡させていただきます。
-今しばらくお待ちくださいませ。
+{followup_msg}
 
 何かご不明点がございましたら、お気軽にお問い合わせください。
 

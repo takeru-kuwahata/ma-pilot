@@ -249,17 +249,26 @@ class PrintOrderService:
         # 注文データを再取得（明細含む）
         created_order = self.get_order_by_id(order_id)
 
-        # メール送信
+        # Stripe決済の場合はメール送信を後回し（決済完了後にsend_order_emails()を呼ぶ）
+        payment_method = getattr(order_data, 'payment_method', None)
+        if payment_method and str(payment_method) == 'stripe':
+            logger.info('Stripe決済のためメール送信をスキップ（決済完了後に送信）: order_id=%s', order_id)
+            return created_order
+
+        self.send_order_emails(created_order, order_data)
+        return created_order
+
+    def send_order_emails(self, created_order, order_data=None) -> None:
+        """注文受付メールをクリニック・スタッフ両方に送信する。"""
         try:
-            # 明細一覧を文字列化
-            if order_data.items and len(order_data.items) > 0:
+            if order_data and order_data.items and len(order_data.items) > 0:
                 items_lines = "\n".join(
                     f"  - {item.product_type}：{item.quantity}枚"
                     for item in order_data.items
                 )
                 items_text = f"■商品明細\n{items_lines}"
                 product_summary = items_text
-            else:
+            elif order_data:
                 items_text = None
                 if order_data.product_type and order_data.quantity:
                     product_summary = f"■商品情報\n  - {order_data.product_type}：{order_data.quantity}枚（参考）"
@@ -267,6 +276,11 @@ class PrintOrderService:
                     product_summary = f"■商品情報\n  - {order_data.product_type}（数量未定）"
                 else:
                     product_summary = "（商品・数量は担当者と相談）"
+            else:
+                items_text = None
+                product_summary = "（商品・数量は担当者と相談）"
+
+            pattern_str = created_order.pattern.value if hasattr(created_order.pattern, 'value') else str(created_order.pattern)
 
             self.email_service.send_order_confirmation_to_clinic(
                 order_id=created_order.id,
@@ -276,9 +290,9 @@ class PrintOrderService:
                 quantity=None,
                 estimated_price=created_order.estimated_price,
                 items_text=items_text if items_text else product_summary,
+                pattern=pattern_str,
             )
 
-            # スタッフ宛受注通知メール
             self.email_service.send_order_notification_to_staff(
                 order_id=created_order.id,
                 clinic_name=created_order.clinic_name,
@@ -289,10 +303,7 @@ class PrintOrderService:
                 notes=created_order.notes,
             )
         except Exception as e:
-            # メール送信失敗してもエラーにしない（ログのみ）
             logger.error('メール送信エラー: %s', e)
-
-        return created_order
 
     def get_orders(
         self,

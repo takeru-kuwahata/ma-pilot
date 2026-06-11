@@ -319,9 +319,11 @@ export default function PrintOrderFormPhase2() {
 
       setSubmittedOrderId(result.id);
 
-      // クレジットカード払いの場合はStripe決済モーダルを表示
+      // クレジットカード払いの場合はStripe決済モーダルを表示（メールは決済完了後に送信）
+      // それ以外はすぐに成功モーダルを表示（メールは既にバックエンドで送信済み）
       if (data.payment_method === 'stripe') {
         setStripeModalOpen(true);
+        return; // フォームリセットはStripe完了後に行う
       } else {
         setSuccessModalOpen(true);
       }
@@ -451,20 +453,52 @@ export default function PrintOrderFormPhase2() {
         </Box>
 
         {/* Stripe決済モーダル */}
-        <Dialog open={stripeModalOpen} onClose={() => setStripeModalOpen(false)} maxWidth="sm" fullWidth>
+        <Dialog open={stripeModalOpen} onClose={() => {}} maxWidth="sm" fullWidth>
           <DialogTitle>クレジットカード決済</DialogTitle>
           <DialogContent>
             {submittedOrderId && (
               <StripePaymentForm
                 orderId={submittedOrderId}
                 amount={totalAmount}
-                onSuccess={() => {
+                onSuccess={async () => {
+                  // 決済完了後にメール送信してからフォームリセット
+                  try {
+                    await printOrderService.sendOrderEmails(submittedOrderId);
+                  } catch {
+                    // メール失敗してもUIは成功扱い
+                  }
                   setStripeModalOpen(false);
                   setSuccessModalOpen(true);
+                  reset({
+                    clinic_id: clinicId || '',
+                    clinic_name: clinicName || '',
+                    email: user?.email || '',
+                    pattern: 'consultation',
+                    items: [{ product_type: '', quantity: 100 }],
+                    delivery_date: '',
+                    design_required: false,
+                    notes: '',
+                    delivery_address: clinicData?.address || '',
+                    daytime_contact: clinicData?.phone_number || '',
+                    terms_agreed: false,
+                    payment_method: undefined,
+                  });
+                  setTotalAmount(0);
+                  setIsAddressEditable(false);
+                  setIsPhoneEditable(false);
                 }}
-                onCancel={() => {
+                onCancel={async () => {
+                  // キャンセル時は注文を削除してStripeモーダルを閉じるだけ
+                  // フォームの内容は保持（振込等への切り替えができるように）
+                  if (submittedOrderId) {
+                    try {
+                      await printOrderService.cancelPrintOrder(submittedOrderId);
+                    } catch {
+                      // 削除失敗しても続行
+                    }
+                  }
                   setStripeModalOpen(false);
-                  setSuccessModalOpen(true);
+                  setSubmittedOrderId(null);
                 }}
               />
             )}
