@@ -2,6 +2,9 @@ from fastapi import APIRouter, HTTPException, Query, Depends, UploadFile, File
 from fastapi.responses import Response
 from typing import List, Optional
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 from ..core import get_supabase_client
 from ..services import PrintOrderService
 from ..services.pdf_service import PdfService
