@@ -300,8 +300,8 @@ async def upload_order_attachment(
                 file_url=public_url,
                 file_bytes=file_bytes,
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f'添付ファイル通知メール送信失敗（アップロード自体は成功）: {e}')
 
         return ApiResponse(
             data={"url": public_url, "filename": file.filename},

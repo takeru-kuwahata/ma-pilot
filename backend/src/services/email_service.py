@@ -26,27 +26,52 @@ def _send_email(
         return
 
     try:
-        import resend
-        resend.api_key = api_key
-        payload: Dict = {
-            'from': f'株式会社メディカルアドバンス <{from_email}>',
-            'to': [to_email],
-            'subject': subject,
-            'text': body,
-        }
-        if attachments:
-            payload['attachments'] = attachments
-        resend.Emails.send(payload)
+        # SDK非依存のREST APIで送信（添付ファイルの互換性が最も確実）
+        _send_email_with_resend_api(api_key, from_email, to_email, subject, body, attachments)
         logger.info(f'メール送信成功: To={to_email}, Subject={subject}')
     except Exception as e:
-        logger.error(f'メール送信失敗: To={to_email}, Error={e}')
+        logger.error(f'メール送信失敗: To={to_email}, Subject={subject}, Error={e}')
         raise
 
 
 def _make_attachment(file_bytes: bytes, filename: str) -> Dict:
-    """ファイルbytesからResend用添付データを作成する。"""
+    """ファイルbytesからResend用添付データを作成する。
+    Resend Python SDK v2: content はbase64文字列。
+    """
     content_b64 = base64.b64encode(file_bytes).decode('utf-8')
     return {'filename': filename, 'content': content_b64}
+
+
+def _send_email_with_resend_api(
+    api_key: str,
+    from_email: str,
+    to_email: str,
+    subject: str,
+    body: str,
+    attachments: Optional[List[Dict]] = None,
+) -> None:
+    """Resend REST APIに直接POSTしてメール送信（SDK非依存・確実な方法）。"""
+    import httpx
+    payload: Dict = {
+        'from': f'株式会社メディカルアドバンス <{from_email}>',
+        'to': [to_email],
+        'subject': subject,
+        'text': body,
+    }
+    if attachments:
+        payload['attachments'] = attachments
+
+    resp = httpx.post(
+        'https://api.resend.com/emails',
+        headers={
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json',
+        },
+        json=payload,
+        timeout=30,
+    )
+    resp.raise_for_status()
+    logger.info(f'Resend API送信成功: status={resp.status_code}, id={resp.json().get("id")}')
 
 
 class EmailService:
