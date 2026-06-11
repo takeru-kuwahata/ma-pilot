@@ -496,17 +496,19 @@ export default function PrintOrderFormPhase2() {
                   setIsPhoneEditable(false);
                 }}
                 onCancel={async () => {
-                  // キャンセル時は注文を削除してStripeモーダルを閉じるだけ
-                  // フォームの内容は保持（振込等への切り替えができるように）
-                  if (submittedOrderId) {
+                  // キャンセル時: 注文を削除してフォームに戻る
+                  // successModalは絶対に開かない
+                  const cancelId = submittedOrderId;
+                  setStripeModalOpen(false);
+                  setSubmittedOrderId(null);
+                  setSuccessModalOpen(false); // 念のため明示的に閉じる
+                  if (cancelId) {
                     try {
-                      await printOrderService.cancelPrintOrder(submittedOrderId);
+                      await printOrderService.cancelPrintOrder(cancelId);
                     } catch {
                       // 削除失敗しても続行
                     }
                   }
-                  setStripeModalOpen(false);
-                  setSubmittedOrderId(null);
                 }}
               />
             )}
