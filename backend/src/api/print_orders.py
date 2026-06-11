@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query, Depends, UploadFile, File
+from fastapi import APIRouter, HTTPException, Query, Depends, UploadFile, File, Request
 from fastapi.responses import Response
 from typing import List, Optional
 import os
@@ -264,7 +264,7 @@ async def download_estimate_pdf(
 @router.post("/print-orders/{order_id}/send-emails", response_model=ApiResponse)
 async def send_order_emails(
     order_id: str,
-    attachment: Optional[UploadFile] = File(None),
+    request: Request,
     service: PrintOrderService = Depends(get_print_order_service),
 ):
     """注文受付メールを送信する（添付ファイルがあれば1通にまとめる）"""
@@ -273,14 +273,18 @@ async def send_order_emails(
         if not order:
             raise HTTPException(status_code=404, detail="注文が見つかりません")
 
-        # 添付ファイルがあればBase64変換
+        # 添付ファイルがある場合のみmultipart/form-dataで受け取る
         attachments = []
-        if attachment and attachment.filename:
+        content_type = request.headers.get('content-type', '')
+        if 'multipart/form-data' in content_type:
             import base64
-            file_bytes = await attachment.read()
-            content_b64 = base64.b64encode(file_bytes).decode('utf-8')
-            attachments = [{'filename': attachment.filename, 'content': content_b64}]
-            logger.info('添付ファイル受信: %s (%d bytes)', attachment.filename, len(file_bytes))
+            form = await request.form()
+            attachment = form.get('attachment')
+            if attachment and hasattr(attachment, 'filename') and attachment.filename:
+                file_bytes = await attachment.read()
+                content_b64 = base64.b64encode(file_bytes).decode('utf-8')
+                attachments = [{'filename': attachment.filename, 'content': content_b64}]
+                logger.info('添付ファイル受信: %s (%d bytes)', attachment.filename, len(file_bytes))
 
         service.send_order_emails(order, attachments=attachments)
         return ApiResponse(message="メールを送信しました")

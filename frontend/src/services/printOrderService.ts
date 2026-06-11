@@ -265,13 +265,24 @@ export const uploadOrderAttachment = async (
  */
 /** 注文受付メール送信（添付ファイルがあれば1通にまとめる） */
 export const sendOrderEmails = async (orderId: string, attachmentFile?: File | null): Promise<void> => {
-  const formData = new FormData();
+  let body: BodyInit | undefined;
+  const headers: HeadersInit = {};
+
   if (attachmentFile) {
+    // 添付ファイルありの場合はFormData
+    const formData = new FormData();
     formData.append('attachment', attachmentFile);
+    body = formData;
+    // Content-Typeはブラウザに自動設定させる（boundaryが必要なため）
+  } else {
+    // 添付ファイルなしの場合は空のPOST
+    headers['Content-Type'] = 'application/json';
+    body = '{}';
   }
+
   const response = await fetch(
     `${API_BASE_URL}/api/print-orders/${orderId}/send-emails`,
-    { method: 'POST', body: formData }
+    { method: 'POST', headers, body }
   );
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
