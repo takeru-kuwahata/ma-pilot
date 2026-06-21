@@ -210,7 +210,8 @@ const ProposalCard = ({
                           size="small"
                           sx={{
                             bgcolor: '#E65100', color: '#fff', fontWeight: 700,
-                            fontSize: '0.6rem', height: 18,
+                            fontSize: '0.6rem', height: 'auto',
+                            '& .MuiChip-label': { px: '8px', py: '3px' },
                           }}
                         />
                         <Chip
@@ -218,7 +219,8 @@ const ProposalCard = ({
                           size="small"
                           sx={{
                             bgcolor: '#1565C0', color: '#fff', fontWeight: 600,
-                            fontSize: '0.6rem', height: 18,
+                            fontSize: '0.6rem', height: 'auto',
+                            '& .MuiChip-label': { px: '8px', py: '3px' },
                           }}
                         />
                       </Box>
