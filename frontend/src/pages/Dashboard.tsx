@@ -681,8 +681,8 @@ export const Dashboard = () => {
                               <Box sx={{ display: 'flex', gap: 0.5 }}>
                                 {[1, 2, 3, 4, 5].map((i) => (
                                   <Box key={i} sx={{
-                                    width: 12,
-                                    height: 12,
+                                    width: 9,
+                                    height: 9,
                                     borderRadius: '50%',
                                     bgcolor: i <= ks.score ? LEVEL_COLOR[ks.level] : '#E0E0E0',
                                   }} />
