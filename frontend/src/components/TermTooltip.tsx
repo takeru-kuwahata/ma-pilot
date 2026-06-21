@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import {
-  Box, Dialog, DialogContent, DialogTitle, IconButton, Typography,
+  Box, Button, Dialog, DialogContent, IconButton, Typography,
 } from '@mui/material';
-import { HelpOutline as HelpIcon, Close as CloseIcon } from '@mui/icons-material';
+import { Info as InfoIcon, Close as CloseIcon } from '@mui/icons-material';
 import { GlossaryEntry } from '../constants/glossary';
 
 interface TermTooltipProps {
@@ -14,52 +14,94 @@ export const TermTooltip = ({ entry }: TermTooltipProps) => {
 
   return (
     <>
-      <IconButton
-        size="small"
+      <Box
+        component="span"
         onClick={(e) => { e.stopPropagation(); setOpen(true); }}
         sx={{
-          p: 0,
-          ml: 0.5,
-          color: '#1976D2',
-          '&:hover': { color: '#1565C0', bgcolor: 'transparent' },
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 20,
+          height: 20,
+          borderRadius: '50%',
+          bgcolor: '#FF6B35',
+          color: '#fff',
+          fontSize: '12px',
+          fontWeight: 700,
+          ml: 0.75,
+          cursor: 'pointer',
+          flexShrink: 0,
+          lineHeight: 1,
+          userSelect: 'none',
+          '&:hover': { bgcolor: '#E65100' },
         }}
       >
-        <HelpIcon sx={{ fontSize: 16 }} />
-      </IconButton>
+        ?
+      </Box>
 
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 1 }}>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{ sx: { borderRadius: 2 } }}
+      >
+        <Box sx={{
+          display: 'flex', alignItems: 'center', gap: 1.5,
+          px: 3, pt: 3, pb: 2,
+        }}>
           <Box sx={{
-            width: 32, height: 32, borderRadius: '50%', bgcolor: '#E3F2FD',
+            width: 36, height: 36, borderRadius: '50%', bgcolor: '#FFF3EE',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
           }}>
-            <HelpIcon sx={{ fontSize: 18, color: '#1976D2' }} />
+            <InfoIcon sx={{ fontSize: 20, color: '#FF6B35' }} />
           </Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 700, flex: 1 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, flex: 1, fontSize: '1.1rem' }}>
             {entry.term}
           </Typography>
           <IconButton size="small" onClick={() => setOpen(false)}>
-            <CloseIcon fontSize="small" />
+            <CloseIcon />
           </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ pt: 0 }}>
-          <Typography variant="body2" sx={{ mb: entry.formula ? 2 : 0, lineHeight: 1.8 }}>
+        </Box>
+
+        <DialogContent sx={{ px: 3, pt: 0, pb: 3 }}>
+          <Typography variant="body1" sx={{ lineHeight: 1.9, color: '#333', mb: entry.formula ? 2.5 : 0 }}>
             {entry.description}
           </Typography>
+
           {entry.formula && (
             <Box sx={{
-              bgcolor: '#F5F5F5', borderRadius: 1, px: 2, py: 1.5, mb: entry.example ? 1.5 : 0,
+              bgcolor: '#F5F5F5', borderRadius: 1.5, px: 2.5, py: 2,
+              mb: entry.example ? 2 : 0,
             }}>
-              <Typography variant="caption" sx={{ color: '#555', fontFamily: 'monospace', display: 'block' }}>
+              <Typography sx={{ fontSize: '0.95rem', color: '#444', fontFamily: 'monospace' }}>
                 {entry.formula}
               </Typography>
             </Box>
           )}
+
           {entry.example && (
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
               {entry.example}
             </Typography>
           )}
+
+          <Box sx={{ mt: 3 }}>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => setOpen(false)}
+              sx={{
+                bgcolor: '#FF6B35', color: '#fff', fontWeight: 700,
+                fontSize: '1rem', py: 1.2, borderRadius: 1.5,
+                boxShadow: 'none',
+                '&:hover': { bgcolor: '#E65100', boxShadow: 'none' },
+              }}
+            >
+              閉じる
+            </Button>
+          </Box>
         </DialogContent>
       </Dialog>
     </>
