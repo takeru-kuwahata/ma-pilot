@@ -104,6 +104,25 @@ const RANK_COLOR: Record<string, string> = {
   diamond: '#1565C0',
 };
 
+// ---- エンパワメントメッセージ ----
+const getEmpowermentMessage = (proposal: Proposal): string => {
+  const { priority, category, title } = proposal;
+  if (priority === 'critical') {
+    return `今、この一点に集中することが、経営の流れを変える最短ルートです。`;
+  }
+  if (priority === 'high') {
+    if (category === '収益力') return `ここを動かすと、利益の伸び方が変わります。最優先で取り組む価値があります。`;
+    if (category === '集患力') return `新患の流れが変わると、医院全体のエネルギーが上がります。`;
+    if (category === '経営安定性') return `土台が固まると、他の施策も自然に加速します。`;
+    return `この改善が、次のステージへの足がかりになります。`;
+  }
+  if (priority === 'medium') {
+    return `小さな一歩でも、積み重なれば経営の景色は確実に変わります。`;
+  }
+  // low (良好)
+  return `この水準を維持できていること自体、大きな強みです。自信を持って次に進みましょう。`;
+};
+
 // ---- 提案カード ----
 const ProposalCard = ({
   proposal, clinicId,
@@ -158,10 +177,25 @@ const ProposalCard = ({
           </Box>
 
           {/* 期待効果 */}
-          <Paper sx={{ p: 1.5, bgcolor: '#E8F5E9', mb: 2 }} elevation={0}>
+          <Paper sx={{ p: 1.5, bgcolor: '#E8F5E9', mb: 1.5 }} elevation={0}>
             <Typography variant="caption" sx={{ fontWeight: 700, color: '#388E3C' }}>期待効果</Typography>
             <Typography variant="body2">{proposal.expected_impact}</Typography>
           </Paper>
+
+          {/* エンパワメント */}
+          <Typography
+            variant="body2"
+            sx={{
+              mb: 2,
+              color: PRIORITY_COLOR[proposal.priority],
+              fontWeight: 700,
+              borderLeft: `3px solid ${PRIORITY_COLOR[proposal.priority]}`,
+              pl: 1.5,
+              lineHeight: 1.6,
+            }}
+          >
+            {getEmpowermentMessage(proposal)}
+          </Typography>
 
           {/* レコメンドサービス */}
           {proposal.recommended_services.length > 0 && (
