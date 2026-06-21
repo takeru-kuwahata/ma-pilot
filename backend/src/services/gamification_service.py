@@ -213,7 +213,7 @@ class GamificationService:
             RadarParameter(key='revenue',     label='収益力',      value=revenue,     previous=prev['param_revenue']),
             RadarParameter(key='stability',   label='経営安定性',   value=stability,   previous=prev['param_stability']),
             RadarParameter(key='growth',      label='成長性',      value=growth,      previous=prev['param_growth']),
-            RadarParameter(key='market',      label='診療圏競争力', value=market,      previous=prev['param_market']),
+            RadarParameter(key='market',      label='競争力',      value=market,      previous=prev['param_market']),
         ]
 
     def _calc_total_score(self, parameters: list[RadarParameter]) -> int:

@@ -12,7 +12,7 @@ from ..models.consulting import (
 # ============================================================
 BENCHMARKS = {
     'profit_rate': {
-        'label': '利益率',
+        'label': '収益力（利益率）',
         'unit': '%',
         'avg': 30.0,
         'good': 40.0,
@@ -20,7 +20,7 @@ BENCHMARKS = {
         'points': 25,
     },
     'self_pay_rate': {
-        'label': '自費率',
+        'label': '収益力（自費率）',
         'unit': '%',
         'avg': 17.6,
         'good': 30.0,
@@ -28,7 +28,7 @@ BENCHMARKS = {
         'points': 20,
     },
     'expense_rate': {
-        'label': '経費率',
+        'label': '経営安定性（経費率）',
         'unit': '%',
         'avg': 67.0,
         'good': 60.0,
@@ -38,7 +38,7 @@ BENCHMARKS = {
         'inverted': True,
     },
     'new_patient_rate': {
-        'label': '新患比率',
+        'label': '集患力（新患比率）',
         'unit': '%',
         'avg': 7.5,
         'good': 10.0,
@@ -46,7 +46,7 @@ BENCHMARKS = {
         'points': 20,
     },
     'revenue_growth': {
-        'label': '売上成長率（前年比）',
+        'label': '成長性（売上成長率）',
         'unit': '%',
         'avg': 3.0,
         'good': 10.0,
