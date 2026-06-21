@@ -78,14 +78,14 @@ const PRIORITY_COLOR: Record<ProposalPriority, string> = {
   critical: '#D32F2F',
   high: '#F57C00',
   medium: '#F9A825',
-  low: '#757575',
+  low: '#1565C0',
 };
 
 const PRIORITY_LABEL: Record<ProposalPriority, string> = {
   critical: '緊急',
   high: '高',
   medium: '中',
-  low: '低',
+  low: '良好',
 };
 
 const LEVEL_COLOR: Record<ScoreLevel, string> = {
