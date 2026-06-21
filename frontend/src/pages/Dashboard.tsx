@@ -183,7 +183,7 @@ const ProposalCard = ({
               </Box>
               <Grid container spacing={1.5}>
                 {proposal.recommended_services.map((svc) => (
-                  <Grid item xs={12} sm={6} md={4} key={svc.id}>
+                  <Grid item xs={12} sm={6} md={4} key={svc.id} sx={{ display: 'flex' }}>
                     <Paper
                       sx={{
                         p: 2,
@@ -192,6 +192,9 @@ const ProposalCard = ({
                         borderRadius: 2,
                         background: 'linear-gradient(135deg, #FFFDE7 0%, #FFF8E1 100%)',
                         transition: 'all 0.2s ease',
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
                         '&:hover': {
                           borderColor: '#F57C00',
                           boxShadow: '0 4px 12px rgba(245, 124, 0, 0.2)',
