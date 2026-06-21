@@ -5,6 +5,8 @@ import {
   Chip, Accordion, AccordionSummary, AccordionDetails,
   Dialog, DialogContent, DialogTitle, IconButton, LinearProgress,
 } from '@mui/material';
+import { TermTooltip } from '../components/TermTooltip';
+import { GLOSSARY } from '../constants/glossary';
 import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
@@ -106,14 +108,14 @@ const RANK_COLOR: Record<string, string> = {
 
 // ---- エンパワメントメッセージ ----
 const getEmpowermentMessage = (proposal: Proposal): string => {
-  const { priority, category, title } = proposal;
+  const { priority, category } = proposal;
   if (priority === 'critical') {
     return `今、この一点に集中することが、経営の流れを変える最短ルートです。`;
   }
   if (priority === 'high') {
-    if (category === '収益力') return `ここを動かすと、利益の伸び方が変わります。最優先で取り組む価値があります。`;
-    if (category === '集患力') return `新患の流れが変わると、医院全体のエネルギーが上がります。`;
-    if (category === '経営安定性') return `土台が固まると、他の施策も自然に加速します。`;
+    if (category === '収益性') return `ここを動かすと、利益の伸び方が変わります。最優先で取り組む価値があります。`;
+    if (category === '集患') return `新患の流れが変わると、医院全体のエネルギーが上がります。`;
+    if (category === 'コスト最適化') return `土台が固まると、他の施策も自然に加速します。`;
     return `この改善が、次のステージへの足がかりになります。`;
   }
   if (priority === 'medium') {
@@ -327,7 +329,10 @@ const GamificationCard = ({ data }: { data: GamificationData }) => {
           <Typography variant="h4" sx={{ fontWeight: 700, color: RANK_COLOR[data.current_rank] }}>
             {data.total_score}点
           </Typography>
-          <Typography variant="caption" sx={{ color: '#555555' }}>経営健診スコア</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="caption" sx={{ color: '#555555' }}>経営健診スコア</Typography>
+            <TermTooltip entry={GLOSSARY.health_score} />
+          </Box>
         </Box>
       </Box>
 
@@ -344,7 +349,10 @@ const GamificationCard = ({ data }: { data: GamificationData }) => {
       )}
 
       {/* レーダーチャート */}
-      <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>能力パラメーター</Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>能力パラメーター</Typography>
+        <TermTooltip entry={GLOSSARY.ability_parameters} />
+      </Box>
       <ResponsiveContainer width="100%" height={220}>
         <RadarChart data={radarData} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
           <PolarGrid />
@@ -618,9 +626,10 @@ export const Dashboard = () => {
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
             <Paper sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
-                変動費率推移（直近6ヶ月）
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>変動費率推移（直近6ヶ月）</Typography>
+                <TermTooltip entry={GLOSSARY.variable_cost_rate} />
+              </Box>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart
                   data={(data.trends || []).map((t) => ({
@@ -648,9 +657,10 @@ export const Dashboard = () => {
 
           <Grid item xs={12} lg={6}>
             <Paper sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
-                自費率推移（直近6ヶ月）
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>自費率推移（直近6ヶ月）</Typography>
+                <TermTooltip entry={GLOSSARY.self_pay_rate} />
+              </Box>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart
                   data={(data.trends || []).map((t) => ({
@@ -701,7 +711,9 @@ export const Dashboard = () => {
                 {consulting && (
                   <Paper sx={{ p: 3, mb: 3 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 600 }}>指標別スコア</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography variant="h6" sx={{ fontWeight: 600 }}>指標別スコア</Typography>
+                      </Box>
                       <Typography variant="caption" color="text.secondary">
                         診断月: {consulting.year_month}
                       </Typography>
@@ -716,7 +728,12 @@ export const Dashboard = () => {
                         <Grid item xs={12} sm={6} key={ks.key}>
                           <Paper variant="outlined" sx={{ p: 1.5 }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <Typography variant="body2" sx={{ fontWeight: 600 }}>{ks.label}</Typography>
+                              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Typography variant="body2" sx={{ fontWeight: 600 }}>{ks.label}</Typography>
+                                {GLOSSARY[`${ks.key}_score`] && (
+                                  <TermTooltip entry={GLOSSARY[`${ks.key}_score`]} />
+                                )}
+                              </Box>
                               <Box sx={{ display: 'flex', gap: 0.5 }}>
                                 {[1, 2, 3, 4, 5].map((i) => (
                                   <Box key={i} sx={{
