@@ -678,11 +678,16 @@ export const Dashboard = () => {
                           <Paper variant="outlined" sx={{ p: 1.5 }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                               <Typography variant="body2" sx={{ fontWeight: 600 }}>{ks.label}</Typography>
-                              <Chip
-                                label={`${ks.score}/5`}
-                                size="small"
-                                sx={{ bgcolor: LEVEL_COLOR[ks.level], color: '#fff', fontWeight: 700 }}
-                              />
+                              <Box sx={{ display: 'flex', gap: 0.5 }}>
+                                {[1, 2, 3, 4, 5].map((i) => (
+                                  <Box key={i} sx={{
+                                    width: 12,
+                                    height: 12,
+                                    borderRadius: '50%',
+                                    bgcolor: i <= ks.score ? LEVEL_COLOR[ks.level] : '#E0E0E0',
+                                  }} />
+                                ))}
+                              </Box>
                             </Box>
                             <Typography variant="h6" sx={{ fontWeight: 700, mt: 0.5 }}>
                               {ks.value.toFixed(1)}{ks.unit}
