@@ -58,6 +58,14 @@
         .section {
             margin-bottom: 30px;
         }
+        .page-break {
+            page-break-before: always;
+            break-before: always;
+        }
+        tr {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
         .section h2 {
             color: #424242;
             border-left: 4px solid #FF6B35;
@@ -224,7 +232,7 @@
     </div>
     {% endif %}
 
-    <div class="section">
+    <div class="section page-break">
         <h2>収益内訳（{{ report_period }}）</h2>
         <table>
             <tr>
