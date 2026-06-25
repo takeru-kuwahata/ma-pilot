@@ -27,8 +27,15 @@ def _make_service(supabase=None, wp_success=True, wp_user=None):
 
     # WordPressServiceをモック
     mock_wp = AsyncMock()
+    default_wp_user = {
+        'id': 99,
+        'username': 'test_user',
+        'password': 'WpTestPass1',
+        'email': 'test@example.com',
+        'login_url': 'https://si-college.net/wp-login.php',
+    }
     if wp_success:
-        mock_wp.create_user = AsyncMock(return_value=wp_user or {'id': 99, 'username': 'test_user'})
+        mock_wp.create_user = AsyncMock(return_value=wp_user or default_wp_user)
     else:
         mock_wp.create_user = AsyncMock(return_value=None)
     service.wordpress = mock_wp
@@ -36,6 +43,7 @@ def _make_service(supabase=None, wp_success=True, wp_user=None):
     # EmailServiceをモック
     mock_email = AsyncMock()
     mock_email.send_welcome_email = AsyncMock(return_value=True)
+    mock_email.send_wordpress_welcome_email = AsyncMock(return_value=None)
     service.email_service = mock_email
 
     return service, mock_wp, mock_email

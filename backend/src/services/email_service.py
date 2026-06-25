@@ -258,6 +258,44 @@ MA-Pilot 印刷物受注システム
         staff_email = self.get_print_order_email()
         _send_email(staff_email, staff_subject, staff_body, attachments=attachments)
 
+    async def send_wordpress_welcome_email(
+        self,
+        to_email: str,
+        full_name: str,
+        username: str,
+        password: str,
+        login_url: str,
+    ) -> None:
+        """
+        WordPressアカウント作成時のウェルカムメール送信
+
+        Args:
+            to_email: 送信先メールアドレス
+            full_name: 氏名
+            username: WordPressユーザー名
+            password: 初期パスワード
+            login_url: WordPressログインURL
+        """
+        subject = '【シカレッジ】会員登録が完了しました'
+        body = f"""{full_name} 様
+
+この度はシカレッジにご登録いただき、誠にありがとうございます。
+以下のログイン情報でシカレッジサイトにアクセスいただけます。
+
+■ログイン情報
+URL: {login_url}
+ユーザー名: {username}
+初期パスワード: {password}
+
+ログイン後、パスワードの変更をお勧めいたします。
+
+ご不明な点はお気軽にお問い合わせください。
+
+---
+メディカルアドバンス
+---"""
+        _send_email(to_email, subject, body)
+
     async def send_welcome_email(
         self,
         to_email: str,

@@ -83,6 +83,7 @@ class WordPressService:
                         'username': username,
                         'password': password,
                         'email': email,
+                        'login_url': self.api_url.replace('/wp-json/wp/v2', '/wp-login.php'),
                     }
                 else:
                     logger.error(
