@@ -138,8 +138,9 @@
 
 | 内容 | 詳細 |
 |------|------|
-| WordPress登録メール自動送信 | Lステップフォーム回答→WordPress自動登録時にログイン情報（URL・ユーザー名・初期パスワード）をメール自動送信するよう実装。全フォームタイプ（先生・スタッフ・勤務医・デンタルショー）共通で動作。背景: 従来はパスワードが誰にも見えない状態で手動LINEで対応していた |
-| GASトリガー一時停止手順の確認 | クライアント（安堂さん）が自力で対応済み |
+| WordPress登録メール自動送信 | Lステップフォーム回答→WordPress自動登録時にログイン情報（URL・ユーザー名・初期パスワード）をメール自動送信するよう実装。全フォームタイプ共通。変更: `wordpress_service.py` / `lstep_service.py` / `email_service.py`（`send_wordpress_welcome_email`追加）|
+| WordPress既存アカウント対応 | 同メールアドレスで再登録した場合（existing_user_emailエラー）にパスワードリセット案内メールを自動送信するよう実装。変更: `wordpress_service.py`（`_send_password_reset`追加）/ `lstep_service.py`（is_existing分岐）/ `email_service.py`（`send_wordpress_password_reset_email`追加）|
+| GASトリガー不達の調査・対応 | フォーム回答がGASトリガー無効によりWebhook未到達だった事象を特定。手動Webhook送信でアカウント作成・メール送信を完了。運用注意: GASトリガーの有効/無効状態がメール未到達の主因になりうる |
 
 ## 待ち事項
 
