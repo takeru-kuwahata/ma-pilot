@@ -112,19 +112,29 @@ class LstepService:
         except Exception as e:
             logger.error(f'WordPressアカウント作成エラー: email={email}, error={e}')
 
-        # ③WordPressウェルカムメール送信
+        # ③WordPressメール送信（新規 or 既存で分岐）
         if wp_user:
             try:
-                await self.email_service.send_wordpress_welcome_email(
-                    to_email=email,
-                    full_name=full_name or email,
-                    username=wp_user['username'],
-                    password=wp_user['password'],
-                    login_url=wp_user.get('login_url', 'https://si-college.net/wp-login.php'),
-                )
-                logger.info(f'WordPressウェルカムメール送信成功: email={email}')
+                if wp_user.get('is_existing'):
+                    # 既存アカウント：パスワードリセット案内メールを送信
+                    await self.email_service.send_wordpress_password_reset_email(
+                        to_email=email,
+                        full_name=full_name or email,
+                        login_url=wp_user.get('login_url', 'https://si-college.net/wp-login.php'),
+                    )
+                    logger.info(f'WordPress既存ユーザー案内メール送信成功: email={email}')
+                else:
+                    # 新規アカウント：ログイン情報メールを送信
+                    await self.email_service.send_wordpress_welcome_email(
+                        to_email=email,
+                        full_name=full_name or email,
+                        username=wp_user['username'],
+                        password=wp_user['password'],
+                        login_url=wp_user.get('login_url', 'https://si-college.net/wp-login.php'),
+                    )
+                    logger.info(f'WordPressウェルカムメール送信成功: email={email}')
             except Exception as e:
-                logger.error(f'WordPressウェルカムメール送信エラー: email={email}, error={e}')
+                logger.error(f'WordPressメール送信エラー: email={email}, error={e}')
 
         # ④MA-Pilotウェルカムメール送信（MA-Pilotアカウント作成成功時のみ）
         if result['ma_pilot_created'] and ma_pilot_password:

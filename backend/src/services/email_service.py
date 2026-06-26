@@ -258,6 +258,34 @@ MA-Pilot 印刷物受注システム
         staff_email = self.get_print_order_email()
         _send_email(staff_email, staff_subject, staff_body, attachments=attachments)
 
+    async def send_wordpress_password_reset_email(
+        self,
+        to_email: str,
+        full_name: str,
+        login_url: str,
+    ) -> None:
+        """既存WordPressアカウント向けパスワードリセット案内メール"""
+        reset_url = login_url.replace('wp-login.php', 'wp-login.php?action=lostpassword')
+        subject = '【シカレッジ】アカウントのパスワードリセットのご案内'
+        body = f"""{full_name} 様
+
+シカレッジへのご登録ありがとうございます。
+
+ご入力いただいたメールアドレスはすでにシカレッジに登録されています。
+以下のURLからパスワードをリセットしてログインしてください。
+
+■パスワードリセット
+{reset_url}
+
+メールアドレスを入力すると、再設定用のリンクが届きます。
+
+ご不明な点はお気軽にお問い合わせください。
+
+---
+メディカルアドバンス
+---"""
+        _send_email(to_email, subject, body)
+
     async def send_wordpress_welcome_email(
         self,
         to_email: str,

@@ -66,6 +66,8 @@ class WordPressService:
             'meta': form_data,  # フォームデータ全体をmetaに保存
         }
 
+        login_url = self.api_url.replace('/wp-json/wp/v2', '/wp-login.php')
+
         try:
             async with httpx.AsyncClient(timeout=10.0) as client:
                 response = await client.post(
@@ -83,18 +85,45 @@ class WordPressService:
                         'username': username,
                         'password': password,
                         'email': email,
-                        'login_url': self.api_url.replace('/wp-json/wp/v2', '/wp-login.php'),
+                        'login_url': login_url,
+                        'is_existing': False,
                     }
-                else:
-                    logger.error(
-                        f'WordPressアカウント作成失敗: status={response.status_code}, '
-                        f'email={email}, response={response.text}'
-                    )
-                    return None
+
+                # 既存メールアドレスの場合はパスワードリセットを送信
+                error_code = response.json().get('code', '')
+                if error_code == 'existing_user_email':
+                    logger.info(f'WordPress既存ユーザー検出: email={email} → パスワードリセット送信')
+                    await self._send_password_reset(email)
+                    return {
+                        'email': email,
+                        'login_url': login_url,
+                        'is_existing': True,
+                    }
+
+                logger.error(
+                    f'WordPressアカウント作成失敗: status={response.status_code}, '
+                    f'email={email}, response={response.text}'
+                )
+                return None
 
         except Exception as e:
             logger.error(f'WordPressアカウント作成エラー: email={email}, error={e}')
             return None
+
+    async def _send_password_reset(self, email: str) -> None:
+        """WordPress標準のパスワードリセットメールを送信"""
+        site_url = self.api_url.replace('/wp-json/wp/v2', '')
+        try:
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                response = await client.post(
+                    f'{site_url}/wp-login.php?action=lostpassword',
+                    data={'user_login': email, 'redirect_to': '', 'wp-submit': 'パスワードを取得'},
+                    headers={'Content-Type': 'application/x-www-form-urlencoded'},
+                    follow_redirects=True,
+                )
+            logger.info(f'パスワードリセット送信: email={email}, status={response.status_code}')
+        except Exception as e:
+            logger.error(f'パスワードリセット送信エラー: email={email}, error={e}')
 
     async def _generate_unique_username(self, base: str) -> str:
         """

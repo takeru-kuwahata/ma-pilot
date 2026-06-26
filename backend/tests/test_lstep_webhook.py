@@ -44,6 +44,7 @@ def _make_service(supabase=None, wp_success=True, wp_user=None):
     mock_email = AsyncMock()
     mock_email.send_welcome_email = AsyncMock(return_value=True)
     mock_email.send_wordpress_welcome_email = AsyncMock(return_value=None)
+    mock_email.send_wordpress_password_reset_email = AsyncMock(return_value=None)
     service.email_service = mock_email
 
     return service, mock_wp, mock_email
