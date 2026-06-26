@@ -141,6 +141,13 @@
 | WordPress登録メール自動送信 | Lステップフォーム回答→WordPress自動登録時にログイン情報（URL・ユーザー名・初期パスワード）をメール自動送信するよう実装。全フォームタイプ共通。変更: `wordpress_service.py` / `lstep_service.py` / `email_service.py`（`send_wordpress_welcome_email`追加）|
 | WordPress既存アカウント対応 | 同メールアドレスで再登録した場合（existing_user_emailエラー）にパスワードリセット案内メールを自動送信するよう実装。変更: `wordpress_service.py`（`_send_password_reset`追加）/ `lstep_service.py`（is_existing分岐）/ `email_service.py`（`send_wordpress_password_reset_email`追加）|
 | GASトリガー不達の調査・対応 | フォーム回答がGASトリガー無効によりWebhook未到達だった事象を特定。手動Webhook送信でアカウント作成・メール送信を完了。運用注意: GASトリガーの有効/無効状態がメール未到達の主因になりうる |
+| メール署名を統一 | 全メールの署名「メディカルアドバンス」→「株式会社メディカルアドバンス」に修正（email_service.py 全箇所） |
+
+## 未回答の仕様確認（クライアント待ち）
+
+| 内容 | 詳細 |
+|------|------|
+| doctor_openhouseフォームのMA-Pilot発行方針 | 内覧会申込（先生フォーム）でMA-Pilotアカウントも発行するか否か未確定。A）WordPressのみ / B）MA-Pilotも発行、のどちらかをクライアントに確認中 |
 
 ## 待ち事項
 
