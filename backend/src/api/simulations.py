@@ -2,18 +2,18 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from ..models.simulation import Simulation, SimulationCreate, SimulationResponse, SimulationListResponse
 from ..services.simulation_service import SimulationService
 from ..services.clinic_service import ClinicService
-from ..core.database import get_supabase_client
+from ..core.database import get_db_client
 from supabase import Client
 
 router = APIRouter(prefix='/api/simulations', tags=['Simulations'])
 
 
-def get_simulation_service(supabase: Client = Depends(get_supabase_client)) -> SimulationService:
+def get_simulation_service(supabase: Client = Depends(get_db_client)) -> SimulationService:
     '''Get simulation service dependency'''
     return SimulationService(supabase)
 
 
-def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> ClinicService:
+def get_clinic_service(supabase: Client = Depends(get_db_client)) -> ClinicService:
     '''Get clinic service dependency'''
     return ClinicService(supabase)
 

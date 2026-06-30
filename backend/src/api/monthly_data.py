@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Query
 from ..models.monthly_data import MonthlyData, MonthlyDataCreate, MonthlyDataUpdate, MonthlyDataListResponse, MonthlyDataResponse, CsvImportResult
 from ..services.monthly_data_service import MonthlyDataService
 from ..services.clinic_service import ClinicService
-from ..core.database import get_supabase_client
+from ..core.database import get_db_client
 from ..middleware.auth import get_current_user_metadata, UserContext
 from supabase import Client
 from typing import Optional
@@ -10,12 +10,12 @@ from typing import Optional
 router = APIRouter(prefix='/api/monthly-data', tags=['Monthly Data'])
 
 
-def get_monthly_data_service(supabase: Client = Depends(get_supabase_client)) -> MonthlyDataService:
+def get_monthly_data_service(supabase: Client = Depends(get_db_client)) -> MonthlyDataService:
     '''Get monthly data service dependency'''
     return MonthlyDataService(supabase)
 
 
-def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> ClinicService:
+def get_clinic_service(supabase: Client = Depends(get_db_client)) -> ClinicService:
     '''Get clinic service dependency'''
     return ClinicService(supabase)
 

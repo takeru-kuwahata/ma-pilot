@@ -5,7 +5,7 @@ import os
 import logging
 
 logger = logging.getLogger(__name__)
-from ..core import get_supabase_client
+from ..core import get_db_client
 from ..services import PrintOrderService
 from ..services.pdf_service import PdfService
 from ..services.email_service import EmailService
@@ -27,7 +27,7 @@ router = APIRouter(prefix="/api", tags=["Print Orders"])
 
 def get_print_order_service():
     """PrintOrderServiceの依存性注入"""
-    supabase = get_supabase_client()
+    supabase = get_db_client()
     return PrintOrderService(supabase)
 
 
@@ -309,7 +309,7 @@ async def cancel_print_order(
         order = service.get_order_by_id(order_id)
         if not order:
             raise HTTPException(status_code=404, detail="注文が見つかりません")
-        supabase = get_supabase_client()
+        supabase = get_db_client()
         supabase.table("print_orders").delete().eq("id", order_id).execute()
         return ApiResponse(data=None, message="注文をキャンセルしました")
     except HTTPException:
@@ -343,7 +343,7 @@ async def upload_order_attachment(
             safe_name = f"attachment.{ext}"
         storage_path = f"print_order_attachments/{order_id}/{safe_name}"
 
-        supabase = get_supabase_client()
+        supabase = get_db_client()
         supabase.storage.from_("attachments").upload(
             storage_path,
             file_bytes,

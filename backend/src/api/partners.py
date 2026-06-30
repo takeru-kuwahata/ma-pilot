@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from supabase import Client
 from typing import List, Optional
 from pydantic import BaseModel
-from ..core.database import get_supabase_client, get_service_role_client
+from ..core.database import get_db_client, get_service_role_client
 from ..middleware.auth import get_current_user_metadata, UserContext
 
 router = APIRouter(prefix='/api/partners', tags=['Partners'])
@@ -43,7 +43,7 @@ class RecommendationLogCreate(BaseModel):
 @router.get('/services')
 async def get_services_by_tag(
     problem_tag: str,
-    supabase: Client = Depends(get_supabase_client),
+    supabase: Client = Depends(get_db_client),
     user: UserContext = Depends(get_current_user_metadata),
 ):
     '''課題タグに対応するサービス一覧を取得'''
@@ -71,7 +71,7 @@ async def get_services_by_tag(
 @router.post('/recommendation-log')
 async def log_recommendation_click(
     request: RecommendationLogCreate,
-    supabase: Client = Depends(get_supabase_client),
+    supabase: Client = Depends(get_db_client),
     user: UserContext = Depends(get_current_user_metadata),
 ):
     '''レコメンドのクリックを記録'''
@@ -141,7 +141,7 @@ async def update_company(
 
 @router.get('/admin/services')
 async def list_services(
-    supabase: Client = Depends(get_supabase_client),
+    supabase: Client = Depends(get_db_client),
     user: UserContext = Depends(get_current_user_metadata),
 ):
     '''サービス一覧（管理者のみ・全件）'''

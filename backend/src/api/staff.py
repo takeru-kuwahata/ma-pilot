@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from ..models.user import InviteUserRequest, InviteUserResponse, UpdateUserRoleRequest, User
 from ..services.auth_service import AuthService
 from ..services.clinic_service import ClinicService
-from ..core.database import get_supabase_client
+from ..core.database import get_db_client
 from supabase import Client
 from typing import List
 import httpx
@@ -11,12 +11,12 @@ import os
 router = APIRouter(prefix='/api/staff', tags=['Staff Management'])
 
 
-def get_auth_service(supabase: Client = Depends(get_supabase_client)) -> AuthService:
+def get_auth_service(supabase: Client = Depends(get_db_client)) -> AuthService:
     '''Get auth service dependency'''
     return AuthService(supabase)
 
 
-def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> ClinicService:
+def get_clinic_service(supabase: Client = Depends(get_db_client)) -> ClinicService:
     '''Get clinic service dependency'''
     return ClinicService(supabase)
 
@@ -24,7 +24,7 @@ def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> Clini
 @router.get('', response_model=List[User])
 async def get_staff(
     clinic_id: str = Query(...),
-    supabase: Client = Depends(get_supabase_client),
+    supabase: Client = Depends(get_db_client),
     clinic_service: ClinicService = Depends(get_clinic_service)
 ):
     '''Get all staff members for clinic'''

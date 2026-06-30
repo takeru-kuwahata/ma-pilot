@@ -1,14 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends
 from ..models.clinic import Clinic, ClinicCreate, ClinicUpdate, ClinicResponse
 from ..services.clinic_service import ClinicService
-from ..core.database import get_supabase_client
+from ..core.database import get_db_client
 from ..middleware.auth import get_current_user_metadata, UserContext
 from supabase import Client
 
 router = APIRouter(prefix='/api/clinics', tags=['Clinics'])
 
 
-def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> ClinicService:
+def get_clinic_service(supabase: Client = Depends(get_db_client)) -> ClinicService:
     '''Get clinic service dependency'''
     return ClinicService(supabase)
 

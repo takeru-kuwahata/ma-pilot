@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from ..models.market_analysis import MarketAnalysis, MarketAnalysisCreate, MarketAnalysisResponse
 from ..services.market_analysis_service import MarketAnalysisService
 from ..services.clinic_service import ClinicService
-from ..core.database import get_supabase_client, get_service_role_client
+from ..core.database import get_db_client, get_service_role_client
 from supabase import Client
 
 router = APIRouter(prefix='/api/market-analysis', tags=['Market Analysis'])
@@ -13,7 +13,7 @@ def get_market_analysis_service(supabase: Client = Depends(get_service_role_clie
     return MarketAnalysisService(supabase)
 
 
-def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> ClinicService:
+def get_clinic_service(supabase: Client = Depends(get_db_client)) -> ClinicService:
     '''Get clinic service dependency'''
     return ClinicService(supabase)
 

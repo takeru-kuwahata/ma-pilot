@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from ..models.clinic import Clinic, ClinicCreate, ClinicResponse
 from ..services.clinic_service import ClinicService
-from ..core.database import get_supabase_client
+from ..core.database import get_db_client
 from supabase import Client
 from typing import List, Dict, Any
 from pydantic import BaseModel
@@ -32,14 +32,14 @@ class ImportWordPressUsersRequest(BaseModel):
 router = APIRouter(prefix='/api/admin', tags=['Admin'])
 
 
-def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> ClinicService:
+def get_clinic_service(supabase: Client = Depends(get_db_client)) -> ClinicService:
     '''Get clinic service dependency'''
     return ClinicService(supabase)
 
 
 @router.get('/dashboard')
 async def get_admin_dashboard(
-    supabase: Client = Depends(get_supabase_client)
+    supabase: Client = Depends(get_db_client)
 ):
     '''Get admin dashboard data'''
     try:
@@ -130,7 +130,7 @@ async def deactivate_clinic(
 
 
 @router.get('/operators')
-async def get_operators(supabase: Client = Depends(get_supabase_client)):
+async def get_operators(supabase: Client = Depends(get_db_client)):
     '''Get all system_admin operators'''
     try:
         response = supabase.table('user_metadata').select('*').eq('role', 'system_admin').execute()
@@ -166,7 +166,7 @@ async def get_operators(supabase: Client = Depends(get_supabase_client)):
 @router.post('/operators')
 async def create_operator(
     request: CreateOperatorRequest,
-    supabase: Client = Depends(get_supabase_client)
+    supabase: Client = Depends(get_db_client)
 ):
     '''Create a new system_admin operator'''
     try:
@@ -205,7 +205,7 @@ async def create_operator(
 @router.delete('/operators/{user_id}')
 async def delete_operator(
     user_id: str,
-    supabase: Client = Depends(get_supabase_client)
+    supabase: Client = Depends(get_db_client)
 ):
     '''Delete an operator'''
     try:
@@ -226,7 +226,7 @@ async def delete_operator(
 
 
 @router.get('/settings')
-async def get_admin_settings(supabase: Client = Depends(get_supabase_client)):
+async def get_admin_settings(supabase: Client = Depends(get_db_client)):
     '''Get admin settings'''
     try:
         response = supabase.table('system_settings').select('*').execute()
@@ -239,7 +239,7 @@ async def get_admin_settings(supabase: Client = Depends(get_supabase_client)):
 @router.put('/settings')
 async def update_admin_settings(
     settings: Dict[str, str],
-    supabase: Client = Depends(get_supabase_client)
+    supabase: Client = Depends(get_db_client)
 ):
     '''Update admin settings'''
     try:
@@ -276,7 +276,7 @@ async def geocode_address(address: str):
 async def update_clinic_password(
     clinic_id: str,
     request: UpdatePasswordRequest,
-    supabase: Client = Depends(get_supabase_client)
+    supabase: Client = Depends(get_db_client)
 ):
     '''医院アカウントのパスワードを運営者が変更する'''
     if len(request.new_password) < 8:
@@ -315,7 +315,7 @@ async def update_clinic_password(
 async def update_openhouse_status(
     clinic_id: str,
     request: OpenhouseStatusRequest,
-    supabase: Client = Depends(get_supabase_client)
+    supabase: Client = Depends(get_db_client)
 ):
     '''内覧会ステータスを更新'''
     valid_statuses = ('none', 'scheduled', 'completed')
@@ -337,7 +337,7 @@ async def update_openhouse_status(
 @router.post('/import-wordpress-users')
 async def import_wordpress_users(
     request: ImportWordPressUsersRequest,
-    supabase: Client = Depends(get_supabase_client)
+    supabase: Client = Depends(get_db_client)
 ):
     '''WordPressユーザーをMA-PilotにCSV一括インポート'''
     supabase_url = os.environ.get('SUPABASE_URL', '')

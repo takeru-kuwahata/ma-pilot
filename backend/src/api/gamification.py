@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from supabase import Client
-from ..core.database import get_supabase_client, get_service_role_client
+from ..core.database import get_db_client, get_service_role_client
 from ..services.gamification_service import GamificationService
 from ..services.clinic_service import ClinicService
 from ..middleware.auth import get_current_user_metadata, UserContext
@@ -17,7 +17,7 @@ def get_gamification_service(supabase: Client = Depends(get_service_role_client)
     return GamificationService(supabase)
 
 
-def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> ClinicService:
+def get_clinic_service(supabase: Client = Depends(get_db_client)) -> ClinicService:
     return ClinicService(supabase)
 
 

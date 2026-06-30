@@ -2,7 +2,7 @@ import os
 import stripe
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
-from ..core import get_supabase_client
+from ..core import get_db_client
 from ..services import PrintOrderService
 
 router = APIRouter(prefix="/api/stripe", tags=["Stripe"])
@@ -16,7 +16,7 @@ def get_stripe_key() -> str:
 
 
 def get_print_order_service():
-    return PrintOrderService(get_supabase_client())
+    return PrintOrderService(get_db_client())
 
 
 class PaymentIntentResponse(BaseModel):
@@ -85,7 +85,7 @@ async def confirm_payment(
     if intent.status != "succeeded":
         raise HTTPException(status_code=400, detail=f"決済が完了していません（ステータス: {intent.status}）")
 
-    supabase = get_supabase_client()
+    supabase = get_db_client()
     supabase.table("print_orders").update({
         "payment_status": "paid",
         "stripe_payment_intent_id": body.payment_intent_id,

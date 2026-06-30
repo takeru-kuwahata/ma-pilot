@@ -3,18 +3,18 @@ from fastapi.responses import RedirectResponse
 from ..models.report import Report, ReportGenerateRequest, ReportResponse, ReportListResponse
 from ..services.report_service import ReportService
 from ..services.clinic_service import ClinicService
-from ..core.database import get_supabase_client
+from ..core.database import get_db_client
 from supabase import Client
 
 router = APIRouter(prefix='/api/reports', tags=['Reports'])
 
 
-def get_report_service(supabase: Client = Depends(get_supabase_client)) -> ReportService:
+def get_report_service(supabase: Client = Depends(get_db_client)) -> ReportService:
     '''Get report service dependency'''
     return ReportService(supabase)
 
 
-def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> ClinicService:
+def get_clinic_service(supabase: Client = Depends(get_db_client)) -> ClinicService:
     '''Get clinic service dependency'''
     return ClinicService(supabase)
 

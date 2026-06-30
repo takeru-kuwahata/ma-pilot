@@ -3,7 +3,7 @@ import logging
 from fastapi import APIRouter, HTTPException, Depends
 from typing import Dict, Any
 from supabase import Client
-from ..core.database import get_supabase_client
+from ..core.database import get_db_client
 from ..services.lstep_service import LstepService
 
 logger = logging.getLogger(__name__)
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix='/api/webhooks', tags=['Webhooks'])
 
 
-def get_lstep_service(supabase: Client = Depends(get_supabase_client)) -> LstepService:
+def get_lstep_service(supabase: Client = Depends(get_db_client)) -> LstepService:
     """LstepServiceの依存性注入"""
     from ..core.config import get_settings
     settings = get_settings()

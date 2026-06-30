@@ -2,19 +2,19 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from ..models.dashboard import DashboardResponse
 from ..services.dashboard_service import DashboardService
 from ..services.clinic_service import ClinicService
-from ..core.database import get_supabase_client
+from ..core.database import get_db_client
 from ..middleware.auth import get_current_user_metadata, UserContext
 from supabase import Client
 
 router = APIRouter(prefix='/api/dashboard', tags=['Dashboard'])
 
 
-def get_dashboard_service(supabase: Client = Depends(get_supabase_client)) -> DashboardService:
+def get_dashboard_service(supabase: Client = Depends(get_db_client)) -> DashboardService:
     '''Get dashboard service dependency'''
     return DashboardService(supabase)
 
 
-def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> ClinicService:
+def get_clinic_service(supabase: Client = Depends(get_db_client)) -> ClinicService:
     '''Get clinic service dependency'''
     return ClinicService(supabase)
 

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from ..core.database import get_supabase_client
+from ..core.database import get_db_client
 from ..middleware.auth import get_current_user
 from supabase import Client
 from pydantic import BaseModel
@@ -22,7 +22,7 @@ router = APIRouter(prefix='/api/my', tags=['My'])
 @router.put('/display-name')
 async def update_display_name(
     request: UpdateDisplayNameRequest,
-    supabase: Client = Depends(get_supabase_client),
+    supabase: Client = Depends(get_db_client),
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     '''Update current user display name'''
@@ -49,7 +49,7 @@ async def update_display_name(
 @router.put('/password')
 async def update_password(
     request: UpdatePasswordRequest,
-    supabase: Client = Depends(get_supabase_client),
+    supabase: Client = Depends(get_db_client),
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     '''Update current user password'''

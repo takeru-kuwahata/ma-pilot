@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from supabase import Client
 from pydantic import BaseModel
 from typing import Optional
-from ..core.database import get_supabase_client
+from ..core.database import get_db_client
 from ..services.consulting_service import ConsultingService
 from ..services.clinic_service import ClinicService
 from ..middleware.auth import get_current_user_metadata, UserContext
@@ -14,11 +14,11 @@ class ClinicMemoRequest(BaseModel):
     memo: Optional[str] = None
 
 
-def get_consulting_service(supabase: Client = Depends(get_supabase_client)) -> ConsultingService:
+def get_consulting_service(supabase: Client = Depends(get_db_client)) -> ConsultingService:
     return ConsultingService(supabase)
 
 
-def get_clinic_service(supabase: Client = Depends(get_supabase_client)) -> ClinicService:
+def get_clinic_service(supabase: Client = Depends(get_db_client)) -> ClinicService:
     return ClinicService(supabase)
 
 
@@ -48,7 +48,7 @@ async def get_consulting_report(
 async def get_clinic_memo(
     clinic_id: str,
     clinic_service: ClinicService = Depends(get_clinic_service),
-    supabase: Client = Depends(get_supabase_client),
+    supabase: Client = Depends(get_db_client),
     user: UserContext = Depends(get_current_user_metadata),
 ):
     '''院長メモ取得'''
@@ -71,7 +71,7 @@ async def update_clinic_memo(
     clinic_id: str,
     request: ClinicMemoRequest,
     clinic_service: ClinicService = Depends(get_clinic_service),
-    supabase: Client = Depends(get_supabase_client),
+    supabase: Client = Depends(get_db_client),
     user: UserContext = Depends(get_current_user_metadata),
 ):
     '''院長メモ保存'''
