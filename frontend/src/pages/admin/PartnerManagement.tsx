@@ -99,6 +99,25 @@ export const PartnerManagement = () => {
     setCompanyDialog(true);
   };
 
+  const openEditCompany = (company: Company) => {
+    setEditingCompany(company);
+    setCompanyDialog(true);
+  };
+
+  const deleteCompany = async (companyId: string) => {
+    if (!window.confirm('この企業を削除しますか？配下のサービスもすべて削除されます。')) return;
+    try {
+      await fetch(`${API_BASE_URL}/api/partners/admin/companies/${companyId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+      setSuccess('企業を削除しました');
+      fetchCompanies();
+    } catch {
+      setError('削除に失敗しました');
+    }
+  };
+
   const saveCompany = async () => {
     try {
       const isNew = !editingCompany.id;
@@ -194,6 +213,19 @@ export const PartnerManagement = () => {
                   color="primary"
                   variant="outlined"
                 />
+                <IconButton
+                  size="small"
+                  onClick={(e) => { e.stopPropagation(); openEditCompany(company); }}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  color="error"
+                  onClick={(e) => { e.stopPropagation(); deleteCompany(company.id); }}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
               </Box>
             </AccordionSummary>
             <AccordionDetails>
@@ -400,7 +432,7 @@ export const PartnerManagement = () => {
         <DialogActions>
           <Button onClick={() => setServiceDialog(false)}>キャンセル</Button>
           <Button variant="contained" onClick={saveService}
-            disabled={!editingService.service_name || selectedTags.length === 0}>
+            disabled={!editingService.service_name}>
             保存
           </Button>
         </DialogActions>

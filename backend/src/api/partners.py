@@ -139,6 +139,28 @@ async def update_company(
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@router.delete('/admin/companies/{company_id}')
+async def delete_company(
+    company_id: str,
+    supabase: Client = Depends(get_service_role_client),
+    user: UserContext = Depends(get_current_user_metadata),
+):
+    '''提携企業削除（管理者のみ）。配下のサービス・課題タグも連鎖削除'''
+    if not user.is_system_admin():
+        raise HTTPException(status_code=403, detail='管理者権限が必要です')
+    try:
+        service_rows = supabase.table('partner_services') \
+            .select('id').eq('company_id', company_id).execute().data
+        service_ids = [r['id'] for r in service_rows]
+        if service_ids:
+            supabase.table('service_problem_tags').delete().in_('service_id', service_ids).execute()
+            supabase.table('partner_services').delete().eq('company_id', company_id).execute()
+        supabase.table('partner_companies').delete().eq('id', company_id).execute()
+        return {'message': '企業を削除しました'}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @router.get('/admin/services')
 async def list_services(
     supabase: Client = Depends(get_db_client),
