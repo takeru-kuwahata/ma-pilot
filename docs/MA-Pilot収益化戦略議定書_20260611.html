@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MA-Pilot 収益化戦略議定書 — 2026年6月</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0d0d0d;
+    --deep: #141414;
+    --surface: #1a1a1a;
+    --card: #1f1f1f;
+    --border: #2a2a2a;
+    --gold: #c9a84c;
+    --gold-light: #e0c068;
+    --gold-dim: #8a6e2e;
+    --cream: #f5f0e8;
+    --muted: #888;
+    --accent-blue: #4a7fa5;
+    --accent-green: #5a9e6b;
+    --accent-red: #9e4a4a;
+    --accent-amber: #b8860b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Noto Serif JP', serif;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: linear-gradient(180deg, #0a0a0a 0%, var(--deep) 100%);
+    border-bottom: 1px solid var(--gold-dim);
+    padding: 60px 40px 50px;
+    text-align: center;
+  }
+  .header-label {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+  .header h1 span {
+    font-size: 16px;
+    color: var(--gold-dim);
+    display: block;
+    margin-top: 6px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+  }
+  .header-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 20px;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  /* ─── TOC ─── */
+  .toc {
+    max-width: 860px;
+    margin: 50px auto;
+    padding: 0 30px;
+  }
+  .toc-inner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold-dim);
+    padding: 28px 32px;
+  }
+  .toc-title {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold-dim);
+    font-family: 'Noto Sans JP', sans-serif;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .toc ol {
+    list-style: none;
+    counter-reset: toc;
+  }
+  .toc li {
+    counter-increment: toc;
+    padding: 4px 0;
+    font-size: 13px;
+    color: #aaa;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .toc li::before {
+    content: counter(toc, upper-roman) ". ";
+    color: var(--gold-dim);
+    margin-right: 8px;
+  }
+
+  /* ─── MAIN ─── */
+  .main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 30px 80px;
+  }
+
+  /* ─── SECTION ─── */
+  .section {
+    margin-bottom: 60px;
+  }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-size: 11px;
+    color: var(--gold-dim);
+    font-family: 'Noto Sans JP', sans-serif;
+    letter-spacing: 0.2em;
+    min-width: 48px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gold-light);
+    line-height: 1.4;
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    font-family: 'Noto Sans JP', sans-serif;
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+  .card p, .card li {
+    font-size: 14px;
+    color: #ccc;
+    font-family: 'Noto Sans JP', sans-serif;
+    line-height: 1.75;
+  }
+  .card ul, .card ol {
+    padding-left: 20px;
+    margin-top: 6px;
+  }
+  .card li { margin-bottom: 4px; }
+
+  /* ─── HIGHLIGHT BOX ─── */
+  .highlight {
+    background: linear-gradient(135deg, #1c1a10 0%, #1a1800 100%);
+    border: 1px solid var(--gold-dim);
+    border-left: 4px solid var(--gold);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+  }
+  .highlight p {
+    font-size: 15px;
+    color: var(--cream);
+    line-height: 1.85;
+  }
+  .highlight strong { color: var(--gold-light); }
+
+  /* ─── STAT GRID ─── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+    line-height: 1.2;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Noto Sans JP', sans-serif;
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  /* ─── TABLE ─── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  th {
+    background: var(--surface);
+    color: var(--gold-dim);
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    color: #ccc;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  tr:nth-child(even) td { background: #181818; }
+
+  /* ─── PHASE STEPS ─── */
+  .phase-container { margin-top: 8px; }
+  .phase-step {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    align-items: flex-start;
+  }
+  .phase-badge {
+    background: var(--gold-dim);
+    color: var(--black);
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
+    padding: 4px 10px;
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: center;
+    margin-top: 3px;
+  }
+  .phase-badge.ph2 { background: #3a5a3a; color: #7ecb7e; }
+  .phase-badge.ph3 { background: #3a3a5a; color: #7e7ecb; }
+  .phase-content { flex: 1; }
+  .phase-content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cream);
+    font-family: 'Noto Sans JP', sans-serif;
+    margin-bottom: 6px;
+  }
+  .phase-content p, .phase-content li {
+    font-size: 13px;
+    color: #aaa;
+    font-family: 'Noto Sans JP', sans-serif;
+    line-height: 1.7;
+  }
+  .phase-content ul { padding-left: 18px; margin-top: 4px; }
+  .phase-content li { margin-bottom: 3px; }
+
+  /* ─── VERDICT ─── */
+  .verdict-box {
+    background: linear-gradient(135deg, #0f1a0f 0%, #0d1a10 100%);
+    border: 1px solid #2a4a2a;
+    border-left: 4px solid var(--accent-green);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+  }
+  .verdict-box.danger {
+    background: linear-gradient(135deg, #1a0f0f 0%, #1a0d0d 100%);
+    border: 1px solid #4a2a2a;
+    border-left: 4px solid var(--accent-red);
+  }
+  .verdict-box.caution {
+    background: linear-gradient(135deg, #1a1500 0%, #1a1600 100%);
+    border: 1px solid #4a3a00;
+    border-left: 4px solid var(--accent-amber);
+  }
+  .verdict-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--accent-green);
+    font-family: 'Noto Sans JP', sans-serif;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .verdict-box.danger .verdict-label { color: var(--accent-red); }
+  .verdict-box.caution .verdict-label { color: var(--accent-amber); }
+  .verdict-box p {
+    font-size: 14px;
+    color: #ccc;
+    font-family: 'Noto Sans JP', sans-serif;
+    line-height: 1.75;
+  }
+  .verdict-box strong { color: var(--cream); }
+
+  /* ─── SCORE TABLE ─── */
+  .score { display: inline-flex; gap: 3px; }
+  .dot {
+    width: 10px; height: 10px;
+    background: var(--border);
+    border-radius: 50%;
+  }
+  .dot.on { background: var(--gold); }
+  .dot.half { background: var(--gold-dim); }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+  .divider-gold {
+    border: none;
+    border-top: 1px solid var(--gold-dim);
+    margin: 50px 0;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    border-top: 1px solid var(--gold-dim);
+    padding: 40px;
+    text-align: center;
+    background: var(--deep);
+  }
+  .footer-sign {
+    font-size: 14px;
+    color: var(--gold-dim);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .footer-meta {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  /* ─── TAG ─── */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-family: 'Noto Sans JP', sans-serif;
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-right: 6px;
+    letter-spacing: 0.05em;
+  }
+  .tag-green { background: #1a3a1a; color: #7ecb7e; border: 1px solid #2a5a2a; }
+  .tag-red { background: #3a1a1a; color: #cb7e7e; border: 1px solid #5a2a2a; }
+  .tag-amber { background: #2a2000; color: #cbbb7e; border: 1px solid #3a3000; }
+  .tag-blue { background: #1a2a3a; color: #7ea8cb; border: 1px solid #2a4a5a; }
+</style>
+</head>
+<body>
+
+<!-- ━━━ HEADER ━━━ -->
+<div class="header">
+  <div class="header-label">Strategic Advisory Document — Confidential</div>
+  <h1>
+    MA-Pilot 収益化・展開戦略
+    <span>歯科医院経営分析システム ／ リリース直前版 戦略議定書</span>
+  </h1>
+  <div class="header-meta">発行日：2026年6月11日　｜　メディカルアドバンス株式会社　｜　機密文書</div>
+</div>
+
+<!-- ━━━ TOC ━━━ -->
+<div class="toc">
+  <div class="toc-inner">
+    <div class="toc-title">目次</div>
+    <ol>
+      <li>前提：日本歯科業界の現状と構造的課題</li>
+      <li>競合地図とMA-Pilotの差別化ポジション</li>
+      <li>院長の購買行動と「売れる理由・売れない理由」</li>
+      <li>3つの仮説と効果性ストレステスト結果</li>
+      <li>確定戦略ロードマップ — Phase 1〜3</li>
+      <li>価格設計と収益モデル</li>
+      <li>致命的リスクと撤退条件</li>
+    </ol>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ━━━ SECTION I ━━━ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">I</span>
+    <h2 class="section-title">前提：日本歯科業界の現状と構造的課題</h2>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-item">
+      <span class="stat-num">65,957</span>
+      <div class="stat-label">歯科医院数（2025年）<br>コンビニ56,505軒を上回る</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">126件</span>
+      <div class="stat-label">2024年1〜10月の倒産・廃業<br>前年同期比1.8倍・過去最多ペース</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">90%超</span>
+      <div class="stat-label">後継者不在率<br>廃業時平均年齢69歳</div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <p>
+      歯科医院は「飽和市場の中で静かに崩壊が進む業界」である。コンビニより多い6万院が過当競争にさらされ、廃業は急加速。後継者不在率90%超という構造的問題は、<strong>今後10年で数千院単位の廃業・M&amp;A</strong>が発生することを意味する。同時に、<strong>生き残りを目指す院長ほど経営データへの渇望が高い</strong>。この「危機感とデータ需要のギャップ」がMA-Pilotの存在意義である。
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">業界の追い風4点</div>
+    <ul>
+      <li><strong>予防歯科の浸透：</strong>歯科検診受診率が初めて6割超（2025年）。リピート患者が増え、データ管理ニーズが高まる</li>
+      <li><strong>自費診療シフト：</strong>全国平均21.4%の自費率を40%以上に高めることが院長最大の関心事</li>
+      <li><strong>診療報酬改定（2026年6月）：</strong>「電子的診療情報連携体制整備加算」新設。クラウドSaaS需要が政策的に後押しされる</li>
+      <li><strong>IT導入補助金：</strong>最大450万円・1/2補助。SaaS導入の初期コスト障壁を大幅に下げられる</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider-gold">
+
+<!-- ━━━ SECTION II ━━━ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">II</span>
+    <h2 class="section-title">競合地図とMA-Pilotの差別化ポジション</h2>
+  </div>
+
+  <table>
+    <tr>
+      <th>カテゴリ</th>
+      <th>主要プレイヤー</th>
+      <th>月額費用</th>
+      <th>強み</th>
+      <th>弱み</th>
+    </tr>
+    <tr>
+      <td><strong>レセコン系</strong></td>
+      <td>WiseStaff、palette、DOC-5</td>
+      <td>1〜4万円</td>
+      <td>業務統合・乗り換え障壁高</td>
+      <td>経営分析機能は弱い</td>
+    </tr>
+    <tr>
+      <td><strong>SaaS系</strong></td>
+      <td>DENTIS（メドレー）、Apotool</td>
+      <td>3万円前後</td>
+      <td>予約・患者管理に強い</td>
+      <td>経営戦略視点なし</td>
+    </tr>
+    <tr>
+      <td><strong>コンサル系</strong></td>
+      <td>船井総研、専門コンサル</td>
+      <td>20〜50万円</td>
+      <td>戦略立案・人的支援</td>
+      <td>高すぎる・属人的</td>
+    </tr>
+    <tr>
+      <td style="color: var(--gold); font-weight:600;">MA-Pilot</td>
+      <td style="color: var(--gold);">経営分析・診療圏・シミュレーション</td>
+      <td style="color: var(--gold);">設計次第</td>
+      <td style="color: var(--gold);">経営の「意思決定」に特化</td>
+      <td style="color: var(--gold);">認知度ゼロから出発</td>
+    </tr>
+  </table>
+
+  <div class="verdict-box">
+    <div class="verdict-label">差別化ポジション</div>
+    <p>
+      現行競合の空白地帯は<strong>「経営判断の支援」</strong>である。レセコンは診療業務、SaaSは患者管理、コンサルは人的支援と、いずれも「院長が月次で経営数値を見て意思決定する」機能を持たない。MA-Pilotはこの空白を埋める。特に<strong>診療圏分析・経営シミュレーション・レポート自動生成</strong>の組み合わせは競合に存在せず、強固な差別化ポイントとなる。
+    </p>
+  </div>
+</div>
+
+<hr class="divider-gold">
+
+<!-- ━━━ SECTION III ━━━ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">III</span>
+    <h2 class="section-title">院長の購買行動と「売れる理由・売れない理由」</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-title">院長の意思決定の構造（調査で判明）</div>
+    <ul>
+      <li><strong>信頼関係が最優先：</strong>見知らぬ営業よりも「知人の紹介」「既存業者の推薦」が圧倒的に有効</li>
+      <li><strong>決定速度は速い：</strong>個人経営のため稟議不要。ただし信頼構築フェーズに時間がかかる</li>
+      <li><strong>情報源：</strong>デンタルショー・展示会・勉強会（同時開催セミナー200件超）が主要接触点</li>
+      <li><strong>費用感：</strong>月額3万円以下は「試してみる」域。10万円超は「成果の確信」が必要</li>
+      <li><strong>最大関心事：</strong>自費診療率向上・患者リピート率向上・スタッフ採用</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">「売れない」典型的失敗パターン</div>
+    <ul>
+      <li>機能説明中心の営業 → 院長は「で、何が解決するのか」しか聞いていない</li>
+      <li>メール・DM単独 → 歯科業界は閉鎖的。初回接触はリアル or 紹介が必須</li>
+      <li>成果事例なしで高額提案 → 信頼資産のない段階での高額化は致命的</li>
+      <li>サポート体制の曖昧さ → 「使い方がわからない」でそのまま解約</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider-gold">
+
+<!-- ━━━ SECTION IV ━━━ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">IV</span>
+    <h2 class="section-title">3つの仮説と効果性ストレステスト結果</h2>
+  </div>
+
+  <table>
+    <tr>
+      <th>#</th>
+      <th>仮説</th>
+      <th>推奨度</th>
+      <th>初期貢献度</th>
+      <th>スケーラビリティ</th>
+      <th>判定</th>
+    </tr>
+    <tr>
+      <td>A</td>
+      <td>パートナー企業（歯科商社）経由で50〜100医院獲得</td>
+      <td>
+        <span class="score">
+          <span class="dot on"></span><span class="dot on"></span>
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </span> 2/5
+      </td>
+      <td>中（10〜30医院が現実的上限）</td>
+      <td>低（商社のモチベーション維持困難）</td>
+      <td><span class="tag tag-amber">条件付き</span></td>
+    </tr>
+    <tr>
+      <td><strong>B</strong></td>
+      <td><strong>会長ネットワーク直販で10〜20医院獲得→成功事例化→横展開</strong></td>
+      <td>
+        <span class="score">
+          <span class="dot on"></span><span class="dot on"></span>
+          <span class="dot on"></span><span class="dot on"></span>
+          <span class="dot"></span>
+        </span> <strong>4/5</strong>
+      </td>
+      <td><strong>高（3〜6ヶ月で現実的）</strong></td>
+      <td>中（20院以降は別チャネル必要）</td>
+      <td><span class="tag tag-green">採用推奨</span></td>
+    </tr>
+    <tr>
+      <td>C</td>
+      <td>コンサル付帯型（月額5〜10万円）でARR1000万円達成</td>
+      <td>
+        <span class="score">
+          <span class="dot on"></span><span class="dot on"></span>
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </span> 2/5
+      </td>
+      <td>中（1000万円到達は可能）</td>
+      <td>低（人的スケールの壁）</td>
+      <td><span class="tag tag-amber">MVP限定</span></td>
+    </tr>
+  </table>
+
+  <div class="card">
+    <div class="card-title">仮説A（パートナー商社展開）— なぜ脱落したか</div>
+    <p>歯科商社の営業はハードウェア販売が主業であり、SaaSの複雑な説明・サポートを再現することは構造的に困難。代理店SaaSの失敗調査（10社中成功2社）でも「パートナーが複数いるが成果ゼロ」「教育コスト過大」「インセンティブ不足で優先度下落」が主因。展開初期にパートナー頼みにすると、製品の不十分な説明による顧客不満→ブランド毀損リスクが高い。<strong>パートナーチャネルは成功事例を作った後の「スケール手段」として位置づけるべき。</strong></p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">仮説C（コンサル付帯高単価）— なぜMVP限定か</div>
+    <p>初期ARR1000万円達成手段としては有効。しかし月額5〜10万円×月1セッション体制は1人運営の場合ARR上限4500万円（45院）で頭打ち。スタッフ増員で利益率が急落し、SaaSとしての拡張性を失う。<strong>初期の10〜20院の試験運用段階では「経営診断セッション付き」の高単価モデルでROIを実証し、30院以降はAI化・プロダクト化（オプション化）に切り替える二段階設計が正解。</strong></p>
+  </div>
+</div>
+
+<hr class="divider-gold">
+
+<!-- ━━━ SECTION V ━━━ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">V</span>
+    <h2 class="section-title">確定戦略ロードマップ — Phase 1〜3</h2>
+  </div>
+
+  <div class="highlight">
+    <p>
+      <strong>推奨戦略：「信頼資産先行型・3フェーズ展開」</strong><br>
+      会長ネットワークで最初の10〜20医院に深く入り込み、定量的な成功事例を作る（Phase 1）。その事例を武器にパートナー・勉強会チャネルで横展開（Phase 2）。50院超でプロダクト改良・価格体系見直し・補助金活用で加速（Phase 3）。<br>
+      <strong>焦って広げるのではなく、最初の20院を「証明の場」として徹底的に活用することが最速ルート。</strong>
+    </p>
+  </div>
+
+  <div class="phase-container">
+    <div class="phase-step">
+      <div class="phase-badge">Phase 1<br>0〜6ヶ月</div>
+      <div class="phase-content">
+        <h4>信頼事例の創出 — 目標：10〜20医院・MRR30〜60万円</h4>
+        <ul>
+          <li><strong>会長ネットワーク直販：</strong>関係のある歯科医院に絞り、特別価格（月額1〜2万円）または3ヶ月無料で導入させる。見返りは「成功事例の証言・推薦」のみ</li>
+          <li><strong>伴走支援を密に：</strong>月1回のオンライン確認セッションを無償提供。「使いこなせない」による早期離脱を防ぐ</li>
+          <li><strong>ROIの記録：</strong>導入前後の自費率・患者数・スタッフ稼働効率を数値化。「この医院では3ヶ月で自費率が◯%上がった」という事例を最低3件作る</li>
+          <li><strong>PDFレポートPDFバグ修正：</strong>本番でPDFダウンロード失敗の報告あり。Phase 1開始前に必ず解消する</li>
+          <li><strong>IT導入補助金の活用：</strong>補助金対象事業者への申請サポートを初期サービスに含める（選ばれる理由になる）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-step">
+      <div class="phase-badge ph2">Phase 2<br>6〜18ヶ月</div>
+      <div class="phase-content">
+        <h4>事例を武器にした横展開 — 目標：50〜100医院・MRR150〜300万円</h4>
+        <ul>
+          <li><strong>勉強会・展示会への登壇：</strong>デンタルショー・歯科経営セミナーで成功事例を発表。1回の登壇で10〜30名の院長に接触可能</li>
+          <li><strong>パートナー商社への提案（限定的）：</strong>Phase 1の成功事例が揃った段階でパートナーを2〜3社に絞り導入。広く薄く展開ではなく、深く支援できるパートナーのみ</li>
+          <li><strong>Lstep Webhook活用：</strong>既に実装済みのLINE連携を活かし、見込み医院へのナーチャリング自動化</li>
+          <li><strong>価格の正規化：</strong>月額2.5〜3.5万円（SaaS標準帯）に設定。IT補助金活用で実質負担を1.25〜1.75万円に見せる</li>
+          <li><strong>Stripe決済の本稼働：</strong>Phase 2前に環境変数設定を確認・解消（現在待機中）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-step">
+      <div class="phase-badge ph3">Phase 3<br>18〜36ヶ月</div>
+      <div class="phase-content">
+        <h4>プロダクト強化とスケール — 目標：200〜500医院・ARR1億円</h4>
+        <ul>
+          <li><strong>AI経営診断機能：</strong>月1セッションをAIによる自動診断レポートに置き換え。人的コストなしで「コンサル代替価値」を維持</li>
+          <li><strong>レセコン連携：</strong>主要レセコンとのAPI連携で自動データ取込を実現。手動入力の手間がチャーンの最大原因になる</li>
+          <li><strong>価格二層化：</strong>基本プラン（月額1.5〜2万円）＋プレミアムプラン（月額4〜5万円・AI診断+診療圏分析フル機能）</li>
+          <li><strong>M&amp;A・事業承継支援機能：</strong>廃業急増の市場で「経営評価・承継シミュレーション」を追加すると高付加価値</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider-gold">
+
+<!-- ━━━ SECTION VI ━━━ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">VI</span>
+    <h2 class="section-title">価格設計と収益モデル</h2>
+  </div>
+
+  <table>
+    <tr>
+      <th>フェーズ</th>
+      <th>プラン</th>
+      <th>月額</th>
+      <th>ターゲット</th>
+      <th>根拠</th>
+    </tr>
+    <tr>
+      <td>Phase 1</td>
+      <td>特別モニター価格</td>
+      <td>無料〜1万円</td>
+      <td>関係医院10〜20院</td>
+      <td>事例獲得が目的。金銭より証言・紹介が価値</td>
+    </tr>
+    <tr>
+      <td>Phase 2</td>
+      <td>スタンダード</td>
+      <td>2.5〜3.5万円</td>
+      <td>一般展開50〜100院</td>
+      <td>DENTIS（3万円）と同帯。補助金活用で実質1.5万円</td>
+    </tr>
+    <tr>
+      <td>Phase 2+</td>
+      <td>プレミアム（セッション付）</td>
+      <td>5〜8万円</td>
+      <td>コンサル代替ニーズ層</td>
+      <td>船井総研（月20〜50万円）との中間価格帯で圧倒的コスパ</td>
+    </tr>
+    <tr>
+      <td>Phase 3</td>
+      <td>基本 / プロ</td>
+      <td>1.5万 / 4万円</td>
+      <td>大規模展開</td>
+      <td>裾野拡大（基本）＋高単価維持（プロ）の二層化</td>
+    </tr>
+  </table>
+
+  <div class="card">
+    <div class="card-title">ARRシミュレーション</div>
+    <ul>
+      <li>Phase 1完了時（20院 × 1万円）：MRR 20万円、ARR 240万円</li>
+      <li>Phase 2完了時（100院 × 3万円）：MRR 300万円、ARR 3,600万円</li>
+      <li>Phase 3目標（300院 × 3.5万円平均）：MRR 1,050万円、ARR 1.26億円</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider-gold">
+
+<!-- ━━━ SECTION VII ━━━ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">VII</span>
+    <h2 class="section-title">致命的リスクと撤退条件</h2>
+  </div>
+
+  <div class="verdict-box danger">
+    <div class="verdict-label">致命的リスク 1 — プロダクト品質</div>
+    <p>
+      <strong>現在、本番でPDFダウンロード失敗の未解決バグが存在する。</strong>レポートPDFはMA-Pilotの核心機能であり、院長への初回デモ・提案時に動かなければ一発で信頼を失う。Phase 1開始前に必ず解消すること。会長ネットワークへの展開は「プロダクトが動く」ことが大前提。
+    </p>
+  </div>
+
+  <div class="verdict-box danger">
+    <div class="verdict-label">致命的リスク 2 — 最初の成功事例が出ない</div>
+    <p>
+      仮説Bの根幹は「成功事例の作成」である。最初の10〜20院でROIが出なければ、Phase 2への横展開は不可能になる。導入後3ヶ月は伴走を密にし、<strong>「自費率◯%向上」「無駄コスト◯万円削減」という具体数値を必ず記録・文書化する。</strong>数値がなければ営業トークが「自称」になり横展開は動かない。
+    </p>
+  </div>
+
+  <div class="verdict-box caution">
+    <div class="verdict-label">注意リスク 3 — レセコン大手の参入</div>
+    <p>
+      WiseStaff・DENTISなどレセコン系が経営分析機能を強化した場合、データ統合の優位で競合不可になる。<strong>対策：レセコンとの「競合」ではなく「連携」ポジションを取る。CSV取込・API連携を先行実装し、「レセコンと組み合わせて使うもの」として認知させる。</strong>
+    </p>
+  </div>
+
+  <div class="verdict-box caution">
+    <div class="verdict-label">撤退条件の明示</div>
+    <p>
+      以下の条件が重なった場合は戦略の全面見直しを行う：
+      <strong>①Phase 1（6ヶ月）終了時に5院以下しか導入できていない</strong>、
+      <strong>②初期10院のうち3院以上が6ヶ月以内に解約</strong>、
+      <strong>③パートナー商社3社にアプローチして全社が断った</strong>。
+      いずれかが発生した場合は価格・機能・ターゲット設定の根本を見直すことを推奨する。
+    </p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ━━━ 緊急アクション ━━━ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">★</span>
+    <h2 class="section-title">明日から動く — 最初の90日アクションリスト</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-title">今週中（〜6月18日）</div>
+    <ul>
+      <li>□ レポートPDFダウンロードのバグを調査・修正（本番確認必須）</li>
+      <li>□ Stripe決済の本番稼働確認（環境変数設定済みか確認）</li>
+      <li>□ 会長と「最初に声をかける10〜20院のリスト」をすり合わせ</li>
+      <li>□ Phase 1用のモニター価格・提案資料（2〜3枚）を作成</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">1ヶ月以内（〜7月11日）</div>
+    <ul>
+      <li>□ 最初の5院にアプローチ開始（会長直接連絡 or 訪問同行）</li>
+      <li>□ IT導入補助金の申請支援フローを整備（補助金対象事業者登録を確認）</li>
+      <li>□ 初回オンボーディング手順書を作成（院長・スタッフが迷わず使える）</li>
+      <li>□ ROI記録シートの用意（導入前ベースライン：自費率・患者数・月次売上）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">3ヶ月以内（〜9月11日）</div>
+    <ul>
+      <li>□ 10院導入・ROI事例3件以上の文書化完了</li>
+      <li>□ デンタルショー・歯科経営セミナーへの登壇申込（2026年秋〜冬向け）</li>
+      <li>□ パートナー商社2〜3社への提案準備（事例資料持参）</li>
+      <li>□ Lstep Webhook全フォームへのURL登録（現在クライアント対応待ち）</li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ━━━ FOOTER ━━━ -->
+<div class="footer">
+  <div class="footer-sign">MA-Pilot 収益化戦略議定書</div>
+  <div class="footer-meta">
+    2026年6月11日 発行 ／ メディカルアドバンス株式会社<br>
+    本文書は8エージェントによる並列調査（歯科業界・競合・院長購買行動・SaaS収益化・パートナー展開・DX政策・経営改善実証）と3エージェントによる効果性ストレステストに基づき生成されました。<br>
+    Generated with Claude Code — Deep Research Agent
+  </div>
+</div>
+
+</body>
+</html>

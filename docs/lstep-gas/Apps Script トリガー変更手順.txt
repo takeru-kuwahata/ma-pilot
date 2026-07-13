@@ -1,0 +1,88 @@
+Apps Script トリガー変更手順（既存ドクター・勤務医フォーム用）
+
+お世話になっております。WordPress自動発行の不具合について、修正手順をご案内いたします。
+
+■変更内容の概要
+現在「フォーム送信時」に設定されているトリガーを、「変更時」に変更していただきます。あわせて、スクリプトのコードも新しいものに差し替えていただく必要があります。
+
+■手順1：スクリプトのコードを差し替える
+1. 対象のスプレッドシートを開く
+2. 上部メニュー「拡張機能」→「Apps Script」をクリック
+3. エディタ内のコードを全選択（Ctrl+A、Macは⌘+A）して削除
+4. 以下の新しいコードを貼り付ける
+
+const MA_PILOT_WEBHOOK_URL = 'https://ma-pilot.onrender.com/api/webhooks/lstep';
+const LAST_PROCESSED_ROW_KEY = 'lastProcessedRow_doctor_other';
+
+function onNewFormResponse(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var lastRow = sheet.getLastRow();
+
+  if (lastRow < 2) return;
+
+  var props = PropertiesService.getScriptProperties();
+  var lastProcessedRow = Number(props.getProperty(LAST_PROCESSED_ROW_KEY) || 1);
+  if (lastRow <= lastProcessedRow) return;
+  props.setProperty(LAST_PROCESSED_ROW_KEY, String(lastRow));
+
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var values = sheet.getRange(lastRow, 1, 1, sheet.getLastColumn()).getValues()[0];
+
+  var payload = {};
+  for (var i = 0; i < headers.length; i++) {
+    payload[headers[i]] = values[i];
+  }
+
+  Logger.log('処理行: ' + lastRow);
+  Logger.log('メール: ' + payload['メールアドレス']);
+
+  var mappedPayload = {
+    form_type: payload['form_type'] || 'doctor_other',
+    full_name: payload['お名前'] || '',
+    furigana: payload['フリガナ'] || '',
+    birth_date: String(payload['生年月日'] || ''),
+    email: payload['メールアドレス'] || '',
+    phone: payload['お電話番号（携帯）'] || '',
+    clinic_name: payload['クリニック名'] || '',
+    clinic_address: payload['医院住所の都道府県をお選びください。'] || '',
+    clinic_address2: payload['医院住所'] || '',
+    job_type: payload['役職・職種'] || '',
+    form_id: '710762'
+  };
+
+  Logger.log('送信ペイロード: ' + JSON.stringify(mappedPayload));
+
+  try {
+    var response = UrlFetchApp.fetch(MA_PILOT_WEBHOOK_URL, {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify(mappedPayload),
+      muteHttpExceptions: true
+    });
+    Logger.log('送信結果: ' + response.getResponseCode() + ' ' + response.getContentText());
+  } catch (err) {
+    Logger.log('送信エラー: ' + err);
+  }
+}
+
+5. 保存（Ctrl+S、Macは⌘+S）
+
+■手順2：既存のトリガーを削除する
+1. 左メニューの時計アイコン（トリガー）をクリック
+2. 一覧に表示されている既存のトリガー（実行する関数：onNewFormResponse）の右側「⋮」から「削除」を選択
+
+■手順3：新しいトリガーを追加する
+1. 右下の「トリガーを追加」をクリック
+2. 以下の通り設定する
+   実行する関数：onNewFormResponse
+   デプロイ時に実行：Head
+   イベントのソース：スプレッドシートから
+   イベントの種類：変更時（「フォーム送信時」ではない点にご注意ください）
+3. 「保存」をクリック
+4. Googleアカウントの認証画面が出た場合は「許可」をクリック
+
+■手順4：動作確認
+先生の回答を想定した内容で、実際にLステップフォームからテスト送信してください（Apps Scriptエディタでの手動実行ではなく、本番のフォームからの送信でお試しください）。
+Apps Scriptエディタの「実行数」に新しい実行が記録され、「送信結果: 200 {"success":true,...}」が表示されていれば成功です。
+
+もし手順の途中でうまくいかない場合や、操作にご不安がある場合は、遠慮なくお知らせください。画面共有にて弊社が直接対応いたします。
