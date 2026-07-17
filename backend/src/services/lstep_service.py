@@ -75,26 +75,17 @@ class LstepService:
             'form_type': form_type,
         }
 
-        # フォーム種別が不明な場合もWordPressアカウントのみ作成
-        is_doctor_openhouse = form_type == 'doctor_openhouse'
-
+        # 全フォームともWordPressアカウントのみ発行する（先生フォームも含む）。
+        # 先生フォーム（doctor_openhouse）は当面MA-Pilotアカウントを発行しない方針
+        # （2026-07-17 安堂さん確認・A案）。将来MA-Pilot発行を再開する場合は
+        # _create_ma_pilot_account を呼び出す分岐を①に復活させる。
         logger.info(
             f'Lstep Webhook処理開始: form_type={form_type}, email={email}, '
             f'full_name={full_name}, clinic_name={clinic_name}'
         )
 
-        # ①MA-Pilotアカウント作成（先生フォームのみ）
+        # ①MA-Pilotアカウント作成 → 現在はどのフォームでも発行しない（A案）
         ma_pilot_password = None
-        if is_doctor_openhouse:
-            try:
-                ma_pilot_password = await self._create_ma_pilot_account(payload)
-                if ma_pilot_password:
-                    result['ma_pilot_created'] = True
-                    logger.info(f'MA-Pilotアカウント作成成功: email={email}')
-                else:
-                    logger.warning(f'MA-Pilotアカウント作成失敗: email={email}')
-            except Exception as e:
-                logger.error(f'MA-Pilotアカウント作成エラー: email={email}, error={e}')
 
         # ②WordPressアカウント作成（全フォーム共通）
         wp_user = None
@@ -137,6 +128,8 @@ class LstepService:
                 logger.error(f'WordPressメール送信エラー: email={email}, error={e}')
 
         # ④MA-Pilotウェルカムメール送信（MA-Pilotアカウント作成成功時のみ）
+        # A案では①でMA-Pilotを発行しないため現状この分岐には入らないが、
+        # 将来MA-Pilot発行を再開したときにセットで必要になるため残す。
         if result['ma_pilot_created'] and ma_pilot_password:
             try:
                 await self.email_service.send_welcome_email(
@@ -149,23 +142,13 @@ class LstepService:
             except Exception as e:
                 logger.error(f'ウェルカムメール送信エラー: email={email}, error={e}')
 
-        # 処理結果の判定
-        if is_doctor_openhouse:
-            # 先生フォームの場合：MA-Pilot作成が必須
-            if result['ma_pilot_created']:
-                result['success'] = True
-                result['message'] = 'MA-Pilotアカウント・WordPressアカウント作成完了'
-            else:
-                result['success'] = False
-                result['message'] = 'MA-Pilotアカウント作成失敗'
+        # 処理結果の判定：全フォーム共通でWordPress作成の成否で判定する（A案）
+        if result['wordpress_created']:
+            result['success'] = True
+            result['message'] = 'WordPressアカウント作成完了'
         else:
-            # その他フォームの場合：WordPress作成のみ
-            if result['wordpress_created']:
-                result['success'] = True
-                result['message'] = 'WordPressアカウント作成完了'
-            else:
-                result['success'] = False
-                result['message'] = 'WordPressアカウント作成失敗'
+            result['success'] = False
+            result['message'] = 'WordPressアカウント作成失敗'
 
         logger.info(f'Lstep Webhook処理完了: {result}')
         return result
