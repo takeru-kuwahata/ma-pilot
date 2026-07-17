@@ -1,8 +1,8 @@
 '''
 Test cases for Lstep Webhook processing (unit tests with mocks)
-LstepService processes 4 form types:
-  - doctor_openhouse: Creates MA-Pilot account + WordPress + welcome email
-  - staff, doctor_other, dental_show: Creates WordPress account only
+LstepService processes 4 form types. A案（2026-07-17）以降、全フォーム共通で
+WordPressアカウントのみ発行する（MA-Pilotアカウントは発行しない）:
+  - doctor_openhouse, staff, doctor_other, dental_show: Creates WordPress account only
 '''
 import pytest
 from unittest.mock import Mock, AsyncMock, patch, MagicMock
@@ -150,169 +150,56 @@ class TestGeneratePassword:
 
 @pytest.mark.asyncio
 class TestDoctorOpenhouse:
-    '''先生フォーム処理のテスト（MA-Pilot + WordPress + メール）'''
+    '''先生フォーム処理のテスト（A案: WordPressのみ・MA-Pilotは発行しない）'''
 
-    async def test_doctor_openhouse_success_full_flow(self):
-        '''正常フロー: MA-Pilot作成・WordPress作成・メール送信すべて成功'''
+    async def test_doctor_openhouse_wordpress_only_success(self):
+        '''A案: 先生フォームもWordPressのみ作成してsuccess=True（MA-Pilotは発行しない）'''
         service, mock_wp, mock_email = _make_service()
 
-        with patch(
-            'src.services.lstep_service.httpx.AsyncClient',
-            return_value=AsyncMock(
-                __aenter__=AsyncMock(return_value=AsyncMock(
-                    post=AsyncMock(return_value=Mock(
-                        status_code=201,
-                        json=Mock(return_value={'id': 'supabase-user-uuid-001'}),
-                    ))
-                )),
-                __aexit__=AsyncMock(return_value=None),
-            ),
-        ), patch.dict('os.environ', {'SUPABASE_URL': 'https://test.supabase.co', 'SUPABASE_KEY': 'test-key'}):
-            result = await service.process_webhook(DOCTOR_OPENHOUSE_PAYLOAD)
+        result = await service.process_webhook(DOCTOR_OPENHOUSE_PAYLOAD)
 
         assert result['success'] is True
-        assert result['ma_pilot_created'] is True
+        assert result['ma_pilot_created'] is False
         assert result['wordpress_created'] is True
-        assert result['email_sent'] is True
+        assert result['email_sent'] is False
         assert result['form_type'] == 'doctor_openhouse'
 
-    async def test_doctor_openhouse_sends_welcome_email_with_credentials(self):
-        '''ウェルカムメールに医院名とパスワードが渡される'''
+    async def test_doctor_openhouse_does_not_create_ma_pilot(self):
+        '''A案: MA-Pilotアカウントは作成しない（Supabase Auth API呼び出しなし）'''
         service, mock_wp, mock_email = _make_service()
 
-        with patch(
-            'src.services.lstep_service.httpx.AsyncClient',
-            return_value=AsyncMock(
-                __aenter__=AsyncMock(return_value=AsyncMock(
-                    post=AsyncMock(return_value=Mock(
-                        status_code=201,
-                        json=Mock(return_value={'id': 'user-uuid-001'}),
-                    ))
-                )),
-                __aexit__=AsyncMock(return_value=None),
-            ),
-        ), patch.dict('os.environ', {'SUPABASE_URL': 'https://test.supabase.co', 'SUPABASE_KEY': 'test-key'}):
-            await service.process_webhook(DOCTOR_OPENHOUSE_PAYLOAD)
-
-        mock_email.send_welcome_email.assert_called_once()
-        call_kwargs = mock_email.send_welcome_email.call_args
-        assert call_kwargs.kwargs['to_email'] == 'test-doctor@example.com'
-        assert call_kwargs.kwargs['clinic_name'] == 'テスト歯科クリニック'
-        assert len(call_kwargs.kwargs['password']) == 12  # デフォルトパスワード長
-
-    async def test_doctor_openhouse_supabase_auth_failure(self):
-        '''Supabase Auth API失敗時はMA-Pilot作成失敗でsuccessはFalse'''
-        service, mock_wp, mock_email = _make_service()
-
-        with patch(
-            'src.services.lstep_service.httpx.AsyncClient',
-            return_value=AsyncMock(
-                __aenter__=AsyncMock(return_value=AsyncMock(
-                    post=AsyncMock(return_value=Mock(
-                        status_code=422,
-                        text='Email already registered',
-                        json=Mock(return_value={'msg': 'Email already registered'}),
-                    ))
-                )),
-                __aexit__=AsyncMock(return_value=None),
-            ),
-        ), patch.dict('os.environ', {'SUPABASE_URL': 'https://test.supabase.co', 'SUPABASE_KEY': 'test-key'}):
+        with patch('src.services.lstep_service.httpx.AsyncClient') as mock_httpx:
             result = await service.process_webhook(DOCTOR_OPENHOUSE_PAYLOAD)
 
-        assert result['success'] is False
+        # MA-Pilot作成をスキップするのでSupabase Auth用のhttpxは呼ばれない
+        mock_httpx.assert_not_called()
         assert result['ma_pilot_created'] is False
-        assert result['email_sent'] is False
 
-    async def test_doctor_openhouse_wordpress_failure_still_ok_if_ma_pilot_created(self):
-        '''WordPress失敗でもMA-Pilot作成成功ならmessageに記録される'''
+    async def test_doctor_openhouse_no_ma_pilot_welcome_email(self):
+        '''A案: MA-Pilotウェルカムメール（send_welcome_email）は送信しない'''
+        service, mock_wp, mock_email = _make_service()
+
+        await service.process_webhook(DOCTOR_OPENHOUSE_PAYLOAD)
+
+        mock_email.send_welcome_email.assert_not_called()
+
+    async def test_doctor_openhouse_sends_wordpress_welcome_email(self):
+        '''新規WordPressアカウントにはログイン情報メールを送信する'''
+        service, mock_wp, mock_email = _make_service()
+
+        await service.process_webhook(DOCTOR_OPENHOUSE_PAYLOAD)
+
+        mock_email.send_wordpress_welcome_email.assert_called_once()
+
+    async def test_doctor_openhouse_wordpress_failure(self):
+        '''WordPress作成失敗時はsuccess=False'''
         service, mock_wp, mock_email = _make_service(wp_success=False)
 
-        with patch(
-            'src.services.lstep_service.httpx.AsyncClient',
-            return_value=AsyncMock(
-                __aenter__=AsyncMock(return_value=AsyncMock(
-                    post=AsyncMock(return_value=Mock(
-                        status_code=201,
-                        json=Mock(return_value={'id': 'user-uuid-001'}),
-                    ))
-                )),
-                __aexit__=AsyncMock(return_value=None),
-            ),
-        ), patch.dict('os.environ', {'SUPABASE_URL': 'https://test.supabase.co', 'SUPABASE_KEY': 'test-key'}):
-            result = await service.process_webhook(DOCTOR_OPENHOUSE_PAYLOAD)
+        result = await service.process_webhook(DOCTOR_OPENHOUSE_PAYLOAD)
 
-        # MA-Pilot作成成功なら先生フォームはsuccess=True
-        assert result['success'] is True
-        assert result['ma_pilot_created'] is True
-        assert result['wordpress_created'] is False
-
-    async def test_doctor_openhouse_missing_email_fails(self):
-        '''emailが空の場合はMA-Pilot作成失敗'''
-        service, mock_wp, mock_email = _make_service()
-        payload = {**DOCTOR_OPENHOUSE_PAYLOAD, 'email': ''}
-
-        with patch.dict('os.environ', {'SUPABASE_URL': 'https://test.supabase.co', 'SUPABASE_KEY': 'test-key'}):
-            result = await service.process_webhook(payload)
-
-        assert result['ma_pilot_created'] is False
         assert result['success'] is False
-
-    async def test_doctor_openhouse_missing_clinic_name_fails(self):
-        '''clinic_nameが空の場合はMA-Pilot作成失敗'''
-        service, mock_wp, mock_email = _make_service()
-        payload = {**DOCTOR_OPENHOUSE_PAYLOAD, 'clinic_name': ''}
-
-        with patch.dict('os.environ', {'SUPABASE_URL': 'https://test.supabase.co', 'SUPABASE_KEY': 'test-key'}):
-            result = await service.process_webhook(payload)
-
+        assert result['wordpress_created'] is False
         assert result['ma_pilot_created'] is False
-
-    async def test_doctor_openhouse_creates_clinic_with_openhouse_status(self):
-        '''内覧会日程あり→openhouse_status="scheduled"でクリニック作成'''
-        # clinicsとuser_metadataのテーブルを個別にキャプチャ
-        clinics_table_mock = Mock()
-        clinics_table_mock.insert = Mock(return_value=clinics_table_mock)
-        clinics_table_mock.execute = Mock(return_value=Mock(data=[{'id': 'new-clinic-uuid-001'}]))
-
-        user_metadata_table_mock = Mock()
-        user_metadata_table_mock.insert = Mock(return_value=user_metadata_table_mock)
-        user_metadata_table_mock.execute = Mock(return_value=Mock(data=[]))
-
-        inserted_clinics_data = {}
-
-        def capture_clinic_insert(data):
-            inserted_clinics_data.update(data)
-            return clinics_table_mock
-
-        clinics_table_mock.insert = Mock(side_effect=capture_clinic_insert)
-
-        mock_supabase = Mock()
-        def table_router(name):
-            if name == 'clinics':
-                return clinics_table_mock
-            return user_metadata_table_mock
-
-        mock_supabase.table = Mock(side_effect=table_router)
-        service, mock_wp, mock_email = _make_service(supabase=mock_supabase)
-
-        with patch(
-            'src.services.lstep_service.httpx.AsyncClient',
-            return_value=AsyncMock(
-                __aenter__=AsyncMock(return_value=AsyncMock(
-                    post=AsyncMock(return_value=Mock(
-                        status_code=201,
-                        json=Mock(return_value={'id': 'user-uuid-001'}),
-                    ))
-                )),
-                __aexit__=AsyncMock(return_value=None),
-            ),
-        ), patch.dict('os.environ', {'SUPABASE_URL': 'https://test.supabase.co', 'SUPABASE_KEY': 'test-key'}):
-            await service.process_webhook(DOCTOR_OPENHOUSE_PAYLOAD)
-
-        # clinicsテーブルへのinsertが呼ばれ、正しいデータが渡されたことを確認
-        assert inserted_clinics_data.get('openhouse_status') == 'scheduled'
-        assert inserted_clinics_data.get('owner_id') == 'user-uuid-001'
-        assert inserted_clinics_data.get('name') == 'テスト歯科クリニック'
 
 
 # ============================================================
@@ -443,25 +330,14 @@ class TestFormIdMapping:
         assert result['ma_pilot_created'] is False
 
     async def test_form_id_710696_maps_to_doctor_openhouse(self):
-        '''form_id=710696はdoctor_openhouseとして処理される（MA-Pilot作成対象）'''
+        '''form_id=710696はdoctor_openhouseとして処理される（A案: WordPressのみ）'''
         service, mock_wp, mock_email = _make_service()
         payload = {**DOCTOR_OPENHOUSE_PAYLOAD, 'form_type': '', 'form_id': '710696'}
 
-        with patch(
-            'src.services.lstep_service.httpx.AsyncClient',
-            return_value=AsyncMock(
-                __aenter__=AsyncMock(return_value=AsyncMock(
-                    post=AsyncMock(return_value=Mock(
-                        status_code=201,
-                        json=Mock(return_value={'id': 'user-uuid-001'}),
-                    ))
-                )),
-                __aexit__=AsyncMock(return_value=None),
-            ),
-        ), patch.dict('os.environ', {'SUPABASE_URL': 'https://test.supabase.co', 'SUPABASE_KEY': 'test-key'}):
-            result = await service.process_webhook(payload)
+        result = await service.process_webhook(payload)
 
         assert result['form_type'] == 'doctor_openhouse'
+        assert result['ma_pilot_created'] is False
 
     async def test_form_id_710762_maps_to_doctor_other(self):
         '''form_id=710762はdoctor_otherとして処理される'''
@@ -515,27 +391,14 @@ class TestErrorResilience:
         assert result['success'] is False
         assert result['wordpress_created'] is False
 
-    async def test_email_exception_does_not_affect_ma_pilot_created(self):
-        '''メール送信失敗してもma_pilot_createdはTrue'''
+    async def test_email_exception_does_not_affect_wordpress_created(self):
+        '''WordPressメール送信失敗してもwordpress_created・successはTrueを維持する'''
         service, mock_wp, mock_email = _make_service()
-        mock_email.send_welcome_email = AsyncMock(side_effect=Exception('SMTP error'))
+        mock_email.send_wordpress_welcome_email = AsyncMock(side_effect=Exception('SMTP error'))
 
-        with patch(
-            'src.services.lstep_service.httpx.AsyncClient',
-            return_value=AsyncMock(
-                __aenter__=AsyncMock(return_value=AsyncMock(
-                    post=AsyncMock(return_value=Mock(
-                        status_code=201,
-                        json=Mock(return_value={'id': 'user-uuid-001'}),
-                    ))
-                )),
-                __aexit__=AsyncMock(return_value=None),
-            ),
-        ), patch.dict('os.environ', {'SUPABASE_URL': 'https://test.supabase.co', 'SUPABASE_KEY': 'test-key'}):
-            result = await service.process_webhook(DOCTOR_OPENHOUSE_PAYLOAD)
+        result = await service.process_webhook(DOCTOR_OPENHOUSE_PAYLOAD)
 
-        assert result['ma_pilot_created'] is True
-        assert result['email_sent'] is False
+        assert result['wordpress_created'] is True
         assert result['success'] is True
 
     async def test_result_always_has_required_keys(self):
