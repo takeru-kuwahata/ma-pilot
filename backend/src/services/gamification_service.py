@@ -143,13 +143,8 @@ class GamificationService:
     # --------------------------------------------------------
     def _calc_metrics(self, current: dict, previous: dict | None, history: list) -> dict:
         rev = current.get('total_revenue') or 1
-        total_cost = (
-            (current.get('personnel_cost') or 0)
-            + (current.get('material_cost') or 0)
-            + (current.get('fixed_cost') or 0)
-            + (current.get('other_cost') or 0)
-        )
-        variable_cost = (current.get('material_cost') or 0) + (current.get('other_cost') or 0)
+        variable_cost = current.get('variable_cost') or 0
+        total_cost = variable_cost + (current.get('fixed_cost') or 0)
         profit = rev - total_cost
         total_patients = current.get('total_patients') or 1
 

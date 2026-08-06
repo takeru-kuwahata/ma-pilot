@@ -10,12 +10,11 @@ SAMPLE_MONTHLY_ROWS = [
     {
         'year_month': '2025-03',
         'total_revenue': 5000000,
-        'insurance_revenue': 4000000,
+        'insurance_revenue': 3900000,
         'self_pay_revenue': 1000000,
-        'personnel_cost': 2000000,
-        'material_cost': 500000,
+        'retail_revenue': 100000,
+        'variable_cost': 500000,
         'fixed_cost': 300000,
-        'other_cost': 200000,
         'total_patients': 300,
         'first_visit_patients': 30,
         're_first_visit_patients': 20,
@@ -27,12 +26,11 @@ SAMPLE_MONTHLY_ROWS = [
     {
         'year_month': '2025-02',
         'total_revenue': 4500000,
-        'insurance_revenue': 3600000,
+        'insurance_revenue': 3520000,
         'self_pay_revenue': 900000,
-        'personnel_cost': 1900000,
-        'material_cost': 450000,
+        'retail_revenue': 80000,
+        'variable_cost': 450000,
         'fixed_cost': 300000,
-        'other_cost': 180000,
         'total_patients': 280,
         'first_visit_patients': 25,
         're_first_visit_patients': 18,
@@ -71,6 +69,24 @@ class TestDashboardData:
         assert data is not None
         assert data.kpis is not None
         assert data.last_updated is not None
+
+    async def test_operating_profit_formula(self, mock_supabase_dashboard):
+        '''営業利益 = 総売上 −（変動費 + 固定費）。物販は収入であり減算されない'''
+        mock, _ = mock_supabase_dashboard
+        service = DashboardService(mock)
+        data = await service.get_dashboard_data('clinic-uuid-001')
+
+        profit_kpi = next(k for k in data.kpis if k.label == '営業利益')
+        assert profit_kpi.value == 5000000 - (500000 + 300000)
+
+    async def test_variable_cost_rate_formula(self, mock_supabase_dashboard):
+        '''変動費率 = 変動費 ÷ 総売上'''
+        mock, _ = mock_supabase_dashboard
+        service = DashboardService(mock)
+        data = await service.get_dashboard_data('clinic-uuid-001')
+
+        rate_kpi = next(k for k in data.kpis if k.label == '変動費率')
+        assert rate_kpi.value == round(500000 / 5000000 * 100, 1)
 
     async def test_get_dashboard_data_empty(self, mock_supabase_dashboard):
         '''月次データなしの場合、空のダッシュボードが返る'''

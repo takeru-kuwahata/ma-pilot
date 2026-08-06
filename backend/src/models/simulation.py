@@ -8,8 +8,7 @@ class SimulationInput(BaseModel):
     target_revenue: float
     target_profit: float
     assumed_average_revenue_per_patient: float
-    assumed_personnel_cost_rate: float
-    assumed_material_cost_rate: float
+    assumed_variable_cost_rate: float
     assumed_fixed_cost: float
 
 

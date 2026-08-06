@@ -22,7 +22,7 @@ export const RevenueChart = memo<RevenueChartProps>(({ data }) => {
     data.map((item) => ({
       month: item.year_month.substring(5), // "2024-10" → "10"
       売上: item.total_revenue / 10000, // 万円単位に変換
-      利益: (item.total_revenue - item.personnel_cost - item.material_cost - item.fixed_cost - item.other_cost) / 10000,
+      利益: (item.total_revenue - item.variable_cost - item.fixed_cost) / 10000,
     })),
     [data]
   );

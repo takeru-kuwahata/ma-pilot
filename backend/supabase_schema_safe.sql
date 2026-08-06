@@ -34,12 +34,11 @@ CREATE TABLE IF NOT EXISTS monthly_data (
   total_revenue NUMERIC(12, 2) NOT NULL DEFAULT 0,
   insurance_revenue NUMERIC(12, 2) NOT NULL DEFAULT 0,
   self_pay_revenue NUMERIC(12, 2) NOT NULL DEFAULT 0,
+  retail_revenue NUMERIC(12, 2) NOT NULL DEFAULT 0,
 
   -- Costs
-  personnel_cost NUMERIC(12, 2) NOT NULL DEFAULT 0,
-  material_cost NUMERIC(12, 2) NOT NULL DEFAULT 0,
+  variable_cost NUMERIC(12, 2) NOT NULL DEFAULT 0,
   fixed_cost NUMERIC(12, 2) NOT NULL DEFAULT 0,
-  other_cost NUMERIC(12, 2) NOT NULL DEFAULT 0,
 
   -- Patients
   new_patients INTEGER NOT NULL DEFAULT 0,

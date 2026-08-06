@@ -463,14 +463,9 @@ class ConsultingService:
     # --------------------------------------------------------
     def _calc_metrics(self, current: dict, previous: dict | None, history: list) -> dict:
         rev = current['total_revenue'] or 1  # ゼロ除算防止
-        total_cost = (
-            (current.get('personnel_cost') or 0)
-            + (current.get('material_cost') or 0)
-            + (current.get('fixed_cost') or 0)
-            + (current.get('other_cost') or 0)
-        )
-        variable_cost = (current.get('material_cost') or 0) + (current.get('other_cost') or 0)
-        fixed_cost = (current.get('personnel_cost') or 0) + (current.get('fixed_cost') or 0)
+        variable_cost = current.get('variable_cost') or 0
+        fixed_cost = current.get('fixed_cost') or 0
+        total_cost = variable_cost + fixed_cost
         profit = rev - total_cost
         total_patients = current.get('total_patients') or 1
 
@@ -503,12 +498,7 @@ class ConsultingService:
             scores_3m = []
             for d in history[:3]:
                 r = d.get('total_revenue') or 1
-                c = (
-                    (d.get('personnel_cost') or 0)
-                    + (d.get('material_cost') or 0)
-                    + (d.get('fixed_cost') or 0)
-                    + (d.get('other_cost') or 0)
-                )
+                c = (d.get('variable_cost') or 0) + (d.get('fixed_cost') or 0)
                 scores_3m.append((r - c) / r * 100)
             # 単純な傾き（最新 - 3ヶ月前）
             m['profit_trend_3m'] = scores_3m[0] - scores_3m[2]

@@ -189,8 +189,7 @@ class PdfService:
         required_patients: int,
         required_treatments: int,
         avg_revenue_per_patient: int,
-        personnel_cost_rate: float,
-        material_cost_rate: float,
+        variable_cost_rate: float,
         fixed_cost: int,
         strategies: list,
     ) -> bytes:
@@ -210,8 +209,7 @@ class PdfService:
             profit_change_amount: 利益変動額
             profit_change_rate: 利益変動率
             avg_revenue_per_patient: 平均患者単価
-            personnel_cost_rate: 人件費率
-            material_cost_rate: 材料費率
+            variable_cost_rate: 変動費率
             fixed_cost: 固定費
 
         Returns:
@@ -237,8 +235,7 @@ class PdfService:
             "required_patients": required_patients,
             "required_treatments": required_treatments,
             "avg_revenue_per_patient": avg_revenue_per_patient,
-            "personnel_cost_rate": personnel_cost_rate,
-            "material_cost_rate": material_cost_rate,
+            "variable_cost_rate": variable_cost_rate,
             "fixed_cost": fixed_cost,
             "strategies": strategies,
         }
