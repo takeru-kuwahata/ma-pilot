@@ -146,8 +146,7 @@ export const Simulation = () => {
       const currentRevenue = latestData.total_revenue || 0;
       const currentInsuranceRevenue = latestData.insurance_revenue || 0;
       const currentSelfPayRevenue = latestData.self_pay_revenue || 0;
-      const currentPersonnelCost = latestData.personnel_cost || 0;
-      const currentMaterialCost = latestData.material_cost || 0;
+      const currentVariableCost = latestData.variable_cost || 0;
       const currentFixedCost = latestData.fixed_cost || 0;
       const currentTotalPatients = latestData.total_patients || 0;
 
@@ -170,7 +169,7 @@ export const Simulation = () => {
       const targetSelfPayRevenue = currentSelfPayRevenue * (1 + selfPayChange / 100);
       const targetRevenue = targetInsuranceRevenue + targetSelfPayRevenue;
 
-      const targetVariableCost = (currentPersonnelCost + currentMaterialCost) * (1 + variableCostChange / 100);
+      const targetVariableCost = currentVariableCost * (1 + variableCostChange / 100);
       const targetFixedCost = currentFixedCost * (1 + fixedCostChange / 100);
       const targetTotalCost = targetVariableCost + targetFixedCost;
       const targetProfit = targetRevenue - targetTotalCost;
@@ -194,16 +193,14 @@ export const Simulation = () => {
         ? targetRevenue / targetTotalPatients
         : (currentRevenue > 0 && currentTotalPatients > 0 ? currentRevenue / currentTotalPatients : 0);
 
-      const targetPersonnelCostRate = targetRevenue > 0 ? (currentPersonnelCost * (1 + variableCostChange / 100)) / targetRevenue * 100 : 0;
-      const targetMaterialCostRate = targetRevenue > 0 ? (currentMaterialCost * (1 + variableCostChange / 100)) / targetRevenue * 100 : 0;
+      const targetVariableCostRate = targetRevenue > 0 ? targetVariableCost / targetRevenue * 100 : 0;
 
       // フロントエンドで計算した結果をそのままバックエンドに渡す
       const simulationInput = {
         target_revenue: Math.round(targetRevenue),
         target_profit: Math.round(targetProfit),
         assumed_average_revenue_per_patient: Math.round(targetAverageRevenuePerPatient),
-        assumed_personnel_cost_rate: Math.round(targetPersonnelCostRate * 10) / 10,
-        assumed_material_cost_rate: Math.round(targetMaterialCostRate * 10) / 10,
+        assumed_variable_cost_rate: Math.round(targetVariableCostRate * 10) / 10,
         assumed_fixed_cost: Math.round(targetFixedCost),
       };
 
@@ -224,7 +221,7 @@ export const Simulation = () => {
       );
 
       // 現在値との変動額を計算
-      const currentProfit = currentRevenue - (currentPersonnelCost + currentMaterialCost + currentFixedCost);
+      const currentProfit = currentRevenue - (currentVariableCost + currentFixedCost);
       const currentProfitRate = currentRevenue > 0 ? (currentProfit / currentRevenue * 100) : 0;
 
       setResult({

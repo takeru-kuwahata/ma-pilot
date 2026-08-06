@@ -125,7 +125,7 @@ export const DataManagement = () => {
         id: item.id,
         year_month: item.year_month,
         total_revenue: item.total_revenue,
-        operating_profit: item.total_revenue - (item.personnel_cost + item.material_cost + item.fixed_cost + item.other_cost),
+        operating_profit: item.total_revenue - (item.variable_cost + item.fixed_cost),
         first_visit_patients: item.first_visit_patients,
         re_first_visit_patients: item.re_first_visit_patients,
         returning_patients: item.returning_patients,
@@ -220,8 +220,8 @@ export const DataManagement = () => {
         total_revenue: raw.total_revenue,
         insurance_revenue: raw.insurance_revenue,
         self_pay_revenue: raw.self_pay_revenue,
-        retail_revenue: 0,
-        variable_cost: raw.personnel_cost,
+        retail_revenue: raw.retail_revenue,
+        variable_cost: raw.variable_cost,
         fixed_cost: raw.fixed_cost,
         first_visit_patients: raw.first_visit_patients,
         re_first_visit_patients: raw.re_first_visit_patients,
@@ -263,7 +263,7 @@ export const DataManagement = () => {
     }
 
     const headers = [
-      '年月(YYYY-MM)',
+      '年月',
       '保険診療収入',
       '自費診療収入',
       '物販（その他）',
@@ -273,19 +273,23 @@ export const DataManagement = () => {
       '再初診患者数',
       '再診患者数',
       'その他患者数',
+      '総売上',
+      '営業利益',
     ];
 
     const rows = rawMonthlyData.map((item) => [
       formatYearMonth(item.year_month),
       item.insurance_revenue,
       item.self_pay_revenue,
-      item.other_cost,
-      item.material_cost,
+      item.retail_revenue,
+      item.variable_cost,
       item.fixed_cost,
       item.first_visit_patients,
       item.re_first_visit_patients,
       item.returning_patients,
       item.other_patients,
+      item.total_revenue,
+      item.total_revenue - (item.variable_cost + item.fixed_cost),
     ]);
 
     const csvContent = [headers, ...rows].map((row) => row.join(',')).join('\n');

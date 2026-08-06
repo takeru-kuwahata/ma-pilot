@@ -53,12 +53,11 @@ export interface MonthlyData {
   total_revenue: number;
   insurance_revenue: number;
   self_pay_revenue: number;
+  retail_revenue: number;    // 物販（その他）収入
 
   // コスト関連
-  personnel_cost: number;
-  material_cost: number;
-  fixed_cost: number;
-  other_cost: number;
+  variable_cost: number;     // 変動費（材料費・技工料など）
+  fixed_cost: number;        // 固定費（人件費・家賃・光熱費など）
 
   // 患者数
   first_visit_patients: number;      // 初診
@@ -83,8 +82,7 @@ export interface SimulationInput {
   target_revenue: number;
   target_profit: number;
   assumed_average_revenue_per_patient: number;
-  assumed_personnel_cost_rate: number;
-  assumed_material_cost_rate: number;
+  assumed_variable_cost_rate: number;
   assumed_fixed_cost: number;
 }
 

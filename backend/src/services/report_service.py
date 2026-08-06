@@ -118,13 +118,10 @@ class ReportService:
 
         # Calculate values
         total_revenue = current_month['total_revenue']
-        personnel_cost = current_month.get('personnel_cost', 0)
-        material_cost = current_month.get('material_cost', 0)
+        variable_cost = current_month.get('variable_cost', 0)
         fixed_cost = current_month.get('fixed_cost', 0)
-        other_cost = current_month.get('other_cost', 0)
 
-        variable_cost = material_cost + other_cost
-        total_cost = personnel_cost + variable_cost + fixed_cost
+        total_cost = variable_cost + fixed_cost
         operating_profit = total_revenue - total_cost
         profit_margin = (operating_profit / total_revenue * 100) if total_revenue > 0 else 0
 
@@ -138,7 +135,7 @@ class ReportService:
 
         if previous_month:
             prev_revenue = previous_month['total_revenue']
-            prev_profit = prev_revenue - (previous_month.get('personnel_cost', 0) + previous_month.get('material_cost', 0) + previous_month.get('fixed_cost', 0) + previous_month.get('other_cost', 0))
+            prev_profit = prev_revenue - (previous_month.get('variable_cost', 0) + previous_month.get('fixed_cost', 0))
 
             revenue_change = ((total_revenue - prev_revenue) / prev_revenue * 100) if prev_revenue > 0 else 0
             profit_change = ((operating_profit - prev_profit) / prev_profit * 100) if prev_profit != 0 else 0
@@ -157,7 +154,7 @@ class ReportService:
 
         # Previous month values for comparison table
         prev_total_revenue = previous_month['total_revenue'] if previous_month else 0
-        prev_operating_profit = int(previous_month['total_revenue'] - (previous_month.get('personnel_cost', 0) + previous_month.get('material_cost', 0) + previous_month.get('fixed_cost', 0) + previous_month.get('other_cost', 0))) if previous_month else 0
+        prev_operating_profit = int(previous_month['total_revenue'] - (previous_month.get('variable_cost', 0) + previous_month.get('fixed_cost', 0))) if previous_month else 0
         prev_total_patients = (previous_month.get('total_patients') or 0) if previous_month else 0
 
         # Generate PDF
@@ -173,7 +170,7 @@ class ReportService:
             revenue_per_patient=int(revenue_per_patient),
             insurance_revenue=current_month.get('insurance_revenue', 0),
             self_pay_revenue=current_month.get('self_pay_revenue', 0),
-            retail_revenue=0,
+            retail_revenue=current_month.get('retail_revenue', 0),
             variable_cost=int(variable_cost),
             fixed_cost=fixed_cost,
             total_cost=int(total_cost),
@@ -221,8 +218,7 @@ class ReportService:
 
         # 前提条件
         avg_revenue_per_patient = sim_input.get('assumed_average_revenue_per_patient', 0)
-        personnel_cost_rate = sim_input.get('assumed_personnel_cost_rate', 0)
-        material_cost_rate = sim_input.get('assumed_material_cost_rate', 0)
+        variable_cost_rate = sim_input.get('assumed_variable_cost_rate', 0)
         fixed_cost = sim_input.get('assumed_fixed_cost', 0)
 
         # 現在値（最新月次データから取得）
@@ -237,10 +233,9 @@ class ReportService:
             md = monthly_res.data[0]
             current_revenue = md.get('total_revenue', 0) or 0
             current_patients = md.get('total_patients', 0) or 0
-            pc = (md.get('personnel_cost', 0) or 0) + (md.get('material_cost', 0) or 0)
+            vc = md.get('variable_cost', 0) or 0
             fc = md.get('fixed_cost', 0) or 0
-            oc = md.get('other_cost', 0) or 0
-            current_profit = current_revenue - pc - fc - oc
+            current_profit = current_revenue - vc - fc
             raw_ym = md.get('year_month', '')
             try:
                 parts = str(raw_ym).split('-')
@@ -277,8 +272,7 @@ class ReportService:
             required_patients=required_patients,
             required_treatments=required_treatments,
             avg_revenue_per_patient=int(avg_revenue_per_patient),
-            personnel_cost_rate=personnel_cost_rate,
-            material_cost_rate=material_cost_rate,
+            variable_cost_rate=variable_cost_rate,
             fixed_cost=int(fixed_cost),
             strategies=strategies,
         )

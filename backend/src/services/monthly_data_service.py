@@ -14,7 +14,11 @@ class MonthlyDataService:
 
     def _calculate_totals(self, data: dict) -> dict:
         '''Calculate total revenue and total patients'''
-        data['total_revenue'] = data.get('insurance_revenue', 0) + data.get('self_pay_revenue', 0)
+        data['total_revenue'] = (
+            data.get('insurance_revenue', 0)
+            + data.get('self_pay_revenue', 0)
+            + data.get('retail_revenue', 0)
+        )
         data['total_patients'] = (
             data.get('first_visit_patients', 0) +
             data.get('re_first_visit_patients', 0) +
@@ -71,7 +75,7 @@ class MonthlyDataService:
                 raise ValueError('No data to update')
 
             # Recalculate totals if revenue or patient fields are updated
-            if any(k in update_data for k in ['insurance_revenue', 'self_pay_revenue', 'first_visit_patients', 're_first_visit_patients', 'returning_patients', 'other_patients']):
+            if any(k in update_data for k in ['insurance_revenue', 'self_pay_revenue', 'retail_revenue', 'first_visit_patients', 're_first_visit_patients', 'returning_patients', 'other_patients']):
                 # Get current data
                 current = self.supabase.table('monthly_data').select('*').eq('id', data_id).single().execute()
                 if current.data:
@@ -113,18 +117,15 @@ class MonthlyDataService:
         failed_count = 0
         errors = []
 
-        # 日本語ヘッダー → 英語カラム名マッピング（新テンプレート対応）
+        # 日本語ヘッダー → 英語カラム名マッピング
         HEADER_MAP = {
             '年月(YYYY-MM)': 'year_month',
+            '年月': 'year_month',
             '保険診療収入': 'insurance_revenue',
             '自費診療収入': 'self_pay_revenue',
-            '物販（その他）': 'other_cost',
-            '変動費': 'material_cost',  # 変動費をmaterial_costカラムに格納
+            '物販（その他）': 'retail_revenue',
+            '変動費': 'variable_cost',
             '固定費': 'fixed_cost',
-            # 旧テンプレートとの後方互換
-            '人件費': 'personnel_cost',
-            '材料費': 'material_cost',
-            'その他費用': 'other_cost',
             '初診患者数': 'first_visit_patients',
             '再初診患者数': 're_first_visit_patients',
             '再診患者数': 'returning_patients',
@@ -166,17 +167,16 @@ class MonthlyDataService:
                     monthly_data = MonthlyDataCreate(
                         clinic_id=clinic_id,
                         year_month=normalized['year_month'],
-                        insurance_revenue=float(normalized.get('insurance_revenue', 0)),
-                        self_pay_revenue=float(normalized.get('self_pay_revenue', 0)),
-                        personnel_cost=float(normalized.get('personnel_cost', 0)),
-                        material_cost=float(normalized.get('material_cost', 0)),
-                        fixed_cost=float(normalized.get('fixed_cost', 0)),
-                        other_cost=float(normalized.get('other_cost', 0)),
-                        first_visit_patients=int(normalized.get('first_visit_patients', 0)),
-                        re_first_visit_patients=int(normalized.get('re_first_visit_patients', 0)),
-                        returning_patients=int(normalized.get('returning_patients', 0)),
-                        other_patients=int(normalized.get('other_patients', 0)),
-                        treatment_count=int(normalized.get('treatment_count', 0))
+                        insurance_revenue=float(normalized.get('insurance_revenue', 0) or 0),
+                        self_pay_revenue=float(normalized.get('self_pay_revenue', 0) or 0),
+                        retail_revenue=float(normalized.get('retail_revenue', 0) or 0),
+                        variable_cost=float(normalized.get('variable_cost', 0) or 0),
+                        fixed_cost=float(normalized.get('fixed_cost', 0) or 0),
+                        first_visit_patients=int(normalized.get('first_visit_patients', 0) or 0),
+                        re_first_visit_patients=int(normalized.get('re_first_visit_patients', 0) or 0),
+                        returning_patients=int(normalized.get('returning_patients', 0) or 0),
+                        other_patients=int(normalized.get('other_patients', 0) or 0),
+                        treatment_count=int(normalized.get('treatment_count', 0) or 0)
                     )
 
                     # Try to create or update

@@ -102,9 +102,9 @@ class DashboardService:
             )
         ))
 
-        # Operating Profit
-        current_profit = current_revenue - (current['personnel_cost'] + current['material_cost'] + current['fixed_cost'] + current.get('other_cost', 0))
-        prev_profit = (prev_revenue - (previous['personnel_cost'] + previous['material_cost'] + previous['fixed_cost'] + previous.get('other_cost', 0))) if previous else 0
+        # Operating Profit（営業利益 = 総売上 −（変動費 + 固定費））
+        current_profit = current_revenue - (current.get('variable_cost', 0) + current['fixed_cost'])
+        prev_profit = (prev_revenue - (previous.get('variable_cost', 0) + previous['fixed_cost'])) if previous else 0
 
         kpis.append(DashboardKpi(
             id=str(uuid.uuid4()),
@@ -184,15 +184,15 @@ class DashboardService:
             )
         ))
 
-        # Variable Cost Rate (変動費率 = 材料費÷売上)
-        current_material = current.get('material_cost', 0)
-        current_variable_rate = round((current_material / current_revenue * 100), 1) if current_revenue > 0 else 0
-        prev_material = previous.get('material_cost', 0) if previous else 0
+        # Variable Cost Rate (変動費率 = 変動費÷売上)
+        current_variable = current.get('variable_cost', 0)
+        current_variable_rate = round((current_variable / current_revenue * 100), 1) if current_revenue > 0 else 0
+        prev_variable = previous.get('variable_cost', 0) if previous else 0
         prev_revenue_val = previous.get('total_revenue', 0) if previous else 0
-        prev_variable_rate = round((prev_material / prev_revenue_val * 100), 1) if prev_revenue_val > 0 else 0
-        ly_material = last_year.get('material_cost', 0) if last_year else 0
+        prev_variable_rate = round((prev_variable / prev_revenue_val * 100), 1) if prev_revenue_val > 0 else 0
+        ly_variable = last_year.get('variable_cost', 0) if last_year else 0
         ly_revenue_val = last_year.get('total_revenue', 0) if last_year else 0
-        ly_variable_rate = round((ly_material / ly_revenue_val * 100), 1) if ly_revenue_val > 0 else 0
+        ly_variable_rate = round((ly_variable / ly_revenue_val * 100), 1) if ly_revenue_val > 0 else 0
 
         kpis.append(DashboardKpi(
             id=str(uuid.uuid4()),
@@ -214,11 +214,11 @@ class DashboardService:
 
         # Check for profit decline
         current_revenue = current['total_revenue']
-        current_profit = current_revenue - (current['personnel_cost'] + current['material_cost'] + current['fixed_cost'] + current.get('other_cost', 0))
+        current_profit = current_revenue - (current.get('variable_cost', 0) + current['fixed_cost'])
 
         if previous:
             prev_revenue = previous['total_revenue']
-            prev_profit = prev_revenue - (previous['personnel_cost'] + previous['material_cost'] + previous['fixed_cost'] + previous.get('other_cost', 0))
+            prev_profit = prev_revenue - (previous.get('variable_cost', 0) + previous['fixed_cost'])
 
             if current_profit < prev_profit:
                 alerts.append(DashboardAlert(
@@ -247,13 +247,13 @@ class DashboardService:
 
         for data in reversed(monthly_data_list):  # Oldest to newest
             total_revenue = data['total_revenue']
-            operating_profit = total_revenue - (data['personnel_cost'] + data['material_cost'] + data['fixed_cost'] + data.get('other_cost', 0))
+            operating_profit = total_revenue - (data.get('variable_cost', 0) + data['fixed_cost'])
 
             # Calculate self-pay rate
             self_pay_rate = (data['self_pay_revenue'] / total_revenue * 100) if total_revenue > 0 else 0
 
-            # Variable cost rate (材料費 ÷ 売上)
-            variable_cost_rate = (data['material_cost'] / total_revenue * 100) if total_revenue > 0 else 0
+            # Variable cost rate (変動費 ÷ 売上)
+            variable_cost_rate = (data.get('variable_cost', 0) / total_revenue * 100) if total_revenue > 0 else 0
 
             trends.append(MonthlyTrendData(
                 year_month=data['year_month'],

@@ -12,8 +12,7 @@ SAMPLE_INPUT = SimulationInput(
     target_revenue=5000000,
     target_profit=1000000,
     assumed_average_revenue_per_patient=16000,
-    assumed_personnel_cost_rate=40.0,
-    assumed_material_cost_rate=10.0,
+    assumed_variable_cost_rate=50.0,
     assumed_fixed_cost=500000,
 )
 
@@ -34,8 +33,7 @@ SAMPLE_SIMULATION_DB_ROW = {
         'target_revenue': 5000000,
         'target_profit': 1000000,
         'assumed_average_revenue_per_patient': 16000,
-        'assumed_personnel_cost_rate': 40.0,
-        'assumed_material_cost_rate': 10.0,
+        'assumed_variable_cost_rate': 50.0,
         'assumed_fixed_cost': 500000,
     },
     'result': {
@@ -156,8 +154,7 @@ class TestSimulationCalculation:
             target_revenue=1000000,
             target_profit=100000,
             assumed_average_revenue_per_patient=10000,
-            assumed_personnel_cost_rate=40.0,
-            assumed_material_cost_rate=10.0,
+            assumed_variable_cost_rate=50.0,
             assumed_fixed_cost=100000,
         )
         result = service._calculate_simulation(input_data)
@@ -171,23 +168,21 @@ class TestSimulationCalculation:
             target_revenue=1000000,
             target_profit=100000,
             assumed_average_revenue_per_patient=0,
-            assumed_personnel_cost_rate=40.0,
-            assumed_material_cost_rate=10.0,
+            assumed_variable_cost_rate=50.0,
             assumed_fixed_cost=100000,
         )
         with pytest.raises(ValueError, match='患者単価'):
             service._calculate_simulation(input_data)
 
-    def test_calculate_simulation_high_personnel_cost_strategy(self):
-        '''人件費率50%超でコスト最適化アドバイスが含まれる'''
+    def test_calculate_simulation_high_variable_cost_strategy(self):
+        '''変動費率50%超でコスト最適化アドバイスが含まれる'''
         service = SimulationService(Mock())
         input_data = SimulationInput(
             target_revenue=1000000,
             target_profit=100000,
             assumed_average_revenue_per_patient=10000,
-            assumed_personnel_cost_rate=60.0,  # 50%超
-            assumed_material_cost_rate=10.0,
+            assumed_variable_cost_rate=70.0,  # 50%超
             assumed_fixed_cost=0,
         )
         result = service._calculate_simulation(input_data)
-        assert any('personnel' in s.lower() for s in result.strategies)
+        assert any('variable cost' in s.lower() for s in result.strategies)

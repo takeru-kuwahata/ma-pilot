@@ -13,12 +13,11 @@ class MonthlyData(BaseModel):
     total_revenue: float
     insurance_revenue: float
     self_pay_revenue: float
+    retail_revenue: float  # 物販（その他）収入
 
     # Costs
-    personnel_cost: float
-    material_cost: float
-    fixed_cost: float
-    other_cost: float
+    variable_cost: float  # 変動費（材料費・技工料など）
+    fixed_cost: float     # 固定費（人件費・家賃・光熱費など）
 
     # Patients
     first_visit_patients: int       # 初診
@@ -42,11 +41,10 @@ class MonthlyDataCreate(BaseModel):
 
     insurance_revenue: float
     self_pay_revenue: float
+    retail_revenue: float = 0
 
-    personnel_cost: float = 0
-    material_cost: float = 0
+    variable_cost: float = 0
     fixed_cost: float = 0
-    other_cost: float = 0
 
     first_visit_patients: int = 0       # 初診
     re_first_visit_patients: int = 0    # 再初診
@@ -60,11 +58,10 @@ class MonthlyDataUpdate(BaseModel):
     '''Update monthly data request'''
     insurance_revenue: Optional[float] = None
     self_pay_revenue: Optional[float] = None
+    retail_revenue: Optional[float] = None
 
-    personnel_cost: Optional[float] = None
-    material_cost: Optional[float] = None
+    variable_cost: Optional[float] = None
     fixed_cost: Optional[float] = None
-    other_cost: Optional[float] = None
 
     first_visit_patients: Optional[int] = None      # 初診
     re_first_visit_patients: Optional[int] = None   # 再初診

@@ -17,8 +17,7 @@ class SimulationService:
         target_revenue = input_data.target_revenue
         target_profit = input_data.target_profit
         avg_revenue_per_patient = input_data.assumed_average_revenue_per_patient
-        personnel_cost_rate = input_data.assumed_personnel_cost_rate / 100  # Convert to decimal
-        material_cost_rate = input_data.assumed_material_cost_rate / 100  # Convert to decimal
+        variable_cost_rate = input_data.assumed_variable_cost_rate / 100  # Convert to decimal
         fixed_cost = input_data.assumed_fixed_cost
 
         # Calculate required patients to achieve target revenue
@@ -27,9 +26,7 @@ class SimulationService:
         required_patients = math.ceil(target_revenue / avg_revenue_per_patient)
 
         # Estimate costs
-        estimated_personnel_cost = target_revenue * personnel_cost_rate
-        estimated_material_cost = target_revenue * material_cost_rate
-        total_variable_cost = estimated_personnel_cost + estimated_material_cost
+        total_variable_cost = target_revenue * variable_cost_rate
         total_cost = total_variable_cost + fixed_cost
 
         # Calculate estimated profit
@@ -53,8 +50,8 @@ class SimulationService:
         strategies.append(f'Acquire {required_patients} patients per month')
         strategies.append(f'Perform {required_treatments} treatments per month')
 
-        if personnel_cost_rate > 0.5:
-            strategies.append('Consider optimizing personnel cost (currently > 50% of revenue)')
+        if variable_cost_rate > 0.5:
+            strategies.append('Consider optimizing variable cost (currently > 50% of revenue)')
 
         return SimulationResult(
             required_patients=required_patients,
