@@ -1,0 +1,40 @@
+name: Supabase Keepalive
+
+# Supabase無料プランは約7日間アクセスがないとプロジェクトが自動一時停止され、
+# 本番ログイン不能になる（2026-08-17障害）。毎日DBにアクセスして停止を防ぐ。
+
+on:
+  schedule:
+    - cron: '0 21 * * *' # 毎日 6:00 JST
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  keepalive:
+    name: Ping Supabase
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Query Supabase REST API
+        run: |
+          STATUS=$(curl -s -o /tmp/body -w "%{http_code}" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/clinics?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}")
+          echo "HTTP $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "Supabase ping failed:"
+            cat /tmp/body
+            exit 1
+          fi
+
+      # 公開リポジトリは60日間コミットがないとスケジュール実行が自動無効化されるため、
+      # 実行のたびに自身を再有効化して無効化タイマーをリセットする
+      - name: Keep workflow enabled
+        run: |
+          gh api -X PUT \
+            "/repos/${{ github.repository }}/actions/workflows/supabase-keepalive.yml/enable"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
