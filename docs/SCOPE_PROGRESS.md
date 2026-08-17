@@ -164,6 +164,13 @@
 | 物販収入・変動費の専用DB列追加とデータ経路統一（PR #1） | 報告された4件の不具合（①物販の直接入力が反映されない ②CSV取込で物販・変動費が編集画面に出ない ③営業利益の計算誤り ④CSV出力の分かりづらさ）の根本原因が同一と特定。DBに物販・変動費の専用列がなく、旧4コスト列（personnel/material/fixed/other）を経路ごとに転用（手動保存: 変動費→personnel・物販→消失／CSV取込: 変動費→material・物販→other_cost=コスト扱い）していたため、営業利益で変動費が二重計上＋物販が減算されていた（例: 2026年6月 ¥-1,523,750 を数式で完全再現し実証）。`retail_revenue`・`variable_cost` 列を追加し、総売上=保険+自費+物販、営業利益=総売上−(変動費+固定費) に全経路（フォーム/CSV取込/CSVエクスポート/一覧/ダッシュボード/シミュレーション/PDFレポート）を統一。シミュレーション入力の人件費率・材料費率2レートも変動費率1本に統合（既存JSONBレコードも移行）。既存14行の移行を本番DBで実行・実データ検証済み（migration: `backend/migrations/20260806_retail_revenue_variable_cost.sql`）。CSVエクスポートに総売上・営業利益列を追加し、エクスポートCSVをそのまま再取込できるようヘッダー互換も確保。テスト: Backend 135件・Frontend 94件 全パス |
 | 旧コスト列の削除完了（2026-08-07確認） | 新コードの本番デプロイ・旧列参照ゼロ（コード全域grep 0件）を確認後、本番DBから旧3列（personnel_cost/material_cost/other_cost）を削除（migration: `backend/migrations/20260806_drop_legacy_cost_columns.sql`）。削除後の列構成をinformation_schemaで確認済み（retail_revenue/variable_cost あり・旧3列なし）。削除後に本番実機確認済み（ログイン→ダッシュボード→基礎データ管理一覧→編集ダイアログで物販¥50,000・変動費¥300,000の読込と総売上¥4,350,000の自動計算一致を確認）。旧列データのバックアップは `docs_archive/backup_legacy_cost_columns_20260806.json` に保管。クライアント向けGoogleドキュメント（動作確認チェックリスト）の該当4項目にも修正完了を追記・報告済み（2026-08-07） |
 
+## 2026-08-17 実施済み対応（Supabase自動一時停止によるログイン不能）
+
+| 内容 | 詳細 |
+|------|------|
+| 本番ログイン不能の復旧（当日解決） | クライアント報告「メール・パスワードを入れても入力画面に戻る」。原因はSupabase無料プランの「7日間無アクセスで自動一時停止」（最終利用8/7→8/17で発動）。バックエンド `/api/auth/login` が401（SupabaseホストNXDOMAIN）になることを再現確認後、Supabase Management APIでプロジェクト（ma-cs）をrestore。約3分半でACTIVE_HEALTHY復旧、本番ログインAPI 200を実証確認。データ消失なし |
+| 再発防止: keepaliveワークフロー追加（PR #2） | `.github/workflows/supabase-keepalive.yml` を追加。毎日6:00 JSTにSupabase REST APIへ1クエリ投げて停止条件を回避。非200ならワークフロー失敗（GitHubの失敗通知メールで検知）。公開リポの「60日間コミットなしでスケジュール無効化」対策として、実行毎に自身をre-enableするステップも同梱。merge後にworkflow_dispatchで本実行success確認済み |
+
 ## 2026-07-17〜07-21 実施済み修正（Lステップ自動発行トラブル対応）
 
 | 内容 | 詳細 |
