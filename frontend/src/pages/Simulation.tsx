@@ -11,9 +11,13 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
-import { PlayArrow as PlayArrowIcon, ShowChart as ShowChartIcon } from '@mui/icons-material';
+import { PlayArrow as PlayArrowIcon } from '@mui/icons-material';
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+} from 'recharts';
 import { simulationService, monthlyDataService, clinicService } from '../services/api';
 import type { Simulation as SimulationType, MonthlyData, Clinic } from '../types';
+import { buildActualPoints, buildForecastPoints, buildChartRows, type ForecastPoint } from '../utils/simulationForecast';
 
 interface SimulationParams {
   period: string;
@@ -60,6 +64,8 @@ export const Simulation = () => {
   const [, setSimulations] = useState<SimulationType[]>([]);
   const [loading, setLoading] = useState(false);
   const [latestData, setLatestData] = useState<MonthlyData | null>(null);
+  const [monthlyDataList, setMonthlyDataList] = useState<MonthlyData[]>([]);
+  const [forecastPoints, setForecastPoints] = useState<ForecastPoint[]>([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
@@ -102,6 +108,7 @@ export const Simulation = () => {
 
     try {
       const data = await monthlyDataService.getMonthlyData(clinic.id);
+      setMonthlyDataList(data);
       if (data.length > 0) {
         // 最新のデータを取得（year_monthでソート）
         const sorted = [...data].sort((a, b) => b.year_month.localeCompare(a.year_month));
@@ -232,6 +239,16 @@ export const Simulation = () => {
         profitChange: Math.round(simulation.result.estimated_profit - currentProfit),
         profitRateChange: Math.round((simulation.result.profit_margin - currentProfitRate) * 10) / 10,
       });
+
+      setForecastPoints(
+        buildForecastPoints(
+          latestData,
+          Number(params.period),
+          simulation.result.estimated_revenue,
+          simulation.result.estimated_profit,
+          targetTotalPatients
+        )
+      );
 
       setSnackbarMessage('シミュレーションが完了しました');
       setSnackbarSeverity('success');
@@ -846,30 +863,72 @@ export const Simulation = () => {
           sx={{
             fontSize: '18px',
             fontWeight: 600,
-            marginBottom: '16px',
+            marginBottom: '4px',
           }}
         >
           推移予測グラフ
         </Typography>
-        <Box
-          sx={{
-            width: '100%',
-            height: '300px',
-            backgroundColor: '#e0e0e0',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#555555',
-            fontSize: '16px',
-            gap: '16px',
-          }}
-        >
-          <ShowChartIcon sx={{ fontSize: '48px', color: '#767676' }} />
-          <Typography sx={{ fontSize: '16px', color: '#555555' }}>
-            推移予測グラフ（準備中）
-          </Typography>
-        </Box>
+        {forecastPoints.length === 0 ? (
+          <>
+            <Typography sx={{ fontSize: '13px', color: '#757575', marginBottom: '16px' }}>
+              過去の実績（直近12ヶ月）
+            </Typography>
+            <Box
+              sx={{
+                width: '100%',
+                height: '300px',
+                backgroundColor: '#e0e0e0',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#555555',
+                fontSize: '16px',
+              }}
+            >
+              <Typography sx={{ fontSize: '14px', color: '#555555' }}>
+                シミュレーションを実行すると、実績と予測の推移が表示されます
+              </Typography>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Typography sx={{ fontSize: '13px', color: '#757575', marginBottom: '16px' }}>
+              実線: 過去の実績（直近12ヶ月） / 点線: 今回の設定での予測
+            </Typography>
+            <ResponsiveContainer width="100%" height={320}>
+              <LineChart data={buildChartRows(buildActualPoints(monthlyDataList), forecastPoints)}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <XAxis dataKey="month" tick={{ fontSize: '13px' }} />
+                <YAxis
+                  yAxisId="money"
+                  tick={{ fontSize: '13px' }}
+                  tickFormatter={(v: number) => `${Math.round(v / 10000).toLocaleString()}万`}
+                />
+                <YAxis
+                  yAxisId="patients"
+                  orientation="right"
+                  tick={{ fontSize: '13px' }}
+                  unit="人"
+                />
+                <Tooltip
+                  formatter={(value: number, name: string) =>
+                    name.includes('患者数')
+                      ? [`${value.toLocaleString()}人`, name]
+                      : [`¥${value.toLocaleString()}`, name]
+                  }
+                />
+                <Legend />
+                <Line yAxisId="money" type="monotone" dataKey="actualRevenue" stroke="#FF6B35" strokeWidth={2} name="総売上" dot={{ r: 3 }} connectNulls />
+                <Line yAxisId="money" type="monotone" dataKey="forecastRevenue" stroke="#FF6B35" strokeWidth={2} strokeDasharray="6 4" name="総売上（予測）" dot={{ r: 3 }} connectNulls />
+                <Line yAxisId="money" type="monotone" dataKey="actualProfit" stroke="#1976D2" strokeWidth={2} name="営業利益" dot={{ r: 3 }} connectNulls />
+                <Line yAxisId="money" type="monotone" dataKey="forecastProfit" stroke="#1976D2" strokeWidth={2} strokeDasharray="6 4" name="営業利益（予測）" dot={{ r: 3 }} connectNulls />
+                <Line yAxisId="patients" type="monotone" dataKey="actualPatients" stroke="#4CAF50" strokeWidth={2} name="患者数" dot={{ r: 3 }} connectNulls />
+                <Line yAxisId="patients" type="monotone" dataKey="forecastPatients" stroke="#4CAF50" strokeWidth={2} strokeDasharray="6 4" name="患者数（予測）" dot={{ r: 3 }} connectNulls />
+              </LineChart>
+            </ResponsiveContainer>
+          </>
+        )}
       </Paper>
 
       {/* トースト通知 */}
