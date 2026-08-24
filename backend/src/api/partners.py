@@ -15,6 +15,7 @@ class PartnerCompanyCreate(BaseModel):
     description: Optional[str] = None
     logo_url: Optional[str] = None
     display_priority: int = 0
+    is_active: bool = True
 
 
 class PartnerServiceCreate(BaseModel):
@@ -99,7 +100,7 @@ async def list_companies(
     if not user.is_system_admin():
         raise HTTPException(status_code=403, detail='管理者権限が必要です')
     rows = supabase.table('partner_companies') \
-        .select('*, partner_services(id, service_name, price_range, display_priority, is_active, service_problem_tags(problem_tag))') \
+        .select('*, partner_services(*, service_problem_tags(problem_tag))') \
         .order('display_priority', desc=True) \
         .execute().data
     return {'data': rows}
@@ -134,7 +135,11 @@ async def update_company(
     try:
         res = supabase.table('partner_companies') \
             .update(request.model_dump()).eq('id', company_id).execute()
+        if not res.data:
+            raise HTTPException(status_code=404, detail='対象の企業が見つかりません')
         return {'data': res.data[0], 'message': '企業情報を更新しました'}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -217,6 +222,9 @@ async def update_service(
         data.pop('problem_tags')
         res = supabase.table('partner_services') \
             .update(data).eq('id', service_id).execute()
+        # 対象が無い場合はタグを消さずに終了する
+        if not res.data:
+            raise HTTPException(status_code=404, detail='対象のサービスが見つかりません')
         # タグを洗い替え
         supabase.table('service_problem_tags').delete().eq('service_id', service_id).execute()
         if tags:
@@ -224,6 +232,8 @@ async def update_service(
                 {'service_id': service_id, 'problem_tag': t} for t in tags
             ]).execute()
         return {'data': res.data[0], 'message': 'サービスを更新しました'}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

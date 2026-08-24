@@ -49,6 +49,23 @@ interface Service {
   service_problem_tags?: { problem_tag: string }[];
 }
 
+/** APIエラーレスポンスから理由を取り出す（FastAPIの422はdetailが配列で返る） */
+const extractApiError = async (res: Response): Promise<string> => {
+  try {
+    const json = await res.json();
+    const detail = json?.detail;
+    if (Array.isArray(detail)) {
+      return detail
+        .map((d) => `${(d.loc || []).slice(1).join('.')} ${d.msg}`.trim())
+        .join(' / ');
+    }
+    if (typeof detail === 'string') return detail;
+  } catch {
+    // JSON以外のレスポンスはステータスコードのみ返す
+  }
+  return `HTTP ${res.status}`;
+};
+
 const defaultService: Omit<Service, 'id'> = {
   company_id: '',
   service_name: '',
@@ -124,17 +141,25 @@ export const PartnerManagement = () => {
       const url = isNew
         ? `${API_BASE_URL}/api/partners/admin/companies`
         : `${API_BASE_URL}/api/partners/admin/companies/${editingCompany.id}`;
+      // APIが受け取るフィールドのみを明示的に送る（id や partner_services 等は送らない）
+      const payload = {
+        name: editingCompany.name || '',
+        description: editingCompany.description || null,
+        logo_url: editingCompany.logo_url || null,
+        display_priority: editingCompany.display_priority ?? 0,
+        is_active: editingCompany.is_active ?? true,
+      };
       const res = await fetch(url, {
         method: isNew ? 'POST' : 'PUT',
         headers: getAuthHeaders(),
-        body: JSON.stringify(editingCompany),
+        body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error('保存失敗');
+      if (!res.ok) throw new Error(await extractApiError(res));
       setSuccess(isNew ? '企業を登録しました' : '企業情報を更新しました');
       setCompanyDialog(false);
       fetchCompanies();
-    } catch {
-      setError('保存に失敗しました');
+    } catch (e) {
+      setError(`保存に失敗しました: ${e instanceof Error ? e.message : ''}`);
     }
   };
 
@@ -154,7 +179,21 @@ export const PartnerManagement = () => {
 
   const saveService = async () => {
     try {
-      const payload = { ...editingService, company_id: targetCompanyId, problem_tags: selectedTags };
+      // APIが受け取るフィールドのみを明示的に送る（id や service_problem_tags 等は送らない）
+      const payload = {
+        company_id: targetCompanyId,
+        service_name: editingService.service_name || '',
+        catchcopy: editingService.catchcopy || null,
+        description: editingService.description || null,
+        price_range: editingService.price_range || null,
+        service_url: editingService.service_url || null,
+        coupon_code: editingService.coupon_code || null,
+        coupon_detail: editingService.coupon_detail || null,
+        apply_method: editingService.apply_method || null,
+        display_priority: editingService.display_priority ?? 0,
+        is_active: editingService.is_active ?? true,
+        problem_tags: selectedTags,
+      };
       const isNew = !editingService.id;
       const url = isNew
         ? `${API_BASE_URL}/api/partners/admin/services`
@@ -164,12 +203,12 @@ export const PartnerManagement = () => {
         headers: getAuthHeaders(),
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error('保存失敗');
+      if (!res.ok) throw new Error(await extractApiError(res));
       setSuccess(isNew ? 'サービスを登録しました' : 'サービスを更新しました');
       setServiceDialog(false);
       fetchCompanies();
-    } catch {
-      setError('保存に失敗しました');
+    } catch (e) {
+      setError(`保存に失敗しました: ${e instanceof Error ? e.message : ''}`);
     }
   };
 
@@ -321,6 +360,12 @@ export const PartnerManagement = () => {
             fullWidth size="small" multiline rows={3}
           />
           <TextField
+            label="ロゴ画像URL"
+            value={editingCompany.logo_url || ''}
+            onChange={(e) => setEditingCompany({ ...editingCompany, logo_url: e.target.value })}
+            fullWidth size="small"
+          />
+          <TextField
             label="表示優先度（大きいほど上位）"
             type="number"
             value={editingCompany.display_priority ?? 0}
@@ -384,6 +429,12 @@ export const PartnerManagement = () => {
             value={editingService.coupon_code || ''}
             onChange={(e) => setEditingService({ ...editingService, coupon_code: e.target.value })}
             fullWidth size="small"
+          />
+          <TextField
+            label="クーポン内容"
+            value={editingService.coupon_detail || ''}
+            onChange={(e) => setEditingService({ ...editingService, coupon_detail: e.target.value })}
+            fullWidth size="small" multiline rows={2}
           />
           <TextField
             label="申し込み方法"
