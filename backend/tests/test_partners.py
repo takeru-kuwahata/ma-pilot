@@ -7,7 +7,7 @@ Test cases for partner company / service management (unit tests with mocks)
   - 存在しないIDの更新で課題タグを消さずに404を返すこと
 '''
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 from fastapi import HTTPException
 
 from src.api.partners import (
