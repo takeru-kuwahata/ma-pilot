@@ -1,6 +1,6 @@
 # MA-Pilot 開発進捗状況
 
-最終更新：2026-08-06
+最終更新：2026-08-24
 
 ---
 
@@ -10,7 +10,7 @@
 |------|------|
 | フロントエンド（Vercel） | ✅ 正常稼働中 |
 | バックエンド（Render） | ✅ 正常稼働中 |
-| CI（GitHub Actions） | ✅ Test Suite グリーン（Backend 135件・Frontend 94件） |
+| CI（GitHub Actions） | ✅ Test Suite グリーン（Backend 143件・Frontend 94件） |
 | Supabase | ✅ 正常稼働中 |
 
 ---
@@ -170,6 +170,24 @@
 |------|------|
 | 本番ログイン不能の復旧（当日解決） | クライアント報告「メール・パスワードを入れても入力画面に戻る」。原因はSupabase無料プランの「7日間無アクセスで自動一時停止」（最終利用8/7→8/17で発動）。バックエンド `/api/auth/login` が401（SupabaseホストNXDOMAIN）になることを再現確認後、Supabase Management APIでプロジェクト（ma-cs）をrestore。約3分半でACTIVE_HEALTHY復旧、本番ログインAPI 200を実証確認。データ消失なし |
 | 再発防止: keepaliveワークフロー追加（PR #2） | `.github/workflows/supabase-keepalive.yml` を追加。毎日6:00 JSTにSupabase REST APIへ1クエリ投げて停止条件を回避。非200ならワークフロー失敗（GitHubの失敗通知メールで検知）。公開リポの「60日間コミットなしでスケジュール無効化」対策として、実行毎に自身をre-enableするステップも同梱。merge後にworkflow_dispatchで本実行success確認済み |
+
+## 2026-08-24 実施済み修正（パートナー企業サービスの編集が保存できない不具合）
+
+**クライアント報告**: 運営者モードのパートナー企業登録で、登録したサービスを編集しようとしても「保存に失敗しました」となる。
+
+- **原因**: 企業一覧API `GET /api/partners/admin/companies` の select 句が `partner_services(id, service_name, price_range, display_priority, is_active, ...)` と列を限定しており、編集ダイアログに `company_id` が渡っていなかった。`PartnerServiceCreate` で必須のため `HTTP 422 Field required: company_id` で弾かれていた（本番APIで実証）。新規追加は正しいIDを渡すため発生せず、編集時のみ失敗していた
+- **併発していた問題**（同時修正）:
+  - 同 select 句は `catchcopy` / `description` / `service_url` / `coupon_code` / `coupon_detail` / `apply_method` も返しておらず、**保存可能になった途端に編集ダイアログが空欄でこれらを上書き消去する**状態だった（`company_id` のみの修正では新規事故になるため同時対応が必須）
+  - 企業ダイアログの有効/無効スイッチが `PartnerCompanyCreate` に `is_active` を持たず、以前から**一切保存されていなかった**（Pydantic が未知キーとして破棄）
+  - `coupon_detail` / `logo_url` は保存対象なのに入力欄が無く、保存のたび null 上書きされる状態だった（本番は全件空のため実害なし）→ 入力欄を追加
+  - `res.data[0]` が対象不在時に IndexError → 500。404 を返すよう修正。サービス更新は課題タグの洗い替え**前**に判定し、タグのみ消失を防止
+  - 保存失敗が一律「保存に失敗しました」で原因不明だった → サーバーの理由を表示（潔癖性）
+- **修正**: select 句を `partner_services(*, service_problem_tags(problem_tag))` に変更（列追加時も自動追従）。フロントの payload は API 受け取り項目のみ明示構築
+- **テスト**: `backend/tests/test_partners.py` を新規作成（8件）。パートナー機能はこれまでテストが存在せず、それが本件を本番まで見逃した原因。**修正前のコードでは5件が失敗することを確認**（トートロジーでないことの実証）
+- **本番実機確認済み**（2026-08-24）: サービス編集の保存 HTTP 200 / 企業編集の保存 HTTP 200 / 有効・無効スイッチが実際に保存されることを false→true の往復で確認 / **検証前後で企業52社・サービス9件の全データが完全一致（消失・改変なし）**
+- PR #3（squash merge → main → Render/Vercel 自動デプロイ済み）
+
+---
 
 ## 2026-07-17〜07-21 実施済み修正（Lステップ自動発行トラブル対応）
 
