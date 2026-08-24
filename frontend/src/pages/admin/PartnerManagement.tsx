@@ -360,6 +360,12 @@ export const PartnerManagement = () => {
             fullWidth size="small" multiline rows={3}
           />
           <TextField
+            label="ロゴ画像URL"
+            value={editingCompany.logo_url || ''}
+            onChange={(e) => setEditingCompany({ ...editingCompany, logo_url: e.target.value })}
+            fullWidth size="small"
+          />
+          <TextField
             label="表示優先度（大きいほど上位）"
             type="number"
             value={editingCompany.display_priority ?? 0}
@@ -423,6 +429,12 @@ export const PartnerManagement = () => {
             value={editingService.coupon_code || ''}
             onChange={(e) => setEditingService({ ...editingService, coupon_code: e.target.value })}
             fullWidth size="small"
+          />
+          <TextField
+            label="クーポン内容"
+            value={editingService.coupon_detail || ''}
+            onChange={(e) => setEditingService({ ...editingService, coupon_detail: e.target.value })}
+            fullWidth size="small" multiline rows={2}
           />
           <TextField
             label="申し込み方法"
