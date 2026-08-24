@@ -3,7 +3,7 @@ Test cases for admin functionality (unit tests with mocks)
 Admin endpoints use ClinicService + UserContext for access control.
 '''
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 from datetime import datetime
 from fastapi import HTTPException
 from src.middleware.auth import UserContext
