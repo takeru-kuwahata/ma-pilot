@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from ..models.clinic import Clinic, ClinicCreate, ClinicResponse
 from ..services.clinic_service import ClinicService
 from ..core.database import get_db_client
+from ..middleware.auth import get_current_user_metadata, UserContext
 from supabase import Client
 from typing import List, Dict, Any
 from pydantic import BaseModel
@@ -37,9 +38,17 @@ def get_clinic_service(supabase: Client = Depends(get_db_client)) -> ClinicServi
     return ClinicService(supabase)
 
 
+def require_system_admin(user: UserContext = Depends(get_current_user_metadata)) -> UserContext:
+    '''システム管理者専用エンドポイントの権限チェック'''
+    if not user.is_system_admin():
+        raise HTTPException(status_code=403, detail='管理者権限が必要です')
+    return user
+
+
 @router.get('/dashboard')
 async def get_admin_dashboard(
-    supabase: Client = Depends(get_db_client)
+    supabase: Client = Depends(get_db_client),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''Get admin dashboard data'''
     try:
@@ -67,7 +76,8 @@ async def get_admin_dashboard(
 
 @router.get('/clinics', response_model=List[Clinic])
 async def get_all_clinics(
-    clinic_service: ClinicService = Depends(get_clinic_service)
+    clinic_service: ClinicService = Depends(get_clinic_service),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''Get all clinics'''
     try:
@@ -80,10 +90,14 @@ async def get_all_clinics(
 @router.post('/clinics', response_model=ClinicResponse)
 async def create_clinic(
     request: ClinicCreate,
-    clinic_service: ClinicService = Depends(get_clinic_service)
+    clinic_service: ClinicService = Depends(get_clinic_service),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''Create new clinic'''
     try:
+        # owner_id 未指定時は、画面の案内どおり現在ログイン中の管理者をオーナーにする
+        if not request.owner_id:
+            request.owner_id = admin.user_id
         clinic = await clinic_service.create_clinic(request)
         return ClinicResponse(data=clinic, message='Clinic created successfully')
     except ValueError as e:
@@ -93,7 +107,8 @@ async def create_clinic(
 @router.delete('/clinics/{clinic_id}')
 async def delete_clinic(
     clinic_id: str,
-    clinic_service: ClinicService = Depends(get_clinic_service)
+    clinic_service: ClinicService = Depends(get_clinic_service),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''Delete clinic'''
     try:
@@ -106,7 +121,8 @@ async def delete_clinic(
 @router.put('/clinics/{clinic_id}/activate', response_model=ClinicResponse)
 async def activate_clinic(
     clinic_id: str,
-    clinic_service: ClinicService = Depends(get_clinic_service)
+    clinic_service: ClinicService = Depends(get_clinic_service),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''Activate clinic'''
     try:
@@ -119,7 +135,8 @@ async def activate_clinic(
 @router.put('/clinics/{clinic_id}/deactivate', response_model=ClinicResponse)
 async def deactivate_clinic(
     clinic_id: str,
-    clinic_service: ClinicService = Depends(get_clinic_service)
+    clinic_service: ClinicService = Depends(get_clinic_service),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''Deactivate clinic'''
     try:
@@ -130,7 +147,10 @@ async def deactivate_clinic(
 
 
 @router.get('/operators')
-async def get_operators(supabase: Client = Depends(get_db_client)):
+async def get_operators(
+    supabase: Client = Depends(get_db_client),
+    admin: UserContext = Depends(require_system_admin),
+):
     '''Get all system_admin operators'''
     try:
         response = supabase.table('user_metadata').select('*').eq('role', 'system_admin').execute()
@@ -166,7 +186,8 @@ async def get_operators(supabase: Client = Depends(get_db_client)):
 @router.post('/operators')
 async def create_operator(
     request: CreateOperatorRequest,
-    supabase: Client = Depends(get_db_client)
+    supabase: Client = Depends(get_db_client),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''Create a new system_admin operator'''
     try:
@@ -205,7 +226,8 @@ async def create_operator(
 @router.delete('/operators/{user_id}')
 async def delete_operator(
     user_id: str,
-    supabase: Client = Depends(get_db_client)
+    supabase: Client = Depends(get_db_client),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''Delete an operator'''
     try:
@@ -226,7 +248,10 @@ async def delete_operator(
 
 
 @router.get('/settings')
-async def get_admin_settings(supabase: Client = Depends(get_db_client)):
+async def get_admin_settings(
+    supabase: Client = Depends(get_db_client),
+    admin: UserContext = Depends(require_system_admin),
+):
     '''Get admin settings'''
     try:
         response = supabase.table('system_settings').select('*').execute()
@@ -239,7 +264,8 @@ async def get_admin_settings(supabase: Client = Depends(get_db_client)):
 @router.put('/settings')
 async def update_admin_settings(
     settings: Dict[str, str],
-    supabase: Client = Depends(get_db_client)
+    supabase: Client = Depends(get_db_client),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''Update admin settings'''
     try:
@@ -255,7 +281,10 @@ async def update_admin_settings(
 
 
 @router.get('/geocode')
-async def geocode_address(address: str):
+async def geocode_address(
+    address: str,
+    admin: UserContext = Depends(require_system_admin),
+):
     '''住所から緯度経度を取得（Google Maps Geocoding API）'''
     api_key = os.environ.get('GOOGLE_MAPS_API_KEY', '')
     try:
@@ -276,7 +305,8 @@ async def geocode_address(address: str):
 async def update_clinic_password(
     clinic_id: str,
     request: UpdatePasswordRequest,
-    supabase: Client = Depends(get_db_client)
+    supabase: Client = Depends(get_db_client),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''医院アカウントのパスワードを運営者が変更する'''
     if len(request.new_password) < 8:
@@ -315,7 +345,8 @@ async def update_clinic_password(
 async def update_openhouse_status(
     clinic_id: str,
     request: OpenhouseStatusRequest,
-    supabase: Client = Depends(get_db_client)
+    supabase: Client = Depends(get_db_client),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''内覧会ステータスを更新'''
     valid_statuses = ('none', 'scheduled', 'completed')
@@ -337,7 +368,8 @@ async def update_openhouse_status(
 @router.post('/import-wordpress-users')
 async def import_wordpress_users(
     request: ImportWordPressUsersRequest,
-    supabase: Client = Depends(get_db_client)
+    supabase: Client = Depends(get_db_client),
+    admin: UserContext = Depends(require_system_admin),
 ):
     '''WordPressユーザーをMA-PilotにCSV一括インポート'''
     supabase_url = os.environ.get('SUPABASE_URL', '')
