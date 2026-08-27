@@ -1,5 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
-from ..models.user import LoginRequest, LoginResponse, PasswordResetRequest, PasswordResetResponse, RefreshRequest, RefreshResponse, RegisterRequest, RegisterResponse
+from ..models.user import (
+    LoginRequest, LoginResponse, PasswordResetRequest, PasswordResetResponse,
+    RefreshRequest, RefreshResponse, RegisterRequest, RegisterResponse,
+)
 from ..services.auth_service import AuthService
 from ..core.database import get_supabase_client
 from supabase import Client
