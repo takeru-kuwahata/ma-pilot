@@ -10,6 +10,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { supabase } from '../lib/supabase';
+import { saveSession } from '../services/api/config';
 
 export const AcceptInvitePage = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export const AcceptInvitePage = () => {
       // セッション取得してバックエンドのuser情報をlocalStorageに保存
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.access_token) {
-        localStorage.setItem('access_token', session.access_token);
+        saveSession(session);
         // user情報はバックエンドから取得
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || ''}/api/auth/me`, {
           headers: { Authorization: `Bearer ${session.access_token}` },

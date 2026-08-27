@@ -221,7 +221,7 @@ export const AdminClinics = () => {
     try {
       await fetch(`${API_BASE_URL}/api/admin/clinics/${clinicId}/openhouse-status`, {
         method: 'PUT',
-        headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+        headers: { ...await getAuthHeaders(), 'Content-Type': 'application/json' },
         body: JSON.stringify({ openhouse_status: status }),
       });
       await loadClinics();
@@ -257,7 +257,7 @@ export const AdminClinics = () => {
         try {
           const res = await fetch(`${API_BASE_URL}/api/admin/import-wordpress-users`, {
             method: 'POST',
-            headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+            headers: { ...await getAuthHeaders(), 'Content-Type': 'application/json' },
             body: JSON.stringify({ users: results.data }),
           });
           const data = await res.json();
@@ -315,7 +315,7 @@ export const AdminClinics = () => {
     try {
       const res = await fetch(
         `${API_BASE_URL}/api/admin/geocode?address=${encodeURIComponent(address)}`,
-        { headers: getAuthHeaders() }
+        { headers: await getAuthHeaders() }
       );
       if (res.ok) {
         const data = await res.json();

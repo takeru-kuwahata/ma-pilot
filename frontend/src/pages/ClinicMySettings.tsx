@@ -32,7 +32,7 @@ export const ClinicMySettings = () => {
     try {
       await fetch(`${API_BASE_URL}/api/my/display-name`, {
         method: 'PUT',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ display_name: displayName.trim() }),
       }).then(handleResponse);
       if (user) {
@@ -62,7 +62,7 @@ export const ClinicMySettings = () => {
     try {
       await fetch(`${API_BASE_URL}/api/my/password`, {
         method: 'PUT',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ new_password: newPassword }),
       }).then(handleResponse);
       setNewPassword('');

@@ -9,7 +9,7 @@ interface ClinicResponse {
 export const clinicService = {
   async getClinic(clinicId: string): Promise<Clinic> {
     const response = await fetch(`${API_BASE_URL}/api/clinics/${clinicId}`, {
-      headers: getAuthHeaders()
+      headers: await getAuthHeaders()
     });
     const result = await handleResponse<ClinicResponse>(response);
     return result.data;
@@ -18,7 +18,7 @@ export const clinicService = {
   async updateClinic(clinicId: string, data: ClinicFormData): Promise<Clinic> {
     const response = await fetch(`${API_BASE_URL}/api/clinics/${clinicId}`, {
       method: 'PUT',
-      headers: getAuthHeaders(),
+      headers: await getAuthHeaders(),
       body: JSON.stringify(data)
     });
     const result = await handleResponse<ClinicResponse>(response);

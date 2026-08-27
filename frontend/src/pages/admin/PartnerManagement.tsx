@@ -99,7 +99,7 @@ export const PartnerManagement = () => {
   const fetchCompanies = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/partners/admin/companies`, { headers: getAuthHeaders() });
+      const res = await fetch(`${API_BASE_URL}/api/partners/admin/companies`, { headers: await getAuthHeaders() });
       const json = await res.json();
       setCompanies(json.data || []);
     } catch {
@@ -126,7 +126,7 @@ export const PartnerManagement = () => {
     try {
       await fetch(`${API_BASE_URL}/api/partners/admin/companies/${companyId}`, {
         method: 'DELETE',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
       });
       setSuccess('企業を削除しました');
       fetchCompanies();
@@ -151,7 +151,7 @@ export const PartnerManagement = () => {
       };
       const res = await fetch(url, {
         method: isNew ? 'POST' : 'PUT',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(await extractApiError(res));
@@ -200,7 +200,7 @@ export const PartnerManagement = () => {
         : `${API_BASE_URL}/api/partners/admin/services/${editingService.id}`;
       const res = await fetch(url, {
         method: isNew ? 'POST' : 'PUT',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(await extractApiError(res));
@@ -217,7 +217,7 @@ export const PartnerManagement = () => {
     try {
       await fetch(`${API_BASE_URL}/api/partners/admin/services/${serviceId}`, {
         method: 'DELETE',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
       });
       setSuccess('サービスを削除しました');
       fetchCompanies();

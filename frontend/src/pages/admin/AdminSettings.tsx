@@ -25,7 +25,7 @@ export const AdminSettings = () => {
   const loadSettings = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/admin/settings`, {
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
       });
       const data = await handleResponse(response) as { settings: Record<string, string> };
       setPrintOrderEmail(data.settings.print_order_email || 'dr@medical-advance.com');
@@ -44,7 +44,7 @@ export const AdminSettings = () => {
     try {
       await fetch(`${API_BASE_URL}/api/admin/settings`, {
         method: 'PUT',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ print_order_email: printOrderEmail.trim() }),
       }).then(handleResponse);
       setMessage('設定を保存しました');

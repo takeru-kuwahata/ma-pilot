@@ -1,8 +1,10 @@
-import { API_BASE_URL, handleResponse } from './config';
+import { API_BASE_URL, handleResponse, saveSession, clearAuthStorage } from './config';
 import type { User } from '../../types';
 
 interface LoginResponse {
   access_token: string;
+  refresh_token: string;
+  expires_at: number;
   token_type: string;
   user: User;
 }
@@ -21,7 +23,7 @@ export const authService = {
     const data = await handleResponse<LoginResponse>(response);
 
     if (data.access_token) {
-      localStorage.setItem('access_token', data.access_token);
+      saveSession(data);
       localStorage.setItem('user', JSON.stringify(data.user));
     }
 
@@ -43,8 +45,7 @@ export const authService = {
         console.error('Logout error:', error);
       }
     }
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user');
+    clearAuthStorage();
   },
 
   async resetPassword(email: string): Promise<PasswordResetResponse> {

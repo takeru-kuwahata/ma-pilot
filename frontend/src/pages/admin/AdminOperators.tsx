@@ -53,7 +53,7 @@ export const AdminOperators = () => {
   const loadOperators = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/operators`, { headers: getAuthHeaders() });
+      const res = await fetch(`${API_BASE_URL}/api/admin/operators`, { headers: await getAuthHeaders() });
       const data = await handleResponse<Operator[]>(res);
       setOperators(data);
     } catch (error) {
@@ -73,7 +73,7 @@ export const AdminOperators = () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/operators`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({
           display_name: form.display_name.trim(),
           email: form.email.trim(),
@@ -98,7 +98,7 @@ export const AdminOperators = () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/operators/${deleteTarget.id}`, {
         method: 'DELETE',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
       });
       await handleResponse(res);
       await loadOperators();

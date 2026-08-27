@@ -24,7 +24,7 @@ export const staffService = {
   async getStaff(clinicId: string): Promise<User[]> {
     const response = await fetch(
       `${API_BASE_URL}/api/staff?clinic_id=${clinicId}`,
-      { headers: getAuthHeaders() }
+      { headers: await getAuthHeaders() }
     );
     return handleResponse<User[]>(response);
   },
@@ -32,7 +32,7 @@ export const staffService = {
   async inviteStaff(request: InviteUserRequest): Promise<InviteUserResponse> {
     const response = await fetch(`${API_BASE_URL}/api/staff/invite`, {
       method: 'POST',
-      headers: getAuthHeaders(),
+      headers: await getAuthHeaders(),
       body: JSON.stringify(request)
     });
     return handleResponse<InviteUserResponse>(response);
@@ -42,7 +42,7 @@ export const staffService = {
     const request: UpdateUserRoleRequest = { role };
     const response = await fetch(`${API_BASE_URL}/api/staff/${userId}/role`, {
       method: 'PUT',
-      headers: getAuthHeaders(),
+      headers: await getAuthHeaders(),
       body: JSON.stringify(request)
     });
     return handleResponse<{ message: string }>(response);
@@ -51,7 +51,7 @@ export const staffService = {
   async deleteStaff(userId: string): Promise<DeleteUserResponse> {
     const response = await fetch(`${API_BASE_URL}/api/staff/${userId}`, {
       method: 'DELETE',
-      headers: getAuthHeaders()
+      headers: await getAuthHeaders()
     });
     return handleResponse<DeleteUserResponse>(response);
   }
