@@ -37,7 +37,7 @@ export const adminService = {
   async getDashboard(): Promise<AdminDashboard> {
     const response = await fetch(
       `${API_BASE_URL}/api/admin/dashboard`,
-      { headers: getAuthHeaders() }
+      { headers: await getAuthHeaders() }
     );
     return handleResponse<AdminDashboard>(response);
   },
@@ -45,7 +45,7 @@ export const adminService = {
   async getClinics(): Promise<Clinic[]> {
     const response = await fetch(
       `${API_BASE_URL}/api/admin/clinics`,
-      { headers: getAuthHeaders() }
+      { headers: await getAuthHeaders() }
     );
     return handleResponse<Clinic[]>(response);
   },
@@ -69,7 +69,7 @@ export const adminService = {
     }
     const response = await fetch(`${API_BASE_URL}/api/admin/clinics`, {
       method: 'POST',
-      headers: getAuthHeaders(),
+      headers: await getAuthHeaders(),
       body: JSON.stringify(body)
     });
     const result = await handleResponse<ClinicResponse>(response);
@@ -79,7 +79,7 @@ export const adminService = {
   async deleteClinic(clinicId: string): Promise<void> {
     const response = await fetch(
       `${API_BASE_URL}/api/admin/clinics/${clinicId}`,
-      { method: 'DELETE', headers: getAuthHeaders() }
+      { method: 'DELETE', headers: await getAuthHeaders() }
     );
     await handleResponse<{ message: string }>(response);
   },
@@ -89,7 +89,7 @@ export const adminService = {
       `${API_BASE_URL}/api/admin/clinics/${clinicId}/activate`,
       {
         method: 'PUT',
-        headers: getAuthHeaders()
+        headers: await getAuthHeaders()
       }
     );
     const result = await handleResponse<ClinicResponse>(response);
@@ -101,7 +101,7 @@ export const adminService = {
       `${API_BASE_URL}/api/admin/clinics/${clinicId}/deactivate`,
       {
         method: 'PUT',
-        headers: getAuthHeaders()
+        headers: await getAuthHeaders()
       }
     );
     const result = await handleResponse<ClinicResponse>(response);
@@ -111,7 +111,7 @@ export const adminService = {
   async getSettings(): Promise<AdminSettings> {
     const response = await fetch(
       `${API_BASE_URL}/api/admin/settings`,
-      { headers: getAuthHeaders() }
+      { headers: await getAuthHeaders() }
     );
     return handleResponse<AdminSettings>(response);
   },
@@ -119,7 +119,7 @@ export const adminService = {
   async updateSettings(settings: AdminSettings['settings']): Promise<{ message: string; settings: AdminSettings['settings'] }> {
     const response = await fetch(`${API_BASE_URL}/api/admin/settings`, {
       method: 'PUT',
-      headers: getAuthHeaders(),
+      headers: await getAuthHeaders(),
       body: JSON.stringify(settings)
     });
     return handleResponse<{ message: string; settings: AdminSettings['settings'] }>(response);
@@ -128,7 +128,7 @@ export const adminService = {
   async updateClinicPassword(clinicId: string, newPassword: string): Promise<{ message: string }> {
     const response = await fetch(`${API_BASE_URL}/api/admin/clinics/${clinicId}/password`, {
       method: 'PUT',
-      headers: getAuthHeaders(),
+      headers: await getAuthHeaders(),
       body: JSON.stringify({ new_password: newPassword }),
     });
     return handleResponse<{ message: string }>(response);

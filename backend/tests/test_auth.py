@@ -100,6 +100,8 @@ def mock_supabase_auth():
 
     mock_session = Mock()
     mock_session.access_token = 'test-access-token'
+    mock_session.refresh_token = 'test-refresh-token'
+    mock_session.expires_at = 1700003600
 
     mock_auth_response = Mock()
     mock_auth_response.user = mock_user
@@ -125,6 +127,8 @@ class TestLogin:
 
         assert 'access_token' in result
         assert result['access_token'] == 'test-access-token'
+        assert result['refresh_token'] == 'test-refresh-token'
+        assert result['expires_at'] == 1700003600
         assert result['token_type'] == 'bearer'
         assert result['user'].email == 'test@example.com'
 
@@ -146,6 +150,79 @@ class TestLogin:
         service = AuthService(mock_supabase_auth)
         with pytest.raises(ValueError, match='Login failed'):
             await service.login('test@example.com', 'password123')
+
+
+@pytest.mark.asyncio
+class TestRefresh:
+    '''トークンリフレッシュのテスト（Supabase Auth RESTをモック）'''
+
+    def _mock_httpx_client(self, status_code: int, json_data: dict):
+        '''httpx.AsyncClientのasync context managerモックを作る'''
+        mock_response = Mock()
+        mock_response.status_code = status_code
+        mock_response.json = Mock(return_value=json_data)
+
+        mock_client = Mock()
+        mock_client.post = AsyncMock(return_value=mock_response)
+
+        mock_ctx = Mock()
+        mock_ctx.__aenter__ = AsyncMock(return_value=mock_client)
+        mock_ctx.__aexit__ = AsyncMock(return_value=False)
+        return mock_ctx, mock_client
+
+    async def test_refresh_success(self, mock_supabase_auth, monkeypatch):
+        '''有効なrefresh_tokenで新しいトークン一式が返る'''
+        mock_ctx, mock_client = self._mock_httpx_client(200, {
+            'access_token': 'new-access-token',
+            'refresh_token': 'new-refresh-token',
+            'expires_at': 1700007200,
+        })
+        monkeypatch.setattr('src.services.auth_service.httpx.AsyncClient', Mock(return_value=mock_ctx))
+
+        service = AuthService(mock_supabase_auth)
+        result = await service.refresh('old-refresh-token')
+
+        assert result['access_token'] == 'new-access-token'
+        assert result['refresh_token'] == 'new-refresh-token'
+        assert result['expires_at'] == 1700007200
+        assert result['token_type'] == 'bearer'
+        # Supabase Auth RESTにrefresh_tokenが渡っていること
+        assert mock_client.post.call_args.kwargs['json'] == {'refresh_token': 'old-refresh-token'}
+
+    async def test_refresh_computes_expires_at_from_expires_in(self, mock_supabase_auth, monkeypatch):
+        '''expires_atを返さない旧GoTrueではexpires_inから算出する'''
+        mock_ctx, _ = self._mock_httpx_client(200, {
+            'access_token': 'new-access-token',
+            'refresh_token': 'new-refresh-token',
+            'expires_in': 3600,
+        })
+        monkeypatch.setattr('src.services.auth_service.httpx.AsyncClient', Mock(return_value=mock_ctx))
+        monkeypatch.setattr('src.services.auth_service.time.time', lambda: 1700000000)
+
+        service = AuthService(mock_supabase_auth)
+        result = await service.refresh('old-refresh-token')
+
+        assert result['expires_at'] == 1700003600
+
+    async def test_refresh_invalid_token(self, mock_supabase_auth, monkeypatch):
+        '''無効なrefresh_tokenはValueError'''
+        mock_ctx, _ = self._mock_httpx_client(400, {'error': 'invalid_grant'})
+        monkeypatch.setattr('src.services.auth_service.httpx.AsyncClient', Mock(return_value=mock_ctx))
+
+        service = AuthService(mock_supabase_auth)
+        with pytest.raises(ValueError, match='Invalid refresh token'):
+            await service.refresh('bad-refresh-token')
+
+    async def test_refresh_network_error(self, mock_supabase_auth, monkeypatch):
+        '''Supabase到達不能時はValueError'''
+        mock_ctx = Mock()
+        mock_ctx.__aenter__ = AsyncMock(side_effect=Exception('connection refused'))
+        mock_ctx.__aexit__ = AsyncMock(return_value=False)
+        monkeypatch.setattr('src.services.auth_service.httpx.AsyncClient', Mock(return_value=mock_ctx))
+
+        service = AuthService(mock_supabase_auth)
+        with pytest.raises(ValueError, match='Token refresh failed'):
+            await service.refresh('any-token')
 
 
 @pytest.mark.asyncio

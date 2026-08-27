@@ -20,7 +20,7 @@ export const monthlyDataService = {
 
     const response = await fetch(
       `${API_BASE_URL}/api/monthly-data?${params}`,
-      { headers: getAuthHeaders() }
+      { headers: await getAuthHeaders() }
     );
     const result = await handleResponse<MonthlyDataListResponse>(response);
     return result.data;
@@ -29,7 +29,7 @@ export const monthlyDataService = {
   async createMonthlyData(data: MonthlyDataFormData & { clinic_id: string }): Promise<MonthlyData> {
     const response = await fetch(`${API_BASE_URL}/api/monthly-data`, {
       method: 'POST',
-      headers: getAuthHeaders(),
+      headers: await getAuthHeaders(),
       body: JSON.stringify({
         clinic_id: data.clinic_id,
         year_month: data.year_month,
@@ -55,7 +55,7 @@ export const monthlyDataService = {
   async updateMonthlyData(id: string, data: MonthlyDataFormData): Promise<MonthlyData> {
     const response = await fetch(`${API_BASE_URL}/api/monthly-data/${id}`, {
       method: 'PUT',
-      headers: getAuthHeaders(),
+      headers: await getAuthHeaders(),
       body: JSON.stringify({
         year_month: data.year_month,
         total_revenue: data.total_revenue,
@@ -78,7 +78,7 @@ export const monthlyDataService = {
   async deleteMonthlyData(id: string): Promise<void> {
     const response = await fetch(`${API_BASE_URL}/api/monthly-data/${id}`, {
       method: 'DELETE',
-      headers: getAuthHeaders()
+      headers: await getAuthHeaders()
     });
     await handleResponse<{ message: string }>(response);
   },
@@ -88,7 +88,7 @@ export const monthlyDataService = {
       `${API_BASE_URL}/api/monthly-data/import-csv?clinic_id=${clinicId}`,
       {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ data: csvData })
       }
     );

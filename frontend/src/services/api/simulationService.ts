@@ -20,7 +20,7 @@ export const simulationService = {
   ): Promise<Simulation> {
     const response = await fetch(`${API_BASE_URL}/api/simulations`, {
       method: 'POST',
-      headers: getAuthHeaders(),
+      headers: await getAuthHeaders(),
       body: JSON.stringify({
         clinic_id: clinicId,
         title,
@@ -35,7 +35,7 @@ export const simulationService = {
   async getSimulations(clinicId: string): Promise<Simulation[]> {
     const response = await fetch(
       `${API_BASE_URL}/api/simulations?clinic_id=${clinicId}`,
-      { headers: getAuthHeaders() }
+      { headers: await getAuthHeaders() }
     );
     const result = await handleResponse<SimulationListResponse>(response);
     return result.data;
@@ -44,7 +44,7 @@ export const simulationService = {
   async getSimulation(simulationId: string): Promise<Simulation> {
     const response = await fetch(
       `${API_BASE_URL}/api/simulations/${simulationId}`,
-      { headers: getAuthHeaders() }
+      { headers: await getAuthHeaders() }
     );
     const result = await handleResponse<SimulationResponse>(response);
     return result.data;

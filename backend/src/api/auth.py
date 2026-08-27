@@ -1,5 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
-from ..models.user import LoginRequest, LoginResponse, PasswordResetRequest, PasswordResetResponse, RegisterRequest, RegisterResponse
+from ..models.user import (
+    LoginRequest, LoginResponse, PasswordResetRequest, PasswordResetResponse,
+    RefreshRequest, RefreshResponse, RegisterRequest, RegisterResponse,
+)
 from ..services.auth_service import AuthService
 from ..core.database import get_supabase_client
 from supabase import Client
@@ -30,6 +33,18 @@ async def login(
         return result
     except ValueError as e:
         logger.error(f'Login failed: {str(e)}')
+        raise HTTPException(status_code=401, detail=str(e))
+
+
+@router.post('/refresh', response_model=RefreshResponse)
+async def refresh(
+    request: RefreshRequest,
+    auth_service: AuthService = Depends(get_auth_service)
+):
+    '''Refresh access token'''
+    try:
+        return await auth_service.refresh(request.refresh_token)
+    except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))
 
 

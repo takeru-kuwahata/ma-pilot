@@ -5,6 +5,7 @@ import httpx
 import urllib.parse
 import re
 import os
+import time
 
 
 class AuthService:
@@ -58,12 +59,44 @@ class AuthService:
 
             return {
                 'access_token': auth_response.session.access_token,
+                'refresh_token': auth_response.session.refresh_token,
+                'expires_at': auth_response.session.expires_at,
                 'token_type': 'bearer',
                 'user': user
             }
 
         except Exception as e:
             raise ValueError(f'Login failed: {str(e)}')
+
+    async def refresh(self, refresh_token: str) -> dict:
+        '''Refresh access token using a refresh token (Supabase Auth REST直呼び・共有クライアントのセッション汚染を避ける)'''
+        supabase_url = os.environ.get('SUPABASE_URL', '')
+        supabase_key = os.environ.get('SUPABASE_KEY', '')
+        try:
+            async with httpx.AsyncClient(timeout=15.0) as client:
+                resp = await client.post(
+                    f'{supabase_url}/auth/v1/token?grant_type=refresh_token',
+                    headers={
+                        'apikey': supabase_key,
+                        'Content-Type': 'application/json',
+                    },
+                    json={'refresh_token': refresh_token},
+                )
+        except Exception as e:
+            raise ValueError(f'Token refresh failed: {str(e)}')
+
+        if resp.status_code != 200:
+            raise ValueError('Invalid refresh token')
+
+        data = resp.json()
+        # 旧バージョンのGoTrueはexpires_atを返さないためexpires_inから算出
+        expires_at = data.get('expires_at') or int(time.time()) + int(data.get('expires_in', 3600))
+        return {
+            'access_token': data['access_token'],
+            'refresh_token': data['refresh_token'],
+            'expires_at': expires_at,
+            'token_type': 'bearer',
+        }
 
     async def logout(self, access_token: str) -> dict:
         '''Logout user'''

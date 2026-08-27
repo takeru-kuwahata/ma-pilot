@@ -26,7 +26,7 @@ export const reportService = {
     try {
       const response = await fetch(`${API_BASE_URL}/api/reports/generate`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify(request),
         signal: controller.signal
       });
@@ -40,7 +40,7 @@ export const reportService = {
   async getReports(clinicId: string): Promise<Report[]> {
     const response = await fetch(
       `${API_BASE_URL}/api/reports?clinic_id=${clinicId}`,
-      { headers: getAuthHeaders() }
+      { headers: await getAuthHeaders() }
     );
     const result = await handleResponse<ReportListResponse>(response);
     return result.data;
@@ -50,7 +50,7 @@ export const reportService = {
     const response = await fetch(
       `${API_BASE_URL}/api/reports/${reportId}/download`,
       {
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         redirect: 'follow'
       }
     );
@@ -70,7 +70,7 @@ export const reportService = {
       `${API_BASE_URL}/api/reports/${reportId}`,
       {
         method: 'DELETE',
-        headers: getAuthHeaders()
+        headers: await getAuthHeaders()
       }
     );
     await handleResponse<ReportResponse>(response);

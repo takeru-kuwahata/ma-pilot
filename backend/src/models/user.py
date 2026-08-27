@@ -36,8 +36,23 @@ class LoginRequest(BaseModel):
 class LoginResponse(BaseModel):
     '''Login response'''
     access_token: str
+    refresh_token: str
+    expires_at: int
     token_type: str = 'bearer'
     user: User
+
+
+class RefreshRequest(BaseModel):
+    '''Token refresh request'''
+    refresh_token: str
+
+
+class RefreshResponse(BaseModel):
+    '''Token refresh response'''
+    access_token: str
+    refresh_token: str
+    expires_at: int
+    token_type: str = 'bearer'
 
 
 class PasswordResetRequest(BaseModel):

@@ -10,7 +10,7 @@ export const marketAnalysisService = {
   async getMarketAnalysis(clinicId: string): Promise<MarketAnalysis> {
     const response = await fetch(
       `${API_BASE_URL}/api/market-analysis/${clinicId}`,
-      { headers: getAuthHeaders() }
+      { headers: await getAuthHeaders() }
     );
     const result = await handleResponse<MarketAnalysisResponse>(response);
     return result.data;
@@ -23,7 +23,7 @@ export const marketAnalysisService = {
   ): Promise<MarketAnalysis> {
     const response = await fetch(`${API_BASE_URL}/api/market-analysis`, {
       method: 'POST',
-      headers: getAuthHeaders(),
+      headers: await getAuthHeaders(),
       body: JSON.stringify({
         clinic_id: clinicId,
         radius_km: radiusKm,

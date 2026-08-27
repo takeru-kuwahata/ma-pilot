@@ -39,6 +39,8 @@ describe('authService', () => {
         ok: true,
         json: async () => ({
           access_token: 'token-abc',
+          refresh_token: 'refresh-abc',
+          expires_at: 1700003600,
           token_type: 'bearer',
           user: mockUser,
         }),
@@ -49,6 +51,8 @@ describe('authService', () => {
       expect(result.access_token).toBe('token-abc');
       expect(result.user.email).toBe('test@example.com');
       expect(mockLocalStorage.getItem('access_token')).toBe('token-abc');
+      expect(mockLocalStorage.getItem('refresh_token')).toBe('refresh-abc');
+      expect(mockLocalStorage.getItem('token_expires_at')).toBe('1700003600');
       expect(JSON.parse(mockLocalStorage.getItem('user')!).email).toBe('test@example.com');
     });
 
@@ -91,12 +95,16 @@ describe('authService', () => {
   describe('logout', () => {
     it('localStorageからトークンとユーザーを削除する', async () => {
       mockLocalStorage.setItem('access_token', 'token-abc');
+      mockLocalStorage.setItem('refresh_token', 'refresh-abc');
+      mockLocalStorage.setItem('token_expires_at', '1700003600');
       mockLocalStorage.setItem('user', '{"id":"u1"}');
       mockFetch.mockResolvedValueOnce({ ok: true, json: async () => ({}) });
 
       await authService.logout();
 
       expect(mockLocalStorage.getItem('access_token')).toBeNull();
+      expect(mockLocalStorage.getItem('refresh_token')).toBeNull();
+      expect(mockLocalStorage.getItem('token_expires_at')).toBeNull();
       expect(mockLocalStorage.getItem('user')).toBeNull();
     });
 

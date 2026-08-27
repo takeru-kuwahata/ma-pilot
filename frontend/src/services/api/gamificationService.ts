@@ -9,7 +9,7 @@ export const gamificationService = {
   async getData(clinicId: string): Promise<GamificationData> {
     const response = await fetch(
       `${API_BASE_URL}/api/gamification/${clinicId}`,
-      { headers: getAuthHeaders() }
+      { headers: await getAuthHeaders() }
     );
     const result = await handleResponse<GamificationResponse>(response);
     return result.data;
@@ -18,7 +18,7 @@ export const gamificationService = {
   async updateCharacter(clinicId: string, characterType: string): Promise<void> {
     await fetch(`${API_BASE_URL}/api/gamification/${clinicId}/character`, {
       method: 'PUT',
-      headers: getAuthHeaders(),
+      headers: await getAuthHeaders(),
       body: JSON.stringify({ character_type: characterType }),
     });
   },
