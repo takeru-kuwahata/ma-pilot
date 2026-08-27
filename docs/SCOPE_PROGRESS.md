@@ -1,6 +1,6 @@
 # MA-Pilot 開発進捗状況
 
-最終更新：2026-08-24
+最終更新：2026-08-27
 
 ---
 
@@ -10,7 +10,7 @@
 |------|------|
 | フロントエンド（Vercel） | ✅ 正常稼働中 |
 | バックエンド（Render） | ✅ 正常稼働中 |
-| CI（GitHub Actions） | ✅ Test Suite グリーン（Backend 150件・Frontend 105件） |
+| CI（GitHub Actions） | ✅ Test Suite グリーン（Backend 154件・Frontend 110件） |
 | Supabase | ✅ 正常稼働中 |
 
 ---
@@ -216,6 +216,21 @@
 - **テスト**: `backend/tests/test_partners.py` を新規作成（8件）。パートナー機能はこれまでテストが存在せず、それが本件を本番まで見逃した原因。**修正前のコードでは5件が失敗することを確認**（トートロジーでないことの実証）
 - **本番実機確認済み**（2026-08-24）: サービス編集の保存 HTTP 200 / 企業編集の保存 HTTP 200 / 有効・無効スイッチが実際に保存されることを false→true の往復で確認 / **検証前後で企業52社・サービス9件の全データが完全一致（消失・改変なし）**
 - PR #3（squash merge → main → Render/Vercel 自動デプロイ済み）
+
+---
+
+## 2026-08-27 実施済み修正（ログイン60分後に保存が失敗する問題をトークン自動リフレッシュで解消）
+
+**クライアント報告**: パートナー企業のサービスを編集して保存すると「保存に失敗しました: Could not validate credentials」になる（8/24のPR #3とは別原因）。
+
+- **原因**: SupabaseのアクセストークンはJWT有効期限が60分だが、フロントエンドにトークンを更新する仕組みが一切なく（ログイン時に一度保存したきり・ログインAPIもrefresh_tokenを返していなかった）、ログインから60分経過すると全APIが401になっていた。パートナー管理のような長時間の編集作業で顕在化
+- **対応（恒久）**:
+  - バックエンド: ログインAPIが `refresh_token` / `expires_at` を返すよう拡張し、`POST /api/auth/refresh` を新設（Supabase Auth REST `/auth/v1/token?grant_type=refresh_token` をhttpx直呼び。共有supabaseクライアントのセッション汚染を回避）
+  - フロントエンド: `getAuthHeaders` を非同期化し、失効5分前から単一飛行（single-flight）で自動リフレッシュ。セッション保存・破棄は `saveSession` / `clearAuthStorage` に一元化。リフレッシュ失敗時は既存トークンのまま続行し、後続401処理（ログイン画面へ）に委ねる
+  - 旧セッション互換: デプロイ前からログイン中のユーザーはrefresh_tokenを持たないため従来挙動（60分後に再ログイン1回のみ）。デプロイ順序の考慮不要
+- **テスト**: AuthService.refresh 4件＋ensureFreshToken/getAuthHeaders 5件を新規（Backend 154件・Frontend 110件 全パス）
+- **本番実機確認済み**（2026-08-27）: ログインAPIがrefresh_tokenを返却 → `/api/auth/refresh` HTTP 200で新トークン一式に交換（rotation確認）→ 交換後トークンでパートナー企業一覧API HTTP 200（52社）。Vercel本番バンドルにもリフレッシュ処理の反映を確認
+- PR #9（squash merge → main → Render/Vercel 自動デプロイ済み）
 
 ---
 
