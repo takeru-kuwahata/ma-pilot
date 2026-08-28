@@ -27,7 +27,8 @@ class Settings(BaseSettings):
             '127.0.0.1',
             'ma-pilot.vercel.app',
             '*.vercel.app',  # Vercelプレビュー環境
-            '*.onrender.com',  # Render.comバックエンド
+            '*.onrender.com',  # Render.comバックエンド（移行期間中の切り戻し用）
+            '*.run.app',  # Cloud Runバックエンド
         ],
         description='Allowed hosts for TrustedHostMiddleware',
     )
