@@ -13,15 +13,7 @@ import {
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material';
 import { API_BASE_URL, getAuthHeaders } from '../../services/api/config';
-
-const PROBLEM_TAGS = [
-  '集患_Web', '集患_MEO', '集患_SNS',
-  '自費_カウンセリング', '自費_メニュー設計',
-  'コスト_材料費', 'コスト_固定費',
-  'スタッフ研修', 'リコール_システム', '予約_自動化',
-  '人材育成', '増患', '収益増加', '診療業務サポート',
-  '福利厚生', 'サービス代行', '節税/助成金/保険',
-];
+import { PROBLEM_TAGS } from '../../constants/problemTags';
 
 interface Company {
   id: string;
