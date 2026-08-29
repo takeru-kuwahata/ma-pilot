@@ -81,6 +81,6 @@
 ## 📝 関連リンク
 
 - **本番環境**: https://ma-pilot.vercel.app
-- **バックエンドAPI**: https://ma-pilot.onrender.com
+- **バックエンドAPI**: https://ma-pilot-backend-536185990243.asia-northeast1.run.app
 - **GitHubリポジトリ**: https://github.com/takeru-kuwahata/ma-pilot
 - **Supabaseプロジェクト**: https://supabase.com/dashboard/project/[project-id]

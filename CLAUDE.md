@@ -344,18 +344,31 @@ PILOTデータ取込:
   - git push → GitHub App連携で自動デプロイ（手動操作不要）
   - 環境変数: Vercelダッシュボードで設定済み
 
-バックエンド（Render.com）:
-  - URL: https://ma-pilot.onrender.com
-  - git push → GitHub Actions → RENDER_DEPLOY_HOOK で自動デプロイ
-  - 注意: 無料プランのため15分間アクセスなしで自動スリープ（初回リクエスト最大50秒）
-  - 手動デプロイ: Renderダッシュボード → Manual Deploy → Deploy latest commit
+バックエンド（Google Cloud Run）: ※2026-08-29 Render.comから移行
+  - URL: https://ma-pilot-backend-536185990243.asia-northeast1.run.app
+  - GCPプロジェクト: ma-pilot-prod（MA-Pilot専用。将来クライアントへ請求先ごと移管するため他案件と分離）
+  - リージョン: asia-northeast1 / min-instances=1・1vCPU・メモリ1GB・CPUブースト有効
+  - git push → GitHub Actions → Workload Identity Federation（鍵なし認証）で自動デプロイ
+  - スリープなし（min-instances=1）。応答は約0.1秒
+  - 環境変数・シークレット: Cloud Run側の設定を引き継ぐ（CIは --image のみ更新）
+  - 機密6件はSecret Manager管理（SUPABASE_KEY / STRIPE_SECRET_KEY / RESEND_API_KEY /
+    E_STAT_API_KEY / GOOGLE_MAPS_API_KEY / WORDPRESS_API_PASSWORD）
+  - 手動デプロイ: docs/DEPLOY_CLOUDRUN.md 参照
+
+  ⚠️ Dockerfile注意: fonts-noto-cjk（無いとPDFの日本語が豆腐になる）、libffi8、
+     uvicornの --proxy-headers（無いと無限307ループ）は必須。削除しないこと
+
+旧バックエンド（Render.com）:
+  - https://ma-pilot.onrender.com — 切り戻し用に稼働継続中（〜2026-09-12頃に解約予定）
 
 GitHub Secrets（設定済み）:
-  - RENDER_DEPLOY_HOOK: RenderのDeploy Hook URL
+  - GCP_WIF_PROVIDER: Workload Identity Federationのプロバイダパス
+  - GCP_SERVICE_ACCOUNT: github-deployer@ma-pilot-prod.iam.gserviceaccount.com
   - VITE_SUPABASE_URL
   - VITE_SUPABASE_ANON_KEY
   - VITE_BACKEND_URL
   - BACKEND_URL
+  - RENDER_DEPLOY_HOOK（未使用。Render解約時に削除）
   ※ VERCELのシークレットは不要（GitHub App連携で動作）
 ```
 

@@ -81,24 +81,57 @@ jobs:
   # 注: VercelはGitHub App連携で自動デプロイされるため、このジョブは不要
   # GitHub Actions経由でのデプロイは無効化
 
-  # Render.comバックエンドデプロイ
+  # Cloud Runバックエンドデプロイ（Workload Identity Federationで鍵なし認証）
   deploy-backend:
-    name: Deploy Backend to Render
+    name: Deploy Backend to Cloud Run
     needs: [test-backend, test-frontend]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      id-token: write
+
+    env:
+      PROJECT_ID: ma-pilot-prod
+      REGION: asia-northeast1
+      SERVICE: ma-pilot-backend
+      REPO: asia-northeast1-docker.pkg.dev/ma-pilot-prod/ma-pilot/backend
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Trigger Render Deploy
-        run: |
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      - name: Wait for deployment
-        run: sleep 60
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
+
+      - name: Build and push image
+        working-directory: ./backend
+        run: |
+          IMAGE="$REPO:${GITHUB_SHA::7}"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+
+      # 環境変数・シークレットは既存のCloud Run設定を引き継ぐ（--image のみ更新）
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy "$SERVICE" \
+            --image="$IMAGE" \
+            --project="$PROJECT_ID" \
+            --region="$REGION" \
+            --platform=managed
 
       - name: Health check
         run: |
-          curl -f "${{ secrets.BACKEND_URL }}/health" || exit 1
+          URL=$(gcloud run services describe "$SERVICE" --project="$PROJECT_ID" --region="$REGION" --format='value(status.url)')
+          echo "Deployed: $URL"
+          curl -fsS --retry 5 --retry-delay 5 "$URL/health" || exit 1
