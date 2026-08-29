@@ -9,9 +9,22 @@
 | 項目 | 状態 |
 |------|------|
 | フロントエンド（Vercel） | ✅ 正常稼働中 |
-| バックエンド（Render） | ✅ 正常稼働中 |
+| バックエンド（**Cloud Run** asia-northeast1） | ✅ 正常稼働中（2026-08-29 Renderから移行） |
 | CI（GitHub Actions） | ✅ Test Suite グリーン（Backend 154件・Frontend 113件） |
 | Supabase | ✅ 正常稼働中 |
+
+### インフラ構成（2026-08-29 更新）
+
+| 役割 | サービス | 備考 |
+|---|---|---|
+| フロントエンド | Vercel | https://ma-pilot.vercel.app |
+| バックエンド | Cloud Run `ma-pilot-backend` | GCPプロジェクト **`ma-pilot-prod`**（MA-Pilot専用）／asia-northeast1／min-instances=1・1vCPU・1GB |
+| DB / Auth | Supabase | ecdzttcnpykmqikdlkai |
+| 機密情報 | GCP Secret Manager | 6件（SUPABASE_KEY / STRIPE_SECRET_KEY / RESEND_API_KEY / E_STAT_API_KEY / GOOGLE_MAPS_API_KEY / WORDPRESS_API_PASSWORD） |
+| 旧バックエンド | Render.com | **切り戻し用に稼働継続中**（〜2026-09-12頃まで残置予定） |
+
+- GCPプロジェクトをMA-Pilot専用にしたのは、将来クライアント（メディカルアドバンス社）へ**請求先ごと移管**できるようにするため
+- Artifact Registry はクリーンアップポリシー設定済み（最新10世代保持・未タグ7日削除）
 
 ---
 
@@ -170,6 +183,28 @@
 |------|------|
 | 本番ログイン不能の復旧（当日解決） | クライアント報告「メール・パスワードを入れても入力画面に戻る」。原因はSupabase無料プランの「7日間無アクセスで自動一時停止」（最終利用8/7→8/17で発動）。バックエンド `/api/auth/login` が401（SupabaseホストNXDOMAIN）になることを再現確認後、Supabase Management APIでプロジェクト（ma-cs）をrestore。約3分半でACTIVE_HEALTHY復旧、本番ログインAPI 200を実証確認。データ消失なし |
 | 再発防止: keepaliveワークフロー追加（PR #2） | `.github/workflows/supabase-keepalive.yml` を追加。毎日6:00 JSTにSupabase REST APIへ1クエリ投げて停止条件を回避。非200ならワークフロー失敗（GitHubの失敗通知メールで検知）。公開リポの「60日間コミットなしでスケジュール無効化」対策として、実行毎に自身をre-enableするステップも同梱。merge後にworkflow_dispatchで本実行success確認済み |
+
+## 2026-08-29 実施済み（バックエンドをRender.comからCloud Runへ移行）
+
+**背景**: 他プロジェクト（Vercel / GCR / Supabase）とインフラを統一するため。Render無料プランは15分でスリープしコールドスタート30〜60秒、有料顧客向けには不適だった。実際にRenderの制約がコードに侵食しており、レポート生成に90秒タイムアウトが実装されていた（2026-04-28コミット「Renderスリープ対策」）。Renderは東京リージョン未提供（2021年から「Planned」のまま）。
+
+| 内容 | 詳細 |
+|------|------|
+| 移行先 | GCPプロジェクト **`ma-pilot-prod`**（新規作成・MA-Pilot専用）／Cloud Run asia-northeast1／min-instances=1・1vCPU・メモリ1GB・CPUブースト有効。専用プロジェクトにしたのは将来クライアントへ**請求先ごと移管**するため（他案件と同居すると分離できない） |
+| **発見した重大な欠陥** | Renderは `env: python` のネイティブビルドで動作しており、**Dockerfileは本番で一度も使われていなかった**（コミット1回・未検証）。そのままCloud Runへ移すと動かない欠陥が4件あった |
+| 欠陥1: 日本語フォント欠落 | PDFテンプレートは `font-family: 'Noto Sans JP'`・日本語44箇所だが、`python:3.12-slim` に和文フォント非同梱 → **PDFが豆腐(□)になる**。`fonts-noto-cjk` を追加。Renderでは正常だったため移行で新規発生する顧客可視の不具合だった |
+| 欠陥2: libffi8 欠落 | cffiの実行時依存（builderの `libffi-dev` はビルド時のみ）。起動失敗の要因 |
+| 欠陥3: --proxy-headers 未指定 | Cloud RunはHTTPSを終端しHTTPで転送するため、`HTTPSRedirectMiddleware` が**無限307ループ**を起こす。実証: 修正前307 → 修正後200 |
+| 欠陥4: allowed_hosts に run.app なし | `TrustedHostMiddleware` が全リクエストを400拒否。実証: run.appホスト通過・不正ホスト400（保護は維持） |
+| 環境変数の移設 | ローカル `.env` は本番の正本ではなかった（`RESEND_API_KEY` 等がRenderのみに存在）。本番の `/api/my/test-email` を叩いて設定を実証確認後、Render画面の全22変数を取得して突合。機密6件は Secret Manager へ登録し原本との一致を検証 |
+| 再発行不能な情報の保全 | Resend / Stripe本番(`sk_live_`) / WordPress / Supabase service_role の4件はクライアント提供で弊社では再発行不可。パスワードマネージャー・ローカル退避・Secret Manager の**三重に保全**。Renderの環境変数は原本保全のため変更していない |
+| Artifact Registry | クリーンアップポリシー設定済み（最新10世代保持・未タグ7日削除）。既存プロジェクト `meguribi-477204` では568イメージ・69.6GBが10ヶ月無削除で蓄積し月額約$6.9発生していたため、同じ轍を踏まない |
+| **本番実機確認済み**（2026-08-29） | 日本語PDF生成（Noto Sans JP埋め込みをpdffontsで確認、pdftotextで「月次経営レポート」「（テスト）ウエダ歯科」を抽出）／メール送信（Resend、medical-advance.comのDKIM認証維持）／Supabase実データ13件がRenderと完全一致／ログイン・CORS・ダッシュボード200／応答速度 **0.116s（Render 0.234s の約2倍速）**。**検証用に生成したPDFは削除し、本番データは元の状態に復元済み** |
+| ロールバック | Vercel環境変数 `VITE_BACKEND_URL` を `https://ma-pilot.onrender.com` に戻して再デプロイするだけ。**Renderは稼働継続中**（〜2026-09-12頃まで残置） |
+
+**PR #14**。CIのLint Backend失敗は既存問題（main に flake8 エラー97件、`import re` 未使用も元から存在）、Lighthouse失敗もmainで継続的に発生している既存問題のため、本PR起因ではないと切り分けてマージ。
+
+**残タスク（別PR予定）**: 移植と分離するため今回は触っていない。①レポート生成の90秒タイムアウト削除（Renderスリープ対策だった負債）②死にコード `save_pdf_to_file`（呼び出し元ゼロ）削除 ③`render.yaml`・deploy.ymlのRender Deploy Hookジョブ削除 ④公開リポにコミットされている `frontend/.env.production` のGoogle Maps APIキー（2026-02-12から露出）の再発行とHTTPリファラ制限
 
 ## 2026-08-24 実施済み（管理者APIの認証・認可欠落とowner_id不整合を修正）
 
