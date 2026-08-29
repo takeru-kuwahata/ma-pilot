@@ -78,17 +78,6 @@ class PdfService:
 
         return pdf_bytes
 
-    def save_pdf_to_file(self, pdf_bytes: bytes, file_path: str) -> None:
-        """
-        PDFをファイルに保存
-
-        Args:
-            pdf_bytes: PDFバイナリ
-            file_path: 保存先パス
-        """
-        with open(file_path, "wb") as f:
-            f.write(pdf_bytes)
-
     def generate_monthly_report_pdf(
         self,
         clinic_name: str,

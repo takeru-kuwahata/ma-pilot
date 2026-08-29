@@ -51,7 +51,7 @@ MA-Pilotは、開業歯科医院向けの経営分析システムです。PILOT�
 
 - **Supabase** - PostgreSQL 15 + Auth + Storage
 - **Vercel** - フロントエンドホスティング
-- **Render.com** - バックエンドホスティング
+- **Google Cloud Run** - バックエンドホスティング（東京リージョン）
 - **GitHub Actions** - CI/CD
 
 ### 外部API連携
@@ -89,7 +89,6 @@ MA-Lstep/
 │   ├── tests/            # テストコード15ファイル（pytest）
 │   ├── main.py           # FastAPIエントリーポイント（161行）
 │   ├── requirements.txt  # 依存関係40パッケージ
-│   ├── render.yaml       # Render.comデプロイ設定
 │   └── .env.production   # 本番環境変数テンプレート
 │
 ├── docs/                  # ドキュメント
@@ -220,7 +219,7 @@ python main.py
 
 **デプロイ先**:
 - フロントエンド: Vercel (https://ma-pilot.vercel.app)
-- バックエンド: Render.com
+- バックエンド: Google Cloud Run（asia-northeast1）
 
 **デプロイ方法**: GitHubへのpushで自動デプロイ（CI/CD）
 
@@ -259,7 +258,7 @@ pytest tests/api/        # APIテストのみ
 
 1. **Supabase**: プロジェクト作成 → SQL実行（5分）
 2. **Vercel**: GitHubリポジトリ連携 → 環境変数設定（3分）
-3. **Render.com**: Web Service作成 → 環境変数設定（3分）
+3. **Google Cloud Run**: `docs/DEPLOY_CLOUDRUN.md` 参照
 
 ### 自動デプロイ（2回目以降）
 
@@ -274,7 +273,7 @@ git push origin main
 GitHub Actionsが自動的に:
 - ✅ テスト実行
 - ✅ Vercelにフロントエンドデプロイ
-- ✅ Render.comにバックエンドデプロイ
+- ✅ Google Cloud Runにバックエンドデプロイ
 
 ### 詳細ドキュメント
 
@@ -306,7 +305,8 @@ GitHub Actionsが自動的に:
 
 ### 🚀 デプロイ・運用
 
-- [デプロイガイド](docs/DEPLOYMENT_GUIDE.md) - Vercel/Render.comデプロイ手順
+- [Cloud Runデプロイ手順](docs/DEPLOY_CLOUDRUN.md) - バックエンドのデプロイ・ロールバック・移管
+- [デプロイガイド](docs/DEPLOYMENT_GUIDE.md) - Vercelデプロイ手順
 - [運用ガイド](docs/OPERATIONS_GUIDE.md) - 日常運用・保守手順
 - [モニタリング](docs/MONITORING.md) - 監視・アラート設定
 - [本番環境チェックリスト](docs/PRODUCTION_CHECKLIST.md) - デプロイ前確認項目

@@ -9,10 +9,10 @@
 | 項目 | 内容 |
 |------|------|
 | フロントエンド | Vercel（GitHub push で自動デプロイ） |
-| バックエンド | Render.com 無料プラン（GitHub push → GitHub Actions → Deploy Hook で自動デプロイ） |
+| バックエンド | Google Cloud Run（GitHub push → GitHub Actions → Workload Identity Federation で自動デプロイ）※2026-08-29 Render.comから移行 |
 | DB / Auth | Supabase（PostgreSQL 15 + Auth + Storage） |
 | フロントURL | https://ma-pilot.vercel.app |
-| バックエンドURL | https://ma-pilot.onrender.com |
+| バックエンドURL | https://ma-pilot-backend-536185990243.asia-northeast1.run.app |
 
 **注意：Render 無料プランは15分間アクセスがないとスリープする。初回リクエストに最大50秒かかる。**
 

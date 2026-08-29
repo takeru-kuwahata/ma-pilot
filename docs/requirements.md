@@ -274,7 +274,7 @@ CI/CD:
 | RESAS API | 商圏データ・産業構造 | https://opendata.resas-portal.go.jp/ | 地域経済分析、無料 |
 | Google Maps Platform | 地図表示・競合検索 | https://console.cloud.google.com | 無料枠: 月10,000リクエスト |
 | Vercel | フロントエンドホスティング | https://vercel.com | 無料枠: 帯域100GB/月 |
-| Render.com | バックエンドホスティング | https://render.com | 無料枠: 750時間/月 |
+| Google Cloud Run | バックエンドホスティング | https://cloud.google.com/run | asia-northeast1 / min-instances=1 |
 
 ### オプションサービス（次フェーズ）
 

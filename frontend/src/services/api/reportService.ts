@@ -21,8 +21,10 @@ interface GenerateReportRequest {
 
 export const reportService = {
   async generateReport(request: GenerateReportRequest): Promise<Report> {
+    // Cloud Run移行でコールドスタート(最大60秒)が解消されたため、
+    // Renderスリープ対策の90秒から実態に即した30秒へ短縮
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 90000);
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
     try {
       const response = await fetch(`${API_BASE_URL}/api/reports/generate`, {
         method: 'POST',
