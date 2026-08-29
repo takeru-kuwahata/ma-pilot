@@ -206,6 +206,23 @@
 
 **残タスク（別PR予定）**: 移植と分離するため今回は触っていない。①レポート生成の90秒タイムアウト削除（Renderスリープ対策だった負債）②死にコード `save_pdf_to_file`（呼び出し元ゼロ）削除 ③`render.yaml`・deploy.ymlのRender Deploy Hookジョブ削除 ④公開リポにコミットされている `frontend/.env.production` のGoogle Maps APIキー（2026-02-12から露出）の再発行とHTTPリファラ制限
 
+## 2026-08-29 実施済み（Render由来の負債削除・CI/CDをCloud Runへ移行）
+
+PR #14 の移行後、移植とリファクタリングを分離するため別PRとして実施（**PR #16**）。
+
+| 内容 | 詳細 |
+|------|------|
+| **🚨 CI/CDが実はRenderを向いたままだった** | `deploy.yml` の `deploy-backend` が Render Deploy Hook を叩き続けており、main pushのたびに旧環境へデプロイされる状態だった。Cloud Runデプロイに置き換え。認証は **Workload Identity Federation**（サービスアカウント鍵ファイル不要）、`attribute-condition` で `takeru-kuwahata/ma-pilot` からのみ認証可能に制限。新Secrets: `GCP_WIF_PROVIDER` / `GCP_SERVICE_ACCOUNT` |
+| CI設計上の配慮 | CIは `--image` のみ更新する。環境変数・シークレットはCloud Run側の設定を引き継ぐため、CI変更で本番設定が消える事故を防ぐ。マージ後の初回実行で成功を確認（revision `00003-b97` が100%トラフィック取得・env17件維持） |
+| 90秒タイムアウトを30秒へ | レポート生成の90秒はRenderスリープ対策だった（実測PDF生成は数秒）。無限待機を避けるため撤廃ではなく実態に即した値に短縮 |
+| 死にコード削除 | `save_pdf_to_file`（呼び出し元ゼロ。PDFはSupabase Storageへ直接アップロードしており未使用） |
+| `backend/render.yaml` 削除 | |
+| ドキュメント整備 | **`docs/DEPLOY_CLOUDRUN.md` を新規作成**（手動デプロイ / ロールバック / Dockerfileの必須要素4点 / 将来のクライアント移管手順）。`CLAUDE.md`・`README.md`・`docs/{README,DEV_STATUS,requirements}.md` のRender記述を更新 |
+| **Maps APIキー露出は「対応不要」と判断（当初報告を訂正）** | 公開リポの `frontend/.env.production` にMapsキーが露出している件、当初「従量課金のため要対応」と報告したが**過大評価だった**。調査の結果: ①リファラ制限が既に有効（`geocode`/`places` を偽リファラで叩くと **REQUEST_DENIED**）②`VITE_` 変数はビルド時に本番JSへ埋め込まれ**誰でも読める**構造のためGitから消しても無意味 ③リファラ制限が唯一かつ正しい防御策で既に機能している。なおキー自体は弊社GCPに存在せず**クライアント発行**（全プロジェクトのAPIキーを照合して確認） |
+| **本番実機確認済み**（2026-08-29） | CIデプロイ後に `/health` 200・ログイン・医院一覧13件・メール送信（Resend）を確認。テスト: Backend 154件・Frontend 113件 全パス、tsc クリーン |
+
+**残タスク**: ①Render解約（1〜2週間の安定確認後、〜2026-09-12頃。同時に `RENDER_DEPLOY_HOOK` secret も削除）②Supabase・Vercelのクライアント環境への移管（先方アカウントへの招待が必要）③独自ドメイン取得後のDNS紐付け
+
 ## 2026-08-24 実施済み（管理者APIの認証・認可欠落とowner_id不整合を修正）
 
 **発見の経緯**: 推移予測グラフ（PR #5）の動作確認で検証用医院を新規作成しようとした際、`ClinicCreate.owner_id` はスキーマ上任意なのにDB制約はNOT NULLという不整合で500エラーが発生。調査の過程で、`admin.py` の**全16エンドポイントに認証・認可の依存注入が一切なく、認証トークンなしで誰でも呼び出せる状態**だったことが判明
